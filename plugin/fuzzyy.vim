@@ -9,6 +9,8 @@ endif
 g:loaded_fuzzyy = 1
 
 import '../autoload/utils/popup.vim'
+import '../autoload/fuzzy/commands.vim'
+import '../autoload/fuzzy/ag.vim'
 
 def g:PopupSelection(opts: dict<any>): list<number>
     return popup.PopupSelection(opts)
@@ -24,7 +26,12 @@ enddef
 
 if !has('nvim')
     g:fuzzy#files#init()
-    g:fuzzy#ag#init()
     g:fuzzy#infile#init()
     g:fuzzy#colors#init()
 endif
+
+command! -nargs=0 FuzzyCommands commands.CommandsStart()
+nnoremap <silent> <leader>fi :FuzzyCommands<CR>
+
+command! -nargs=0 FuzzyAg call ag.AgStart()
+nnoremap <silent> <leader>fr :FuzzyAg<CR>

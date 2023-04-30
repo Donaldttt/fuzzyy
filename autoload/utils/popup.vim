@@ -310,7 +310,9 @@ export def MenuSetText(wid: number, text_list: list<string>)
     if type(text_list) != v:t_list
         echoerr 'text must be a list'
     endif
-    if !has_key(popup_wins, wid) | return | endif
+    if !has_key(popup_wins, wid)
+        return
+    endif
     var text = text_list
     var old_cursor_pos = line('$', wid) - line('.', wid)
 
