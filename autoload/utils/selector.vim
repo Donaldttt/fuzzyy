@@ -66,32 +66,6 @@ function! utils#selector#fuzzysearch(li, pattern, ...)
 endfunction
 " third argument is the size of return list
 
-function! utils#selector#fuzzysearch_old(li, pattern, ...)
-    let results = matchfuzzypos(a:li, a:pattern)
-    let strs = results[0]
-    let poss = results[1]
-    let scores = results[2]
-    if len(a:000) > 0 && type(a:1) == v:t_number && a:1 > 0
-        let strs = strs[:a:1]
-        let poss = poss[:a:1]
-        let scores = scores[:a:1]
-    endif
-
-    let str_list = []
-    let hi_list = []
-    let idx = 0
-    for str in strs
-        call add(str_list, str)
-        call add(hi_list,
-            \ [idx + 1,
-            \ reduce(poss[idx], { acc, val -> add(acc, val + 1) }, [])
-            \])
-        let idx += 1
-    endfor
-
-    return [str_list, hi_list]
-endfunction
-
 let s:input_timer2 = 0
 function! s:input(wid, val, ...) abort
     let val = a:val.str

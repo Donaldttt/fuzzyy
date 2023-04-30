@@ -1,3 +1,6 @@
+if !has('vim9script') ||  v:version < 900
+  finish
+endif
 vim9script
 
 if exists("g:loaded_fuzzyy")
