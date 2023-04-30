@@ -3,393 +3,403 @@
 "  related_win: list of related windows
 "  close_funcs: list of functions to be called when popup is closed
 "  highlights: list of highlight match in the popup buffer
-let s:popup_wins = {}
-func! s:close_related_wins(wid, ...)
-    for wid in s:popup_wins[a:wid].related_win
-        if has_key(s:popup_wins, wid)
-            let s:popup_wins[wid].related_win = []
+def s:CloseRelatedWins(wid: number, ...li: list<any>)
+    for w in s:popup_wins[wid].related_win
+        if has_key(s:popup_wins, w)
+            s:popup_wins[w].related_win = []
         endif
-        call popup_close(wid)
+        popup_close(w)
     endfor
-endfunc
+enddef
 
 " params:
 "   - wid: window id of the popup window
 "   - select: the selected item in the popup window eg. ['selected str']
-function! s:general_popup_callback(wid, select)
-    let bufnr = s:popup_wins[a:wid].bufnr
+def s:GeneralPopupCallback(wid: number, select: any)
+    var bufnr = s:popup_wins[wid].bufnr
 
-    " only press enter a:select will be a list
-    let has_selection = v:false 
-    if type(a:select) == v:t_list
-        let has_selection = v:true
-        for Func in s:popup_wins[a:wid].close_funcs
+    # only press enter select will be a list
+    var has_selection = v:false 
+    if type(select) == v:t_list
+        has_selection = v:true
+        for Func in s:popup_wins[wid].close_funcs
             if type(Func) == v:t_func
-                call Func(a:wid, a:select)
+                Func(wid, select)
             endif
         endfor
     endif
 
-    if has_key(s:popup_wins[a:wid], 'close_cb')
-    \ && type(s:popup_wins[a:wid].close_cb) == v:t_func
-        let opt = {}
+    if has_key(s:popup_wins[wid], 'close_cb')
+      && type(s:popup_wins[wid].close_cb) == v:t_func
+        var opt = {}
         if has_selection
-            let opt.selected_item = a:select
+            opt.selected_item = select
         endif
-        call s:popup_wins[a:wid].close_cb(a:wid, opt)
+        s:popup_wins[wid].close_cb(wid, opt)
     endif
-    " restore cursor
+    # restore cursor
     if &t_ve != s:t_ve
-        let &t_ve = s:t_ve
+        &t_ve = s:t_ve
     endif
     if s:triger_userautocmd
-        let s:triger_userautocmd = 0
+        s:triger_userautocmd = 0
         if exists('#User#PopupClosed')
             doautocmd User PopupClosed
         endif
     endif
-    call s:close_related_wins(a:wid)
-    call remove(s:popup_wins, a:wid)
-endfunction
+    s:CloseRelatedWins(wid)
+    remove(s:popup_wins, wid)
+enddef
 
-function! s:create_buf() abort
-    noa let bufnr = bufadd('')
-    noa call bufload(bufnr)
-    call setbufvar(bufnr, '&buflisted', 0)
-    call setbufvar(bufnr, '&modeline', 0)
-    call setbufvar(bufnr, '&buftype', 'nofile')
-    call setbufvar(bufnr, '&swapfile', 0)
-    " call setbufvar(bufnr, '&bufhidden', bufhidden)
-    call setbufvar(bufnr, '&undolevels', -1)
-    call setbufvar(bufnr, '&modifiable', 1)
+def s:CreateBuf(): number
+    noa var bufnr = bufadd('')
+    noa bufload(bufnr)
+    setbufvar(bufnr, '&buflisted', 0)
+    setbufvar(bufnr, '&modeline', 0)
+    setbufvar(bufnr, '&buftype', 'nofile')
+    setbufvar(bufnr, '&swapfile', 0)
+    setbufvar(bufnr, '&undolevels', -1)
+    setbufvar(bufnr, '&modifiable', 1)
     return bufnr
-endfunction
+enddef
 
 " params
 "   - bufnr: buffer number of the popup buffer
 " return: 
 "   if last result is changed
-func! s:menu_update_cursor_item(menu_wid)
-    let bufnr = s:popup_wins[a:menu_wid].bufnr
-    let cursorlinepos = line('.', a:menu_wid)
-    let linetext = getbufline(bufnr, cursorlinepos, cursorlinepos)[0]
-    if s:popup_wins[a:menu_wid].cursor_item == linetext | return | end
+def s:MenuUpdateCursorItem(menu_wid: number): number
+    var bufnr = s:popup_wins[menu_wid].bufnr
+    var cursorlinepos = line('.', menu_wid)
+    var linetext = getbufline(bufnr, cursorlinepos, cursorlinepos)[0]
+    if s:popup_wins[menu_wid].cursor_item == linetext 
+        return 0
+    endif
 
-    if has_key(s:popup_wins[a:menu_wid], 'move_cb')
-        if type(s:popup_wins[a:menu_wid].move_cb) == v:t_func
-            call s:popup_wins[a:menu_wid].move_cb(a:menu_wid,
-                \ {'cursor_item': linetext,
-                \ 'win_opts': s:popup_wins[a:menu_wid],
-                \ 'last_cursor_item': s:popup_wins[a:menu_wid].cursor_item })
+    if has_key(s:popup_wins[menu_wid], 'move_cb')
+        if type(s:popup_wins[menu_wid].move_cb) == v:t_func
+            call s:popup_wins[menu_wid].move_cb(menu_wid, {
+                cursor_item: linetext,
+                win_opts: s:popup_wins[menu_wid],
+                last_cursor_item: s:popup_wins[menu_wid].cursor_item 
+                })
         endif
     endif
-    let s:popup_wins[a:menu_wid].cursor_item = linetext
+    s:popup_wins[menu_wid].cursor_item = linetext
     return 1
-endfunc
+enddef
 
-func! s:prompt_filter(wid, key) abort
-    " echo [a:key, strgetchar(a:key, 0), strcharlen(a:key), strtrans(a:key)]
-    let bufnr = s:popup_wins[a:wid].bufnr
-    let line = s:popup_wins[a:wid].prompt.line
-    let cur_pos = s:popup_wins[a:wid].cursor_args.cur_pos
-    let max_pos = s:popup_wins[a:wid].cursor_args.max_pos
-    let last_displayed_line = s:popup_wins[a:wid].prompt.displayed_line
-    if len(a:key) == 1
-        let ascii_val = char2nr(a:key)
-        if ascii_val >=32 && ascii_val <= 126
+def PromptFilter(wid: number, key: string): number
+    # echo [key, strgetchar(key, 0), strcharlen(key), strtrans(key)]
+    var bufnr = s:popup_wins[wid].bufnr
+    var line = s:popup_wins[wid].prompt.line
+    var cur_pos = s:popup_wins[wid].cursor_args.cur_pos
+    var max_pos = s:popup_wins[wid].cursor_args.max_pos
+    var last_displayed_line = s:popup_wins[wid].prompt.displayed_line
+    if len(key) == 1
+        var ascii_val = char2nr(key)
+        if ascii_val >= 32 && ascii_val <= 126
             if cur_pos == len(line)
-                let line .= a:key
+                line ..= key
             else
-                let line = line[:cur_pos - 1] . a:key . line[cur_pos:]
+                line = line[: cur_pos - 1] .. key .. line[cur_pos :]
             endif
-            let s:popup_wins[a:wid].cursor_args.cur_pos += 1
+            s:popup_wins[wid].cursor_args.cur_pos += 1
         else
             return 1
         endif
-    elseif a:key == "\<bs>"
+    elseif key == "\<bs>"
         if cur_pos == len(line)
-            let line = line[:-2]
+            line = line[: -2]
         else
-            let line = line[:cur_pos - 2] . line[cur_pos:]
+            line = line[: cur_pos - 2] .. line[cur_pos :]
         endif
-        let s:popup_wins[a:wid].cursor_args.cur_pos = max([
-        \ 0,
-        \ cur_pos - 1
-        \ ])
-    elseif a:key == "\<Left>" || a:key == "\<C-f>"
-            let s:popup_wins[a:wid].cursor_args.cur_pos = max([
-            \ 0,
-            \ cur_pos - 1
-            \ ])
-    elseif a:key == "\<Right>" || a:key == "\<C-b>"
-        let s:popup_wins[a:wid].cursor_args.cur_pos = min([
-        \ max_pos,
-        \ cur_pos + 1
-        \ ])
+        s:popup_wins[wid].cursor_args.cur_pos = max([
+          0,
+          cur_pos - 1
+          ])
+    elseif key == "\<Left>" || key == "\<C-f>"
+            s:popup_wins[wid].cursor_args.cur_pos = max([
+              0,
+              cur_pos - 1
+              ])
+    elseif key == "\<Right>" || key == "\<C-b>"
+        s:popup_wins[wid].cursor_args.cur_pos = min([
+          max_pos,
+          cur_pos + 1
+          ])
     else
         return 1
     endif
 
-    if has_key(s:popup_wins[a:wid].prompt, 'input_cb') && s:popup_wins[a:wid].prompt.line != line
-        let prompt = s:popup_wins[a:wid].prompt.promptchar
-        let displayed_line = prompt . line . " "
-        call popup_settext(a:wid, displayed_line)
-        let s:popup_wins[a:wid].prompt.displayed_line = displayed_line
-        let s:popup_wins[a:wid].prompt.line = line
-        " after a keystroke, we need to update the menu popup to display
-        " appropriate content
-        call s:popup_wins[a:wid].prompt.input_cb(a:wid,
-            \ {'str' : line,
-            \ 'win_opts' : s:popup_wins[a:wid]})
+    if has_key(s:popup_wins[wid].prompt, 'input_cb') && s:popup_wins[wid].prompt.line != line
+        var prompt = s:popup_wins[wid].prompt.promptchar
+        var displayed_line = prompt .. line .. " "
+        popup_settext(wid, displayed_line)
+        s:popup_wins[wid].prompt.displayed_line = displayed_line
+        s:popup_wins[wid].prompt.line = line
+        # after a keystroke, we need to update the menu popup to display
+        # appropriate content
+        s:popup_wins[wid].prompt.input_cb(wid, {
+                str: line,
+                win_opts: s:popup_wins[wid]})
     endif
 
-    let s:popup_wins[a:wid].cursor_args.max_pos = len(line)
-    let promptchar_len = s:popup_wins[a:wid].cursor_args.promptchar_len
+    s:popup_wins[wid].cursor_args.max_pos = len(line)
+    var promptchar_len = s:popup_wins[wid].cursor_args.promptchar_len
 
-    " cursor hl
-    let hl = s:popup_wins[a:wid].cursor_args.highlight
-    let cur_pos = s:popup_wins[a:wid].cursor_args.cur_pos
-    call matchdelete(s:popup_wins[a:wid].cursor_args.mid, a:wid)
-    let mid = matchaddpos(hl , [[1, promptchar_len + 1 + cur_pos]], 10, -1,  {'window': a:wid})
-    let s:popup_wins[a:wid].cursor_args.mid = mid
+    # cursor hl
+    var hl = s:popup_wins[wid].cursor_args.highlight
+    cur_pos = s:popup_wins[wid].cursor_args.cur_pos
+    matchdelete(s:popup_wins[wid].cursor_args.mid, wid)
+    var mid = matchaddpos(hl, [[1, promptchar_len + 1 + cur_pos]], 10, -1,  {window: wid})
+    s:popup_wins[wid].cursor_args.mid = mid
     return 1
-endfunc
+enddef
 
-func! s:menu_filter(wid, key) abort
-    let bufnr = s:popup_wins[a:wid].bufnr
-    let cursorlinepos = line('.', a:wid)
-    let moved = 0
-    if a:key == "\<Down>" || a:key == "\<c-n>"
-        call win_execute(a:wid, 'norm j')
-        let moved = 1
-    elseif a:key == "\<Up>" || a:key == "\<c-p>"
-        let moved = 1
-        if s:popup_wins[a:wid].reverse_menu
-            let textrows = popup_getpos(a:wid).height - 2
-            let validrow = s:popup_wins[a:wid].validrow
-            let minline = textrows - validrow + 1
+def MenuFilter(wid: number, key: string): number
+    var bufnr = s:popup_wins[wid].bufnr
+    var cursorlinepos = line('.', wid)
+    var moved = 0
+    if key == "\<Down>" || key == "\<c-n>"
+        win_execute(wid, 'norm j')
+        moved = 1
+    elseif key == "\<Up>" || key == "\<c-p>"
+        moved = 1
+        if s:popup_wins[wid].reverse_menu
+            var textrows = popup_getpos(wid).height - 2
+            var validrow = s:popup_wins[wid].validrow
+            var minline = textrows - validrow + 1
             if cursorlinepos > minline
-                call win_execute(a:wid, 'norm k')
+                win_execute(wid, 'norm k')
             endif
         else
-            call win_execute(a:wid, 'norm k')
+            win_execute(wid, 'norm k')
         endif
-    elseif a:key == "\<CR>"
-        " if not passing second argument, popup_close will call user callback
-        " with func(window-id, 0)
-        " if passing second argument (popup_close(2, result)), popup_close will
-        " call user callback with func(window-id, [result])
-        let linetext = getbufline(bufnr, cursorlinepos, cursorlinepos)[0]
+    elseif key == "\<CR>"
+        # if not passing second argument, popup_close will call user callback
+        # with func(window-id, 0)
+        # if passing second argument (popup_close(2, result)), popup_close will
+        # call user callback with func(window-id, [result])
+        var linetext = getbufline(bufnr, cursorlinepos, cursorlinepos)[0]
         if linetext == ''
-            call popup_close(a:wid)
+            popup_close(wid)
         else
-            call popup_close(a:wid, [linetext])
+            popup_close(wid, [linetext])
         endif
-    elseif a:key == "\<Esc>" || a:key == "\<c-c>" || a:key == "\<c-[>"
-        call popup_close(a:wid)
+    elseif key == "\<Esc>" || key == "\<c-c>" || key == "\<c-[>"
+        popup_close(wid)
     else
         return 0
     endif
 
     if moved
-        call s:menu_update_cursor_item(a:wid)
+        s:MenuUpdateCursorItem(wid)
     endif
     return 1
-endfunc
+enddef
 
-function! utils#popup#create_popup(bufnr, opts) abort
-    let opts = {
-      \ 'line'            :  a:opts.line,
-      \ 'col'             :  a:opts.col,
-      \ 'minwidth'        :  a:opts.width,
-      \ 'maxwidth'        :  a:opts.width,
-      \ 'minheight'       :  a:opts.height,
-      \ 'maxheight'       :  a:opts.height,
-      \ 'scrollbar'       :  v:false,
-      \ 'padding'         :  [0, 0, 0, 0],
-      \ 'zindex'          :  1000,
-      \ 'wrap'            :  0,
-      \ 'callback'        :  function('s:general_popup_callback'),
-      \ 'border'          :  [1],
-      \ 'borderchars'     :  ['─', '│', '─', '│', '╭', '╮', '╯', '╰'],
-      \ 'borderhighlight' :  ['Normal'],
-      \ 'highlight'       :  'Normal',
-      \ }
+def s:CreatePopup(bufnr: number, args: dict<any>): number
+    var opts = {
+       line:  args.line,
+       col:  args.col,
+       minwidth:  args.width,
+       maxwidth:  args.width,
+       minheight:  args.height,
+       maxheight:  args.height,
+       scrollbar:  v:false,
+       padding:  [0, 0, 0, 0],
+       zindex:  1000,
+       wrap:  0,
+       callback:  function('s:GeneralPopupCallback'),
+       border:  [1],
+       borderchars:  ['─', '│', '─', '│', '╭', '╮', '╯', '╰'],
+       borderhighlight:  ['Normal'],
+       highlight:  'Normal', }
 
-    if has_key(a:opts, 'enable_border') && !a:opts.enable_border
-        call remove(opts, 'border')
+    if has_key(args, 'enable_border') && !args.enable_border
+        remove(opts, 'border')
     endif
 
-    " we will put user callback in close_funcs, and call it in general_popup_callback
+    # we will put user callback in close_funcs, and call it in GeneralPopupCallback
     for key in ['filter', 'border', 'borderhighlight', 'highlight', 'borderchars',
-        \ 'scrollbar', 'padding', 'cursorline', 'wrap', 'zindex', 'title']
-        if has_key(a:opts, key)
-            let opts[key] = a:opts[key]
+          'scrollbar', 'padding', 'cursorline', 'wrap', 'zindex', 'title']
+        if has_key(args, key)
+            opts[key] = args[key]
         endif
     endfor
-    let noscrollbar_width = opts.minwidth
+    var noscrollbar_width = opts.minwidth
     if opts.scrollbar
-        let opts.minwidth -= 1
-        let opts.maxwidth -= 1
+        opts.minwidth -= 1
+        opts.maxwidth -= 1
     endif
 
     if has_key(opts, 'filter')
-        let opts.mapping = v:false
+        opts.mapping = v:false
     endif
-    let wid = popup_create(a:bufnr, opts)
-    let s:popup_wins[wid] = {
-        \ 'close_funcs'        :  [],
-        \ 'highlights'         :  {},
-        \ 'noscrollbar_width'  :  noscrollbar_width,
-        \ 'validrow'           :  0,
-        \ 'move_cb'            :  v:null,
-        \ 'line'               :  a:opts.line,
-        \ 'col'                :  a:opts.col,
-        \ 'width'              :  a:opts.width,
-        \ 'height'             :  a:opts.height,
-        \ 'reverse_menu'       :  0,
-        \ 'cursor_item'        :  v:null,
-        \ 'wid'                :  wid,
-        \ 'update_delay_timer' :  -1,
-        \ 'prompt_delay_timer' :  -1,
-        \ }
+    var wid = popup_create(bufnr, opts)
+    s:popup_wins[wid] = {
+         close_funcs:  [],
+         highlights:  {},
+         noscrollbar_width:  noscrollbar_width,
+         validrow:  0,
+         move_cb:  v:null,
+         line:  args.line,
+         col:  args.col,
+         width:  args.width,
+         height:  args.height,
+         reverse_menu:  0,
+         cursor_item:  v:null,
+         wid:  wid,
+         update_delay_timer:  -1,
+         prompt_delay_timer:  -1,
+         }
 
     for key in ['reverse_menu', 'move_cb', 'close_cb']
-        if has_key(a:opts, key)
-            let s:popup_wins[wid][key] = a:opts[key]
+        if has_key(args, key)
+            s:popup_wins[wid][key] = args[key]
         endif
     endfor
-    if has_key(a:opts, 'callback')
-        call add(s:popup_wins[wid].close_funcs, a:opts.callback)
+    if has_key(args, 'callback')
+        add(s:popup_wins[wid].close_funcs, args.callback)
     endif
     return wid
-endfunction
+enddef
 
-function! utils#popup#new(opts) abort
-    let width   = get(a:opts, 'width', 0.4)
-    let height  = get(a:opts, 'height', 0.4)
-    let xoffset = get(a:opts, 'xoffset', 0.3)
-    let yoffset = get(a:opts, 'yoffset', 0.3)
+def s:NewPopup(args: dict<any>): list<number>
+    var width   = get(args, 'width', 0.4)
+    var height  = get(args, 'height', 0.4)
+    var xoffset = get(args, 'xoffset', 0.3)
+    var yoffset = get(args, 'yoffset', 0.3)
 
-    " Use current window size for positioning relatively positioned popups
-    let columns = &columns
-    let lines = &lines
+    # Use current window size for positioning relatively positioned popups
+    var columns = &columns
+    var lines = &lines
 
-    " Size and position
-    let final_width = min([max([1, width >= 1 ? width : float2nr(columns * width)]), columns])
-    let final_height = min([max([1, height >= 1 ? height : float2nr(lines * height)]), lines])
+    # Size and position
+    var final_width = min([max([1, width >= 1 ? width : float2nr(columns * width)]), columns])
+    var final_height = min([max([1, height >= 1 ? height : float2nr(lines * height)]), lines])
 
-    let line = yoffset >= 1 ? yoffset : float2nr(yoffset * lines)
-    let col = xoffset >=  1 ? xoffset : float2nr(xoffset * columns)
+    var line = yoffset >= 1 ? yoffset : float2nr(yoffset * lines)
+    var col = xoffset >=  1 ? xoffset : float2nr(xoffset * columns)
 
-    " Managing the differences
-    let line = min([max([0, line]), lines - final_height])
-    let col = min([max([0, col]), columns - final_width])
+    # Managing the differences
+    line = min([max([0, line]), lines - final_height])
+    col = min([max([0, col]), columns - final_width])
 
-    let opts = extend(a:opts, {
-    \ 'line'   :  line,
-    \ 'col'    :  col,
-    \ 'width'  :  final_width,
-    \ 'height' :  final_height
-    \ })
+    var opts = extend(args, {
+     line:  line,
+     col:  col,
+     width:  final_width,
+     height:  final_height
+     })
 
-    let bufnr = s:create_buf()
-    let wid = utils#popup#create_popup(bufnr, opts)
+    var bufnr = s:CreateBuf()
+    var wid = s:CreatePopup(bufnr, opts)
 
-    let s:popup_wins[wid].bufnr = bufnr
+    s:popup_wins[wid].bufnr = bufnr
 
     return [wid, bufnr]
-endfunction
+enddef
 
-function! utils#popup#menu_settext(wid, text, ...) abort
-    if type(a:text) != v:t_list
+def MenuSettext(wid: number, text_list: list<string>)
+    if type(text_list) != v:t_list
         echoerr 'text must be a list'
     endif
-    if !has_key(s:popup_wins, a:wid) | return | endif
-    let text = a:text
-    let old_cursor_pos = line('$', a:wid) - line('.', a:wid)
+    if !has_key(s:popup_wins, wid) | return | endif
+    var text = text_list
+    var old_cursor_pos = line('$', wid) - line('.', wid)
 
-    let s:popup_wins[a:wid].validrow = len(a:text)
-    let textrows = popup_getpos(a:wid).height - 2
-    if s:popup_wins[a:wid].reverse_menu
-        let text = reverse(a:text)
+    s:popup_wins[wid].validrow = len(text_list)
+    var textrows = popup_getpos(wid).height - 2
+    if s:popup_wins[wid].reverse_menu
+        text = reverse(text_list)
         if len(text) < textrows
-            let text = repeat([''], textrows - len(text)) + text
+            text = repeat([''], textrows - len(text)) + text
         endif
     endif
 
-    if popup_getoptions(a:wid).scrollbar
-        let curwidth = popup_getpos(a:wid).width
-        let noscrollbar_width = s:popup_wins[a:wid].noscrollbar_width
+    if popup_getoptions(wid).scrollbar
+        var curwidth = popup_getpos(wid).width
+        var noscrollbar_width = s:popup_wins[wid].noscrollbar_width
         if len(text) > textrows && curwidth != noscrollbar_width - 1
-            let width = noscrollbar_width - 1
-           call popup_move(a:wid, {'minwidth': width, 'maxwidth': width})
+            var width = noscrollbar_width - 1
+           popup_move(wid, {'minwidth': width, 'maxwidth': width})
         elseif len(text) <= textrows && curwidth != noscrollbar_width
-            let width = noscrollbar_width
-            call popup_move(a:wid, {'minwidth': width, 'maxwidth': width})
+            var width = noscrollbar_width
+            popup_move(wid, {'minwidth': width, 'maxwidth': width})
         endif
     endif
 
-    call popup_settext(a:wid, text)
-    if s:popup_wins[a:wid].reverse_menu
-        let new_line_length = line('$', a:wid)
-        let cursor_pos = new_line_length - old_cursor_pos
-        call win_execute(a:wid, 'normal! '.new_line_length.'zb')
-        call win_execute(a:wid, 'normal! '.cursor_pos.'G')
-        " echom [old_cursor_pos, cursor_pos, line('$')]
+    popup_settext(wid, text)
+    if s:popup_wins[wid].reverse_menu
+        var new_line_length = line('$', wid)
+        var cursor_pos = new_line_length - old_cursor_pos
+        win_execute(wid, 'normal! ' .. new_line_length .. 'zb')
+        win_execute(wid, 'normal! ' .. cursor_pos .. 'G')
+        # echom [old_cursor_pos, cursor_pos, line('$')]
     endif
 
-    call s:menu_update_cursor_item(a:wid)
+    s:MenuUpdateCursorItem(wid)
+enddef
+function! utils#popup#menu_settext(wid, text, ...) abort
+    call MenuSettext(a:wid, a:text)
 endfunction
 
 " params:
 "   - wid: popup window id
 "   - hi_list: list of position to highlight eg. [[1, [1,2,3]]]
-function! utils#popup#menu_sethl(name, wid, hi_list, ...)
-    let hl = 'Error'
-    if !has_key(s:popup_wins, a:wid) | return | endif
-    let hi_list = a:hi_list[:70]
+def MenuSethl(name: string, wid: number, hl_list_raw: list<any>): number
+    const hl = 'Error'
+    if !has_key(s:popup_wins, wid)
+        return -1
+    endif
+    var hl_list = hl_list_raw[: 70]
 
-    let textrows = popup_getpos(a:wid).height - 2
-    let height = max([len(a:hi_list), textrows])
-    if s:popup_wins[a:wid].reverse_menu
-        let hi_list = reduce(a:hi_list, {acc, v -> add(acc, [height - v[0] + 1, v[1]])}, [])
+    var textrows = popup_getpos(wid).height - 2
+    var height = max([len(hl_list_raw), textrows])
+    if s:popup_wins[wid].reverse_menu
+        hl_list = reduce(hl_list_raw, (acc, v) => add(acc, [height - v[0] + 1, v[1]]), [])
     endif
 
-    let his = []
-    for hlpos in hi_list
-        let line = hlpos[0]
-        let col_list = hlpos[1]
+    var his = []
+    for hlpos in hl_list
+        var line = hlpos[0]
+        var col_list = hlpos[1]
         if type(col_list) == v:t_list
             for col in col_list
-                call add(his, [line, col])
+                add(his, [line, col])
             endfor
         elseif type(col_list) == v:t_number
             if col_list > 0
-                call add(his, [line, col_list])
+                add(his, [line, col_list])
             endif
         endif
     endfor
-    if has_key(s:popup_wins[a:wid]['highlights'], a:name) &&
-        \ s:popup_wins[a:wid]['highlights'][a:name] != -1
-        call matchdelete(s:popup_wins[a:wid]['highlights'][a:name], a:wid)
-        call remove(s:popup_wins[a:wid]['highlights'], a:name)
+    if has_key(s:popup_wins[wid]['highlights'], name) &&
+        s:popup_wins[wid]['highlights'][name] != -1
+        matchdelete(s:popup_wins[wid]['highlights'][name], wid)
+        remove(s:popup_wins[wid]['highlights'], name)
     endif
-    " pass empty list to matchaddpos will cause error
-    if len(his) == 0 | return | endif
-    let mid = matchaddpos(hl, his, 10, -1,  {'window': a:wid})
-    let s:popup_wins[a:wid]['highlights'][a:name] = mid
+    # pass empty list to matchaddpos will cause error
+    if len(his) == 0
+        return -1
+    endif
+    var mid = matchaddpos(hl, his, 10, -1,  {'window': wid})
+    s:popup_wins[wid]['highlights'][name] = mid
     return mid
+enddef
+function! utils#popup#menu_sethl(name, wid, hi_list, ...)
+    call MenuSethl(a:name, a:wid, a:hi_list)
 endfunction
 
 function! utils#popup#prompt(opts)
     let opts = {
     \ 'width'  :  0.4,
     \ 'height' :  1,
-    \ 'filter' :  function('s:prompt_filter')
+    \ 'filter' :  function('PromptFilter')
     \ }
     let opts            =  extend(opts, a:opts)
-    let [wid, bufnr]    =  utils#popup#new(opts)
+    let [wid, bufnr]    =  s:NewPopup(opts)
     let prompt_char     =  '> '
     let prompt_char_len =  strcharlen(prompt_char)
     let prompt_opt      =  {
@@ -426,12 +436,12 @@ function! utils#popup#menu(opts) abort
     \ 'height'     : 17,
     \ 'yoffset'    : 0.3,
     \ 'cursorline' : 1,
-    \ 'filter'     : function('s:menu_filter'),
+    \ 'filter'     : function('MenuFilter'),
     \ 'wrap'       : 0,
     \ }
 
     let opts = extend(opts, a:opts)
-    let [wid, bufnr] = utils#popup#new(opts)
+    let [wid, bufnr] = s:NewPopup(opts)
 
     " don't set this, popup has its own cursorline option
     "call setwinvar(wid, '&cursorline', '1')
@@ -449,7 +459,7 @@ function! utils#popup#preview(opts) abort
     \ }
 
     let opts = extend(opts, a:opts)
-    let [wid, bufnr] = utils#popup#new(opts)
+    let [wid, bufnr] = s:NewPopup(opts)
 
     call setwinvar(wid, '&number', '1')
     call setwinvar(wid, '&wrap', '1')
@@ -458,14 +468,14 @@ endfunc
 
 " sometimes a layout contains multiple windows, we need to close them all
 " To do that we need to connect them
-func! s:connect_win(wins)
-    let allwins = values(a:wins)
-    for [k, wid] in items(a:wins)
-        let newlist = reduce(allwins, {acc, v -> v != wid ? add(acc, v) : acc }, [])
-        let s:popup_wins[wid].related_win = newlist
-        let s:popup_wins[wid].partids = a:wins
+def ConnectWin(wins: dict<any>)
+    var allwins = values(wins)
+    for [k, wid] in items(wins)
+        var newlist = reduce(allwins, (acc, v) => v != wid ? add(acc, v) : acc, [])
+        s:popup_wins[wid].related_win = newlist
+        s:popup_wins[wid].partids = wins
     endfor
-endfunc
+enddef
 
 " params:
 "   - opts: options: dictonary contains following keys:
@@ -478,6 +488,7 @@ function! utils#popup#selection(opts) abort
     let user_opts = a:opts 
 
     let s:triger_userautocmd = 1
+    let s:popup_wins = {}
     let has_preview = has_key(user_opts, 'preview') && user_opts.preview
 
     let width   = 0.8
@@ -546,7 +557,7 @@ function! utils#popup#selection(opts) abort
     \ }
 
     if has_key(user_opts, 'infowin') && user_opts.infowin
-        let [info_wid, info_bufnr] = utils#popup#new({
+        let [info_wid, info_bufnr] = s:NewPopup({
         \ 'width'         :  menu_width - 2,
         \ 'height'        :  1,
         \ 'yoffset'       :  yoffset + 1,
@@ -577,7 +588,7 @@ function! utils#popup#selection(opts) abort
     endif
     let s:t_ve = &t_ve
     setlocal t_ve=
-    call s:connect_win(connect_wins)
+    call ConnectWin(connect_wins)
     return ret
 endfunc
 
