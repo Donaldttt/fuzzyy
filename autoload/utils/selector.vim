@@ -104,11 +104,11 @@ function! s:input(wid, val, ...) abort
 
     if len(ret) > 7000
         call timer_stop(s:input_timer2)
-        call utils#popup#menu_settext(menu_wid, ret)
-        let s:input_timer2 = timer_start(100, function('utils#popup#menu_sethl', ['select', menu_wid, hi_list]))
+        call g:MenuSetText(menu_wid, ret)
+        let s:input_timer2 = timer_start(100, function('g:MenuSetHl', ['select', menu_wid, hi_list]))
     else
-        call utils#popup#menu_settext(menu_wid, ret)
-        call utils#popup#menu_sethl('select', menu_wid, hi_list)
+        call g:MenuSetText(menu_wid, ret)
+        call g:MenuSetHl('select', menu_wid, hi_list)
     endif
 endfunc
 
@@ -134,11 +134,11 @@ function! utils#selector#start(list, opts) abort
     let opts.select_cb = has_key(opts, 'select_cb') ? opts.select_cb : v:null
     let opts.input_cb = has_key(opts, 'input_cb') ? opts.input_cb : function('s:input')
 
-    let ret = utils#popup#selection(opts)
+    let ret = g:PopupSelection(opts)
 
     let menu_wid = ret[0]
     let prompt_wid = ret[1]
 
-    call utils#popup#menu_settext(menu_wid, a:list)
+    call g:MenuSetText(menu_wid, a:list)
     return ret
 endfunc

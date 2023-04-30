@@ -219,7 +219,7 @@ function! s:ag_update_menu(...)
     endif
 
     if s:cur_pattern == ''
-        call utils#popup#menu_settext(s:menu_wid, [])
+        call g:MenuSetText(s:menu_wid, [])
         let s:last_pattern = s:cur_pattern
         let s:last_result_len = cur_result_len
         return
@@ -239,8 +239,8 @@ function! s:ag_update_menu(...)
         call add(hl_list, [idx, col])
         let idx += 1
     endfor
-    call utils#popup#menu_settext(s:menu_wid, strs[:100])
-    call utils#popup#menu_sethl('select', s:menu_wid, hl_list[:100])
+    call g:MenuSetText(s:menu_wid, strs[:100])
+    call g:MenuSetHl('select', s:menu_wid, hl_list[:100])
     call s:update_preview_hl()
     let s:last_pattern = s:cur_pattern
     let s:last_result_len = cur_result_len

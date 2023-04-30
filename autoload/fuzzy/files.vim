@@ -30,8 +30,8 @@ endfunction
 let s:input_timer = -1
 func! s:input_update(...)
     let [file_sorted_list, hl_list] = utils#selector#fuzzysearch(s:cur_result, s:cur_pattern, 10000)
-    call utils#popup#menu_settext(s:menu_wid, file_sorted_list[:100])
-    call utils#popup#menu_sethl('select', s:menu_wid, hl_list[:100])
+    call g:MenuSetText(s:menu_wid, file_sorted_list[:100])
+    call g:MenuSetHl('select', s:menu_wid, hl_list[:100])
     call popup_setoptions(s:menu_wid, {'title' : len(s:cur_result)})
 endfunc
 
@@ -57,8 +57,8 @@ function! s:input(wid, val, ...) abort
             call s:input_update()
         endif
     else
-        call utils#popup#menu_settext(menu_wid, s:cur_result[:100])
-        call utils#popup#menu_sethl('select', menu_wid, [])
+        call g:MenuSetText(menu_wid, s:cur_result[:100])
+        call g:MenuSetHl('select', menu_wid, [])
         call popup_setoptions(menu_wid, {'title' : len(s:cur_result)})
     endif
 
@@ -124,7 +124,7 @@ endfunc
 func! s:exit_cb(...)
     let s:in_loading = 0
 	if s:last_result_len <= 0
-		call utils#popup#menu_settext(s:menu_wid, s:cur_result[:100])
+		call g:MenuSetText(s:menu_wid, s:cur_result[:100])
 	endif
     call timer_stop(s:files_update_tid)
     call popup_setoptions(s:menu_wid, {'title' : len(s:cur_result)})
@@ -146,8 +146,8 @@ function! s:files_update_menu(...) abort
 
     try
     let [file_sorted_list, hl_list] = utils#selector#fuzzysearch(s:cur_result, s:cur_pattern, 10000)
-    call utils#popup#menu_settext(s:menu_wid, file_sorted_list[:100])
-    call utils#popup#menu_sethl('select', s:menu_wid, hl_list[:100])
+    call g:MenuSetText(s:menu_wid, file_sorted_list[:100])
+    call g:MenuSetHl('select', s:menu_wid, hl_list[:100])
     catch
         " echom ['error in files_update_menu']
     endtry

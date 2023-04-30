@@ -1,11 +1,27 @@
+vim9script
+
 if exists("g:loaded_fuzzyy")
   finish
 endif
-let g:loaded_fuzzyy = 1
+g:loaded_fuzzyy = 1
+
+import '../autoload/utils/popup.vim'
+
+def g:PopupSelection(opts: dict<any>): list<number>
+    return popup.PopupSelection(opts)
+enddef
+
+def g:MenuSetHl(name: string, wid: number, hl_list_raw: list<any>): number
+    return popup.MenuSetHl(name, wid, hl_list_raw)
+enddef
+
+def g:MenuSetText(wid: number, text_list: list<string>)
+    popup.MenuSetText(wid, text_list)
+enddef
 
 if !has('nvim')
-    call fuzzy#ag#init()
-    call fuzzy#files#init()
-    call fuzzy#infile#init()
-    call fuzzy#colors#init()
+    g:fuzzy#files#init()
+    g:fuzzy#ag#init()
+    g:fuzzy#infile#init()
+    g:fuzzy#colors#init()
 endif
