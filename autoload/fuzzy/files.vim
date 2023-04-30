@@ -1,9 +1,10 @@
-function! s:reducer(acc, val)
-    if isdirectory(a:val) | return a:acc | endif
-    call add(a:acc, a:val[s:cwdlen + 1:])
-    " call add(a:acc, fnamemodify(a:val, ':s?'.getcwd().'?.?'))
-    return a:acc
-endfunction
+def s:Reducer(acc: list<string>, val: string): list<string>
+    if isdirectory(val)
+        return acc
+    endif
+    add(acc, val[s:cwdlen + 1 :])
+    return acc
+enddef
 
 function! s:files(...)
     let path = s:cwd
@@ -15,7 +16,7 @@ function! s:files(...)
     else
         let files = systemlist('find '.path.' -type f -not -path "*/.git/*"')
     endif
-    let files = reduce(files, function('s:reducer'), [])
+    let files = reduce(files, function('s:Reducer'), [])
     return files
 endfunction
 
@@ -132,26 +133,25 @@ endfunc
 
 function! s:job_handler(channel, msg)
     let lists = utils#selector#split(a:msg)
-    " let lists = reduce(lists, function('s:reducer'), [])
     let s:cur_result += lists
 endfunction
 
-function! s:files_update_menu(...) abort
-    let cur_result_len = len(s:cur_result)
-    call popup_setoptions(s:menu_wid, {'title' : string(len(s:cur_result))})
+def s:FilesUpdateMenu(...li: list<any>)
+    var cur_result_len = len(s:cur_result)
+    popup_setoptions(s:menu_wid, {'title': string(len(s:cur_result))})
     if cur_result_len == s:last_result_len
         return
     endif
-    let s:last_result_len = cur_result_len
+    s:last_result_len = cur_result_len
 
     try
-    let [file_sorted_list, hl_list] = utils#selector#fuzzysearch(s:cur_result, s:cur_pattern, 10000)
-    call g:MenuSetText(s:menu_wid, file_sorted_list[:100])
-    call g:MenuSetHl('select', s:menu_wid, hl_list[:100])
+        var [file_sorted_list, hl_list] = utils#selector#fuzzysearch(s:cur_result, s:cur_pattern, 10000)
+        g:MenuSetText(s:menu_wid, file_sorted_list[: 100])
+        g:MenuSetHl('select', s:menu_wid, hl_list[: 100])
     catch
-        " echom ['error in files_update_menu']
+        # echom ['error in files_update_menu']
     endtry
-endfunction
+enddef
 
 function! fuzzy#files#start()
 	let s:last_result_len = -1
@@ -168,8 +168,8 @@ function! fuzzy#files#start()
     \ 'infowin'    :  0,
     \ })
     let s:menu_wid = winds[0]
-    call timer_start(50, function('s:files_update_menu'))
-    let s:files_update_tid = timer_start(400, function('s:files_update_menu'), {'repeat': -1})
+    call timer_start(50, function('s:FilesUpdateMenu'))
+    let s:files_update_tid = timer_start(400, function('s:FilesUpdateMenu'), {'repeat': -1})
     autocmd User PopupClosed ++once try | call job_stop(s:jid) | call timer_stop(s:files_update_tid) | catch | endtry
 endfunc
 
