@@ -1,5 +1,5 @@
 vim9scrip
-var max_count = 1000000
+var max_count = 1000
 var rg_cmd = 'rg --column -M200 --vimgrep --max-count=' .. max_count .. ' "%s" "%s"'
 var ag_cmd = 'ag --column -W200 --vimgrep --max-count=' .. max_count .. ' "%s" "%s"'
 var grep_cmd = 'grep -n -r --max-count=' .. max_count .. ' "%s" "%s"'
@@ -9,10 +9,10 @@ var loading = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "�
 var cmd: string 
 if executable('ag')
     cmd = ag_cmd
-elseif executable('grep') && v:false
+elseif executable('grep')
     cmd = grep_cmd
     sep_pattern = '\:\d\+:'
-elseif executable('rg') && v:false
+elseif executable('rg')
     # not sure why rg has bad delay using job_start
     cmd = rg_cmd
 endif
@@ -38,7 +38,8 @@ def ParseAgStr(str: string): list<any>
     if seq[1] == -1
         return [v:null, -1, -1]
     endif
-    var path = str[: seq[1] - 1]
+    # var path = str[: seq[1] - 1]
+    var path = strpart(str, 0, seq[1])
     var linecol = split(seq[0], ':')
     var line = str2nr(linecol[0])
     var col: number
@@ -62,11 +63,14 @@ def Reducer(pattern: string, acc: dict<any>, val: string): dict<any>
     if len(linecol) == 2
         col = str2nr(linecol[1])
     endif
-    var path = val[: seq[1] - 1]
-    var str = val[seq[2] :]
+    #var path = val[: seq[1] - 1]
+    #var str = val[seq[2] :]
+    var path = strpart(val, 0, seq[1])
+    var str = strpart(val, seq[2])
     var colstart = max([col - 40, 0])
     var centerd_str = strpart(str, colstart, colstart + 40)
-    var relative_path = path[len(cwd) + 1 :]
+    # var relative_path = path[len(cwd) + 1 :]
+    var relative_path = strpart(path, len(cwd) + 1)
 
     var offset = len(relative_path) + len(seq[0]) + 1
     var match_cols: list<any>
@@ -83,10 +87,10 @@ def Reducer(pattern: string, acc: dict<any>, val: string): dict<any>
         acc.dict[final_str] = match_cols[0]
     endif
     var obj = {
-     prefix: relative_path .. seq[0],
-     centerd_str: centerd_str,
-     col_list: col_list,
-     }
+        prefix: relative_path .. seq[0],
+        centerd_str: centerd_str,
+        col_list: col_list,
+    }
     add(acc.objs, obj)
     add(acc.strs, final_str)
     add(acc.cols, col_list)
@@ -239,10 +243,10 @@ def AgUpdateMenu(...li: list<any>)
     var cols: list<list<number>>
     if cur_result_len == 0
         # we should use last result to do fuzzy search
-        [strs, cols, cur_dict] = ResultHandle(last_result)
+        [strs, cols, cur_dict] = ResultHandle(last_result[: 2000])
     else
         last_result = cur_result
-        [strs, cols, cur_dict] = ResultHandle(cur_result)
+        [strs, cols, cur_dict] = ResultHandle(cur_result[: 2000])
     endif
 
     var idx = 1
@@ -263,6 +267,17 @@ def CloseCb(...li: list<any>)
     if type(jid) == v:t_job
         job_stop(jid)
     endif
+enddef
+
+def Profiling()
+    profile start ~/.vim/vim.log
+    profile func AgStart
+    profile func AgUpdateMenu
+    profile func Preview
+    profile func UpdatePreviewHl
+    profile func JobHandler
+    profile func ResultHandle
+    profile func Reducer
 enddef
 
 export def AgStart()
@@ -295,4 +310,5 @@ export def AgStart()
     setwinvar(preview_wid, '&cursorline', 1)
     setwinvar(preview_wid, '&cursorlineopt', 'line')
     ag_update_tid = timer_start(200, function('AgUpdateMenu'), {'repeat': -1})
+    # Profiling()
 enddef
