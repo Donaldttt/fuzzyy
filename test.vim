@@ -2,25 +2,21 @@ vim9scrip
 
 var fd = '2'
 
-def FilesJobStart(path: string)
-    if type(s:jid) == v:t_job
-        job_stop(s:jid)
+def Input(wid: number, args: dict<any>, ...li: list<any>)
+    var val = args.str
+    var hi_list = []
+    var menu_wid = args.win_opts.partids.menu
+    var ret: list<string>
+    if val != ''
+        [ret, hi_list] = utils#selector#fuzzysearch(s:fzf_list, val)
     endif
-    s:cur_result = []
-    if path == ''
-        return
-    endif
-    var cmdstr: string
-    if has('win32')
-        cmdstr = 'powershell -command "gci . -r -n -File"'
+
+    if len(ret) > 7000
+        timer_stop(s:input_timer2)
+        g:MenuSetText(menu_wid, ret)
+        s:input_timer2 = timer_start(100, function('g:MenuSetHl', ['select', menu_wid, hi_list]))
     else
-        cmdstr = 'find . -type f -not -path "*/.git/*"'
+        g:MenuSetText(menu_wid, ret)
+        g:MenuSetHl('select', menu_wid, hi_list)
     endif
-    let s:jid = job_start(cmdstr, {
-     out_cb: function('s:job_handler'),
-     out_mode: 'raw',
-     exit_cb: function('s:exit_cb'),
-     err_cb: function('s:exit_cb'),
-     cwd : path
-     })
 enddef

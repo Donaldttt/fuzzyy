@@ -1,5 +1,7 @@
 vim9script
 
+import '../utils/selector.vim'
+
 var last_result_len = -1
 var cur_pattern = ''
 var in_loading = 1
@@ -40,7 +42,7 @@ def Select(wid: number, result: list<any>)
 enddef
 
 def InputUpdate(...li: list<any>)
-    var [file_sorted_list, hl_list] = g:utils#selector#fuzzysearch(cur_result, cur_pattern, 10000)
+    var [file_sorted_list, hl_list] = selector.FuzzySearch(cur_result, cur_pattern, 10000)
     g:MenuSetText(menu_wid, file_sorted_list[: 100])
     g:MenuSetHl('select', menu_wid, hl_list[: 100])
     popup_setoptions(menu_wid, {'title': len(cur_result)})
@@ -87,7 +89,7 @@ def Preview(wid: number, opts: dict<any>)
     var preview_bufnr = winbufnr(preview_wid)
     var fileraw = readfile(result)
     var ext = fnamemodify(result, ':e')
-    var ft = g:utils#selector#getft(ext)
+    var ft = selector.GetFt(ext)
     popup_settext(preview_wid, fileraw)
     # set syntax won't invoke some error cause by filetype autocmd
     try
@@ -133,7 +135,7 @@ def ExitCb(j: job, status: number)
 enddef
 
 def JobHandler(channel: channel, msg: string)
-    var lists = g:utils#selector#split(msg)
+    var lists = selector.Split(msg)
     cur_result += lists
 enddef
 
@@ -146,7 +148,7 @@ def FilesUpdateMenu(...li: list<any>)
     last_result_len = cur_result_len
 
     try
-        var [file_sorted_list, hl_list] = utils#selector#fuzzysearch(cur_result, cur_pattern, 10000)
+        var [file_sorted_list, hl_list] = selector.FuzzySearch(cur_result, cur_pattern, 10000)
         g:MenuSetText(menu_wid, file_sorted_list[: 100])
         g:MenuSetHl('select', menu_wid, hl_list[: 100])
     catch
@@ -161,7 +163,7 @@ export def FilesStart()
     cwd = getcwd()
     cwdlen = len(cwd)
     FilesJobStart(cwd)
-    var winds = utils#selector#start([], {
+    var winds = selector.Start([], {
 	 select_cb:  function('Select'),
      preview_cb:  function('Preview'),
      input_cb:  function('Input'),

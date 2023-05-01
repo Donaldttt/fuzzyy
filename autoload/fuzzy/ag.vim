@@ -1,4 +1,7 @@
 vim9scrip
+
+import '../utils/selector.vim'
+
 var max_count = 1000
 var rg_cmd = 'rg --column -M200 --vimgrep --max-count=' .. max_count .. ' "%s" "%s"'
 var ag_cmd = 'ag --column -W200 --vimgrep --max-count=' .. max_count .. ' "%s" "%s"'
@@ -98,7 +101,7 @@ def Reducer(pattern: string, acc: dict<any>, val: string): dict<any>
 enddef
 
 def JobHandler(channel: channel, msg: string)
-    var lists = g:utils#selector#split(msg)
+    var lists = selector.Split(msg)
     cur_result += lists 
 enddef
 
@@ -191,7 +194,7 @@ def Preview(wid: number, opts: dict<any>)
         var preview_bufnr = winbufnr(preview_wid)
         var fileraw = readfile(path)
         var ext = fnamemodify(path, ':e')
-        var ft = utils#selector#getft(ext)
+        var ft = selector.GetFt(ext)
         popup_settext(preview_wid, fileraw)
         # set syntax won't invoke some error cause by filetype autocmd
         try
@@ -294,7 +297,7 @@ export def AgStart()
     last_result = []
     cur_dict = {}
 
-    var ret = utils#selector#start([],
+    var ret = selector.Start([],
      {
          select_cb:  function('Select'),
          input_cb:  function('Input'),

@@ -1,3 +1,5 @@
+import '../utils/selector.vim'
+
 function! s:get_colors()
    return uniq(sort(map(
    \  globpath(&runtimepath, "colors/*.vim", 0, 1),  
@@ -30,7 +32,7 @@ function! fuzzy#colors#start()
     let s:old_color = execute('colo')[1:]
     let s:old_bg = &bg
     let colors = s:get_colors()
-    let winds = utils#selector#start(colors,
+    let winds = s:selector.Start(colors,
     \ {
     \ 'preview': 0,
     \ 'preview_cb': function('s:preview'),

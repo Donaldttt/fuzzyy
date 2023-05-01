@@ -1,43 +1,47 @@
-let s:fzf_list_len = 0
-let s:fzf_list = []
-let s:cwd = ''
+vim9script
 
-let s:filetype_table = {
-\ 'h'    :  'c',
-\ 'hpp'  :  'cpp',
-\ 'cc'   :  'cpp',
-\ 'hh'   :  'cpp',
-\ 'py'   :  'python',
-\ 'js'   :  'javascript',
-\ 'ts'   :  'typescript',
-\ 'tsx'  :  'typescript',
-\ 'jsx'  :  'typescript',
-\ 'rs'   :  'rust',
-\ 'json' :  'json',
-\ 'yml'  :  'yaml',
-\ 'md'   :  'markdown',
-\ }
+var fzf_list: list<string>
+var cwd: string
+var menu_wid: number
+var input_timer2: number
 
-function! utils#selector#split(str)
+var filetype_table = {
+    h:  'c',
+    hpp:  'cpp',
+    cc:  'cpp',
+    hh:  'cpp',
+    py:  'python',
+    js:  'javascript',
+    ts:  'typescript',
+    tsx:  'typescript',
+    jsx:  'typescript',
+    rs:  'rust',
+    json:  'json',
+    yml:  'yaml',
+    md:  'markdown',
+}
+
+export def Split(str: string): list<string>
+    var sep: string
     if has('win32')
-        let sep = '\r\n'
+        sep = '\r\n'
     else
-        let sep = '\n'
+        sep = '\n'
     endif
-    return split(a:str, sep)
-endfunction
+    return split(str, sep)
+enddef
 
-function! utils#selector#getft(ft)
-    if has_key(s:filetype_table, a:ft)
-        return s:filetype_table[a:ft]
+export def GetFt(ft: string): string
+    if has_key(filetype_table, ft)
+        return filetype_table[ft]
     endif
-    return a:ft
-endfunction
+    return ft
+enddef
 
-def Fuzzysearch9(li: list<string>, pattern: string, limit: number): list<any>
+export def FuzzySearch(li: list<string>, pattern: string, ...args: list<any>): list<any>
     var opts = {}
-    if limit > 0
-        opts['limit'] = limit
+    if len(args) > 0 && args[0] > 0
+        opts['limit'] = args[0]
     endif
     var results: list<any> = matchfuzzypos(li, pattern, opts)
     var strs = results[0]
@@ -57,62 +61,48 @@ def Fuzzysearch9(li: list<string>, pattern: string, limit: number): list<any>
     return [str_list, hl_list]
 enddef
 
-function! utils#selector#fuzzysearch(li, pattern, ...)
-    if a:pattern == ''
-        return [a:li, []]
-    endif
-    let ret = Fuzzysearch9(a:li, a:pattern, a:0 > 0 ? a:1 : -1)
-    return ret
-endfunction
-" third argument is the size of return list
-
-let s:input_timer2 = 0
-function! s:input(wid, val, ...) abort
-    let val = a:val.str
-    let ret = s:fzf_list
-    let hi_list = []
-    let menu_wid = a:val.win_opts.partids.menu
+def Input(wid: number, args: dict<any>, ...li: list<any>)
+    var val = args.str
+    var hi_list = []
+    menu_wid = args.win_opts.partids.menu
+    var ret: list<string>
     if val != ''
-        let [ret, hi_list] = utils#selector#fuzzysearch(ret, val)
+        [ret, hi_list] = FuzzySearch(fzf_list, val)
     endif
 
     if len(ret) > 7000
-        call timer_stop(s:input_timer2)
-        call g:MenuSetText(menu_wid, ret)
-        let s:input_timer2 = timer_start(100, function('g:MenuSetHl', ['select', menu_wid, hi_list]))
+        timer_stop(input_timer2)
+        g:MenuSetText(menu_wid, ret)
+        input_timer2 = timer_start(100, function('g:MenuSetHl', ['select', menu_wid, hi_list]))
     else
-        call g:MenuSetText(menu_wid, ret)
-        call g:MenuSetHl('select', menu_wid, hi_list)
+        g:MenuSetText(menu_wid, ret)
+        g:MenuSetHl('select', menu_wid, hi_list)
     endif
-endfunc
+enddef
 
-" params:
-"   - list: list of string to be selected. can be empty at init state
-"   - opts: dict of options
-"       - comfirm_cb: callback to be called when user select an item.
-"           comfirm_cb(menu_wid, result). result is a list like ['selected item']
-"       - preview_cb: callback to be called when user move cursor on an item.
-"           preview_cb(menu_wid, result). result is a list like ['selected item', opts]
-"       - input_cb: callback to be called when user input something
-"           input_cb(menu_wid, result). result is a list like ['input string', opts]
-" return:
-"   - a list [menu_wid, prompt_wid]
-"   - if has a:1.preview = 1, then return [menu_wid, prompt_wid, preview_wid]
-function! utils#selector#start(list, opts) abort
-    let opts = a:opts 
-    let s:fzf_list = a:list
-    let s:cwd = getcwd()
-    let s:fzf_list_len = len(a:list)
+# params:
+#   - list: list of string to be selected. can be empty at init state
+#   - opts: dict of options
+#       - comfirm_cb: callback to be called when user select an item.
+#           comfirm_cb(menu_wid, result). result is a list like ['selected item']
+#       - preview_cb: callback to be called when user move cursor on an item.
+#           preview_cb(menu_wid, result). result is a list like ['selected item', opts]
+#       - input_cb: callback to be called when user input something
+#           input_cb(menu_wid, result). result is a list like ['input string', opts]
+# return:
+#   - a list [menu_wid, prompt_wid]
+#   - if has a:1.preview = 1, then return [menu_wid, prompt_wid, preview_wid]
+export def Start(list: list<string>, opts: dict<any>): list<number>
+    fzf_list = list
+    cwd = getcwd()
 
-    let opts.move_cb = has_key(opts, 'preview_cb') ? opts.preview_cb : v:null
-    let opts.select_cb = has_key(opts, 'select_cb') ? opts.select_cb : v:null
-    let opts.input_cb = has_key(opts, 'input_cb') ? opts.input_cb : function('s:input')
+    opts.move_cb = has_key(opts, 'preview_cb') ? opts.preview_cb : v:null
+    opts.select_cb = has_key(opts, 'select_cb') ? opts.select_cb : v:null
+    opts.input_cb = has_key(opts, 'input_cb') ? opts.input_cb : function('Input')
 
-    let ret = g:PopupSelection(opts)
+    var ret = g:PopupSelection(opts)
 
-    let menu_wid = ret[0]
-    let prompt_wid = ret[1]
-
-    call g:MenuSetText(menu_wid, a:list)
+    menu_wid = ret[0]
+    g:MenuSetText(menu_wid, list)
     return ret
-endfunc
+enddef
