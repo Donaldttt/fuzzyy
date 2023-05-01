@@ -1,179 +1,176 @@
-def s:Reducer(acc: list<string>, val: string): list<string>
+vim9script
+
+var last_result_len = -1
+var cur_pattern = ''
+var in_loading = 1
+var cwd = getcwd()
+var cwdlen = len(cwd)
+var input_timer = -1
+var cur_result = []
+var jid: job
+var menu_wid: number
+var files_update_tid = -1
+
+def Reducer(acc: list<string>, val: string): list<string>
     if isdirectory(val)
         return acc
     endif
-    add(acc, val[s:cwdlen + 1 :])
+    add(acc, val[cwdlen + 1 :])
     return acc
 enddef
 
-function! s:files(...)
-    let path = s:cwd
-    if a:0 > 0
-        let path = a:1
+def Files(...li: list<any>): list<string>
+    var path = cwd
+    if len(li) > 0
+        path = li[0]
     endif
-    if g:os == 'Windows'
-        let files = glob(path . '/**', 1, 1, 1)
+    var files: list<string>
+    if has('win32')
+        files = glob(path . '/**', 1, 1, 1)
     else
-        let files = systemlist('find '.path.' -type f -not -path "*/.git/*"')
+        files = systemlist('find ' .. path .. ' -type f -not -path "*/.git/*"')
     endif
-    let files = reduce(files, function('s:Reducer'), [])
+    files = reduce(files, function('Reducer'), [])
     return files
-endfunction
+enddef
 
-function! s:open(path)
-    execute('edit ' . a:path)
-endfunction
+def Select(wid: number, result: list<any>)
+    var path = result[0]
+    execute('edit ' .. path)
+enddef
 
-function! s:select(wid, result)
-    call s:open(a:result[0])
-endfunction
+def InputUpdate(...li: list<any>)
+    var [file_sorted_list, hl_list] = g:utils#selector#fuzzysearch(cur_result, cur_pattern, 10000)
+    g:MenuSetText(menu_wid, file_sorted_list[: 100])
+    g:MenuSetHl('select', menu_wid, hl_list[: 100])
+    popup_setoptions(menu_wid, {'title': len(cur_result)})
+enddef
 
-let s:input_timer = -1
-func! s:input_update(...)
-    let [file_sorted_list, hl_list] = utils#selector#fuzzysearch(s:cur_result, s:cur_pattern, 10000)
-    call g:MenuSetText(s:menu_wid, file_sorted_list[:100])
-    call g:MenuSetHl('select', s:menu_wid, hl_list[:100])
-    call popup_setoptions(s:menu_wid, {'title' : len(s:cur_result)})
-endfunc
+def Input(wid: number, val: dict<any>, ...li: list<any>)
+    var pattern = val.str
+    cur_pattern = pattern
 
-let s:input_timer2 = 0
-function! s:input(wid, val, ...) abort
-    let pattern = a:val.str
-    let s:cur_pattern = pattern
-
-    " when in loading state, s:files_update_menu will handle the input
-    if s:in_loading
+    # when in loading state, files_update_menu will handle the input
+    if in_loading
         return
     endif
 
-    let file_list = s:cur_result
-    let hl_list = []
-    let menu_wid = s:menu_wid
+    var file_list = cur_result
+    var hl_list = []
 
     if pattern != ''
         if len(file_list) > 10000
-            call timer_stop(s:input_timer)
-            let s:input_timer = timer_start(100, function('s:input_update'))
+            timer_stop(input_timer)
+            input_timer = timer_start(100, function('InputUpdate'))
         else
-            call s:input_update()
+            InputUpdate()
         endif
     else
-        call g:MenuSetText(menu_wid, s:cur_result[:100])
-        call g:MenuSetHl('select', menu_wid, [])
-        call popup_setoptions(menu_wid, {'title' : len(s:cur_result)})
+        g:MenuSetText(menu_wid, cur_result[: 100])
+        g:MenuSetHl('select', menu_wid, [])
+        popup_setoptions(menu_wid, {'title': len(cur_result)})
     endif
 
-endfunc
+enddef
 
-function! s:preview(wid, opts)
-    let result = a:opts.cursor_item
-    let preview_wid = a:opts.win_opts.partids['preview']
+def Preview(wid: number, opts: dict<any>)
+    var result = opts.cursor_item
+    var preview_wid = opts.win_opts.partids['preview']
     if !filereadable(result)
         if result == ''
-            call popup_settext(preview_wid, '')
+            popup_settext(preview_wid, '')
         else
-            call popup_settext(preview_wid, result . ' not found')
+            popup_settext(preview_wid, result .. ' not found')
         endif
         return
     endif
-    let preview_bufnr = winbufnr(preview_wid)
-    let fileraw = readfile(result)
-    let ext = fnamemodify(result, ':e')
-    let ft = utils#selector#getft(ext)
-    call popup_settext(preview_wid, fileraw)
-    " set syntax won't invoke some error cause by filetype autocmd
+    var preview_bufnr = winbufnr(preview_wid)
+    var fileraw = readfile(result)
+    var ext = fnamemodify(result, ':e')
+    var ft = g:utils#selector#getft(ext)
+    popup_settext(preview_wid, fileraw)
+    # set syntax won't invoke some error cause by filetype autocmd
     try
-        call setbufvar(preview_bufnr, '&syntax', ft)
+        setbufvar(preview_bufnr, '&syntax', ft)
     catch
     endtry
-endfunction
+enddef
 
-func! fuzzy#files#profile()
-    profile start ./vim.log
-    profile func *fuzzy#files#start*
-
-endfunc
-
-let s:cur_result = []
-let s:jid = -1
-function! s:files_job_start(path)
-    if type(s:jid) == v:t_job
-        call job_stop(s:jid)
+def FilesJobStart(path: string)
+    if type(jid) == v:t_job && job_status(jid) == 'run'
+        job_stop(jid)
     endif
-    let s:cur_result = []
-    if a:path == ''
+    cur_result = []
+    if path == ''
         return
     endif
+    var cmdstr: string
     if has('win32')
-        let cmdstr = 'powershell -command "gci . -r -n -File"'
+        cmdstr = 'powershell -command "gci . -r -n -File"'
     else
-        let cmdstr = 'find . -type f -not -path "*/.git/*"'
+        cmdstr = 'find . -type f -not -path "*/.git/*"'
     endif
-    let s:jid = job_start(cmdstr, {
-    \ 'out_cb': function('s:job_handler'),
-    \ 'out_mode': 'raw',
-    \ 'exit_cb': function('s:exit_cb'),
-    \ 'err_cb': function('s:exit_cb'),
-    \ 'cwd' : a:path
-    \ })
-endfunction
+    jid = job_start(cmdstr, {
+     out_cb: function('JobHandler'),
+     out_mode: 'raw',
+     exit_cb: function('ExitCb'),
+     err_cb: function('ErrCb'),
+     cwd: path
+     })
+enddef
 
-func! s:err_cb(...)
+def ErrCb(channel: channel, msg: string)
     echom['err']
-endfunc
+enddef
 
-func! s:exit_cb(...)
-    let s:in_loading = 0
-	if s:last_result_len <= 0
-		call g:MenuSetText(s:menu_wid, s:cur_result[:100])
+def ExitCb(j: job, status: number)
+    in_loading = 0
+	if last_result_len <= 0
+		g:MenuSetText(menu_wid, cur_result[: 100])
 	endif
-    call timer_stop(s:files_update_tid)
-    call popup_setoptions(s:menu_wid, {'title' : len(s:cur_result)})
-endfunc
+    timer_stop(files_update_tid)
+    popup_setoptions(menu_wid, {'title': len(cur_result)})
+enddef
 
-function! s:job_handler(channel, msg)
-    let lists = utils#selector#split(a:msg)
-    let s:cur_result += lists
-endfunction
+def JobHandler(channel: channel, msg: string)
+    var lists = g:utils#selector#split(msg)
+    cur_result += lists
+enddef
 
-def s:FilesUpdateMenu(...li: list<any>)
-    var cur_result_len = len(s:cur_result)
-    popup_setoptions(s:menu_wid, {'title': string(len(s:cur_result))})
-    if cur_result_len == s:last_result_len
+def FilesUpdateMenu(...li: list<any>)
+    var cur_result_len = len(cur_result)
+    popup_setoptions(menu_wid, {'title': string(len(cur_result))})
+    if cur_result_len == last_result_len
         return
     endif
-    s:last_result_len = cur_result_len
+    last_result_len = cur_result_len
 
     try
-        var [file_sorted_list, hl_list] = utils#selector#fuzzysearch(s:cur_result, s:cur_pattern, 10000)
-        g:MenuSetText(s:menu_wid, file_sorted_list[: 100])
-        g:MenuSetHl('select', s:menu_wid, hl_list[: 100])
+        var [file_sorted_list, hl_list] = utils#selector#fuzzysearch(cur_result, cur_pattern, 10000)
+        g:MenuSetText(menu_wid, file_sorted_list[: 100])
+        g:MenuSetHl('select', menu_wid, hl_list[: 100])
     catch
         # echom ['error in files_update_menu']
     endtry
 enddef
 
-function! fuzzy#files#start()
-	let s:last_result_len = -1
-	let s:cur_pattern = ''
-	let s:in_loading = 1
-    let s:cwd = getcwd()
-    let s:cwdlen = len(s:cwd)
-    call s:files_job_start(s:cwd)
-    let winds = utils#selector#start([], {
-	\ 'select_cb'  :  function('s:select'),
-    \ 'preview_cb' :  function('s:preview'),
-    \ 'input_cb'   :  function('s:input'),
-    \ 'preview'    :  1,
-    \ 'infowin'    :  0,
-    \ })
-    let s:menu_wid = winds[0]
-    call timer_start(50, function('s:FilesUpdateMenu'))
-    let s:files_update_tid = timer_start(400, function('s:FilesUpdateMenu'), {'repeat': -1})
-    autocmd User PopupClosed ++once try | call job_stop(s:jid) | call timer_stop(s:files_update_tid) | catch | endtry
-endfunc
-
-function! fuzzy#files#init()
-    command! -nargs=0 FuzzyFiles call fuzzy#files#start()
-    nnoremap <silent> <leader>ff :FuzzyFiles<CR>
-endfunction
+export def FilesStart()
+	last_result_len = -1
+	cur_pattern = ''
+	in_loading = 1
+    cwd = getcwd()
+    cwdlen = len(cwd)
+    FilesJobStart(cwd)
+    var winds = utils#selector#start([], {
+	 select_cb:  function('Select'),
+     preview_cb:  function('Preview'),
+     input_cb:  function('Input'),
+     preview:  1,
+     infowin:  0,
+     prompt: pathshorten(fnamemodify(cwd, ':~' )) .. (has('win32') ? '\ ' : '/ '),
+     })
+    menu_wid = winds[0]
+    timer_start(50, function('FilesUpdateMenu'))
+    files_update_tid = timer_start(400, function('FilesUpdateMenu'), {'repeat': -1})
+    autocmd User PopupClosed ++once try | job_stop(jid) | timer_stop(files_update_tid) | catch | endtry
+enddef

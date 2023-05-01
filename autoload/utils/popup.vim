@@ -401,7 +401,7 @@ def PopupPrompt(args: dict<any>): number
      }
     opts            =  extend(opts, args)
     var [wid, bufnr]    =  NewPopup(opts)
-    var prompt_char     =  '> '
+    var prompt_char     =  has_key(args, 'prompt') ? args.prompt : '> '
     var prompt_char_len =  strcharlen(prompt_char)
     var prompt_opt      =  {
      line:  '',
@@ -546,6 +546,7 @@ export def PopupSelection(user_opts: dict<any>): list<number>
      xoffset:  xoffset,
      width:  menu_width,
      input_cb:  has_key(user_opts, 'input_cb') ? user_opts.input_cb : v:null,
+     prompt: has_key(user_opts, 'prompt') ? user_opts.prompt : '> ',
      }
     var prompt_wid = PopupPrompt(prompt_opts)
     popup_wins[prompt_wid].partids = {'menu': menu_wid}
