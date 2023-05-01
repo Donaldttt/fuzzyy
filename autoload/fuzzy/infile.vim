@@ -1,5 +1,5 @@
 
-import '../utils/selector.vim'
+import autoload 'utils/selector.vim'
 
 function! s:select(wid, result)
     let linenr = str2nr(split(a:result[0], ':')[0])

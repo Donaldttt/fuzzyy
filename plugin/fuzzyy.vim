@@ -8,10 +8,10 @@ if exists("g:loaded_fuzzyy")
 endif
 g:loaded_fuzzyy = 1
 
-import '../autoload/utils/popup.vim'
-import '../autoload/fuzzy/commands.vim'
-import '../autoload/fuzzy/ag.vim'
-import '../autoload/fuzzy/files.vim'
+import autoload '../autoload/utils/popup.vim'
+import autoload '../autoload/fuzzy/commands.vim'
+import autoload '../autoload/fuzzy/ag.vim'
+import autoload '../autoload/fuzzy/files.vim'
 
 def g:PopupSelection(opts: dict<any>): list<number>
     return popup.PopupSelection(opts)

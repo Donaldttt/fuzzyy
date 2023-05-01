@@ -39,6 +39,9 @@ export def GetFt(ft: string): string
 enddef
 
 export def FuzzySearch(li: list<string>, pattern: string, ...args: list<any>): list<any>
+    if pattern == ''
+        return [[], []]
+    endif
     var opts = {}
     if len(args) > 0 && args[0] > 0
         opts['limit'] = args[0]

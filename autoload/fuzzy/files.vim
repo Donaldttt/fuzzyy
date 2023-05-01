@@ -1,6 +1,6 @@
 vim9script
 
-import '../utils/selector.vim'
+import autoload 'utils/selector.vim'
 
 var last_result_len = -1
 var cur_pattern = ''

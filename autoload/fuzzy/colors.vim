@@ -1,4 +1,4 @@
-import '../utils/selector.vim'
+import autoload 'utils/selector.vim'
 
 function! s:get_colors()
    return uniq(sort(map(

@@ -1,6 +1,6 @@
 vim9scrip
 
-import '../utils/selector.vim'
+import autoload 'utils/selector.vim'
 
 var max_count = 1000
 var rg_cmd = 'rg --column -M200 --vimgrep --max-count=' .. max_count .. ' "%s" "%s"'
