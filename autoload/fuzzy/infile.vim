@@ -25,10 +25,6 @@ function! fuzzy#infile#start()
     let ext = fnamemodify(file, ':e')
     let ft = s:selector.GetFt(ext)
     let menu_bufnr = winbufnr(s:menu_wid)
-    " try
-    "     call setbufvar(menu_bufnr, '&syntax', ft)
-    " catch
-    " endtry
 endfunc
 
 function! fuzzy#infile#init()

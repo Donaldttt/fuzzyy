@@ -236,7 +236,7 @@ def AgUpdateMenu(...li: list<any>)
     endif
 
     if cur_pattern == ''
-        g:MenuSetText(menu_wid, [])
+        selector.UpdateMenu([], [])
         last_pattern = cur_pattern
         last_result_len = cur_result_len
         return
@@ -258,8 +258,7 @@ def AgUpdateMenu(...li: list<any>)
         add(hl_list, [idx, col])
         idx += 1
     endfor
-    g:MenuSetText(menu_wid, strs[: 100])
-    g:MenuSetHl('select', menu_wid, hl_list[: 100])
+    selector.UpdateMenu(strs[: 100], hl_list[: 100])
     UpdatePreviewHl()
     last_pattern = cur_pattern
     last_result_len = cur_result_len

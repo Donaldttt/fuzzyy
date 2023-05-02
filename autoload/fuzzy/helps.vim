@@ -29,29 +29,13 @@ enddef
 def Preview(wid: number, opts: dict<any>)
     var result = opts.cursor_item
     exe ':help ' .. result
-
-    # checkout taglist()
-    # if not using :help method
-    # if !filereadable(path)
-    #     popup_settext(preview_wid, '')
-    #     return
-    # endif
-    # var pattern = tag_table[result][1]
-    # var preview_bufnr = winbufnr(preview_wid)
-    # var fileraw = readfile(path)
-    # var linenr = match(fileraw, pattern)
-    # popup_settext(preview_wid, fileraw)
-    # setbufvar(preview_bufnr, '&syntax', 'help')
-    # win_execute(preview_wid, 'norm! ' .. linenr .. 'G')
-    # win_execute(preview_wid, 'norm! zz')
 enddef
 
 def Input(wid: number, args: dict<any>, ...li: list<any>)
     var val = args.str
     cur_pattern = val
-    var [ret, hi_list] = selector.FuzzySearch(keys(tag_table), val, 1000)
-    g:MenuSetText(menu_wid, ret)
-    g:MenuSetHl('select', menu_wid, hi_list)
+    var [ret, hl_list] = selector.FuzzySearch(keys(tag_table), val, 1000)
+    selector.UpdateMenu(ret, hl_list)
 enddef
 
 def HelpsUpdateMenu(...args: list<any>)
@@ -67,13 +51,6 @@ def HelpsUpdateMenu(...args: list<any>)
     file_lines = file_lines[1001 :]
 
     popup_setoptions(menu_wid, {'title': string(len(tag_table))})
-    try
-        # var [file_sorted_list, hl_list] = selector.FuzzySearch(keys(tag_table), cur_pattern)
-        # g:MenuSetText(menu_wid, file_sorted_list)
-        # g:MenuSetHl('select', menu_wid, hl_list)
-    catch
-        # echom ['error in files_update_menu']
-    endtry
 enddef
 
 def CloseCb(wid: number, args: dict<any>)

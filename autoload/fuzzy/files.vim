@@ -43,8 +43,7 @@ enddef
 
 def InputUpdate(...li: list<any>)
     var [file_sorted_list, hl_list] = selector.FuzzySearch(cur_result, cur_pattern, 10000)
-    g:MenuSetText(menu_wid, file_sorted_list[: 100])
-    g:MenuSetHl('select', menu_wid, hl_list[: 100])
+    selector.UpdateMenu(file_sorted_list[: 100], hl_list[: 100])
     popup_setoptions(menu_wid, {'title': len(cur_result)})
 enddef
 
@@ -68,8 +67,7 @@ def Input(wid: number, val: dict<any>, ...li: list<any>)
             InputUpdate()
         endif
     else
-        g:MenuSetText(menu_wid, cur_result[: 100])
-        g:MenuSetHl('select', menu_wid, [])
+        selector.UpdateMenu(cur_result[: 100], [])
         popup_setoptions(menu_wid, {'title': len(cur_result)})
     endif
 
@@ -129,7 +127,7 @@ def ExitCb(j: job, status: number)
     in_loading = 0
     timer_stop(files_update_tid)
 	if last_result_len <= 0
-		g:MenuSetText(menu_wid, cur_result[: 100])
+        selector.UpdateMenu(cur_result[: 100], [])
 	endif
     popup_setoptions(menu_wid, {'title': len(cur_result)})
 enddef
@@ -158,8 +156,7 @@ def FilesUpdateMenu(...li: list<any>)
 
     try
         var [file_sorted_list, hl_list] = selector.FuzzySearch(cur_result, cur_pattern, 10000)
-        g:MenuSetText(menu_wid, file_sorted_list[: 100])
-        g:MenuSetHl('select', menu_wid, hl_list[: 100])
+        selector.UpdateMenu(file_sorted_list[: 100], hl_list[: 100])
     catch
         # echom ['error in files_update_menu']
     endtry

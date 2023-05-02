@@ -1,9 +1,10 @@
 vim9script
 
+import './popup.vim'
+
 var fzf_list: list<string>
 var cwd: string
 var menu_wid: number
-var input_timer2: number
 var prompt_str: string
 
 var filetype_table = {
@@ -21,6 +22,11 @@ var filetype_table = {
     yml:  'yaml',
     md:  'markdown',
 }
+
+export def UpdateMenu(test_list: list<string>, hl_list: list<list<any>>)
+    popup.MenuSetText(menu_wid, test_list)
+    popup.MenuSetHl('select', menu_wid, hl_list)
+enddef
 
 export def Split(str: string): list<string>
     var sep: string
@@ -87,15 +93,8 @@ def Input(wid: number, args: dict<any>, ...li: list<any>)
     menu_wid = args.win_opts.partids.menu
     var ret: list<string>
     [ret, hi_list] = FuzzySearch(fzf_list, val)
-
-    if len(ret) > 7000
-        timer_stop(input_timer2)
-        g:MenuSetText(menu_wid, ret)
-        input_timer2 = timer_start(100, function('g:MenuSetHl', ['select', menu_wid, hi_list]))
-    else
-        g:MenuSetText(menu_wid, ret)
-        g:MenuSetHl('select', menu_wid, hi_list)
-    endif
+    popup.MenuSetText(menu_wid, ret)
+    popup.MenuSetHl('select', menu_wid, hi_list)
 enddef
 
 # params:
@@ -113,14 +112,15 @@ enddef
 export def Start(list: list<string>, opts: dict<any>): list<number>
     fzf_list = list
     cwd = getcwd()
+    prompt_str = ''
 
     opts.move_cb = has_key(opts, 'preview_cb') ? opts.preview_cb : v:null
     opts.select_cb = has_key(opts, 'select_cb') ? opts.select_cb : v:null
     opts.input_cb = has_key(opts, 'input_cb') ? opts.input_cb : function('Input')
 
-    var ret = g:PopupSelection(opts)
+    var ret = popup.PopupSelection(opts)
 
     menu_wid = ret[0]
-    g:MenuSetText(menu_wid, list)
+    popup.MenuSetText(menu_wid, list)
     return ret
 enddef
