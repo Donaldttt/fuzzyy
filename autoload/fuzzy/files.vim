@@ -85,7 +85,7 @@ def Preview(wid: number, opts: dict<any>)
         return
     endif
     var preview_bufnr = winbufnr(preview_wid)
-    var fileraw = readfile(result)
+    var fileraw = readfile(result, '', 70)
     var ext = fnamemodify(result, ':e')
     var ft = selector.GetFt(ext)
     popup_settext(preview_wid, fileraw)
@@ -162,6 +162,13 @@ def FilesUpdateMenu(...li: list<any>)
     endtry
 enddef
 
+def Close(wid: number, opts: dict<any>)
+    if type(jid) == v:t_job && job_status(jid) == 'run'
+        job_stop(jid)
+    endif
+    timer_stop(files_update_tid)
+enddef
+
 export def FilesStart()
 last_result_len = -1
 cur_pattern = ''
@@ -173,14 +180,16 @@ in_loading = 1
         select_cb:  function('Select'),
         preview_cb:  function('Preview'),
         input_cb:  function('Input'),
+        close_cb:  function('Close'),
         preview:  1,
-        infowin:  0,
+        infowin: 1,
         scrollbar: 0,
-        prompt: pathshorten(fnamemodify(cwd, ':~' )) .. (has('win32') ? '\ ' : '/ '),
+        # prompt: pathshorten(fnamemodify(cwd, ':~' )) .. (has('win32') ? '\ ' : '/ '),
      })
+    var info_wid = winds[3]
+    popup_settext(info_wid, 'cwd: ' .. fnamemodify(cwd, ':~' ) .. (has('win32') ? '\ ' : '/ '))
     menu_wid = winds[0]
     timer_start(50, function('FilesUpdateMenu'))
     files_update_tid = timer_start(400, function('FilesUpdateMenu'), {'repeat': -1})
-    autocmd User PopupClosed ++once try | job_stop(jid) | timer_stop(files_update_tid) | catch | endtry
     # Profiling()
 enddef

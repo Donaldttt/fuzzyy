@@ -1,53 +1,54 @@
+vim9script
+
 import autoload 'utils/selector.vim'
 
-function! s:get_colors()
+var old_color: string
+var old_bg: string
+var menu_wid: number
+
+def GetColors(): list<string>
    return uniq(sort(map(
-   \  globpath(&runtimepath, "colors/*.vim", 0, 1),  
-   \  'fnamemodify(v:val, ":t:r")'
-   \)))
-endfunction
+     globpath(&runtimepath, "colors/*.vim", 0, 1),
+     'fnamemodify(v:val, ":t:r")'
+   )))
+enddef
 
-function! s:preview(wid, result)
-    let color = a:result.cursor_item
-    let &bg = s:old_bg
-    execute 'colorscheme ' . color
-endfunction
+def Preview(wid: number, result: dict<any>)
+    var color = result.cursor_item
+    &bg = old_bg
+    execute 'colorscheme ' .. color
+enddef
 
-function! s:select(wid, result)
-    if !has_key(a:result, 'selected_item')
-        let &bg = s:old_bg
-        execute 'colorscheme ' . s:old_color
+def Close(wid: number, result: dict<any>)
+    if !has_key(result, 'selected_item')
+        &bg = old_bg
+        execute 'colorscheme ' .. old_color
     else
-        let color = a:result.selected_item
+        var color = result.selected_item
+        var bg: string
         if color =~# 'light$'
-            let bg = 'light'
+            bg = 'light'
         else
-            let bg = &bg
+            bg = &bg
         endif
-        call theme#setColor(bg, color)
+        g:theme#setColor(bg, color)
     endif
-endfunction
+enddef
 
-function! fuzzy#colors#start()
-    let s:old_color = execute('colo')[1:]
-    let s:old_bg = &bg
-    let colors = s:get_colors()
+export def ColorsStart()
+    old_color = execute('colo')[1 :]
+    old_bg = &bg
+    var colors = GetColors()
 
-    let winds = s:selector.Start(colors,
-    \ {
-    \ 'preview': 0,
-    \ 'preview_cb': function('s:preview'),
-    \ 'close_cb' : function('s:select'),
-    \ 'reverse_menu' : 1,
-    \ 'width' : 0.25,
-    \ 'xoffset' : 0.7,
-    \ 'scrollbar' : 0,
-    \ 'preview_ratio' : 0.7
-    \ })
-    let s:menu_wid = winds[0]
-endfunc
-
-function! fuzzy#colors#init()
-    command! -nargs=0 FuzzyColors call fuzzy#colors#start()
-    nnoremap <silent> <leader>fc :FuzzyColors<CR>
-endfunction
+    var winds = selector.Start(colors, {
+        preview: 0,
+        preview_cb: function('Preview'),
+        close_cb: function('Close'),
+        reverse_menu: 1,
+        width: 0.25,
+        xoffset: 0.7,
+        scrollbar: 0,
+        preview_ratio: 0.7
+    })
+    menu_wid = winds[0]
+enddef

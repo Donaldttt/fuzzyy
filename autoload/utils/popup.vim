@@ -557,19 +557,6 @@ export def PopupSelection(user_opts: dict<any>): list<number>
      prompt:  prompt_wid,
      }
 
-    if has_key(user_opts, 'infowin') && user_opts.infowin
-        var [info_wid, info_bufnr] = NewPopup({
-         width:  menu_width - 2,
-         height:  1,
-         yoffset:  yoffset + 1,
-         xoffset:  xoffset + 1,
-         padding:  [0, 0, 0, 1],
-         zindex:  2000,
-         enable_border:  0,
-         })
-        connect_wins.info = info_wid
-    endif
-
     var ret = [menu_wid, prompt_wid]
     if has_preview
         var preview_xoffset =  popup_wins[menu_wid].col + popup_wins[menu_wid].width
@@ -587,6 +574,21 @@ export def PopupSelection(user_opts: dict<any>): list<number>
         connect_wins.preview =  preview_wid
         add(ret, preview_wid)
     endif
+
+    if has_key(user_opts, 'infowin') && user_opts.infowin
+        var [info_wid, info_bufnr] = NewPopup({
+         width:  menu_width - 1,
+         height:  1,
+         yoffset:  yoffset + 1,
+         xoffset:  xoffset + 1,
+         padding:  [0, 0, 0, 1],
+         zindex:  2000,
+         enable_border:  0,
+         })
+        connect_wins.info = info_wid
+        add(ret, info_wid)
+    endif
+
     t_ve = &t_ve
     setlocal t_ve=
     ConnectWin(connect_wins)
