@@ -4,6 +4,7 @@ var fzf_list: list<string>
 var cwd: string
 var menu_wid: number
 var input_timer2: number
+var prompt_str: string
 
 var filetype_table = {
     h:  'c',
@@ -38,9 +39,20 @@ export def GetFt(ft: string): string
     return ft
 enddef
 
+# if pattern is empty, return [li, []]
+# params:
+#  - li: list of string to be searched
+#  - pattern: string to be searched
+#  - args: dict of options
+#      - limit: max number of results
+# return:
+# - a list [str_list, hl_list]
+#   - str_list: list of string to be displayed
+#   - hl_list: list of highlight positions
+#       - [[line1, col1], [line1, col2], [line2, col1], ...]
 export def FuzzySearch(li: list<string>, pattern: string, ...args: list<any>): list<any>
     if pattern == ''
-        return [[], []]
+        return [li, []]
     endif
     var opts = {}
     if len(args) > 0 && args[0] > 0
@@ -64,14 +76,17 @@ export def FuzzySearch(li: list<string>, pattern: string, ...args: list<any>): l
     return [str_list, hl_list]
 enddef
 
+export def GetPrompt(): string
+    return prompt_str
+enddef
+
 def Input(wid: number, args: dict<any>, ...li: list<any>)
     var val = args.str
+    prompt_str = val
     var hi_list = []
     menu_wid = args.win_opts.partids.menu
     var ret: list<string>
-    if val != ''
-        [ret, hi_list] = FuzzySearch(fzf_list, val)
-    endif
+    [ret, hi_list] = FuzzySearch(fzf_list, val)
 
     if len(ret) > 7000
         timer_stop(input_timer2)

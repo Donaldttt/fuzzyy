@@ -18,7 +18,7 @@ function! s:select(wid, result)
         let &bg = s:old_bg
         execute 'colorscheme ' . s:old_color
     else
-        let color = a:result.selected_item[0]
+        let color = a:result.selected_item
         if color =~# 'light$'
             let bg = 'light'
         else
@@ -32,6 +32,7 @@ function! fuzzy#colors#start()
     let s:old_color = execute('colo')[1:]
     let s:old_bg = &bg
     let colors = s:get_colors()
+
     let winds = s:selector.Start(colors,
     \ {
     \ 'preview': 0,
@@ -44,7 +45,6 @@ function! fuzzy#colors#start()
     \ 'preview_ratio' : 0.7
     \ })
     let s:menu_wid = winds[0]
-    " let s:preview_wid = winds[2]
 endfunc
 
 function! fuzzy#colors#init()

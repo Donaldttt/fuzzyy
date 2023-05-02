@@ -38,7 +38,7 @@ def GeneralPopupCallback(wid: number, select: any)
       && type(popup_wins[wid].close_cb) == v:t_func
         var opt = {}
         if has_selection
-            opt.selected_item = select
+            opt.selected_item = select[0]
         endif
         popup_wins[wid].close_cb(wid, opt)
     endif
@@ -106,7 +106,8 @@ def PromptFilter(wid: number, key: string): number
             if cur_pos == len(line)
                 line ..= key
             else
-                line = line[: cur_pos - 1] .. key .. line[cur_pos :]
+                var pre = cur_pos - 1 >= 0 ? line[: cur_pos - 1] : ''
+                line = pre .. key .. line[cur_pos :]
             endif
             popup_wins[wid].cursor_args.cur_pos += 1
         else

@@ -312,6 +312,6 @@ export def AgStart()
     setwinvar(menu_wid, '&wrap', 0)
     setwinvar(preview_wid, '&cursorline', 1)
     setwinvar(preview_wid, '&cursorlineopt', 'line')
-    ag_update_tid = timer_start(200, function('AgUpdateMenu'), {'repeat': -1})
+    ag_update_tid = timer_start(100, function('AgUpdateMenu'), {'repeat': -1})
     # Profiling()
 enddef

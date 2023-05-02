@@ -12,6 +12,7 @@ import autoload '../autoload/utils/popup.vim'
 import autoload '../autoload/fuzzy/commands.vim'
 import autoload '../autoload/fuzzy/ag.vim'
 import autoload '../autoload/fuzzy/files.vim'
+import autoload '../autoload/fuzzy/helps.vim'
 
 def g:PopupSelection(opts: dict<any>): list<number>
     return popup.PopupSelection(opts)
@@ -38,3 +39,6 @@ nnoremap <silent> <leader>fr :FuzzyAg<CR>
 
 command! -nargs=0 FuzzyFiles files.FilesStart()
 nnoremap <silent> <leader>ff :FuzzyFiles<CR>
+
+command! -nargs=0 FuzzyHelps helps.HelpsStart()
+nnoremap <silent> <leader>fd :FuzzyHelps<CR>

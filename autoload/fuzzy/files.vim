@@ -5,8 +5,8 @@ import autoload 'utils/selector.vim'
 var last_result_len = -1
 var cur_pattern = ''
 var in_loading = 1
-var cwd = getcwd()
-var cwdlen = len(cwd)
+var cwd: string
+var cwdlen: number
 var input_timer = -1
 var cur_result = []
 var jid: job
@@ -122,21 +122,30 @@ def FilesJobStart(path: string)
 enddef
 
 def ErrCb(channel: channel, msg: string)
-    echom['err']
+    # echom ['err']
 enddef
 
 def ExitCb(j: job, status: number)
     in_loading = 0
+    timer_stop(files_update_tid)
 	if last_result_len <= 0
 		g:MenuSetText(menu_wid, cur_result[: 100])
 	endif
-    timer_stop(files_update_tid)
     popup_setoptions(menu_wid, {'title': len(cur_result)})
 enddef
 
 def JobHandler(channel: channel, msg: string)
     var lists = selector.Split(msg)
     cur_result += lists
+enddef
+
+def Profiling()
+    profile start ~/.vim/vim.log
+    profile func Input
+    profile func Reducer
+    profile func Preview
+    profile func JobHandler
+    profile func FilesUpdateMenu
 enddef
 
 def FilesUpdateMenu(...li: list<any>)
@@ -157,22 +166,24 @@ def FilesUpdateMenu(...li: list<any>)
 enddef
 
 export def FilesStart()
-	last_result_len = -1
-	cur_pattern = ''
-	in_loading = 1
+last_result_len = -1
+cur_pattern = ''
+in_loading = 1
     cwd = getcwd()
     cwdlen = len(cwd)
     FilesJobStart(cwd)
     var winds = selector.Start([], {
-	 select_cb:  function('Select'),
-     preview_cb:  function('Preview'),
-     input_cb:  function('Input'),
-     preview:  1,
-     infowin:  0,
-     prompt: pathshorten(fnamemodify(cwd, ':~' )) .. (has('win32') ? '\ ' : '/ '),
+        select_cb:  function('Select'),
+        preview_cb:  function('Preview'),
+        input_cb:  function('Input'),
+        preview:  1,
+        infowin:  0,
+        scrollbar: 0,
+        prompt: pathshorten(fnamemodify(cwd, ':~' )) .. (has('win32') ? '\ ' : '/ '),
      })
     menu_wid = winds[0]
     timer_start(50, function('FilesUpdateMenu'))
     files_update_tid = timer_start(400, function('FilesUpdateMenu'), {'repeat': -1})
     autocmd User PopupClosed ++once try | job_stop(jid) | timer_stop(files_update_tid) | catch | endtry
+    # Profiling()
 enddef
