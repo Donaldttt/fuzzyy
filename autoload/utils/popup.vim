@@ -1,5 +1,5 @@
 vim9script
-var popup_wins = {}
+var popup_wins: dict<any>
 var triger_userautocmd = 1
 var t_ve = &t_ve
 
@@ -24,7 +24,7 @@ def GeneralPopupCallback(wid: number, select: any)
     var bufnr = popup_wins[wid].bufnr
 
     # only press enter select will be a list
-    var has_selection = v:false 
+    var has_selection = v:false
     if type(select) == v:t_list
         has_selection = v:true
         for Func in popup_wins[wid].close_funcs
@@ -70,13 +70,13 @@ enddef
 
 # params
 #   - bufnr: buffer number of the popup buffer
-# return: 
+# return:
 #   if last result is changed
 def MenuUpdateCursorItem(menu_wid: number): number
     var bufnr = popup_wins[menu_wid].bufnr
     var cursorlinepos = line('.', menu_wid)
     var linetext = getbufline(bufnr, cursorlinepos, cursorlinepos)[0]
-    if popup_wins[menu_wid].cursor_item == linetext 
+    if popup_wins[menu_wid].cursor_item == linetext
         return 0
     endif
 
@@ -85,7 +85,7 @@ def MenuUpdateCursorItem(menu_wid: number): number
             call popup_wins[menu_wid].move_cb(menu_wid, {
                 cursor_item: linetext,
                 win_opts: popup_wins[menu_wid],
-                last_cursor_item: popup_wins[menu_wid].cursor_item 
+                last_cursor_item: popup_wins[menu_wid].cursor_item
                 })
         endif
     endif
@@ -216,6 +216,7 @@ def CreatePopup(bufnr: number, args: dict<any>): number
        padding:  [0, 0, 0, 0],
        zindex:  1000,
        wrap:  0,
+       cursorline: 0,
        callback:  function('GeneralPopupCallback'),
        border:  [1],
        borderchars:  ['─', '│', '─', '│', '╭', '╮', '╯', '╰'],
@@ -228,7 +229,7 @@ def CreatePopup(bufnr: number, args: dict<any>): number
 
     # we will put user callback in close_funcs, and call it in GeneralPopupCallback
     for key in ['filter', 'border', 'borderhighlight', 'highlight', 'borderchars',
-          'scrollbar', 'padding', 'cursorline', 'wrap', 'zindex', 'title']
+          'scrollbar', 'padding', 'wrap', 'zindex', 'title']
         if has_key(args, key)
             opts[key] = args[key]
         endif
@@ -243,6 +244,13 @@ def CreatePopup(bufnr: number, args: dict<any>): number
         opts.mapping = v:false
     endif
     var wid = popup_create(bufnr, opts)
+    if has_key(args, 'cursorline') && args.cursorline
+        # we don't use popup option 'cursorline' because it is buggy (some
+        # colorscheme will make cursorline highlight disappear)
+        opts.has_cursorline = 1
+       setwinvar(wid, '&cursorline', 1)
+       setwinvar(wid, '&cursorlineopt', 'line')
+    endif
     popup_wins[wid] = {
          close_funcs:  [],
          highlights:  {},
@@ -354,14 +362,14 @@ enddef
 #   - wid: popup window id
 #   - hi_list: list of position to highlight eg. [[1, [1,2,3]]]
 export def MenuSetHl(name: string, wid: number, hl_list_raw: list<any>): number
-    const hl = 'Error'
+    const hl = 'cursearch'
     if !has_key(popup_wins, wid)
         return -1
     endif
     var hl_list = hl_list_raw[: 70]
 
     var textrows = popup_getpos(wid).height - 2
-    var height = max([len(hl_list_raw), textrows])
+    var height = max([hl_list_raw[-1][0], textrows])
     if popup_wins[wid].reverse_menu
         hl_list = reduce(hl_list_raw, (acc, v) => add(acc, [height - v[0] + 1, v[1]]), [])
     endif
@@ -389,7 +397,7 @@ export def MenuSetHl(name: string, wid: number, hl_list_raw: list<any>): number
     if len(his) == 0
         return -1
     endif
-    var mid = matchaddpos(hl, his, 10, -1,  {'window': wid})
+    var mid = matchaddpos(hl, his, 99, -1,  {'window': wid})
     popup_wins[wid]['highlights'][name] = mid
     return mid
 enddef
@@ -482,7 +490,7 @@ enddef
 #       - select_cb: callback function when a value is selected(press enter)
 #       - move_cb: callback function when cursor moves to a new value
 #       - input_cb: callback function when user input something
-# return: 
+# return:
 #   [menu_wid, prompt_wid, preview_wid]
 export def PopupSelection(user_opts: dict<any>): list<number>
     triger_userautocmd = 1

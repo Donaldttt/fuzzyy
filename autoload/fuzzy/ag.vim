@@ -165,7 +165,7 @@ def UpdatePreviewHl()
     for col in cur_dict[cur_menu_item]
         add(hl_list, [linenr, col + 1])
     endfor
-    matchaddpos('matchag', hl_list, 10, -1,  {'window': preview_wid})
+    matchaddpos('cursearch', hl_list, 9999, -1,  {'window': preview_wid})
 enddef
 
 def Preview(wid: number, opts: dict<any>)
@@ -266,7 +266,7 @@ enddef
 
 def CloseCb(...li: list<any>)
     timer_stop(ag_update_tid) 
-    if type(jid) == v:t_job
+    if type(jid) == v:t_job && job_status(jid) == 'run'
         job_stop(jid)
     endif
 enddef
@@ -305,12 +305,11 @@ export def AgStart()
          scrollbar:  0,
          close_cb:  function('CloseCb'),
      })
-    hi! link matchag search
     menu_wid = ret[0]
     preview_wid = ret[2]
     setwinvar(menu_wid, '&wrap', 0)
-    setwinvar(preview_wid, '&cursorline', 1)
-    setwinvar(preview_wid, '&cursorlineopt', 'line')
+    # setwinvar(preview_wid, '&cursorline', 1)
+    # setwinvar(preview_wid, '&cursorlineopt', 'line')
     ag_update_tid = timer_start(100, function('AgUpdateMenu'), {'repeat': -1})
     # Profiling()
 enddef

@@ -119,7 +119,6 @@ export def Start(list: list<string>, opts: dict<any>): list<number>
     opts.input_cb = has_key(opts, 'input_cb') ? opts.input_cb : function('Input')
 
     var ret = popup.PopupSelection(opts)
-
     menu_wid = ret[0]
     popup.MenuSetText(menu_wid, list)
     return ret

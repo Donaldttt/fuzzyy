@@ -42,7 +42,7 @@ def Select(wid: number, result: list<any>)
 enddef
 
 def InputUpdate(...li: list<any>)
-    var [file_sorted_list, hl_list] = selector.FuzzySearch(cur_result, cur_pattern, 10000)
+    var [file_sorted_list, hl_list] = selector.FuzzySearch(cur_result, cur_pattern, 1000)
     selector.UpdateMenu(file_sorted_list[: 100], hl_list[: 100])
     popup_setoptions(menu_wid, {'title': len(cur_result)})
 enddef
@@ -155,7 +155,7 @@ def FilesUpdateMenu(...li: list<any>)
     last_result_len = cur_result_len
 
     try
-        var [file_sorted_list, hl_list] = selector.FuzzySearch(cur_result, cur_pattern, 10000)
+        var [file_sorted_list, hl_list] = selector.FuzzySearch(cur_result, cur_pattern, 1000)
         selector.UpdateMenu(file_sorted_list[: 100], hl_list[: 100])
     catch
         # echom ['error in files_update_menu']
