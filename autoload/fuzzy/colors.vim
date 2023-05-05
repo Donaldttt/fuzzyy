@@ -41,10 +41,10 @@ export def ColorsStart()
     var colors = GetColors()
 
     var winds = selector.Start(colors, {
-        preview: 0,
         preview_cb: function('Preview'),
         close_cb: function('Close'),
         reverse_menu: 1,
+        preview: 0,
         width: 0.25,
         xoffset: 0.7,
         scrollbar: 0,

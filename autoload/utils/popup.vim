@@ -503,7 +503,7 @@ enddef
 #   [menu_wid, prompt_wid, preview_wid]
 export def PopupSelection(user_opts: dict<any>): list<number>
     triger_userautocmd = 1
-    popup_wins = {}
+    # popup_wins = {}
     var has_preview = has_key(user_opts, 'preview') && user_opts.preview
 
     var width: any   = 0.8

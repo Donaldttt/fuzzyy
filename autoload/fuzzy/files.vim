@@ -194,10 +194,10 @@ export def FilesStart()
     cur_result = []
     cur_pattern = ''
     last_pattern = ''
-    in_loading = 1
     cwd = getcwd()
     cwdlen = len(cwd)
     FilesJobStart(cwd)
+    in_loading = 1
     var winds = selector.Start([], {
         select_cb:  function('Select'),
         preview_cb:  function('Preview'),

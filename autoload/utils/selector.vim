@@ -23,8 +23,12 @@ var filetype_table = {
     md:  'markdown',
 }
 
-export def UpdateMenu(test_list: list<string>, hl_list: list<list<any>>)
-    popup.MenuSetText(menu_wid, test_list)
+# This function is used to render the menu window.
+# params:
+# - str_list: list of string to be displayed in the menu window
+# - hl_list: list of highlight positions
+export def UpdateMenu(str_list: list<string>, hl_list: list<list<any>>)
+    popup.MenuSetText(menu_wid, str_list)
     popup.MenuSetHl('select', menu_wid, hl_list)
 enddef
 
@@ -131,6 +135,18 @@ def Worker(tid: number)
     endif
 enddef
 
+# Using timer to mimic async search. This is a workaround for the lack of async
+# support in vim. It uses timer to do the search in the background, and calls
+# the callback function when part of the results are ready.
+# This function only allows one outstanding call at a time. If a new call is
+# made before the previous one finishes, the previous one will be canceled.
+# params:
+#  - li: list of string to be searched
+#  - pattern: string to be searched
+#  - limit: max number of results
+#  - Cb: callback function
+# return:
+#  timer id
 export def FuzzySearchAsync(li: list<string>, pattern: string, limit: number, Cb: func): number
     # only one outstanding call at a time
     timer_stop(async_tid)
@@ -162,6 +178,7 @@ def Input(wid: number, args: dict<any>, ...li: list<any>)
     popup.MenuSetHl('select', menu_wid, hi_list)
 enddef
 
+# This function spawn a popup picker for user to select an item from a list.
 # params:
 #   - list: list of string to be selected. can be empty at init state
 #   - opts: dict of options
@@ -169,11 +186,20 @@ enddef
 #           comfirm_cb(menu_wid, result). result is a list like ['selected item']
 #       - preview_cb: callback to be called when user move cursor on an item.
 #           preview_cb(menu_wid, result). result is a list like ['selected item', opts]
-#       - input_cb: callback to be called when user input something
-#           input_cb(menu_wid, result). result is a list like ['input string', opts]
+#       - input_cb: callback to be called when user input something. If input_cb
+#           is not set, then the input will be used as the pattern to filter the
+#           list. If input_cb is set, then the input will be passed to given callback.
+#           input_cb(menu_wid, result). the second argument result is a list ['input string', opts]
+#       - preview: wheather to show preview window, default 1
+#       - width: width of the popup window, default 80. If preview is enabled,
+#           then width is the width of the total layout.
+#       - xoffset: x offset of the popup window. The popup window is centered
+#           by default.
+#       - scrollbar: wheather to show scrollbar in the menu window.
+#       - preview_ratio: ratio of the preview window. default 0.5
 # return:
 #   - a list [menu_wid, prompt_wid]
-#   - if has a:1.preview = 1, then return [menu_wid, prompt_wid, preview_wid]
+#   - if has preview = 1, then return [menu_wid, prompt_wid, preview_wid]
 export def Start(li: list<string>, opts: dict<any>): list<number>
     fzf_list = li
     cwd = getcwd()

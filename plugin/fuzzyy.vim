@@ -9,28 +9,27 @@ if exists("g:loaded_fuzzyy")
 endif
 g:loaded_fuzzyy = 1
 
+g:enable_fuzzyy_keymaps = exists('g:enable_fuzzyy_keymaps') ? g:enable_fuzzyy_keymaps : 1
+
 import autoload '../autoload/fuzzy/commands.vim'
 import autoload '../autoload/fuzzy/ag.vim'
 import autoload '../autoload/fuzzy/files.vim'
 import autoload '../autoload/fuzzy/helps.vim'
 import autoload '../autoload/fuzzy/colors.vim'
-import autoload '../autoload/fuzzy/infile.vim'
+import autoload '../autoload/fuzzy/inbuffer.vim'
 
-command! -nargs=0 FuzzyCommands commands.CommandsStart()
-nnoremap <silent> <leader>fi :FuzzyCommands<CR>
-
-command! -nargs=0 FuzzyAg ag.AgStart()
-nnoremap <silent> <leader>fr :FuzzyAg<CR>
-
+command! -nargs=0 FuzzyGrep ag.AgStart()
 command! -nargs=0 FuzzyFiles files.FilesStart()
-nnoremap <silent> <leader>ff :FuzzyFiles<CR>
-
 command! -nargs=0 FuzzyHelps helps.HelpsStart()
-nnoremap <silent> <leader>fd :FuzzyHelps<CR>
-
 command! -nargs=0 FuzzyColors colors.ColorsStart()
-nnoremap <silent> <leader>fc :FuzzyColors<CR>
+command! -nargs=0 FuzzyInBuffer inbuffer.InBufferStart()
+command! -nargs=0 FuzzyCommands commands.CommandsStart()
 
-command! -nargs=0 FuzzyInfiles infile.InfileStart()
-nnoremap <silent> <leader>fb :FuzzyInfiles<CR>
-
+if g:enable_fuzzyy_keymaps
+    nnoremap <silent> <leader>fb :FuzzyInBuffer<CR>
+    nnoremap <silent> <leader>fc :FuzzyColors<CR>
+    nnoremap <silent> <leader>fd :FuzzyHelps<CR>
+    nnoremap <silent> <leader>ff :FuzzyFiles<CR>
+    nnoremap <silent> <leader>fi :FuzzyCommands<CR>
+    nnoremap <silent> <leader>fr :FuzzyGrep<CR>
+endif
