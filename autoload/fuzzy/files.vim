@@ -124,8 +124,13 @@ def FilesJobStart(path: string)
     var cmdstr: string
     if has('win32')
         cmdstr = 'powershell -command "gci . -r -n -File"'
-    else
+    elseif executable('find')
         cmdstr = 'find . -type f -not -path "*/.git/*"'
+    else
+        in_loading = 0
+        cur_result += glob(cwd .. '/**', 1, 1, 1)
+        selector.UpdateMenu(cur_result, [])
+        return
     endif
     jid = job_start(cmdstr, {
      out_cb: function('JobHandler'),
@@ -193,10 +198,9 @@ export def FilesStart()
     last_result_len = -1
     cur_result = []
     cur_pattern = ''
-    last_pattern = ''
+    last_pattern = '@!#-=' 
     cwd = getcwd()
     cwdlen = len(cwd)
-    FilesJobStart(cwd)
     in_loading = 1
     var winds = selector.Start([], {
         select_cb:  function('Select'),
@@ -209,6 +213,7 @@ export def FilesStart()
         scrollbar: 0,
         # prompt: pathshorten(fnamemodify(cwd, ':~' )) .. (has('win32') ? '\ ' : '/ '),
      })
+    FilesJobStart(cwd)
     var info_wid = winds[3]
     popup_settext(info_wid, 'cwd: ' .. fnamemodify(cwd, ':~' ) .. (has('win32') ? '\ ' : '/ '))
     menu_wid = winds[0]
