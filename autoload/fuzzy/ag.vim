@@ -220,6 +220,15 @@ def Select(wid: number, result: list<any>)
 enddef
 
 def AgUpdateMenu(...li: list<any>)
+    var cur_result_len = len(cur_result)
+    if cur_pattern == ''
+        selector.UpdateMenu([], [])
+        last_pattern = cur_pattern
+        last_result_len = cur_result_len
+        popup_setoptions(menu_wid, {title: 0})
+        return
+    endif
+
     if job_running
         var time = float2nr(str2float(reltime()->reltimestr()[4 : ]) * 1000)
         var speed = 100
@@ -228,17 +237,9 @@ def AgUpdateMenu(...li: list<any>)
     else
         popup_setoptions(menu_wid, {'title': string(len(cur_result))})
     endif
-    var cur_result_len = len(cur_result)
 
     if last_pattern == cur_pattern
         && cur_result_len == last_result_len
-        return
-    endif
-
-    if cur_pattern == ''
-        selector.UpdateMenu([], [])
-        last_pattern = cur_pattern
-        last_result_len = cur_result_len
         return
     endif
 

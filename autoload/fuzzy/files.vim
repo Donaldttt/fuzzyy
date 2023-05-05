@@ -4,6 +4,7 @@ import autoload 'utils/selector.vim'
 
 var last_result_len = -1
 var cur_pattern = ''
+var last_pattern = ''
 var in_loading = 1
 var cwd: string
 var cwdlen: number
@@ -12,6 +13,7 @@ var cur_result = []
 var jid: job
 var menu_wid: number
 var files_update_tid = -1
+var cache: dict<any>
 
 def Reducer(acc: list<string>, val: string): list<string>
     if isdirectory(val)
@@ -41,10 +43,25 @@ def Select(wid: number, result: list<any>)
     execute('edit ' .. path)
 enddef
 
+#def InputUpdate(...li: list<any>)
+#    var [file_sorted_list, hl_list] = selector.FuzzySearch(cur_result, cur_pattern, 1000)
+#    selector.UpdateMenu(file_sorted_list[: 100], hl_list[: 100])
+#    popup_setoptions(menu_wid, {'title': len(cur_result)})
+#enddef
+def AsyncCb(result: list<any>)
+    var strs = []
+    var hl_list = []
+    var idx = 1
+    for item in result
+        add(strs, item[0])
+        hl_list += reduce(item[1], (acc, val) => add(acc, [idx, val + 1]), [])
+        idx += 1
+    endfor
+    selector.UpdateMenu(strs, hl_list)
+enddef
+
 def InputUpdate(...li: list<any>)
-    var [file_sorted_list, hl_list] = selector.FuzzySearch(cur_result, cur_pattern, 1000)
-    selector.UpdateMenu(file_sorted_list[: 100], hl_list[: 100])
-    popup_setoptions(menu_wid, {'title': len(cur_result)})
+    selector.FuzzySearchAsync(cur_result, cur_pattern, 200, function('AsyncCb'))
 enddef
 
 def Input(wid: number, val: dict<any>, ...li: list<any>)
@@ -60,12 +77,12 @@ def Input(wid: number, val: dict<any>, ...li: list<any>)
     var hl_list = []
 
     if pattern != ''
-        if len(file_list) > 10000
-            timer_stop(input_timer)
-            input_timer = timer_start(100, function('InputUpdate'))
-        else
+       #if len(file_list) > 10000
+       #    timer_stop(input_timer)
+       #    input_timer = timer_start(100, function('InputUpdate'))
+       #else
             InputUpdate()
-        endif
+       #endif
     else
         selector.UpdateMenu(cur_result[: 100], [])
         popup_setoptions(menu_wid, {'title': len(cur_result)})
@@ -154,12 +171,15 @@ def FilesUpdateMenu(...li: list<any>)
     endif
     last_result_len = cur_result_len
 
-    try
-        var [file_sorted_list, hl_list] = selector.FuzzySearch(cur_result, cur_pattern, 1000)
-        selector.UpdateMenu(file_sorted_list[: 100], hl_list[: 100])
-    catch
-        # echom ['error in files_update_menu']
-    endtry
+        #var [file_sorted_list, hl_list] = selector.FuzzySearch(cur_result, cur_pattern, 1000)
+        #selector.UpdateMenu(file_sorted_list[: 100], hl_list[: 100])
+        if cur_pattern != last_pattern
+            selector.FuzzySearchAsync(cur_result, cur_pattern, 200, function('AsyncCb'))
+            if cur_pattern == ''
+                selector.UpdateMenu(cur_result[: 100], [])
+            endif
+            last_pattern = cur_pattern
+        endif
 enddef
 
 def Close(wid: number, opts: dict<any>)
@@ -170,9 +190,11 @@ def Close(wid: number, opts: dict<any>)
 enddef
 
 export def FilesStart()
-last_result_len = -1
-cur_pattern = ''
-in_loading = 1
+    last_result_len = -1
+    cur_result = []
+    cur_pattern = ''
+    last_pattern = ''
+    in_loading = 1
     cwd = getcwd()
     cwdlen = len(cwd)
     FilesJobStart(cwd)
@@ -181,6 +203,7 @@ in_loading = 1
         preview_cb:  function('Preview'),
         input_cb:  function('Input'),
         close_cb:  function('Close'),
+        reverse_menu: 1,
         preview:  1,
         infowin: 1,
         scrollbar: 0,

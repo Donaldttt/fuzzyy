@@ -366,7 +366,16 @@ export def MenuSetHl(name: string, wid: number, hl_list_raw: list<any>): number
     if !has_key(popup_wins, wid)
         return -1
     endif
-    var hl_list = hl_list_raw[: 70]
+    if len(hl_list_raw) == 0
+        if has_key(popup_wins[wid]['highlights'], name) &&
+            popup_wins[wid]['highlights'][name] != -1
+            matchdelete(popup_wins[wid]['highlights'][name], wid)
+            remove(popup_wins[wid]['highlights'], name)
+        endif
+        return -1
+    endif
+    # var hl_list = hl_list_raw[: 70]
+    var hl_list = hl_list_raw
 
     var textrows = popup_getpos(wid).height - 2
     var height = max([hl_list_raw[-1][0], textrows])

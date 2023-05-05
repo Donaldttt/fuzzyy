@@ -82,6 +82,71 @@ export def FuzzySearch(li: list<string>, pattern: string, ...args: list<any>): l
     return [str_list, hl_list]
 enddef
 
+def Null(li: list<any>)
+enddef
+def g:WorkerTest()
+    var li = ['abc', 'aca', 'ghi', 'jkl', 'mno', 'pqr', 'stu', 'vwx', 'yz']->repeat(3)
+    var pattern = 'ac'
+    var r = FuzzySearchAsync(li, 'ac', 100, function(Null))
+    for i in range(100)
+        echom async_results
+        sleep 100m
+    endfor
+enddef
+
+var async_list: list<string>
+var async_limit: number
+var async_pattern: string
+var async_results: list<any>
+var async_tid: number
+var AsyncCb: func
+def Worker(tid: number)
+    const ASYNC_LIMIT = 1000
+    var li = async_list[: ASYNC_LIMIT]
+    var results: list<any> = matchfuzzypos(li, async_pattern)
+    var processed_results = []
+
+    var strs = results[0]
+    var poss = results[1]
+    var scores = results[2]
+    for idx in range(len(strs))
+        add(processed_results, [strs[idx], poss[idx], scores[idx]])
+    endfor
+    async_results += processed_results
+    sort(async_results, (a, b) => {
+        if a[2] < b[2]
+            return 1
+        elseif a[2] > b[2]
+            return -1
+        else
+            return a[0] > b[0] ? 1 : -1
+        endif
+    })
+    AsyncCb(async_results)
+
+    async_list = async_list[ASYNC_LIMIT + 1 :]
+    if len(async_results) >= async_limit || len(async_list) == 0
+        timer_stop(tid)
+        return
+    endif
+enddef
+
+export def FuzzySearchAsync(li: list<string>, pattern: string, limit: number, Cb: func): number
+    # only one outstanding call at a time
+    timer_stop(async_tid)
+    if pattern == ''
+        return -1
+    endif
+    async_list = li
+    async_limit = limit
+    async_pattern = pattern
+    async_results = []
+    AsyncCb = Cb
+    async_tid = timer_start(100, function('Worker'), {'repeat': -1})
+    Worker(async_tid)
+    return async_tid
+enddef
+
 export def GetPrompt(): string
     return prompt_str
 enddef
@@ -109,8 +174,8 @@ enddef
 # return:
 #   - a list [menu_wid, prompt_wid]
 #   - if has a:1.preview = 1, then return [menu_wid, prompt_wid, preview_wid]
-export def Start(list: list<string>, opts: dict<any>): list<number>
-    fzf_list = list
+export def Start(li: list<string>, opts: dict<any>): list<number>
+    fzf_list = li
     cwd = getcwd()
     prompt_str = ''
 
@@ -120,6 +185,6 @@ export def Start(list: list<string>, opts: dict<any>): list<number>
 
     var ret = popup.PopupSelection(opts)
     menu_wid = ret[0]
-    popup.MenuSetText(menu_wid, list)
+    popup.MenuSetText(menu_wid, li)
     return ret
 enddef
