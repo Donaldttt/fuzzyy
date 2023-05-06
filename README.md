@@ -4,6 +4,8 @@ A fuzzy picker for files, strings, help documents and many other things.
 
 It ultilizes vim's native matchfuzzypos function and popup window feature.
 
+[demo](https://github.com/Donaldttt/resources/blob/main/fuzzyy/demo.gif)
+
 ## Install
 
 Any plugin manager will work.
@@ -87,6 +89,3 @@ import autoload 'utils/selector.vim'
 s:selector.Start(...)
 ```
 
-## Demo
-
-[demo](resources/demo.gif)
