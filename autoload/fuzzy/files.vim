@@ -15,39 +15,11 @@ var menu_wid: number
 var files_update_tid = -1
 var cache: dict<any>
 
-def Reducer(acc: list<string>, val: string): list<string>
-    if isdirectory(val)
-        return acc
-    endif
-    add(acc, val[cwdlen + 1 :])
-    return acc
-enddef
-
-def Files(...li: list<any>): list<string>
-    var path = cwd
-    if len(li) > 0
-        path = li[0]
-    endif
-    var files: list<string>
-    if has('win32')
-        files = glob(path . '/**', 1, 1, 1)
-    else
-        files = systemlist('find ' .. path .. ' -type f -not -path "*/.git/*"')
-    endif
-    files = reduce(files, function('Reducer'), [])
-    return files
-enddef
-
 def Select(wid: number, result: list<any>)
     var path = result[0]
     execute('edit ' .. path)
 enddef
 
-#def InputUpdate(...li: list<any>)
-#    var [file_sorted_list, hl_list] = selector.FuzzySearch(cur_result, cur_pattern, 1000)
-#    selector.UpdateMenu(file_sorted_list[: 100], hl_list[: 100])
-#    popup_setoptions(menu_wid, {'title': len(cur_result)})
-#enddef
 def AsyncCb(result: list<any>)
     var strs = []
     var hl_list = []
@@ -77,12 +49,7 @@ def Input(wid: number, val: dict<any>, ...li: list<any>)
     var hl_list = []
 
     if pattern != ''
-       #if len(file_list) > 10000
-       #    timer_stop(input_timer)
-       #    input_timer = timer_start(100, function('InputUpdate'))
-       #else
-            InputUpdate()
-       #endif
+        InputUpdate()
     else
         selector.UpdateMenu(cur_result[: 100], [])
         popup_setoptions(menu_wid, {'title': len(cur_result)})
@@ -133,12 +100,12 @@ def FilesJobStart(path: string)
         return
     endif
     jid = job_start(cmdstr, {
-     out_cb: function('JobHandler'),
-     out_mode: 'raw',
-     exit_cb: function('ExitCb'),
-     err_cb: function('ErrCb'),
-     cwd: path
-     })
+        out_cb: function('JobHandler'),
+        out_mode: 'raw',
+        exit_cb: function('ExitCb'),
+        err_cb: function('ErrCb'),
+        cwd: path
+    })
 enddef
 
 def ErrCb(channel: channel, msg: string)
@@ -176,8 +143,6 @@ def FilesUpdateMenu(...li: list<any>)
     endif
     last_result_len = cur_result_len
 
-        #var [file_sorted_list, hl_list] = selector.FuzzySearch(cur_result, cur_pattern, 1000)
-        #selector.UpdateMenu(file_sorted_list[: 100], hl_list[: 100])
         if cur_pattern != last_pattern
             selector.FuzzySearchAsync(cur_result, cur_pattern, 200, function('AsyncCb'))
             if cur_pattern == ''
@@ -207,15 +172,14 @@ export def FilesStart()
         preview_cb:  function('Preview'),
         input_cb:  function('Input'),
         close_cb:  function('Close'),
-        reverse_menu: 1,
+        dropdown: 0,
         preview:  1,
-        infowin: 1,
         scrollbar: 0,
         # prompt: pathshorten(fnamemodify(cwd, ':~' )) .. (has('win32') ? '\ ' : '/ '),
-     })
+    })
     FilesJobStart(cwd)
-    var info_wid = winds[3]
-    popup_settext(info_wid, 'cwd: ' .. fnamemodify(cwd, ':~' ) .. (has('win32') ? '\ ' : '/ '))
+    #var info_wid = winds[3]
+    #popup_settext(info_wid, 'cwd: ' .. fnamemodify(cwd, ':~' ) .. (has('win32') ? '\ ' : '/ '))
     menu_wid = winds[0]
     timer_start(50, function('FilesUpdateMenu'))
     files_update_tid = timer_start(400, function('FilesUpdateMenu'), {'repeat': -1})

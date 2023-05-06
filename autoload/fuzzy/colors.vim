@@ -27,11 +27,9 @@ def Close(wid: number, result: dict<any>)
         var color = result.selected_item
         var bg: string
         if color =~# 'light$'
-            bg = 'light'
-        else
-            bg = &bg
+            noa &bg = 'light'
         endif
-        g:theme#setColor(bg, color)
+        execute 'colorscheme ' .. color
     endif
 enddef
 
@@ -43,12 +41,11 @@ export def ColorsStart()
     var winds = selector.Start(colors, {
         preview_cb: function('Preview'),
         close_cb: function('Close'),
-        reverse_menu: 1,
         preview: 0,
         width: 0.25,
         xoffset: 0.7,
         scrollbar: 0,
-        preview_ratio: 0.7
+        preview_ratio: 0.7,
     })
     menu_wid = winds[0]
 enddef

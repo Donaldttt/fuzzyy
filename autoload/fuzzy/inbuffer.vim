@@ -20,9 +20,10 @@ export def InBufferStart()
         reverse_menu:  0,
         width:  0.7
     })
-    var menu_wid = winds[0]
-    var file = expand('%:p')
-    var  ext = fnamemodify(file, ':e')
-    var ft = selector.GetFt(ext)
-    var menu_bufnr = winbufnr(menu_wid)
+    # var menu_wid = winds[0]
+    # var file = expand('%:p')
+    # var ext = fnamemodify(file, ':e')
+    # var ft = selector.GetFt(ext)
+    # var menu_bufnr = winbufnr(menu_wid)
+    # setbufvar(menu_bufnr, '&syntax', ft)
 enddef

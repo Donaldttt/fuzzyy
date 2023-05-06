@@ -26,7 +26,8 @@ Plug 'Donaldttt/fuzzyy'
 
 FuzzyGrep requires any of grep, ag or rg command.
 
-FuzzyFiles requires find command or powershell's Get-ChildItem in windows
+FuzzyFiles uses find command in unix (if not found it will use vim's glob function,
+ which is blocking) or powershell's Get-ChildItem in windows.
 
 ## Default Keymaps
 
@@ -71,6 +72,7 @@ import autoload 'utils/selector.vim'
 #           by default.
 #       - scrollbar: wheather to show scrollbar in the menu window.
 #       - preview_ratio: ratio of the preview window. default 0.5
+#       - dropdown: use dropdown menu
 # return:
 #   - a list [menu_wid, prompt_wid]
 #   - if has preview = 1, then return [menu_wid, prompt_wid, preview_wid]
@@ -86,3 +88,5 @@ s:selector.Start(...)
 ```
 
 ## Demo
+
+[demo](resources/demo.gif)

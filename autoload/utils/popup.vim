@@ -503,7 +503,6 @@ enddef
 #   [menu_wid, prompt_wid, preview_wid]
 export def PopupSelection(user_opts: dict<any>): list<number>
     triger_userautocmd = 1
-    # popup_wins = {}
     var has_preview = has_key(user_opts, 'preview') && user_opts.preview
 
     var width: any   = 0.8
@@ -535,20 +534,37 @@ export def PopupSelection(user_opts: dict<any>): list<number>
         menu_width    = width
     endif
 
+    var dropdown = has_key(user_opts, 'dropdown') && user_opts.dropdown
+
     var prompt_height =  3
     var menu_height   =  height - prompt_height
 
+    var prompt_yoffset: number
+    var menu_yoffset: number
+    var reverse_menu: number
+
+    if dropdown
+        prompt_yoffset = yoffset
+        menu_yoffset = yoffset + prompt_height
+        reverse_menu = 0
+    else
+        menu_yoffset = yoffset
+        prompt_yoffset = yoffset + menu_height + 2
+        reverse_menu = 1
+    endif
+    reverse_menu = has_key(user_opts, 'reverse_menu') ? user_opts.reverse_menu : reverse_menu
+
     var menu_opts = {
-     callback:  has_key(user_opts, 'select_cb') ? user_opts.select_cb : v:null,
-     close_cb:  has_key(user_opts, 'close_cb') ? user_opts.close_cb : v:null,
-     scrollbar:  has_key(user_opts, 'scrollbar') ? user_opts.scrollbar : 1,
-     reverse_menu:  has_key(user_opts, 'reverse_menu') ? user_opts.reverse_menu : 1,
-     yoffset:  yoffset,
-     xoffset:  xoffset,
-     width:  menu_width,
-     height:  menu_height,
-     zindex:  1200,
-     }
+        callback:  has_key(user_opts, 'select_cb') ? user_opts.select_cb : v:null,
+        close_cb:  has_key(user_opts, 'close_cb') ? user_opts.close_cb : v:null,
+        scrollbar:  has_key(user_opts, 'scrollbar') ? user_opts.scrollbar : 1,
+        reverse_menu: reverse_menu,
+        yoffset:  menu_yoffset,
+        xoffset:  xoffset,
+        width:  menu_width,
+        height:  menu_height,
+        zindex:  1200,
+    }
 
     for key in ['title', 'move_cb']
         if has_key(user_opts, key)
@@ -558,21 +574,21 @@ export def PopupSelection(user_opts: dict<any>): list<number>
 
     var menu_wid = PopupMenu(menu_opts)
 
-    var prompt_yoffset = popup_wins[menu_wid].line + popup_wins[menu_wid].height
+    # var prompt_yoffset = popup_wins[menu_wid].line + popup_wins[menu_wid].height
     var prompt_opts = {
-     yoffset:  prompt_yoffset + 2,
-     xoffset:  xoffset,
-     width:  menu_width,
-     input_cb:  has_key(user_opts, 'input_cb') ? user_opts.input_cb : v:null,
-     prompt: has_key(user_opts, 'prompt') ? user_opts.prompt : '> ',
-     }
+        yoffset:  prompt_yoffset,
+        xoffset:  xoffset,
+        width:  menu_width,
+        input_cb:  has_key(user_opts, 'input_cb') ? user_opts.input_cb : v:null,
+        prompt: has_key(user_opts, 'prompt') ? user_opts.prompt : '> ',
+    }
     var prompt_wid = PopupPrompt(prompt_opts)
     popup_wins[prompt_wid].partids = {'menu': menu_wid}
 
     var connect_wins = {
-     menu:  menu_wid,
-     prompt:  prompt_wid,
-     }
+        menu:  menu_wid,
+        prompt:  prompt_wid,
+    }
 
     var ret = [menu_wid, prompt_wid]
     if has_preview
@@ -580,13 +596,14 @@ export def PopupSelection(user_opts: dict<any>): list<number>
         var menu_row        =  popup_wins[menu_wid].line
         var prompt_row      =  popup_wins[prompt_wid].line
         prompt_height   =  popup_wins[prompt_wid].height
-        var preview_height  =  prompt_row - menu_row + prompt_height
+        # var preview_height  =  prompt_row - menu_row + prompt_height
+        var preview_height  =   menu_height + prompt_height + 2
         var preview_opts    =  {
-         width:  preview_width,
-         height:  preview_height,
-         yoffset:  yoffset,
-         xoffset:  preview_xoffset + 2,
-         }
+            width:  preview_width,
+            height:  preview_height,
+            yoffset:  yoffset,
+            xoffset:  preview_xoffset + 2,
+        }
         var preview_wid          =  PopupPreview(preview_opts)
         connect_wins.preview =  preview_wid
         add(ret, preview_wid)
@@ -594,14 +611,14 @@ export def PopupSelection(user_opts: dict<any>): list<number>
 
     if has_key(user_opts, 'infowin') && user_opts.infowin
         var [info_wid, info_bufnr] = NewPopup({
-         width:  menu_width - 1,
-         height:  1,
-         yoffset:  yoffset + 1,
-         xoffset:  xoffset + 1,
-         padding:  [0, 0, 0, 1],
-         zindex:  2000,
-         enable_border:  0,
-         })
+            width:  menu_width - 1,
+            height:  1,
+            yoffset:  yoffset + 1,
+            xoffset:  xoffset + 1,
+            padding:  [0, 0, 0, 1],
+            zindex:  2000,
+            enable_border:  0,
+        })
         connect_wins.info = info_wid
         add(ret, info_wid)
     endif

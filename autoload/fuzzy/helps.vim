@@ -50,7 +50,7 @@ def HelpsUpdateMenu(...args: list<any>)
     }, tag_table)
     file_lines = file_lines[1001 :]
 
-    popup_setoptions(menu_wid, {'title': string(len(tag_table))})
+    # popup_setoptions(menu_wid, {'title': string(len(tag_table))})
 enddef
 
 def CloseCb(wid: number, args: dict<any>)
@@ -86,9 +86,10 @@ export def HelpsStart()
         height: 0.4,
         scrollbar: 0,
         width: 0.5,
+        dropdown: 1,
     })
     menu_wid = winds[0]
-    popup_setoptions(menu_wid, {'title': string(len(tag_table))})
+    # popup_setoptions(menu_wid, {'title': string(len(tag_table))})
     update_tid = timer_start(100, function('HelpsUpdateMenu'), {'repeat': -1})
 enddef
 
