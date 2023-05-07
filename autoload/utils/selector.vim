@@ -158,7 +158,7 @@ export def FuzzySearchAsync(li: list<string>, pattern: string, limit: number, Cb
     async_pattern = pattern
     async_results = []
     AsyncCb = Cb
-    async_tid = timer_start(100, function('Worker'), {'repeat': -1})
+    async_tid = timer_start(20, function('Worker'), {'repeat': -1})
     Worker(async_tid)
     return async_tid
 enddef
