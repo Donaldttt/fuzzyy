@@ -352,8 +352,10 @@ function! utils#popup#menu_sethl(name, wid, hi_list, ...)
 
     let textrows = popup_getpos(a:wid).height - 2
     if len(hi_list) == 0
-        call matchdelete(s:popup_wins[a:wid]['highlights'][a:name], a:wid)
-        call remove(s:popup_wins[a:wid]['highlights'], a:name)
+        if has_key(s:popup_wins[a:wid]['highlights'], a:name)
+            call matchdelete(s:popup_wins[a:wid]['highlights'][a:name], a:wid)
+            call remove(s:popup_wins[a:wid]['highlights'], a:name)
+        endif
         return
     endif
     let height = max([hi_list[-1][0], textrows])
