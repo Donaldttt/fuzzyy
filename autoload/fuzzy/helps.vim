@@ -28,7 +28,7 @@ enddef
 
 def Preview(wid: number, opts: dict<any>)
     var result = opts.cursor_item
-    exe ':help ' .. result
+    exe ':belowright help ' .. result
 enddef
 
 def Input(wid: number, args: dict<any>, ...li: list<any>)
@@ -56,7 +56,7 @@ enddef
 def CloseCb(wid: number, args: dict<any>)
     if has_key(args, 'selected_item')
         var tag = args.selected_item
-        exe ':help ' .. tag
+        exe ':belowright help ' .. tag
     else
         var tabnr = tabpagenr()
         var wins = gettabinfo(tabnr)[0].windows
