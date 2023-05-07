@@ -7,10 +7,10 @@ let s:loading = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", 
 
 if executable('ag')
     let s:cmd = s:ag_cmd
-elseif executable('grep') && v:false
+elseif executable('grep')
     let s:cmd = s:grep_cmd
     let s:sep_pattern = '\:\d\+:'
-elseif executable('rg') && v:false
+elseif executable('rg')
     " not sure why rg has bad delay using job_start
     let s:cmd = s:rg_cmd
 endif
