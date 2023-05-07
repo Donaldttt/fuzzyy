@@ -351,7 +351,12 @@ function! utils#popup#menu_sethl(name, wid, hi_list, ...)
     let hi_list = a:hi_list[:70]
 
     let textrows = popup_getpos(a:wid).height - 2
-    let height = max([len(a:hi_list), textrows])
+    if len(hi_list) == 0
+        call matchdelete(s:popup_wins[a:wid]['highlights'][a:name], a:wid)
+        call remove(s:popup_wins[a:wid]['highlights'], a:name)
+        return
+    endif
+    let height = max([hi_list[-1][0], textrows])
     if s:popup_wins[a:wid].reverse_menu
         let hi_list = reduce(a:hi_list, {acc, v -> add(acc, [height - v[0] + 1, v[1]])}, [])
     endif

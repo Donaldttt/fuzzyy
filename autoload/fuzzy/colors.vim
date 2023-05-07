@@ -18,11 +18,9 @@ function! s:select(wid, result)
     else
         let color = a:result.selected_item[0]
         if color =~# 'light$'
-            let bg = 'light'
-        else
-            let bg = &bg
+            let &bg = 'light'
         endif
-        call theme#setColor(bg, color)
+        execute 'colorscheme ' . color
     endif
 endfunction
 
