@@ -18,7 +18,7 @@ It ultilizes vim's native matchfuzzypos function and popup window feature.
 Any plugin manager will work.
 
 For vim-plug
-```
+```vim
 Plug 'Donaldttt/fuzzyy'
 ```
 
@@ -42,13 +42,26 @@ FuzzyFiles uses find command in unix (if not found it will use vim's glob functi
 
 you can set `g:enable_fuzzyy_keymaps = 0` to disable default keymaps
 
-```
+```vim
 nnoremap <silent> <leader>fb :FuzzyInBuffer<CR>
 nnoremap <silent> <leader>fc :FuzzyColors<CR>
 nnoremap <silent> <leader>fd :FuzzyHelps<CR>
 nnoremap <silent> <leader>ff :FuzzyFiles<CR>
 nnoremap <silent> <leader>fi :FuzzyCommands<CR>
 nnoremap <silent> <leader>fr :FuzzyGrep<CR>
+```
+
+## Options
+
+```vim
+" set to 0 to disable default keybindings
+" default to 1
+let g:enable_fuzzyy_keymaps = 0
+
+" make FuzzyFiles respect .gitignore if set to 1
+" only work when inside a git repository and git is installed
+" default to 0
+let g:files_respect_gitignore = 1
 ```
 
 ## API

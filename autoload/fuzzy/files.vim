@@ -2,18 +2,45 @@ vim9script
 
 import autoload 'utils/selector.vim'
 
-var last_result_len = -1
-var cur_pattern = ''
-var last_pattern = ''
-var in_loading = 1
+var last_result_len: number
+var cur_pattern: string
+var last_pattern: string
+var in_loading: number
 var cwd: string
 var cwdlen: number
-var input_timer = -1
-var cur_result = []
+var cur_result: list<string>
 var jid: job
 var menu_wid: number
-var files_update_tid = -1
+var files_update_tid: number
 var cache: dict<any>
+var cmdstr: string
+
+def GetOrDefault(name: string, default: any): any
+    if exists(name)
+        return eval(name)
+    endif
+    return default
+enddef
+
+
+def InitConfig()
+    # options
+    var respect_gitignore = GetOrDefault('g:files_respect_gitignore', 0)
+
+    cmdstr = ''
+    if respect_gitignore && executable('git')
+        && stridx(system('git rev-parse --is-inside-work-tree'), 'true') == 0
+        cmdstr = 'git ls-files --cached --other --exclude-standard --full-name .'
+    else
+        if has('win32')
+            cmdstr = 'powershell -command "gci . -r -n -File"'
+        elseif executable('find')
+            cmdstr = 'find . -type f -not -path "*/.git/*"'
+        endif
+    endif
+enddef
+
+InitConfig()
 
 def Select(wid: number, result: list<any>)
     var path = result[0]
@@ -88,12 +115,7 @@ def FilesJobStart(path: string)
     if path == ''
         return
     endif
-    var cmdstr: string
-    if has('win32')
-        cmdstr = 'powershell -command "gci . -r -n -File"'
-    elseif executable('find')
-        cmdstr = 'find . -type f -not -path "*/.git/*"'
-    else
+    if cmdstr == ''
         in_loading = 0
         cur_result += glob(cwd .. '/**', 1, 1, 1)
         selector.UpdateMenu(cur_result, [])
@@ -163,7 +185,7 @@ export def FilesStart()
     last_result_len = -1
     cur_result = []
     cur_pattern = ''
-    last_pattern = '@!#-=' 
+    last_pattern = '@!#-='
     cwd = getcwd()
     cwdlen = len(cwd)
     in_loading = 1
