@@ -105,8 +105,8 @@ var async_results: list<any>
 var async_tid: number
 var AsyncCb: func
 def Worker(tid: number)
-    const ASYNC_LIMIT = 1000
-    var li = async_list[: ASYNC_LIMIT]
+    const ASYNC_STEP = 1000
+    var li = async_list[: ASYNC_STEP]
     var results: list<any> = matchfuzzypos(li, async_pattern)
     var processed_results = []
 
@@ -126,9 +126,13 @@ def Worker(tid: number)
             return a[0] > b[0] ? 1 : -1
         endif
     })
+
+    if len(async_results) >= async_limit
+        async_results = async_results[: async_limit]
+    endif
     AsyncCb(async_results)
 
-    async_list = async_list[ASYNC_LIMIT + 1 :]
+    async_list = async_list[ASYNC_STEP + 1 :]
     if len(async_results) >= async_limit || len(async_list) == 0
         timer_stop(tid)
         return
@@ -158,7 +162,7 @@ export def FuzzySearchAsync(li: list<string>, pattern: string, limit: number, Cb
     async_pattern = pattern
     async_results = []
     AsyncCb = Cb
-    async_tid = timer_start(20, function('Worker'), {'repeat': -1})
+    async_tid = timer_start(50, function('Worker'), {'repeat': -1})
     Worker(async_tid)
     return async_tid
 enddef

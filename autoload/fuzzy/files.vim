@@ -59,10 +59,6 @@ def AsyncCb(result: list<any>)
     selector.UpdateMenu(strs, hl_list)
 enddef
 
-def InputUpdate(...li: list<any>)
-    selector.FuzzySearchAsync(cur_result, cur_pattern, 200, function('AsyncCb'))
-enddef
-
 def Input(wid: number, val: dict<any>, ...li: list<any>)
     var pattern = val.str
     cur_pattern = pattern
@@ -76,7 +72,7 @@ def Input(wid: number, val: dict<any>, ...li: list<any>)
     var hl_list = []
 
     if pattern != ''
-        InputUpdate()
+        selector.FuzzySearchAsync(cur_result, cur_pattern, 200, function('AsyncCb'))
     else
         selector.UpdateMenu(cur_result[: 100], [])
         popup_setoptions(menu_wid, {'title': len(cur_result)})
