@@ -217,7 +217,7 @@ def MenuFilter(wid: number, key: string): number
 enddef
 
 def PreviewFilter(wid: number, key: string): number
-    echom key
+    # echom key
     if index(keymaps['preview_up'], key) >= 0
         win_execute(wid, 'norm k')
     elseif index(keymaps['preview_down'], key) >= 0
