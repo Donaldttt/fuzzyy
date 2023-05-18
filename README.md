@@ -38,6 +38,14 @@ FuzzyGrep requires any of grep, ag or rg command.
 FuzzyFiles uses find command in unix (if not found it will use vim's glob function,
  which is blocking) or powershell's Get-ChildItem in windows.
 
+## Navigation
+
+Arrow key or `ctrl + p`/ `ctrl + n` moves up/down the menu
+
+`ctrl + u`/`ctrl + d` moves up/down the buffer in preview window
+
+you can set `g:fuzzyy_keymaps` to change these defaults.
+
 ## Default Keymaps
 
 you can set `g:enable_fuzzyy_keymaps = 0` to disable default keymaps
@@ -62,6 +70,17 @@ let g:enable_fuzzyy_keymaps = 0
 " only work when inside a git repository and git is installed
 " default to 0
 let g:files_respect_gitignore = 1
+
+" change navigation keymaps
+" the following is the default
+let g:fuzzyy_keymaps = {
+\     'menu_up': ["\<c-p>", "\<Up>"],
+\     'menu_down': ["\<c-n>", "\<Down>"],
+\     'menu_select': ["\<CR>"],
+\     'preview_up': ["\<c-u>"],
+\     'preview_down': ["\<c-d>"],
+\     'exit': ["\<Esc>", "\<c-c>", "\<c-[>"],
+\ }
 ```
 
 ## API

@@ -3,6 +3,18 @@ var popup_wins: dict<any>
 var triger_userautocmd = 1
 var t_ve = &t_ve
 
+var keymaps: dict<any> = {
+    'menu_up': ["\<c-p>", "\<Up>"],
+    'menu_down': ["\<c-n>", "\<Down>"],
+    'menu_select': ["\<CR>"],
+    'preview_up': ["\<c-u>"],
+    'preview_down': ["\<c-d>"],
+    'exit': ["\<Esc>", "\<c-c>", "\<c-[>"],
+}
+
+keymaps = exists('g:fuzzyy_keymaps') && type(g:fuzzyy_keymaps) == v:t_dict ?
+    extend(keymaps, g:fuzzyy_keymaps) : keymaps
+
 # popup_wins has those keys:
 #  bufnr: bufnr of the popup buffer
 #  related_win: list of related windows
@@ -134,7 +146,7 @@ def PromptFilter(wid: number, key: string): number
           cur_pos + 1
           ])
     else
-        return 1
+        return 0
     endif
 
     if has_key(popup_wins[wid].prompt, 'input_cb') && popup_wins[wid].prompt.line != line
@@ -166,10 +178,10 @@ def MenuFilter(wid: number, key: string): number
     var bufnr = popup_wins[wid].bufnr
     var cursorlinepos = line('.', wid)
     var moved = 0
-    if key == "\<Down>" || key == "\<c-n>"
+    if index(keymaps['menu_down'], key) >= 0
         win_execute(wid, 'norm j')
         moved = 1
-    elseif key == "\<Up>" || key == "\<c-p>"
+    elseif index(keymaps['menu_up'], key) >= 0
         moved = 1
         if popup_wins[wid].reverse_menu
             var textrows = popup_getpos(wid).height - 2
@@ -181,7 +193,7 @@ def MenuFilter(wid: number, key: string): number
         else
             win_execute(wid, 'norm k')
         endif
-    elseif key == "\<CR>"
+    elseif index(keymaps['menu_select'], key) >= 0
         # if not passing second argument, popup_close will call user callback
         # with func(window-id, 0)
         # if passing second argument (popup_close(2, result)), popup_close will
@@ -192,7 +204,7 @@ def MenuFilter(wid: number, key: string): number
         else
             popup_close(wid, [linetext])
         endif
-    elseif key == "\<Esc>" || key == "\<c-c>" || key == "\<c-[>"
+    elseif index(keymaps['exit'], key) >= 0
         popup_close(wid)
     else
         return 0
@@ -200,6 +212,18 @@ def MenuFilter(wid: number, key: string): number
 
     if moved
         MenuUpdateCursorItem(wid)
+    endif
+    return 1
+enddef
+
+def PreviewFilter(wid: number, key: string): number
+    echom key
+    if index(keymaps['preview_up'], key) >= 0
+        win_execute(wid, 'norm k')
+    elseif index(keymaps['preview_down'], key) >= 0
+        win_execute(wid, 'norm j')
+    else
+        return 0
     endif
     return 1
 enddef
@@ -471,7 +495,8 @@ def PopupPreview(args: dict<any>): number
      width: 0.4,
      height: 19,
      yoffset: 0.3,
-     cursorline: 0,
+     cursorline: 1,
+     filter: function('PreviewFilter'),
      wrap: 0,
      }
 
