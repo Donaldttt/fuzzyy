@@ -178,6 +178,10 @@ def Input(wid: number, args: dict<any>, ...li: list<any>)
     popup.MenuSetHl('select', menu_wid, hi_list)
 enddef
 
+def Cleanup()
+    timer_stop(async_tid)
+enddef
+
 # This function spawn a popup picker for user to select an item from a list.
 # params:
 #   - list: list of string to be selected. can be empty at init state
@@ -212,5 +216,7 @@ export def Start(li: list<string>, opts: dict<any>): list<number>
     var ret = popup.PopupSelection(opts)
     menu_wid = ret[0]
     popup.MenuSetText(menu_wid, li)
+
+    autocmd User PopupClosed ++once Cleanup()
     return ret
 enddef

@@ -1,6 +1,6 @@
 vim9script
 var popup_wins: dict<any>
-var triger_userautocmd = 1
+var triger_userautocmd: number
 var t_ve = &t_ve
 
 var keymaps: dict<any> = {
