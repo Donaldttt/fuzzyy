@@ -75,27 +75,12 @@ export def FuzzySearch(li: list<string>, pattern: string, ...args: list<any>): l
 
     var str_list = []
     var hl_list = []
-    var idx = 0
-    for str in strs
-        add(str_list, str)
-        add(
-        hl_list,
-        [idx + 1, reduce(poss[idx], (acc, val) => add(acc, val + 1), [])])
-        idx += 1
+    for idx in range(0, len(strs) - 1)
+        add(str_list, strs[idx])
+        var poss_result = MergeContinusNumber(poss[idx])
+        hl_list += reduce(poss_result, (acc, val) => add(acc, [idx + 1] + val), [])
     endfor
     return [str_list, hl_list]
-enddef
-
-def Null(li: list<any>)
-enddef
-def g:WorkerTest()
-    var li = ['abc', 'aca', 'ghi', 'jkl', 'mno', 'pqr', 'stu', 'vwx', 'yz']->repeat(3)
-    var pattern = 'ac'
-    var r = FuzzySearchAsync(li, 'ac', 100, function(Null))
-    for i in range(100)
-        echom async_results
-        sleep 100m
-    endfor
 enddef
 
 var async_list: list<string>
@@ -104,6 +89,39 @@ var async_pattern: string
 var async_results: list<any>
 var async_tid: number
 var AsyncCb: func
+
+# merge continus numbers and convert than from string index to vim column
+# eg. [1,2,3,4,5,7,9] -> [[1,5], [7], [9]]
+def MergeContinusNumber(li: list<number>): list<any>
+    var last_pos = li[0] 
+    var start_pos = li[0] 
+    var pos_len = 1
+    var poss_result = []
+    for idx in range(1, len(li) - 1)
+        var pos = li[idx]
+        if pos == last_pos + 1
+            pos_len += 1
+        else
+            # add 1 because vim column starts from 1 and string index starts from 0
+            if pos_len > 1
+                add(poss_result, [start_pos + 1, pos_len])
+            else
+                add(poss_result, [start_pos + 1])
+            endif
+            start_pos = pos
+            last_pos = pos
+            pos_len = 1
+        endif
+        last_pos = pos
+    endfor
+    if pos_len > 1
+        add(poss_result, [start_pos + 1, pos_len])
+    else
+        add(poss_result, [start_pos + 1])
+    endif
+    return poss_result
+enddef
+
 def Worker(tid: number)
     const ASYNC_STEP = 1000
     var li = async_list[: ASYNC_STEP]
@@ -114,7 +132,9 @@ def Worker(tid: number)
     var poss = results[1]
     var scores = results[2]
     for idx in range(len(strs))
-        add(processed_results, [strs[idx], poss[idx], scores[idx]])
+        # merge continus number
+        var poss_result = MergeContinusNumber(poss[idx])
+        add(processed_results, [strs[idx], poss_result, scores[idx]])
     endfor
     async_results += processed_results
     sort(async_results, (a, b) => {
@@ -174,12 +194,12 @@ enddef
 def Input(wid: number, args: dict<any>, ...li: list<any>)
     var val = args.str
     prompt_str = val
-    var hi_list = []
+    var hl_list = []
     menu_wid = args.win_opts.partids.menu
     var ret: list<string>
-    [ret, hi_list] = FuzzySearch(fzf_list, val)
+    [ret, hl_list] = FuzzySearch(fzf_list, val)
     popup.MenuSetText(menu_wid, ret)
-    popup.MenuSetHl('select', menu_wid, hi_list)
+    popup.MenuSetHl('select', menu_wid, hl_list)
 enddef
 
 def Cleanup()

@@ -253,13 +253,19 @@ def AgUpdateMenu(...li: list<any>)
         [strs, cols, cur_dict] = ResultHandle(cur_result[: 2000])
     endif
 
+    # mitigate the performance issue
+    strs = strs[: 100]
+
     var idx = 1
     var hl_list = []
     for col in cols
-        add(hl_list, [idx, col])
+        hl_list += reduce(col, (a, v) => add(a, [idx, v]), [])
         idx += 1
+        if idx > len(strs)
+            break
+        endif
     endfor
-    selector.UpdateMenu(strs[: 100], hl_list[: 100])
+    selector.UpdateMenu(strs, hl_list)
     UpdatePreviewHl()
     last_pattern = cur_pattern
     last_result_len = cur_result_len

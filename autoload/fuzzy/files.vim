@@ -53,7 +53,9 @@ def AsyncCb(result: list<any>)
     var idx = 1
     for item in result
         add(strs, item[0])
-        hl_list += reduce(item[1], (acc, val) => add(acc, [idx, val + 1]), [])
+        hl_list += reduce(item[1], (acc, val) => add(acc,
+            [idx] + val),
+            [])
         idx += 1
     endfor
     selector.UpdateMenu(strs, hl_list)
