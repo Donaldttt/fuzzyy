@@ -24,14 +24,15 @@ Plug 'Donaldttt/fuzzyy'
 
 ## Commands
 
-| Command       | Description                    | Default Keymap |
-| ---           | ---                            |   ---             |
+| Command       | Description                    | Default Keymap  |
+| ---           | ---                            |   ---           |
 | FuzzyGrep     | grep string in project         | \<leader>fr     |
 | FuzzyFiles    | search files in project        | \<leader>ff     |
 | FuzzyHelps    | search :help documents         | \<leader>fd     |
 | FuzzyColors   | search installed colorscheme   | \<leader>fc     |
 | FuzzyInBuffer | search lines in current buffer | \<leader>fb     |
 | FuzzyCommands | search commands                | \<leader>fi     |
+| FuzzyBuffers  | search opened buffers          | \<leader>ft     |
 
 FuzzyGrep requires any of grep, ag or rg command.
 
@@ -57,6 +58,7 @@ nnoremap <silent> <leader>fd :FuzzyHelps<CR>
 nnoremap <silent> <leader>ff :FuzzyFiles<CR>
 nnoremap <silent> <leader>fi :FuzzyCommands<CR>
 nnoremap <silent> <leader>fr :FuzzyGrep<CR>
+nnoremap <silent> <leader>ft :FuzzyBuffers<CR>
 ```
 
 ## Options
@@ -89,7 +91,7 @@ This plugin also exposes API to build your custom picker.
 If you need examples please refer to /autoload/fuzzy/colors.vim, helps.vim etc.
 
 vim9
-```vim9script
+```vim
 vim9script
 
 import autoload 'utils/selector.vim'
@@ -122,7 +124,7 @@ selector.Start(...)
 
 vim8
 
-```vimscript
+```vim
 import autoload 'utils/selector.vim'
 
 s:selector.Start(...)
