@@ -90,6 +90,6 @@ export def HelpsStart()
     })
     menu_wid = winds[0]
     # popup_setoptions(menu_wid, {'title': string(len(tag_table))})
-    update_tid = timer_start(100, function('HelpsUpdateMenu'), {'repeat': -1})
+    update_tid = timer_start(10, function('HelpsUpdateMenu'), {'repeat': -1})
 enddef
 
