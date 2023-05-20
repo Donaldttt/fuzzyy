@@ -9,7 +9,7 @@ var grep_cmd = 'grep -n -r --max-count=' .. max_count .. ' "%s" "%s"'
 var sep_pattern = '\:\d\+:\d\+:'
 var loading = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
 
-var cmd: string 
+var cmd: string
 if executable('ag')
     cmd = ag_cmd
 elseif executable('grep')
@@ -35,7 +35,8 @@ var cur_dict = {}
 var jid: job
 var preview_wid = -1
 
-# @return [path, linenr]
+# return:
+#   [path, linenr]
 def ParseAgStr(str: string): list<any>
     var seq = matchstrpos(str, sep_pattern)
     if seq[1] == -1
@@ -66,33 +67,21 @@ def Reducer(pattern: string, acc: dict<any>, val: string): dict<any>
     if len(linecol) == 2
         col = str2nr(linecol[1])
     endif
-    #var path = val[: seq[1] - 1]
-    #var str = val[seq[2] :]
     var path = strpart(val, 0, seq[1])
     var str = strpart(val, seq[2])
-    var colstart = max([col - 40, 0])
-    var centerd_str = strpart(str, colstart, colstart + 40)
-    # var relative_path = path[len(cwd) + 1 :]
+    var centerd_str = str
     var relative_path = strpart(path, len(cwd) + 1)
 
-    var offset = len(relative_path) + len(seq[0]) + 1
-    var match_cols: list<any>
-    try
-        match_cols = matchfuzzypos([str], pattern)[1]
-    catch
-        echoerr [val, centerd_str, pattern]
-    endtry
-
-    var final_str = relative_path .. seq[0] .. centerd_str
-    var col_list = []
-    if len(match_cols) > 0
-        col_list = reduce(match_cols[0],  (a, v) => add(a, v + offset), [])
-        acc.dict[final_str] = match_cols[0]
-    endif
+    var prefix = relative_path .. seq[0]
+    var col_list = [col + len(prefix), len(pattern)]
+    var final_str = prefix .. centerd_str
+    acc.dict[final_str] = [line, col, len(pattern)]
     var obj = {
-        prefix: relative_path .. seq[0],
+        prefix: prefix,
         centerd_str: centerd_str,
         col_list: col_list,
+        final_str: final_str,
+        line: line,
     }
     add(acc.objs, obj)
     add(acc.strs, final_str)
@@ -102,7 +91,7 @@ enddef
 
 def JobHandler(channel: channel, msg: string)
     var lists = selector.Split(msg)
-    cur_result += lists 
+    cur_result += lists
 enddef
 
 def AgJobStart(pattern: string)
@@ -134,14 +123,12 @@ def ResultHandle(lists: list<any>): list<any>
     endif
     var result = reduce(lists, function('Reducer', [cur_pattern]),
          { 'strs': [], 'cols': [], 'objs': [], 'dict': {} })
-    var fuzzy_results = matchfuzzypos(result.objs, cur_pattern, {'key': 'centerd_str', 'limit': 10000})
     var strs = []
     var cols = []
-    var idx = 0
-    for r in fuzzy_results[0]
-        var final_str = r.prefix .. r.centerd_str
-        add(strs, final_str)
-        add(cols, reduce(fuzzy_results[1][idx], (a, v) => add(a, v + len(r.prefix) + 1), []))
+    var idx = 1
+    for r in result.objs
+        add(strs, r.final_str)
+        add(cols, [idx] + r.col_list)
         idx += 1
     endfor
     return [strs, cols, result.dict]
@@ -161,10 +148,7 @@ def UpdatePreviewHl()
     endif
     var [path, linenr, colnr] = ParseAgStr(cur_menu_item)
     clearmatches(preview_wid)
-    var hl_list = []
-    for col in cur_dict[cur_menu_item]
-        add(hl_list, [linenr, col + 1])
-    endfor
+    var hl_list = [cur_dict[cur_menu_item]]
     matchaddpos('cursearch', hl_list, 9999, -1,  {'window': preview_wid})
 enddef
 
@@ -174,8 +158,12 @@ def Preview(wid: number, opts: dict<any>)
     var [path, linenr, colnr] = ParseAgStr(result)
     var last_path: string
     var last_linenr: number
-    if type(last_item) == v:t_string && last_item != ''
+    if type(last_item) == v:t_string  && type(last_item) == v:t_string && last_item != ''
+        try
         [last_path, last_linenr, _] = ParseAgStr(last_item)
+        catch
+            return
+        endtry
     else
         [last_path, last_linenr] = ['', -1]
     endif
@@ -187,7 +175,7 @@ def Preview(wid: number, opts: dict<any>)
         else
             popup_settext(preview_wid, path .. ' not found')
         endif
-        return 
+        return
     endif
 
     if path != last_path
@@ -232,7 +220,7 @@ def AgUpdateMenu(...li: list<any>)
     if job_running
         var time = float2nr(str2float(reltime()->reltimestr()[4 : ]) * 1000)
         var speed = 100
-        var loadidx = (time % speed) / len(loading) 
+        var loadidx = (time % speed) / len(loading)
         popup_setoptions(menu_wid, {'title': string(len(cur_result)) .. loading[loadidx]})
     else
         popup_setoptions(menu_wid, {'title': string(len(cur_result))})
@@ -247,24 +235,16 @@ def AgUpdateMenu(...li: list<any>)
     var cols: list<list<number>>
     if cur_result_len == 0
         # we should use last result to do fuzzy search
-        [strs, cols, cur_dict] = ResultHandle(last_result[: 2000])
+        # [strs, cols, cur_dict] = ResultHandle(last_result[: 2000])
+        strs = []
+        cols = []
     else
         last_result = cur_result
-        [strs, cols, cur_dict] = ResultHandle(cur_result[: 2000])
+        [strs, cols, cur_dict] = ResultHandle(cur_result[: 200])
     endif
 
-    # mitigate the performance issue
-    strs = strs[: 100]
+    var hl_list = cols
 
-    var idx = 1
-    var hl_list = []
-    for col in cols
-        hl_list += reduce(col, (a, v) => add(a, [idx, v]), [])
-        idx += 1
-        if idx > len(strs)
-            break
-        endif
-    endfor
     selector.UpdateMenu(strs, hl_list)
     UpdatePreviewHl()
     last_pattern = cur_pattern
@@ -272,7 +252,7 @@ def AgUpdateMenu(...li: list<any>)
 enddef
 
 def CloseCb(...li: list<any>)
-    timer_stop(ag_update_tid) 
+    timer_stop(ag_update_tid)
     if type(jid) == v:t_job && job_status(jid) == 'run'
         job_stop(jid)
     endif
