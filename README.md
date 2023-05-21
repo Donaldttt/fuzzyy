@@ -24,15 +24,16 @@ Plug 'Donaldttt/fuzzyy'
 
 ## Commands
 
-| Command       | Description                    | Default Keymap  |
-| ---           | ---                            |   ---           |
-| FuzzyGrep     | grep string in project         | \<leader>fr     |
-| FuzzyFiles    | search files in project        | \<leader>ff     |
-| FuzzyHelps    | search :help documents         | \<leader>fd     |
-| FuzzyColors   | search installed colorscheme   | \<leader>fc     |
-| FuzzyInBuffer | search lines in current buffer | \<leader>fb     |
-| FuzzyCommands | search commands                | \<leader>fi     |
-| FuzzyBuffers  | search opened buffers          | \<leader>ft     |
+| Command         | Description                    | Default Keymap |
+| ---             | ---                            | ---            |
+| FuzzyGrep       | grep string in project         | \<leader>fr    |
+| FuzzyFiles      | search files in project        | \<leader>ff    |
+| FuzzyHelps      | search :help documents         | \<leader>fd    |
+| FuzzyColors     | search installed colorscheme   | \<leader>fc    |
+| FuzzyInBuffer   | search lines in current buffer | \<leader>fb    |
+| FuzzyCommands   | search commands                | \<leader>fi    |
+| FuzzyBuffers    | search opened buffers          | \<leader>ft    |
+| FuzzyHighlights | search highlights              | \<leader>fh    |
 
 FuzzyGrep requires any of grep, ag or rg command.
 
@@ -41,11 +42,16 @@ FuzzyFiles uses find command in unix (if not found it will use vim's glob functi
 
 ## Navigation
 
-Arrow key or `ctrl + p`/ `ctrl + n` moves up/down the menu
+Arrow keys or `ctrl + p`/ `ctrl + n` moves up/down the menu
 
 `ctrl + u`/`ctrl + d` moves up/down the buffer in preview window
 
 you can set `g:fuzzyy_keymaps` to change these defaults.
+
+### Command Specific keymaps
+- FuzzyHighlights
+    - `ctrl + k` toggle white preview background color
+    - `Enter` will copy selected highlight
 
 ## Default Keymaps
 
@@ -59,6 +65,7 @@ nnoremap <silent> <leader>ff :FuzzyFiles<CR>
 nnoremap <silent> <leader>fi :FuzzyCommands<CR>
 nnoremap <silent> <leader>fr :FuzzyGrep<CR>
 nnoremap <silent> <leader>ft :FuzzyBuffers<CR>
+nnoremap <silent> <leader>fh :FuzzyHighlights<CR>
 ```
 
 ## Options
@@ -116,6 +123,8 @@ import autoload 'utils/selector.vim'
 #       - scrollbar: wheather to show scrollbar in the menu window.
 #       - preview_ratio: ratio of the preview window. default 0.5
 #       - dropdown: use dropdown menu
+#       - key_callbacks: dictonary<key, callback(funcref)>, when pressing key,
+#           callback will be called
 # return:
 #   - a list [menu_wid, prompt_wid]
 #   - if has preview = 1, then return [menu_wid, prompt_wid, preview_wid]

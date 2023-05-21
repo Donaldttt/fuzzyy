@@ -18,6 +18,7 @@ import autoload '../autoload/fuzzy/helps.vim'
 import autoload '../autoload/fuzzy/colors.vim'
 import autoload '../autoload/fuzzy/inbuffer.vim'
 import autoload '../autoload/fuzzy/buffers.vim'
+import autoload '../autoload/fuzzy/highlights.vim'
 
 command! -nargs=0 FuzzyGrep ag.AgStart()
 command! -nargs=0 FuzzyFiles files.FilesStart()
@@ -26,6 +27,7 @@ command! -nargs=0 FuzzyColors colors.ColorsStart()
 command! -nargs=0 FuzzyInBuffer inbuffer.InBufferStart()
 command! -nargs=0 FuzzyCommands commands.CommandsStart()
 command! -nargs=0 FuzzyBuffers buffers.Start()
+command! -nargs=0 FuzzyHighlights highlights.Start()
 
 if g:enable_fuzzyy_keymaps
     nnoremap <silent> <leader>fb :FuzzyInBuffer<CR>
@@ -35,4 +37,5 @@ if g:enable_fuzzyy_keymaps
     nnoremap <silent> <leader>fi :FuzzyCommands<CR>
     nnoremap <silent> <leader>fr :FuzzyGrep<CR>
     nnoremap <silent> <leader>ft :FuzzyBuffers<CR>
+    nnoremap <silent> <leader>fh :FuzzyHighlights<CR>
 endif
