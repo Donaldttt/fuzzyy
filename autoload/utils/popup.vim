@@ -3,6 +3,9 @@ var popup_wins: dict<any>
 var triger_userautocmd: number
 var t_ve = &t_ve
 
+# user can register callback for any key
+var key_callbacks: dict<any>
+
 var keymaps: dict<any> = {
     'menu_up': ["\<c-p>", "\<Up>"],
     'menu_down': ["\<c-n>", "\<Down>"],
@@ -206,6 +209,9 @@ def MenuFilter(wid: number, key: string): number
         endif
     elseif index(keymaps['exit'], key) >= 0
         popup_close(wid)
+    elseif has_key(key_callbacks, key)
+        echom key
+        key_callbacks[key]()
     else
         return 0
     endif
@@ -514,6 +520,7 @@ enddef
 #   [menu_wid, prompt_wid, preview_wid]
 export def PopupSelection(user_opts: dict<any>): list<number>
     triger_userautocmd = 1
+    key_callbacks = has_key(user_opts, 'key_callbacks') ? user_opts.key_callbacks : {}
     var has_preview = has_key(user_opts, 'preview') && user_opts.preview
 
     var width: any   = 0.8
