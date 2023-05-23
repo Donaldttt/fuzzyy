@@ -221,7 +221,6 @@ export def FilesStart()
         preview_cb:  function('Preview'),
         input_cb:  function('Input'),
         close_cb:  function('Close'),
-        dropdown: 0,
         preview:  1,
         scrollbar: 0,
         enable_devicons: enable_devicons,

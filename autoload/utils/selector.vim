@@ -25,6 +25,8 @@ var filetype_table = {
     md:  'markdown',
 }
 
+var enable_dropdown = exists('g:fuzzyy_dropdown') ? g:fuzzyy_dropdown : 0
+
 # This function is used to render the menu window.
 # params:
 # - str_list: list of string to be displayed in the menu window
@@ -242,8 +244,7 @@ enddef
 # return:
 #   - a list [menu_wid, prompt_wid]
 #   - if has preview = 1, then return [menu_wid, prompt_wid, preview_wid]
-export def Start(li: list<string>, opts: dict<any>): list<number>
-    fzf_list = li
+export def Start(li_raw: list<string>, opts: dict<any>): list<number>
     cwd = getcwd()
     prompt_str = ''
 
@@ -252,6 +253,7 @@ export def Start(li: list<string>, opts: dict<any>): list<number>
     opts.move_cb = has_key(opts, 'preview_cb') ? opts.preview_cb : v:null
     opts.select_cb = has_key(opts, 'select_cb') ? opts.select_cb : v:null
     opts.input_cb = has_key(opts, 'input_cb') ? opts.input_cb : function('Input')
+    opts.dropdown = enable_dropdown
 
     var ret = popup.PopupSelection(opts)
     menu_wid = ret[0]

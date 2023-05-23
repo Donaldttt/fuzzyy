@@ -99,6 +99,10 @@ let g:fuzzyy_menu_matched_hl = 'cursearch'
 " requires vim-devicons
 " default to 1
 let g:fuzzyy_files_devicons = 1
+
+" enable dropdown theme
+" default to 0"
+let g:fuzzyy_dropdown = 1
 ```
 
 ## API
