@@ -4,7 +4,11 @@ A fuzzy picker for files, strings, help documents and many other things.
 
 It ultilizes vim's native matchfuzzypos function and popup window feature.
 
-[demo](https://github.com/Donaldttt/resources/blob/main/fuzzyy/demo.gif)
+## Screenshots
+
+![screenshot](https://github.com/Donaldttt/resources/blob/main/fuzzyy/demo.png)
+
+[gif](https://github.com/Donaldttt/resources/blob/main/fuzzyy/demo.gif)
 
 ## Requirements
 
@@ -12,6 +16,7 @@ It ultilizes vim's native matchfuzzypos function and popup window feature.
     - The maintained version is written in vim9, but it also has a vim8 branch for older vim.
 - any of grep, ag or rg
 - find
+- [vim-devicons](https://github.com/ryanoasis/vim-devicons) (optional)
 
 ## Install
 
