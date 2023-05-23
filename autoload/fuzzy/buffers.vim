@@ -15,6 +15,7 @@ def Preview(wid: number, opts: dict<any>)
     endif
     var preview_wid = opts.win_opts.partids['preview']
     if enable_devicons
+        # echom [result]
         result = strcharpart(result, 2)
     endif
     var file = buf_dict[result][0]

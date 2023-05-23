@@ -38,18 +38,25 @@ def Input(wid: number, args: dict<any>, ...li: list<any>)
     selector.UpdateMenu(ret, hl_list)
 enddef
 
+var last_parttern: string
 def HelpsUpdateMenu(...args: list<any>)
+    const STEP = 1000 
     if len(tag_files) == 0
         timer_stop(update_tid)
         return
     endif
-    reduce(file_lines[: 1000], (acc, val) => {
+    reduce(file_lines[: STEP], (acc, val) => {
         var li = split(val)
         acc[li[0]] = [li[1], li[2]]
         return acc
     }, tag_table)
-    file_lines = file_lines[1001 :]
+    file_lines = file_lines[STEP + 1 :]
 
+    if cur_pattern != last_parttern
+        var [ret, hl_list] = selector.FuzzySearch(keys(tag_table), cur_pattern, 1000)
+        selector.UpdateMenu(ret, hl_list)
+        last_parttern = cur_pattern
+    endif
     # popup_setoptions(menu_wid, {'title': string(len(tag_table))})
 enddef
 
@@ -76,7 +83,7 @@ export def HelpsStart()
     file_lines = []
     cur_pattern = ''
     tag_table = Tags()
-        # close_cb:   function('CloseCb'),
+    last_parttern = ''
     var winds = selector.Start(keys(tag_table), {
         preview_cb: function('Preview'),
         close_cb:   function('CloseCb'),
@@ -90,6 +97,6 @@ export def HelpsStart()
     })
     menu_wid = winds[0]
     # popup_setoptions(menu_wid, {'title': string(len(tag_table))})
-    update_tid = timer_start(10, function('HelpsUpdateMenu'), {'repeat': -1})
+    update_tid = timer_start(20, function('HelpsUpdateMenu'), {'repeat': -1})
 enddef
 

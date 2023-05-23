@@ -69,7 +69,7 @@ enddef
 #       - [[line1, col1], [line1, col2], [line2, col1], ...]
 export def FuzzySearch(li: list<string>, pattern: string, ...args: list<any>): list<any>
     if pattern == ''
-        return [li, []]
+        return [copy(li), []]
     endif
     var opts = {}
     if len(args) > 0 && args[0] > 0
@@ -100,8 +100,8 @@ var AsyncCb: func
 # merge continus numbers and convert than from string index to vim column
 # eg. [1,2,3,4,5,7,9] -> [[1,5], [7], [9]]
 def MergeContinusNumber(li: list<number>): list<any>
-    var last_pos = li[0] 
-    var start_pos = li[0] 
+    var last_pos = li[0]
+    var start_pos = li[0]
     var pos_len = 1
     var poss_result = []
     for idx in range(1, len(li) - 1)
@@ -207,8 +207,11 @@ def Input(wid: number, args: dict<any>, ...li: list<any>)
     [ret, hl_list] = FuzzySearch(fzf_list, val)
 
     if enable_devicons
-         ret = map(ret, 'g:WebDevIconsGetFileTypeSymbol(v:val) .. " " .. v:val')
-         hl_list = map(hl_list, 'v:val[1] + 4') 
+         map(ret, 'g:WebDevIconsGetFileTypeSymbol(v:val) .. " " .. v:val')
+         hl_list = reduce(hl_list, (a, v) => {
+            v[1] += 4
+            return add(a, v)
+         }, [])
     endif
 
     popup.MenuSetText(menu_wid, ret)
@@ -257,13 +260,11 @@ export def Start(li_raw: list<string>, opts: dict<any>): list<number>
 
     var ret = popup.PopupSelection(opts)
     menu_wid = ret[0]
-    var li: list<string>
+    fzf_list = li_raw
+    var li = copy(li_raw)
     if enable_devicons
-         li = map(li_raw, 'g:WebDevIconsGetFileTypeSymbol(v:val) .. " " .. v:val')
-    else
-        li = li_raw
+         map(li, 'g:WebDevIconsGetFileTypeSymbol(v:val) .. " " .. v:val')
     endif
-    fzf_list = li
     popup.MenuSetText(menu_wid, li)
     if enable_devicons
         devicons.AddColor(menu_wid)
