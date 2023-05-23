@@ -95,10 +95,10 @@ let g:fuzzyy_keymaps = {
 " default to cursearch
 let g:fuzzyy_menu_matched_hl = 'cursearch'
 
-" whether show devicons when using FuzzyFiles
+" whether show devicons when using FuzzyFiles or FuzzyBuffers
 " requires vim-devicons
 " default to 1
-let g:fuzzyy_files_devicons = 1
+let g:fuzzyy_devicons = 1
 
 " enable dropdown theme
 " default to 0"

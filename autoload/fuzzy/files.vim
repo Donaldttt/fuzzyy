@@ -23,8 +23,8 @@ def GetOrDefault(name: string, default: any): any
     return default
 enddef
 
-var enable_devicons = exists('g:fuzzyy_files_devicons') &&
-    exists('g:WebDevIconsGetFileTypeSymbol') ? g:fuzzyy_files_devicons : 1
+var enable_devicons = exists('g:fuzzyy_devicons') &&
+    exists('g:WebDevIconsGetFileTypeSymbol') ? g:fuzzyy_devicons : 1
 # devicons take 2 chars position
 if enable_devicons
     matched_hl_offset = 4

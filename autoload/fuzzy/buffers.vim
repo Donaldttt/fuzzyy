@@ -5,8 +5,8 @@ import autoload 'utils/selector.vim'
 const WIN_WIDTH = 0.8
 var buf_dict: dict<any>
 
-var enable_devicons = exists('g:fuzzyy_files_devicons') &&
-    exists('g:WebDevIconsGetFileTypeSymbol') ? g:fuzzyy_files_devicons : 1
+var enable_devicons = exists('g:fuzzyy_devicons') &&
+    exists('g:WebDevIconsGetFileTypeSymbol') ? g:fuzzyy_devicons : 1
 
 def Preview(wid: number, opts: dict<any>)
     var result = opts.cursor_item
