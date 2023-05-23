@@ -20,6 +20,7 @@ def Close(wid: number, result: dict<any>)
         setreg('*', result.selected_item)
     endif
 enddef
+
 def TogglePreviewBg()
     var old = getwinvar(preview_win, '&wincolor')
     if old == 'fuzzyywhite'
@@ -34,7 +35,15 @@ var key_callbacks = {
     "\<c-k>": function('TogglePreviewBg'),
 }
 export def Start()
-    var highlights = split(execute('hi'), '\n')
+    var highlights_raw = substitute(execute('hi'), "\n", " ", "g")
+    var highlights: list<any> = []
+    def Helper(s: any): number
+        highlights->add(s)
+        return 1
+    enddef
+    substitute(highlights_raw, '\zs\w\+\s\+xxx[[:alnum:][:blank:]=#,]\{-}\ze\s*\w\+\s*xxx',
+        '\=Helper(submatch(0))', 'g')
+
     hl_meta = {}
     for idx in range(len(highlights))
         var hl_raw = highlights[idx]
@@ -42,9 +51,6 @@ export def Start()
         var name = split(hl_raw)[0]
         hl_meta[name] = [idx + 1, xxxidx]
     endfor
-    if has_key(hl_meta, 'links')
-        remove(hl_meta, 'links')
-    endif
 
     var menu_wid: number
     [menu_wid, _, preview_win] = selector.Start(keys(hl_meta), {
