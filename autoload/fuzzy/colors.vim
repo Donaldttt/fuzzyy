@@ -21,7 +21,7 @@ enddef
 
 def Close(wid: number, result: dict<any>)
     if !has_key(result, 'selected_item')
-        &bg = old_bg
+        noa &bg = old_bg
         execute 'colorscheme ' .. old_color
     else
         var color = result.selected_item

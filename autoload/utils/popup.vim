@@ -212,7 +212,6 @@ def MenuFilter(wid: number, key: string): number
     elseif index(keymaps['exit'], key) >= 0
         popup_close(wid)
     elseif has_key(key_callbacks, key)
-        echom key
         key_callbacks[key]()
     else
         return 0
@@ -397,12 +396,9 @@ export def MenuSetHl(name: string, wid: number, hl_list_raw: list<any>): number
     if !has_key(popup_wins, wid)
         return -1
     endif
+    clearmatches(wid)
+    # pass empty list to matchaddpos will cause error
     if len(hl_list_raw) == 0
-        if has_key(popup_wins[wid]['highlights'], name) &&
-            popup_wins[wid]['highlights'][name] != -1
-            matchdelete(popup_wins[wid]['highlights'][name], wid)
-            remove(popup_wins[wid]['highlights'], name)
-        endif
         return -1
     endif
     var hl_list = hl_list_raw
@@ -414,17 +410,7 @@ export def MenuSetHl(name: string, wid: number, hl_list_raw: list<any>): number
         hl_list = reduce(hl_list_raw, (acc, v) => add(acc, [height - v[0] + 1] + v[1 :]), [])
     endif
 
-    if has_key(popup_wins[wid]['highlights'], name) &&
-        popup_wins[wid]['highlights'][name] != -1
-        matchdelete(popup_wins[wid]['highlights'][name], wid)
-        remove(popup_wins[wid]['highlights'], name)
-    endif
-    # pass empty list to matchaddpos will cause error
-    if len(hl_list) == 0
-        return -1
-    endif
     var mid = matchaddpos(menu_matched_hl, hl_list, 99, -1,  {'window': wid})
-    popup_wins[wid]['highlights'][name] = mid
     return mid
 enddef
 

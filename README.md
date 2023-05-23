@@ -94,6 +94,11 @@ let g:fuzzyy_keymaps = {
 " change highlight of the matched text when searching
 " default to cursearch
 let g:fuzzyy_menu_matched_hl = 'cursearch'
+
+" whether show devicons when using FuzzyFiles
+" requires vim-devicons
+" default to 1
+let g:fuzzyy_files_devicons = 1
 ```
 
 ## API

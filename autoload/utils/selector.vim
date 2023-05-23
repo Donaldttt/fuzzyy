@@ -1,11 +1,13 @@
 vim9script
 
 import './popup.vim'
+import './devicons.vim'
 
 var fzf_list: list<string>
 var cwd: string
 var menu_wid: number
 var prompt_str: string
+var enable_devicons: number
 
 var filetype_table = {
     h:  'c',
@@ -30,6 +32,9 @@ var filetype_table = {
 export def UpdateMenu(str_list: list<string>, hl_list: list<list<any>>)
     popup.MenuSetText(menu_wid, str_list)
     popup.MenuSetHl('select', menu_wid, hl_list)
+    if enable_devicons
+        devicons.AddColor(menu_wid)
+    endif
 enddef
 
 export def Split(str: string): list<string>
@@ -198,8 +203,17 @@ def Input(wid: number, args: dict<any>, ...li: list<any>)
     menu_wid = args.win_opts.partids.menu
     var ret: list<string>
     [ret, hl_list] = FuzzySearch(fzf_list, val)
+
+    if enable_devicons
+         ret = map(ret, 'g:WebDevIconsGetFileTypeSymbol(v:val) .. " " .. v:val')
+         hl_list = map(hl_list, 'v:val[1] + 4') 
+    endif
+
     popup.MenuSetText(menu_wid, ret)
     popup.MenuSetHl('select', menu_wid, hl_list)
+    if enable_devicons
+        devicons.AddColor(menu_wid)
+    endif
 enddef
 
 def Cleanup()
@@ -233,13 +247,25 @@ export def Start(li: list<string>, opts: dict<any>): list<number>
     cwd = getcwd()
     prompt_str = ''
 
+    enable_devicons = has_key(opts, 'enable_devicons') ? opts.enable_devicons : 0
+
     opts.move_cb = has_key(opts, 'preview_cb') ? opts.preview_cb : v:null
     opts.select_cb = has_key(opts, 'select_cb') ? opts.select_cb : v:null
     opts.input_cb = has_key(opts, 'input_cb') ? opts.input_cb : function('Input')
 
     var ret = popup.PopupSelection(opts)
     menu_wid = ret[0]
+    var li: list<string>
+    if enable_devicons
+         li = map(li_raw, 'g:WebDevIconsGetFileTypeSymbol(v:val) .. " " .. v:val')
+    else
+        li = li_raw
+    endif
+    fzf_list = li
     popup.MenuSetText(menu_wid, li)
+    if enable_devicons
+        devicons.AddColor(menu_wid)
+    endif
 
     autocmd User PopupClosed ++once Cleanup()
     return ret

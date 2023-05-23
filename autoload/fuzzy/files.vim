@@ -14,6 +14,7 @@ var menu_wid: number
 var files_update_tid: number
 var cache: dict<any>
 var cmdstr: string
+var matched_hl_offset = 0
 
 def GetOrDefault(name: string, default: any): any
     if exists(name)
@@ -22,6 +23,12 @@ def GetOrDefault(name: string, default: any): any
     return default
 enddef
 
+var enable_devicons = exists('g:fuzzyy_files_devicons') &&
+    exists('g:WebDevIconsGetFileTypeSymbol') ? g:fuzzyy_files_devicons : 1
+# devicons take 2 chars position
+if enable_devicons
+    matched_hl_offset = 4
+endif
 
 def InitConfig()
     # options
@@ -42,8 +49,25 @@ enddef
 
 InitConfig()
 
+def ProcessResult(list_raw: list<string>, ...args: list<any>): list<string>
+    var limit = -1
+    var li: list<string>
+    if len(args) > 0
+        li = list_raw[: args[0]]
+    else
+        li = list_raw
+    endif
+    if enable_devicons
+         return map(li, 'g:WebDevIconsGetFileTypeSymbol(v:val) .. " " .. v:val')
+    endif
+    return li
+enddef
+
 def Select(wid: number, result: list<any>)
     var path = result[0]
+    if enable_devicons
+        path = strcharpart(path, 2)
+    endif
     execute('edit ' .. path)
 enddef
 
@@ -53,12 +77,15 @@ def AsyncCb(result: list<any>)
     var idx = 1
     for item in result
         add(strs, item[0])
-        hl_list += reduce(item[1], (acc, val) => add(acc,
-            [idx] + val),
-            [])
+        hl_list += reduce(item[1], (acc, val) => {
+            var pos = copy(val)
+            pos[0] += matched_hl_offset
+            add(acc, [idx] + pos)
+            return acc
+        }, [])
         idx += 1
     endfor
-    selector.UpdateMenu(strs, hl_list)
+    selector.UpdateMenu(ProcessResult(strs), hl_list)
 enddef
 
 def Input(wid: number, val: dict<any>, ...li: list<any>)
@@ -71,12 +98,11 @@ def Input(wid: number, val: dict<any>, ...li: list<any>)
     endif
 
     var file_list = cur_result
-    var hl_list = []
 
     if pattern != ''
         selector.FuzzySearchAsync(cur_result, cur_pattern, 200, function('AsyncCb'))
     else
-        selector.UpdateMenu(cur_result[: 100], [])
+        selector.UpdateMenu(ProcessResult(cur_result, 100), [])
         popup_setoptions(menu_wid, {'title': len(cur_result)})
     endif
 
@@ -84,6 +110,9 @@ enddef
 
 def Preview(wid: number, opts: dict<any>)
     var result = opts.cursor_item
+    if enable_devicons
+        result = strcharpart(result, 2)
+    endif
     var preview_wid = opts.win_opts.partids['preview']
     if !filereadable(result)
         if result == ''
@@ -116,7 +145,7 @@ def FilesJobStart(path: string)
     if cmdstr == ''
         in_loading = 0
         cur_result += glob(cwd .. '/**', 1, 1, 1)
-        selector.UpdateMenu(cur_result, [])
+        selector.UpdateMenu(ProcessResult(cur_result), [])
         return
     endif
     jid = job_start(cmdstr, {
@@ -136,7 +165,7 @@ def ExitCb(j: job, status: number)
     in_loading = 0
     timer_stop(files_update_tid)
 	if last_result_len <= 0
-        selector.UpdateMenu(cur_result[: 100], [])
+        selector.UpdateMenu(ProcessResult(cur_result, 100), [])
 	endif
     popup_setoptions(menu_wid, {'title': len(cur_result)})
 enddef
@@ -166,7 +195,7 @@ def FilesUpdateMenu(...li: list<any>)
         if cur_pattern != last_pattern
             selector.FuzzySearchAsync(cur_result, cur_pattern, 200, function('AsyncCb'))
             if cur_pattern == ''
-                selector.UpdateMenu(cur_result[: 100], [])
+                selector.UpdateMenu(ProcessResult(cur_result, 100), [])
             endif
             last_pattern = cur_pattern
         endif
@@ -195,6 +224,7 @@ export def FilesStart()
         dropdown: 0,
         preview:  1,
         scrollbar: 0,
+        enable_devicons: enable_devicons,
         # prompt: pathshorten(fnamemodify(cwd, ':~' )) .. (has('win32') ? '\ ' : '/ '),
     })
     FilesJobStart(cwd)
