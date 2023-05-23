@@ -17,6 +17,8 @@ var keymaps: dict<any> = {
 
 keymaps = exists('g:fuzzyy_keymaps') && type(g:fuzzyy_keymaps) == v:t_dict ?
     extend(keymaps, g:fuzzyy_keymaps) : keymaps
+var menu_matched_hl = exists('g:fuzzyy_menu_matched_hl') ?
+    g:fuzzyy_menu_matched_hl : 'cursearch'
 
 # popup_wins has those keys:
 #  bufnr: bufnr of the popup buffer
@@ -392,7 +394,6 @@ enddef
 #   - wid: popup window id
 #   - hi_list: list of position to highlight eg. [[1,2,3], [1,5]]
 export def MenuSetHl(name: string, wid: number, hl_list_raw: list<any>): number
-    const hl = 'cursearch'
     if !has_key(popup_wins, wid)
         return -1
     endif
@@ -422,7 +423,7 @@ export def MenuSetHl(name: string, wid: number, hl_list_raw: list<any>): number
     if len(hl_list) == 0
         return -1
     endif
-    var mid = matchaddpos(hl, hl_list, 99, -1,  {'window': wid})
+    var mid = matchaddpos(menu_matched_hl, hl_list, 99, -1,  {'window': wid})
     popup_wins[wid]['highlights'][name] = mid
     return mid
 enddef

@@ -90,6 +90,10 @@ let g:fuzzyy_keymaps = {
 \     'preview_down': ["\<c-d>"],
 \     'exit': ["\<Esc>", "\<c-c>", "\<c-[>"],
 \ }
+
+" change highlight of the matched text when searching
+" default to cursearch
+let g:fuzzyy_menu_matched_hl = 'cursearch'
 ```
 
 ## API
