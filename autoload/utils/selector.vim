@@ -8,6 +8,7 @@ var cwd: string
 var menu_wid: number
 var prompt_str: string
 var enable_devicons: number
+export var windows: dict<any>
 
 var filetype_table = {
     h:  'c',
@@ -37,6 +38,11 @@ export def UpdateMenu(str_list: list<string>, hl_list: list<list<any>>)
     if enable_devicons
         devicons.AddColor(menu_wid)
     endif
+enddef
+
+export def MenuGetCursorItem(): string
+    var bufnr = winbufnr(windows.menu)
+    return getbufoneline(bufnr, line('.', windows.menu))
 enddef
 
 export def Split(str: string): list<string>
@@ -259,6 +265,10 @@ export def Start(li_raw: list<string>, opts: dict<any>): list<number>
     opts.dropdown = enable_dropdown
 
     var ret = popup.PopupSelection(opts)
+    const win_types = ['menu', 'prompt', 'preview', 'info']
+    for i in range(len(ret))
+        windows[win_types[i]] = ret[i]
+    endfor
     menu_wid = ret[0]
     fzf_list = li_raw
     var li = copy(li_raw)
