@@ -151,7 +151,8 @@ def PromptFilter(wid: number, key: string): number
           cur_pos + 1
           ])
     else
-        return 0
+        # catch all unhandled keys
+        return 1
     endif
 
     if has_key(popup_wins[wid].prompt, 'input_cb') && popup_wins[wid].prompt.line != line
@@ -586,6 +587,7 @@ export def PopupSelection(user_opts: dict<any>): list<number>
         width:  menu_width,
         input_cb:  has_key(user_opts, 'input_cb') ? user_opts.input_cb : v:null,
         prompt: has_key(user_opts, 'prompt') ? user_opts.prompt : '> ',
+        zindex:  1010,
     }
     var prompt_wid = PopupPrompt(prompt_opts)
     popup_wins[prompt_wid].partids = {'menu': menu_wid}
@@ -608,6 +610,7 @@ export def PopupSelection(user_opts: dict<any>): list<number>
             height:  preview_height,
             yoffset:  yoffset,
             xoffset:  preview_xoffset + 2,
+            zindex:  1100,
         }
         var preview_wid          =  PopupPreview(preview_opts)
         connect_wins.preview =  preview_wid
