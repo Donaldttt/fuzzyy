@@ -28,14 +28,31 @@ enddef
 
 def Preview(wid: number, opts: dict<any>)
     var result = opts.cursor_item
+    if len(result) == 0
+        return
+    endif
     exe ':belowright help ' .. result
 enddef
 
+def AsyncCb(result: list<any>)
+    var strs = []
+    var hl_list = []
+    var idx = 1
+    for item in result
+        add(strs, item[0])
+        hl_list += reduce(item[1], (acc, val) => {
+            add(acc, [idx] + val)
+            return acc
+        }, [])
+        idx += 1
+    endfor
+    selector.UpdateMenu(strs, hl_list)
+enddef
+
 def Input(wid: number, args: dict<any>, ...li: list<any>)
-    var val = args.str
-    cur_pattern = val
-    var [ret, hl_list] = selector.FuzzySearch(keys(tag_table), val, 1000)
-    selector.UpdateMenu(ret, hl_list)
+    var pattern = args.str
+    cur_pattern = pattern
+    selector.FuzzySearchAsync(keys(tag_table), pattern, 200, function('AsyncCb'))
 enddef
 
 var last_parttern: string
