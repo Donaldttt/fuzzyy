@@ -58,6 +58,8 @@ export def AddColor(wid: number)
         var icon = g:WebDevIconsGetFileTypeSymbol(ft)
         var charnr = char2nr(icon)
         var charhex = printf('%x', charnr)
+        try
         matchadd(devicons_color_table[ft], '\v%u' .. charhex, 99, -1, { window: wid })
+        catch | endtry
     endfor
 enddef
