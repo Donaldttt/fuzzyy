@@ -42,7 +42,8 @@ enddef
 
 export def MenuGetCursorItem(): string
     var bufnr = winbufnr(windows.menu)
-    return getbufoneline(bufnr, line('.', windows.menu))
+    var cursorlinepos = line('.', windows.menu)
+    return getbufline(bufnr, cursorlinepos, cursorlinepos)[0]
 enddef
 
 export def Split(str: string): list<string>
