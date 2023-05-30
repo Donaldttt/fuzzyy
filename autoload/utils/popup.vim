@@ -134,7 +134,8 @@ def PromptFilter(wid: number, key: string): number
         if cur_pos == len(line)
             line = line[: -2]
         else
-            line = line[: cur_pos - 2] .. line[cur_pos :]
+            var before = cur_pos - 2 >= 0 ? line[: cur_pos - 2] : ''
+            line = before .. line[cur_pos :]
         endif
         popup_wins[wid].cursor_args.cur_pos = max([
           0,
