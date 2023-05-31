@@ -2,6 +2,7 @@ vim9script
 var popup_wins: dict<any>
 var triger_userautocmd: number
 var t_ve = &t_ve
+var guicursor = &guicursor
 
 # user can register callback for any key
 var key_callbacks: dict<any>
@@ -62,6 +63,9 @@ def GeneralPopupCallback(wid: number, select: any)
     # restore cursor
     if &t_ve != t_ve
         &t_ve = t_ve
+    endif
+    if &guicursor != guicursor
+        &guicursor = guicursor
     endif
     if triger_userautocmd
         triger_userautocmd = 0
@@ -633,7 +637,10 @@ export def PopupSelection(user_opts: dict<any>): list<number>
     endif
 
     t_ve = &t_ve
+    guicursor = &guicursor
     setlocal t_ve=
+    # hide cursor in macvim or other guivim
+    set guicursor=a:xxx
     ConnectWin(connect_wins)
     return ret
 enddef
