@@ -8,8 +8,8 @@ var cwd: string
 var menu_wid: number
 var prompt_str: string
 var matched_hl_offset = 0
-var enable_devicons = exists('g:fuzzyy_devicons') &&
-    exists('g:WebDevIconsGetFileTypeSymbol') ? g:fuzzyy_devicons : 1
+var enable_devicons = exists('g:fuzzyy_devicons') && exists('g:WebDevIconsGetFileTypeSymbol') ?
+    g:fuzzyy_devicons : exists('g:WebDevIconsGetFileTypeSymbol')
 
 if enable_devicons
     matched_hl_offset = devicons.GetDeviconWidth() + 1

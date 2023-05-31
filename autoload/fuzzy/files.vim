@@ -25,8 +25,8 @@ def GetOrDefault(name: string, default: any): any
     return default
 enddef
 
-var enable_devicons = exists('g:fuzzyy_devicons') &&
-    exists('g:WebDevIconsGetFileTypeSymbol') ? g:fuzzyy_devicons : 1
+var enable_devicons = exists('g:fuzzyy_devicons') && exists('g:WebDevIconsGetFileTypeSymbol') ?
+    g:fuzzyy_devicons : exists('g:WebDevIconsGetFileTypeSymbol')
 if enable_devicons
     # devicons take 3/4(macvim) chars position plus 1 space
     matched_hl_offset = devicons.GetDeviconWidth() + 1

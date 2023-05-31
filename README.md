@@ -102,7 +102,7 @@ let g:fuzzyy_menu_matched_hl = 'cursearch'
 
 " whether show devicons when using FuzzyFiles or FuzzyBuffers
 " requires vim-devicons
-" default to 1
+" default to 1 if vim-devicons is installed, 0 otherwise
 let g:fuzzyy_devicons = 1
 
 " enable dropdown theme

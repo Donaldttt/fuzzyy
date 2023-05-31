@@ -7,8 +7,8 @@ const WIN_WIDTH = 0.8
 var buf_dict: dict<any>
 var devicon_char_width = devicons.GetDeviconCharWidth()
 
-var enable_devicons = exists('g:fuzzyy_devicons') &&
-    exists('g:WebDevIconsGetFileTypeSymbol') ? g:fuzzyy_devicons : 1
+var enable_devicons = exists('g:fuzzyy_devicons') && exists('g:WebDevIconsGetFileTypeSymbol') ?
+    g:fuzzyy_devicons : exists('g:WebDevIconsGetFileTypeSymbol')
 
 def Preview(wid: number, opts: dict<any>)
     var result = opts.cursor_item
