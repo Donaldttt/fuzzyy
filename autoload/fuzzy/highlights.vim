@@ -60,13 +60,13 @@ def AddHighlight(preview_wid: number)
 enddef
 
 export def Start()
-    var highlights_raw = substitute(execute('hi'), "\n", " ", "g")
+    var highlights_raw = substitute(execute('hi'), "\n", " ", "g") .. ' fuzzyy_dummyy xxx'
     var highlights: list<any> = []
     def Helper(s: any): number
         highlights->add(s)
         return 1
     enddef
-    substitute(highlights_raw, '\zs\w\+\s\+xxx[[:alnum:][:blank:]=#,]\{-}\ze\s*\w\+\s*xxx',
+    substitute(highlights_raw, '\zs\w\+\s\+xxx[[:alnum:][:blank:]=#,]\{-}\ze\s\+\w\+\s*xxx',
         '\=Helper(submatch(0))', 'g')
 
     hl_meta = {}
