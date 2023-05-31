@@ -1,5 +1,13 @@
 vim9script
 
+var devicon_char_width = 0
+var devicon_width = 0
+if exists('g:WebDevIconsGetFileTypeSymbol')
+    var test_devicon = g:WebDevIconsGetFileTypeSymbol('a.lua')
+    devicon_char_width = strcharlen(test_devicon)
+    devicon_width = len(test_devicon)
+endif
+
 def SetHl()
     hi fuzzyy_yellow ctermfg=215 guifg=#f5c06f
     hi fuzzyy_blue ctermfg=109 guifg=#89b8c2
@@ -13,8 +21,8 @@ def SetHl()
     hi fuzzyy_light_blue ctermfg=109 guifg=#89b8c2
     hi fuzzyy_grey ctermfg=248 guifg=#6b7089
 enddef
-
 SetHl()
+
 augroup FuzzyyDevicons
     autocmd!
     autocmd ColorScheme * SetHl()
@@ -62,4 +70,12 @@ export def AddColor(wid: number)
         matchadd(devicons_color_table[ft], '\v%u' .. charhex, 99, -1, { window: wid })
         catch | endtry
     endfor
+enddef
+
+export def GetDeviconCharWidth(): number
+    return devicon_char_width
+enddef
+
+export def GetDeviconWidth(): number
+    return devicon_width
 enddef

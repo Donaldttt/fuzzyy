@@ -7,7 +7,13 @@ var fzf_list: list<string>
 var cwd: string
 var menu_wid: number
 var prompt_str: string
-var enable_devicons: number
+var matched_hl_offset = 0
+var enable_devicons = exists('g:fuzzyy_devicons') &&
+    exists('g:WebDevIconsGetFileTypeSymbol') ? g:fuzzyy_devicons : 1
+
+if enable_devicons
+    matched_hl_offset = devicons.GetDeviconWidth() + 1
+endif
 export var windows: dict<any>
 
 var filetype_table = {
@@ -216,7 +222,7 @@ def Input(wid: number, args: dict<any>, ...li: list<any>)
     if enable_devicons
          map(ret, 'g:WebDevIconsGetFileTypeSymbol(v:val) .. " " .. v:val')
          hl_list = reduce(hl_list, (a, v) => {
-            v[1] += 4
+            v[1] += matched_hl_offset
             return add(a, v)
          }, [])
     endif

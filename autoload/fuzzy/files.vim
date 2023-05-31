@@ -1,6 +1,7 @@
 vim9script
 
 import autoload 'utils/selector.vim'
+import autoload 'utils/devicons.vim'
 
 var last_result_len: number
 var cur_pattern: string
@@ -15,6 +16,7 @@ var files_update_tid: number
 var cache: dict<any>
 var cmdstr: string
 var matched_hl_offset = 0
+var devicon_char_width = devicons.GetDeviconCharWidth()
 
 def GetOrDefault(name: string, default: any): any
     if exists(name)
@@ -25,9 +27,9 @@ enddef
 
 var enable_devicons = exists('g:fuzzyy_devicons') &&
     exists('g:WebDevIconsGetFileTypeSymbol') ? g:fuzzyy_devicons : 1
-# devicons take 2 chars position
 if enable_devicons
-    matched_hl_offset = 4
+    # devicons take 3/4(macvim) chars position plus 1 space
+    matched_hl_offset = devicons.GetDeviconWidth() + 1
 endif
 
 def InitConfig()
@@ -66,7 +68,7 @@ enddef
 def Select(wid: number, result: list<any>)
     var path = result[0]
     if enable_devicons
-        path = strcharpart(path, 2)
+        path = strcharpart(path, devicon_char_width + 1)
     endif
     execute('edit ' .. path)
 enddef
@@ -111,7 +113,7 @@ enddef
 def Preview(wid: number, opts: dict<any>)
     var result = opts.cursor_item
     if enable_devicons
-        result = strcharpart(result, 2)
+        result = strcharpart(result, devicon_char_width + 1)
     endif
     var preview_wid = opts.win_opts.partids['preview']
     if !filereadable(result)

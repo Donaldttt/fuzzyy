@@ -1,9 +1,11 @@
 vim9script
 
 import autoload 'utils/selector.vim'
+import autoload 'utils/devicons.vim'
 
 const WIN_WIDTH = 0.8
 var buf_dict: dict<any>
+var devicon_char_width = devicons.GetDeviconCharWidth()
 
 var enable_devicons = exists('g:fuzzyy_devicons') &&
     exists('g:WebDevIconsGetFileTypeSymbol') ? g:fuzzyy_devicons : 1
@@ -16,7 +18,7 @@ def Preview(wid: number, opts: dict<any>)
     var preview_wid = opts.win_opts.partids['preview']
     if enable_devicons
         # echom [result]
-        result = strcharpart(result, 2)
+        result = strcharpart(result, devicon_char_width + 1)
     endif
     var file = buf_dict[result][0]
     var lnum = buf_dict[result][2]
@@ -45,7 +47,7 @@ def Close(wid: number, result: dict<any>)
     if has_key(result, 'selected_item')
         var buf = result.selected_item
         if enable_devicons
-            buf = strcharpart(buf, 2)
+            buf = strcharpart(buf, devicon_char_width + 1)
         endif
         var bufnr = buf_dict[buf][1]
         if bufnr != bufnr('$')
@@ -55,7 +57,7 @@ def Close(wid: number, result: dict<any>)
 enddef
 
 export def Start()
-    var buf_data = getbufinfo({'buflisted': 1, 'bufloaded': 1}) 
+    var buf_data = getbufinfo({'buflisted': 1, 'bufloaded': 1})
     buf_dict = {}
     var bufs = reduce(buf_data, (acc, buf) => {
         var file = fnamemodify(buf.name, ":~:.")
