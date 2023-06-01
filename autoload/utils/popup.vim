@@ -39,8 +39,7 @@ enddef
 #   - wid: window id of the popup window
 #   - select: the selected item in the popup window eg. ['selected str']
 def GeneralPopupCallback(wid: number, select: any)
-    var bufnr = popup_wins[wid].bufnr
-
+    CloseRelatedWins(wid)
     # only press enter select will be a list
     var has_selection = v:false
     if type(select) == v:t_list
@@ -73,7 +72,6 @@ def GeneralPopupCallback(wid: number, select: any)
             doautocmd User PopupClosed
         endif
     endif
-    CloseRelatedWins(wid)
     remove(popup_wins, wid)
 enddef
 
