@@ -16,7 +16,7 @@ enddef
 def Preview(wid: number, result: dict<any>)
     var color = result.cursor_item
     &bg = old_bg
-    execute 'colorscheme ' .. color
+    noa execute 'colorscheme ' .. color
 enddef
 
 def Close(wid: number, result: dict<any>)
