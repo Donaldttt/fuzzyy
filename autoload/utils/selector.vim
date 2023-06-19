@@ -54,7 +54,7 @@ enddef
 
 export def Split(str: string): list<string>
     var sep: string
-    if has('win32') && stridx(str, '\r\n') >= 0
+    if has('win32')
         sep = '\r\n'
     else
         sep = '\n'
