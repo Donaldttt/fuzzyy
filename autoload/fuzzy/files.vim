@@ -27,7 +27,7 @@ enddef
 if executable('fd')
     commands = {
         'default': 'fd --type f -H -I -E .git',
-        'gitignore': 'fd --type f',
+        'gitignore': 'fd --type f -H -E .git',
     }
 else
     if has('win32')
