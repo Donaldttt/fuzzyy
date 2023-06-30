@@ -44,6 +44,7 @@ FuzzyGrep requires any of grep, ag or rg command.
 
 FuzzyFiles uses find command in unix (if not found it will use vim's glob function,
  which is blocking) or powershell's Get-ChildItem in windows.
+(if [fd](https://github.com/sharkdp/fd) is installed, it will be used)
 
 ## Navigation
 

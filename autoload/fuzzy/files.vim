@@ -18,6 +18,34 @@ var cmdstr: string
 var matched_hl_offset = 0
 var devicon_char_width = devicons.GetDeviconCharWidth()
 
+var commands: dict<any>
+
+def InsideGitRepo(): bool 
+    return stridx(system('git rev-parse --is-inside-work-tree'), 'true') == 0
+enddef
+
+if executable('fd')
+    commands = {
+        'default': 'fd --type f -H -I -E .git',
+        'gitignore': 'fd --type f',
+    }
+else
+    if has('win32')
+        commands = {
+            'default': 'powershell -command "gci . -r -n -File"',
+        }
+    else
+        commands = {
+            'default': 'find . -type f -not -path "*/.git/*"',
+        }
+    endif
+    if executable('git') && InsideGitRepo()
+        commands.gitignore = 'git ls-files --cached --other --exclude-standard --full-name .'
+    else
+        commands.gitignore = v:null
+    endif
+endif
+
 def GetOrDefault(name: string, default: any): any
     if exists(name)
         return eval(name)
@@ -37,15 +65,10 @@ def InitConfig()
     var respect_gitignore = GetOrDefault('g:files_respect_gitignore', 0)
 
     cmdstr = ''
-    if respect_gitignore && executable('git')
-        && stridx(system('git rev-parse --is-inside-work-tree'), 'true') == 0
-        cmdstr = 'git ls-files --cached --other --exclude-standard --full-name .'
+    if respect_gitignore && commands.gitignore != v:null
+        cmdstr = commands.gitignore
     else
-        if has('win32')
-            cmdstr = 'powershell -command "gci . -r -n -File"'
-        elseif executable('find')
-            cmdstr = 'find . -type f -not -path "*/.git/*"'
-        endif
+        cmdstr = commands.default
     endif
 enddef
 
