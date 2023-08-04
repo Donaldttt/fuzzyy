@@ -31,18 +31,24 @@ Plug 'Donaldttt/fuzzyy'
 
 | Command         | Description                    | Default Keymap |
 | ---             | ---                            | ---            |
-| FuzzyGrep       | grep string in project         | \<leader>fr    |
+| FuzzyGrep \<args> | grep string in project. if argument is given, it will be search the \<args> | \<leader>fr    |
 | FuzzyFiles      | search files in project        | \<leader>ff    |
 | FuzzyHelps      | search :help documents         | \<leader>fd    |
 | FuzzyColors     | search installed colorscheme   | \<leader>fc    |
-| FuzzyInBuffer   | search lines in current buffer | \<leader>fb    |
+| FuzzyInBuffer  \<args> | search lines in current buffer. if argument is given, it will be search the \<args> | \<leader>fb    |
 | FuzzyCommands   | search commands                | \<leader>fi    |
 | FuzzyBuffers    | search opened buffers          | \<leader>ft    |
 | FuzzyHighlights | search highlights              | \<leader>fh    |
 
-FuzzyGrep requires any of grep, ag or rg command.
+- For FuzzyGrep and FuzzyInBuffer, you can define a keymap like this to search the
+word under cursor.
+    ```vim
+        nnoremap <Space>f :FuzzyGrep <C-R><C-W><CR>
+    ```
 
-FuzzyFiles uses find command in unix (if not found it will use vim's glob function,
+- FuzzyGrep requires any of grep, ag or rg command.
+
+- FuzzyFiles uses find command in unix (if not found it will use vim's glob function,
  which is blocking) or powershell's Get-ChildItem in windows.
 (if [fd](https://github.com/sharkdp/fd) is installed, it will be used)
 

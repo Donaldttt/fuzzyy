@@ -112,6 +112,15 @@ def MenuUpdateCursorItem(menu_wid: number): number
     return 1
 enddef
 
+# set prompt content
+# params
+#   - content: string to be set as prompt
+export def SetPrompt(wid: number, content: string)
+    for c in content
+        PromptFilter(wid, c)
+    endfor
+enddef
+
 def PromptFilter(wid: number, key: string): number
     # echo [key, strgetchar(key, 0), strcharlen(key), strtrans(key)]
     var bufnr = popup_wins[wid].bufnr

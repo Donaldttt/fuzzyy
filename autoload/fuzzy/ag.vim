@@ -1,6 +1,7 @@
 vim9scrip
 
 import autoload 'utils/selector.vim'
+import autoload 'utils/popup.vim'
 
 var max_count = 1000
 var rg_cmd = 'rg --column -M200 --vimgrep --max-count=' .. max_count .. ' "%s" "%s"'
@@ -269,7 +270,7 @@ def Profiling()
     profile func Reducer
 enddef
 
-export def AgStart()
+export def AgStart(...keyword: list<any>)
     cwd = getcwd()
     cwdlen = len(cwd)
     cur_pattern = ''
@@ -283,7 +284,7 @@ export def AgStart()
     last_result = []
     cur_dict = {}
 
-    var ret = selector.Start([],
+    var winds = selector.Start([],
      {
          select_cb:  function('Select'),
          input_cb:  function('Input'),
@@ -292,11 +293,14 @@ export def AgStart()
          scrollbar:  0,
          close_cb:  function('CloseCb'),
      })
-    menu_wid = ret[0]
-    preview_wid = ret[2]
+    menu_wid = winds[0]
+    preview_wid = winds[2]
     setwinvar(menu_wid, '&wrap', 0)
     # setwinvar(preview_wid, '&cursorline', 1)
     # setwinvar(preview_wid, '&cursorlineopt', 'line')
     ag_update_tid = timer_start(100, function('AgUpdateMenu'), {'repeat': -1})
+    if len(keyword) > 0
+        popup.SetPrompt(winds[1], keyword[0])
+    endif
     # Profiling()
 enddef

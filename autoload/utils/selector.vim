@@ -1,6 +1,6 @@
 vim9script
 
-import './popup.vim'
+import autoload './popup.vim'
 import './devicons.vim'
 
 var fzf_list: list<string>
