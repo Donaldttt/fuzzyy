@@ -31,11 +31,11 @@ Plug 'Donaldttt/fuzzyy'
 
 | Command         | Description                    | Default Keymap |
 | ---             | ---                            | ---            |
-| FuzzyGrep \<args> | grep string in project. if argument is given, it will be search the \<args> | \<leader>fr    |
+| FuzzyGrep \<args> | grep string in project. if argument is given, it will search the \<args> | \<leader>fr    |
 | FuzzyFiles      | search files in project        | \<leader>ff    |
 | FuzzyHelps      | search :help documents         | \<leader>fd    |
 | FuzzyColors     | search installed colorscheme   | \<leader>fc    |
-| FuzzyInBuffer  \<args> | search lines in current buffer. if argument is given, it will be search the \<args> | \<leader>fb    |
+| FuzzyInBuffer  \<args> | search lines in current buffer. if argument is given, it will search the \<args> | \<leader>fb    |
 | FuzzyCommands   | search commands                | \<leader>fi    |
 | FuzzyBuffers    | search opened buffers          | \<leader>ft    |
 | FuzzyHighlights | search highlights              | \<leader>fh    |
