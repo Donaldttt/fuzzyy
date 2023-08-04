@@ -405,14 +405,14 @@ enddef
 # params:
 #   - wid: popup window id
 #   - hi_list: list of position to highlight eg. [[1,2,3], [1,5]]
-export def MenuSetHl(name: string, wid: number, hl_list_raw: list<any>): number
+export def MenuSetHl(name: string, wid: number, hl_list_raw: list<any>)
     if !has_key(popup_wins, wid)
-        return -1
+        return
     endif
     clearmatches(wid)
     # pass empty list to matchaddpos will cause error
     if len(hl_list_raw) == 0
-        return -1
+        return
     endif
     var hl_list = hl_list_raw
 
@@ -423,8 +423,12 @@ export def MenuSetHl(name: string, wid: number, hl_list_raw: list<any>): number
         hl_list = reduce(hl_list_raw, (acc, v) => add(acc, [height - v[0] + 1] + v[1 :]), [])
     endif
 
-    var mid = matchaddpos(menu_matched_hl, hl_list, 99, -1,  {'window': wid})
-    return mid
+    # in MS-Windows, matchaddpos() has maximum limit of 8 position groups
+    var idx = 0
+    while idx < len(hl_list)
+        matchaddpos(menu_matched_hl, hl_list[idx : idx + 7 ], 99, -1,  {'window': wid})
+        idx += 8
+    endwhile
 enddef
 
 def PopupPrompt(args: dict<any>): number

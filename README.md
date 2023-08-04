@@ -88,7 +88,9 @@ nnoremap <silent> <leader>fh :FuzzyHighlights<CR>
 let g:enable_fuzzyy_keymaps = 0
 
 " make FuzzyFiles respect .gitignore if set to 1
-" only work when inside a git repository and git is installed
+" only work when
+" 1. inside a git repository and git is installed
+" 2. or fd is installed
 " default to 0
 let g:files_respect_gitignore = 1
 
