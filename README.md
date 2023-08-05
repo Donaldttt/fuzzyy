@@ -39,13 +39,13 @@ Plug 'Donaldttt/fuzzyy'
 | FuzzyCommands   | search commands                | \<leader>fi    |
 | FuzzyBuffers    | search opened buffers          | \<leader>ft    |
 | FuzzyHighlights | search highlights              | \<leader>fh    |
+| FuzzyMRUFiles | search the most recent used files. set g:enable_fuzzyy_MRU_files = 1 to enable this command(not enable by default)    | \<leader>fm    |
 
 - For FuzzyGrep and FuzzyInBuffer, you can define a keymap like this to search the
 word under cursor.
     ```vim
         nnoremap <Space>f :FuzzyGrep <C-R><C-W><CR>
     ```
-
 - FuzzyGrep requires any of grep, ag or rg command.
 
 - FuzzyFiles uses find command in unix (if not found it will use vim's glob function,
@@ -115,8 +115,12 @@ let g:fuzzyy_menu_matched_hl = 'cursearch'
 let g:fuzzyy_devicons = 1
 
 " enable dropdown theme
-" default to 0"
+" default to 0
 let g:fuzzyy_dropdown = 1
+
+" enable FuzzyMRUFiles command
+" default to 0
+let g:enable_fuzzyy_MRU_files = 1
 ```
 
 ## API

@@ -10,6 +10,7 @@ endif
 g:loaded_fuzzyy = 1
 
 g:enable_fuzzyy_keymaps = exists('g:enable_fuzzyy_keymaps') ? g:enable_fuzzyy_keymaps : 1
+g:enable_fuzzyy_MRU_files = exists('g:enable_fuzzyy_MRU_files') ? g:enable_fuzzyy_MRU_files : 0
 
 import autoload '../autoload/fuzzy/commands.vim'
 import autoload '../autoload/fuzzy/ag.vim'
@@ -29,6 +30,12 @@ command! -nargs=0 FuzzyCommands commands.CommandsStart()
 command! -nargs=0 FuzzyBuffers buffers.Start()
 command! -nargs=0 FuzzyHighlights highlights.Start()
 
+if g:enable_fuzzyy_MRU_files
+    import autoload '../autoload/fuzzy/mru.vim'
+    command! -nargs=0 FuzzyMRUFiles mru.Start()
+    utils#mru#init()
+endif
+
 if g:enable_fuzzyy_keymaps
     nnoremap <silent> <leader>fb :FuzzyInBuffer<CR>
     nnoremap <silent> <leader>fc :FuzzyColors<CR>
@@ -38,4 +45,7 @@ if g:enable_fuzzyy_keymaps
     nnoremap <silent> <leader>fr :FuzzyGrep<CR>
     nnoremap <silent> <leader>ft :FuzzyBuffers<CR>
     nnoremap <silent> <leader>fh :FuzzyHighlights<CR>
+    if g:enable_fuzzyy_MRU_files
+        nnoremap <silent> <leader>fm :FuzzyMRUFiles<CR>
+    endif
 endif
