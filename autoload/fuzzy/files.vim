@@ -39,11 +39,16 @@ else
             'default': 'find . -type f -not -path "*/.git/*"',
         }
     endif
+    # TODO bugs
     if executable('git') && InsideGitRepo()
         commands.gitignore = 'git ls-files --cached --other --exclude-standard --full-name .'
     else
         commands.gitignore = v:null
     endif
+endif
+
+if executable('git')
+    commands.only_git_files = 'git ls-files'
 endif
 
 def GetOrDefault(name: string, default: any): any
@@ -60,12 +65,16 @@ if enable_devicons
     matched_hl_offset = devicons.GetDeviconWidth() + 1
 endif
 
-def InitConfig()
-    # options
-    var respect_gitignore = GetOrDefault('g:files_respect_gitignore', 0)
+# options
+var respect_gitignore = GetOrDefault('g:files_respect_gitignore', 0)
+var only_git_files = GetOrDefault('g:files_only_git_files', 0)
 
+def InitConfig()
     cmdstr = ''
-    if respect_gitignore && commands.gitignore != v:null
+    if only_git_files 
+        && commands.only_git_files != v:null && InsideGitRepo()
+        cmdstr = commands.only_git_files
+    elseif respect_gitignore && commands.gitignore != v:null
         cmdstr = commands.gitignore
     else
         cmdstr = commands.default
@@ -249,11 +258,8 @@ export def FilesStart()
         preview:  1,
         scrollbar: 0,
         enable_devicons: enable_devicons,
-        # prompt: pathshorten(fnamemodify(cwd, ':~' )) .. (has('win32') ? '\ ' : '/ '),
     })
     FilesJobStart(cwd)
-    #var info_wid = winds[3]
-    #popup_settext(info_wid, 'cwd: ' .. fnamemodify(cwd, ':~' ) .. (has('win32') ? '\ ' : '/ '))
     menu_wid = winds[0]
     timer_start(50, function('FilesUpdateMenu'))
     files_update_tid = timer_start(400, function('FilesUpdateMenu'), {'repeat': -1})

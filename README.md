@@ -121,6 +121,10 @@ let g:fuzzyy_dropdown = 1
 " enable FuzzyMRUFiles command
 " default to 0
 let g:enable_fuzzyy_MRU_files = 1
+
+" only list git files for FuzzyFiles. like 'git ls-files'
+" default to 0
+let g:files_only_git_files = 1
 ```
 
 ## Credit
