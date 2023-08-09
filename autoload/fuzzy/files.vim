@@ -30,7 +30,7 @@ if executable('fd')
         'gitignore': 'fd --type f -H -E .git',
     }
 else
-    if has('win32')
+    if has('win32') || has('win32unix')
         commands = {
             'default': 'powershell -command "gci . -r -n -File"',
         }
