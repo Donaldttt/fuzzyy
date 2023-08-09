@@ -72,9 +72,12 @@ var only_git_files = GetOrDefault('g:files_only_git_files', 0)
 def InitConfig()
     cmdstr = ''
     if only_git_files 
-        && commands.only_git_files != v:null && InsideGitRepo()
+        && commands.only_git_files != v:null 
+        && InsideGitRepo()
         cmdstr = commands.only_git_files
-    elseif respect_gitignore && commands.gitignore != v:null
+    elseif respect_gitignore 
+        && commands.gitignore != v:null
+        && InsideGitRepo()
         cmdstr = commands.gitignore
     else
         cmdstr = commands.default
