@@ -29,6 +29,7 @@ command! -nargs=? FuzzyInBuffer inbuffer.InBufferStart(<f-args>)
 command! -nargs=0 FuzzyCommands commands.CommandsStart()
 command! -nargs=0 FuzzyBuffers buffers.Start()
 command! -nargs=0 FuzzyHighlights highlights.Start()
+command! -nargs=0 FuzzyGitFiles files.FilesStart('git ls-files')
 
 if g:enable_fuzzyy_MRU_files
     import autoload '../autoload/fuzzy/mru.vim'

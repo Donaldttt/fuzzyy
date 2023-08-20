@@ -171,7 +171,7 @@ def Preview(wid: number, opts: dict<any>)
     endtry
 enddef
 
-def FilesJobStart(path: string)
+def FilesJobStart(path: string, cmd: string)
     if type(jid) == v:t_job && job_status(jid) == 'run'
         job_stop(jid)
     endif
@@ -179,13 +179,13 @@ def FilesJobStart(path: string)
     if path == ''
         return
     endif
-    if cmdstr == ''
+    if cmd == ''
         in_loading = 0
         cur_result += glob(cwd .. '/**', 1, 1, 1)
         selector.UpdateMenu(ProcessResult(cur_result), [])
         return
     endif
-    jid = job_start(cmdstr, {
+    jid = job_start(cmd, {
         out_cb: function('JobHandler'),
         out_mode: 'raw',
         exit_cb: function('ExitCb'),
@@ -245,7 +245,7 @@ def Close(wid: number, opts: dict<any>)
     timer_stop(files_update_tid)
 enddef
 
-export def FilesStart()
+export def FilesStart(...args: list<any>)
     last_result_len = -1
     cur_result = []
     cur_pattern = ''
@@ -262,7 +262,13 @@ export def FilesStart()
         scrollbar: 0,
         enable_devicons: enable_devicons,
     })
-    FilesJobStart(cwd)
+    var cmd: string
+    if len(args) > 0 && type(args[0]) == 1
+        cmd = args[0]
+    else
+        cmd = cmdstr
+    endif
+    FilesJobStart(cwd, cmd)
     menu_wid = winds[0]
     timer_start(50, function('FilesUpdateMenu'))
     files_update_tid = timer_start(400, function('FilesUpdateMenu'), {'repeat': -1})

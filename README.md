@@ -1,4 +1,4 @@
-# Fuzzyy
+j# Fuzzyy
 
 A fuzzy picker for files, strings, help documents and many other things.
 
@@ -40,6 +40,7 @@ Plug 'Donaldttt/fuzzyy'
 | FuzzyBuffers    | search opened buffers          | \<leader>ft    |
 | FuzzyHighlights | search highlights              | \<leader>fh    |
 | FuzzyMRUFiles | search the most recent used files. set g:enable_fuzzyy_MRU_files = 1 to enable this command(not enable by default)    | \<leader>fm    |
+| FuzzyGitFiles |  like FuzzyFiles but only shows file in git project  | None    |
 
 - For FuzzyGrep and FuzzyInBuffer, you can define a keymap like this to search the
 word under cursor.
@@ -122,9 +123,6 @@ let g:fuzzyy_dropdown = 1
 " default to 0
 let g:enable_fuzzyy_MRU_files = 1
 
-" only list git files for FuzzyFiles. like 'git ls-files'
-" default to 0
-let g:files_only_git_files = 1
 ```
 
 ## Credit
