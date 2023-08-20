@@ -79,3 +79,8 @@ enddef
 export def GetDeviconWidth(): number
     return devicon_width
 enddef
+
+export def AddDevicons(li: list<string>): list<string>
+    map(li, 'g:WebDevIconsGetFileTypeSymbol(v:val) .. " " .. v:val')
+    return li
+enddef

@@ -3,10 +3,15 @@ vim9script
 import autoload 'utils/selector.vim'
 import autoload 'utils/devicons.vim'
 
+var mru_origin_list: list<string>
 var devicon_char_width = devicons.GetDeviconCharWidth()
+var cwd: string
+var menu_wid: number
 
 var enable_devicons = exists('g:fuzzyy_devicons') && exists('g:WebDevIconsGetFileTypeSymbol') ?
     g:fuzzyy_devicons : exists('g:WebDevIconsGetFileTypeSymbol')
+
+var mru_project_only = exists('g:fuzzyy_mru_project_only') ? g:fuzzyy_mru_project_only : 0
 
 def Preview(wid: number, opts: dict<any>)
     var result = opts.cursor_item
@@ -44,9 +49,36 @@ def Close(wid: number, result: dict<any>)
     endif
 enddef
 
+def ToggleScope()
+    mru_project_only = mru_project_only ? 0 : 1
+    var mru_list: list<string> = copy(mru_origin_list)
+    if mru_project_only
+        mru_list = filter(mru_list, (_, val) => {
+            return stridx(val, cwd) >= 0
+        })
+    endif
+    mru_list = reduce(mru_list, (acc, val) => {
+            acc->add(fnamemodify(val, ':~:.'))
+        return acc
+    }, [])
+    selector.UpdateMenu(mru_list, [], 1)
+    popup_setoptions(menu_wid, {'title': len(mru_list)})
+enddef
+
+var key_callbacks = {
+    "\<c-k>": function('ToggleScope'),
+}
+
 export def Start(...keyword: list<any>)
-    var cwd = getcwd()
-    var mru_list = reduce(g:MruGetFiles(), (acc, val) => {
+    cwd = getcwd()
+    mru_origin_list = g:MruGetFiles()
+    var mru_list: list<string> = copy(mru_origin_list)
+    if mru_project_only
+        mru_list = filter(mru_list, (_, val) => {
+            return stridx(val, cwd) >= 0
+        })
+    endif
+    mru_list = reduce(mru_list, (acc, val) => {
             acc->add(fnamemodify(val, ':~:.'))
         return acc
     }, [])
@@ -57,6 +89,8 @@ export def Start(...keyword: list<any>)
         preview:  1,
         scrollbar: 0,
         enable_devicons: enable_devicons,
+        key_callbacks: key_callbacks,
     })
-    var menu_wid = winds[0]
+    menu_wid = winds[0]
+    popup_setoptions(menu_wid, {'title': len(mru_list)})
 enddef

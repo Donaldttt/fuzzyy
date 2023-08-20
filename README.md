@@ -66,6 +66,9 @@ you can set `g:fuzzyy_keymaps` to change these defaults.
     - `ctrl + k` toggle white preview background color
     - `Enter` will copy selected highlight
 
+- FuzzyMRUFiles
+    - `ctrl + k` toggle global or project MRU files
+
 ## Default Keymaps
 
 you can set `g:enable_fuzzyy_keymaps = 0` to disable default keymaps
@@ -123,6 +126,9 @@ let g:fuzzyy_dropdown = 1
 " default to 0
 let g:enable_fuzzyy_MRU_files = 1
 
+" FuzzyMRUFiles default shows MRU files that are in the current project
+" default to 0
+let g:fuzzyy_mru_project_only = 0
 ```
 
 ## Credit

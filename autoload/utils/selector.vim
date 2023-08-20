@@ -38,11 +38,19 @@ var enable_dropdown = exists('g:fuzzyy_dropdown') ? g:fuzzyy_dropdown : 0
 # params:
 # - str_list: list of string to be displayed in the menu window
 # - hl_list: list of highlight positions
-export def UpdateMenu(str_list: list<string>, hl_list: list<list<any>>)
-    popup.MenuSetText(menu_wid, str_list)
-    popup.MenuSetHl('select', menu_wid, hl_list)
+# - opts: dict of options
+#       - add devicons: add devicons to every entry
+export def UpdateMenu(str_list: list<string>, hl_list: list<list<any>>, ...opts: list<any>)
     if enable_devicons
+        if len(opts) > 0 && opts[0] == 1
+            devicons.AddDevicons(str_list)
+        endif
+        popup.MenuSetText(menu_wid, str_list)
+        popup.MenuSetHl('select', menu_wid, hl_list)
         devicons.AddColor(menu_wid)
+    else
+        popup.MenuSetText(menu_wid, str_list)
+        popup.MenuSetHl('select', menu_wid, hl_list)
     endif
 enddef
 
@@ -280,7 +288,8 @@ export def Start(li_raw: list<string>, opts: dict<any>): list<number>
     fzf_list = li_raw
     var li = copy(li_raw)
     if enable_devicons
-         map(li, 'g:WebDevIconsGetFileTypeSymbol(v:val) .. " " .. v:val')
+         # map(li, 'g:WebDevIconsGetFileTypeSymbol(v:val) .. " " .. v:val')
+         devicons.AddDevicons(li)
     endif
     popup.MenuSetText(menu_wid, li)
     if enable_devicons
