@@ -4,8 +4,8 @@ import autoload 'utils/selector.vim'
 import autoload 'utils/popup.vim'
 
 var max_count = 1000
-var rg_cmd = 'rg --column -M200 --vimgrep --max-count=' .. max_count .. ' "%s" "%s"'
-var ag_cmd = 'ag --column -W200 --vimgrep --max-count=' .. max_count .. ' "%s" "%s"'
+var rg_cmd = 'rg --column -M200 --vimgrep --max-count=' .. max_count .. ' -F "%s" "%s"'
+var ag_cmd = 'ag --column -W200 --vimgrep --max-count=' .. max_count .. ' -F "%s" "%s"'
 var grep_cmd = 'grep -n -r --max-count=' .. max_count .. ' "%s" "%s"'
 var sep_pattern = '\:\d\+:\d\+:'
 var loading = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
@@ -13,12 +13,11 @@ var loading = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "�
 var cmd: string
 if executable('ag')
     cmd = ag_cmd
+elseif executable('rg')
+    cmd = rg_cmd
 elseif executable('grep')
     cmd = grep_cmd
     sep_pattern = '\:\d\+:'
-elseif executable('rg')
-    # not sure why rg has bad delay using job_start
-    cmd = rg_cmd
 endif
 
 var cwd: string
@@ -144,7 +143,7 @@ def Input(wid: number, args: dict<any>, ...li: list<any>)
 enddef
 
 def UpdatePreviewHl()
-    if !has_key(cur_dict, cur_menu_item)
+    if !has_key(cur_dict, cur_menu_item) || cmd[: 3] == 'grep'
         return
     endif
     var [path, linenr, colnr] = ParseAgStr(cur_menu_item)
@@ -245,6 +244,9 @@ def AgUpdateMenu(...li: list<any>)
     endif
 
     var hl_list = cols
+    if cmd[: 3] == 'grep'
+        hl_list = []
+    endif
 
     selector.UpdateMenu(strs, hl_list)
     UpdatePreviewHl()
