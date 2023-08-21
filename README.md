@@ -1,4 +1,4 @@
-j# Fuzzyy
+# Fuzzyy
 
 A fuzzy picker for files, strings, help documents and many other things.
 
@@ -87,19 +87,19 @@ nnoremap <silent> <leader>fh :FuzzyHighlights<CR>
 ## Options
 
 ```vim
-" set to 0 to disable default keybindings
-" default to 1
+" Set to 0 to disable default keybindings
+" Default to 1
 let g:enable_fuzzyy_keymaps = 0
 
-" make FuzzyFiles respect .gitignore if set to 1
+" Make FuzzyFiles respect .gitignore if set to 1
 " only work when
 " 1. inside a git repository and git is installed
 " 2. or fd is installed
-" default to 0
+" Default to 0
 let g:files_respect_gitignore = 1
 
-" change navigation keymaps
-" the following is the default
+" Change navigation keymaps
+" The following is the default
 let g:fuzzyy_keymaps = {
 \     'menu_up': ["\<c-p>", "\<Up>"],
 \     'menu_down': ["\<c-n>", "\<Down>"],
@@ -109,21 +109,23 @@ let g:fuzzyy_keymaps = {
 \     'exit': ["\<Esc>", "\<c-c>", "\<c-[>"],
 \ }
 
-" change highlight of the matched text when searching
-" default to cursearch
+" Change highlight of the matched text when searching
+" Default to cursearch
 let g:fuzzyy_menu_matched_hl = 'cursearch'
 
-" whether show devicons when using FuzzyFiles or FuzzyBuffers
-" requires vim-devicons
-" default to 1 if vim-devicons is installed, 0 otherwise
+" Whether show devicons when using FuzzyFiles or FuzzyBuffers
+" Requires vim-devicons
+" Default to 1 if vim-devicons is installed, 0 otherwise
 let g:fuzzyy_devicons = 1
 
-" enable dropdown theme
-" default to 0
+" Enable dropdown theme
+" Default to 0
 let g:fuzzyy_dropdown = 1
 
-" enable FuzzyMRUFiles command
-" default to 0
+" Enable FuzzyMRUFiles command.
+" If enabled, the MRU list will be recorded into ~/.vim_mru_files in Unix
+" and ~/_vim_mru_files in Windows
+" Default to 0
 let g:enable_fuzzyy_MRU_files = 1
 
 " FuzzyMRUFiles default shows MRU files that are in the current project
