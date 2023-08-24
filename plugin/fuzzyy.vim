@@ -34,7 +34,6 @@ command! -nargs=0 FuzzyGitFiles files.FilesStart('git ls-files')
 if g:enable_fuzzyy_MRU_files
     import autoload '../autoload/fuzzy/mru.vim'
     command! -nargs=0 FuzzyMRUFiles mru.Start()
-    utils#mru#init()
 endif
 
 if g:enable_fuzzyy_keymaps

@@ -2,6 +2,7 @@ vim9script
 
 import autoload 'utils/selector.vim'
 import autoload 'utils/devicons.vim'
+import autoload 'utils/mru.vim'
 
 var mru_origin_list: list<string>
 var devicon_char_width = devicons.GetDeviconCharWidth()
@@ -19,7 +20,7 @@ def Preview(wid: number, opts: dict<any>)
         result = strcharpart(result, devicon_char_width + 1)
     endif
     var preview_wid = opts.win_opts.partids['preview']
-    result = fnamemodify(result, ':p')
+    result = result == '' ? result : fnamemodify(result, ':p')
     if !filereadable(result)
         if result == ''
             popup_settext(preview_wid, '')
@@ -71,7 +72,7 @@ var key_callbacks = {
 
 export def Start(...keyword: list<any>)
     cwd = getcwd()
-    mru_origin_list = g:MruGetFiles()
+    mru_origin_list = mru.MruGetFiles()
     var mru_list: list<string> = copy(mru_origin_list)
     if mru_project_only
         mru_list = filter(mru_list, (_, val) => {
