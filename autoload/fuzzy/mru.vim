@@ -20,7 +20,7 @@ def Preview(wid: number, opts: dict<any>)
         result = strcharpart(result, devicon_char_width + 1)
     endif
     var preview_wid = opts.win_opts.partids['preview']
-    result = fnamemodify(result, ':p')
+    result = result == '' ? result : fnamemodify(result, ':p')
     if !filereadable(result)
         if result == ''
             popup_settext(preview_wid, '')
