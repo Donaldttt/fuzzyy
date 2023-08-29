@@ -19,9 +19,15 @@ var matched_hl_offset = 0
 var devicon_char_width = devicons.GetDeviconCharWidth()
 
 var commands: dict<any>
+var has_git = executable('git') ? v:true : v:false
 
-def InsideGitRepo(): bool 
-    return stridx(system('git rev-parse --is-inside-work-tree'), 'true') == 0
+def InsideGitRepo(): bool
+    if has_git
+        return stridx(system('git rev-parse --is-inside-work-tree'), 'true') == 0
+    else
+        echom 'fuzzyy: git is not installed'
+        return v:false
+    endif
 enddef
 
 if executable('fd')
@@ -40,14 +46,14 @@ else
         }
     endif
     # TODO bugs
-    if executable('git') && InsideGitRepo()
+    if has_git && InsideGitRepo()
         commands.gitignore = 'git ls-files --cached --other --exclude-standard --full-name .'
     else
         commands.gitignore = v:null
     endif
 endif
 
-if executable('git')
+if has_git
     commands.only_git_files = 'git ls-files'
 endif
 
@@ -71,11 +77,11 @@ var only_git_files = GetOrDefault('g:files_only_git_files', 0)
 
 def InitConfig()
     cmdstr = ''
-    if only_git_files 
-        && commands.only_git_files != v:null 
+    if only_git_files
+        && commands.only_git_files != v:null
         && InsideGitRepo()
         cmdstr = commands.only_git_files
-    elseif respect_gitignore 
+    elseif respect_gitignore
         && commands.gitignore != v:null
         && InsideGitRepo()
         cmdstr = commands.gitignore
