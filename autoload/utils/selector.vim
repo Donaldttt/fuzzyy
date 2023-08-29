@@ -219,6 +219,14 @@ export def GetPrompt(): string
     return prompt_str
 enddef
 
+export def ReplaceCloseCb(Close_cb: func)
+    popup.SetPopupWinProp(menu_wid, 'close_cb', Close_cb)
+enddef
+
+export def Exit()
+    popup_close(menu_wid)
+enddef
+
 def Input(wid: number, args: dict<any>, ...li: list<any>)
     var val = args.str
     prompt_str = val

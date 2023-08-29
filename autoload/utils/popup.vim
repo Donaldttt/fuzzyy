@@ -35,6 +35,14 @@ def CloseRelatedWins(wid: number, ...li: list<any>)
     endfor
 enddef
 
+export def SetPopupWinProp(wid: number, key: string, val: any)
+    if has_key(popup_wins, wid) && has_key(popup_wins[wid], key)
+        popup_wins[wid][key] = val
+    else
+        echoerr 'SetPopupWinProp: key not exist'
+    endif
+enddef
+
 # params:
 #   - wid: window id of the popup window
 #   - select: the selected item in the popup window eg. ['selected str']
@@ -57,6 +65,7 @@ def GeneralPopupCallback(wid: number, select: any)
         if has_selection
             opt.selected_item = select[0]
         endif
+        opt.cursor_item = popup_wins[wid].cursor_item
         popup_wins[wid].close_cb(wid, opt)
     endif
     # restore cursor
