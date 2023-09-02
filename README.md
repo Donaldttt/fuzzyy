@@ -69,9 +69,10 @@ you can set `g:fuzzyy_keymaps` to change these defaults.
 - FuzzyMRUFiles
     - `ctrl + k` toggle global or project MRU files
 
-- FuzzyBuffers
-    - `ctrl + s` open selected buffer with horizontal spliting
-    - `ctrl + v` open selected buffer with vertical spliting
+- FuzzyBuffers, FuzzyMRUFiles, FuzzyFiles
+    - `ctrl + s` open selected file with horizontal spliting
+    - `ctrl + v` open selected file with vertical spliting
+    - `ctrl + t` open selected file in new tab page
 
 ## Default Keymaps
 
