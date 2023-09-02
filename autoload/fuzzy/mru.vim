@@ -90,7 +90,7 @@ export def Start(...keyword: list<any>)
         preview:  1,
         scrollbar: 0,
         enable_devicons: enable_devicons,
-        key_callbacks: key_callbacks,
+        key_callbacks: extend(key_callbacks, selector.split_edit_callbacks),
     })
     menu_wid = winds[0]
     popup_setoptions(menu_wid, {'title': len(mru_list)})

@@ -43,29 +43,6 @@ def Preview(wid: number, opts: dict<any>)
     win_execute(preview_wid, 'norm! zz')
 enddef
 
-
-def CloseVSplit(wid: number, result: dict<any>)
-    echom 'CloseVSplit'
-    if has_key(result, 'cursor_item')
-        var buf = result.cursor_item
-        if enable_devicons
-            buf = strcharpart(buf, devicon_char_width + 1)
-        endif
-        execute 'vs ' .. buf
-    endif
-enddef
-
-def CloseSplit(wid: number, result: dict<any>)
-    echom 'CloseVSplit'
-    if has_key(result, 'cursor_item')
-        var buf = result.cursor_item
-        if enable_devicons
-            buf = strcharpart(buf, devicon_char_width + 1)
-        endif
-        execute 'sp ' .. buf
-    endif
-enddef
-
 def Close(wid: number, result: dict<any>)
     if has_key(result, 'selected_item')
         var buf = result.selected_item
@@ -78,20 +55,6 @@ def Close(wid: number, result: dict<any>)
         endif
     endif
 enddef
-
-def SetVSplitClose()
-    selector.ReplaceCloseCb(function('CloseVSplit'))
-    selector.Exit()
-enddef
-def SetSplitClose()
-    selector.ReplaceCloseCb(function('CloseSplit'))
-    selector.Exit()
-enddef
-
-var key_callbacks = {
-    "\<c-v>": function('SetVSplitClose'),
-    "\<c-s>": function('SetSplitClose'),
-}
 
 export def Start()
     var buf_data = getbufinfo({'buflisted': 1, 'bufloaded': 1})
@@ -112,6 +75,6 @@ export def Start()
         preview:  1,
         scrollbar: 0,
         enable_devicons: enable_devicons,
-        key_callbacks: key_callbacks,
+        key_callbacks: selector.split_edit_callbacks,
     })
 enddef

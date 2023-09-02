@@ -267,6 +267,7 @@ export def FilesStart(...args: list<any>)
         preview:  1,
         scrollbar: 0,
         enable_devicons: enable_devicons,
+        key_callbacks: selector.split_edit_callbacks,
     })
     var cmd: string
     if len(args) > 0 && type(args[0]) == 1

@@ -1,9 +1,7 @@
 vim9script noclear
 
 var MRU_Max_Entries = 100
-
 var MRU_Exclude_Files = ''
-
 var MRU_Include_Files = ''
 
 var MRU_File: string
@@ -29,8 +27,6 @@ var mru_list_locked = 0
 
 var MRU_files = []
 def MRU_LoadList()
-  # If the MRU file is present, then load the list of filenames. Otherwise
-  # start with an empty list.
     if filereadable(MRU_File)
         MRU_files = readfile(MRU_File)
         if empty(MRU_files)

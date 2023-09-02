@@ -8,6 +8,7 @@ var cwd: string
 var menu_wid: number
 var prompt_str: string
 var matched_hl_offset = 0
+var devicon_char_width = devicons.GetDeviconCharWidth()
 var enable_devicons = exists('g:fuzzyy_devicons') && exists('g:WebDevIconsGetFileTypeSymbol') ?
     g:fuzzyy_devicons : exists('g:WebDevIconsGetFileTypeSymbol')
 
@@ -253,6 +254,58 @@ enddef
 def Cleanup()
     timer_stop(async_tid)
 enddef
+
+# For split callbacks
+def CloseTab(wid: number, result: dict<any>)
+    if has_key(result, 'cursor_item')
+        var buf = result.cursor_item
+        if enable_devicons
+            buf = strcharpart(buf, devicon_char_width + 1)
+        endif
+        execute 'tabnew ' .. buf
+    endif
+enddef
+
+def CloseVSplit(wid: number, result: dict<any>)
+    if has_key(result, 'cursor_item')
+        var buf = result.cursor_item
+        if enable_devicons
+            buf = strcharpart(buf, devicon_char_width + 1)
+        endif
+        execute 'vs ' .. buf
+    endif
+enddef
+
+def CloseSplit(wid: number, result: dict<any>)
+    if has_key(result, 'cursor_item')
+        var buf = result.cursor_item
+        if enable_devicons
+            buf = strcharpart(buf, devicon_char_width + 1)
+        endif
+        execute 'sp ' .. buf
+    endif
+enddef
+
+def SetVSplitClose()
+    ReplaceCloseCb(function('CloseVSplit'))
+    Exit()
+enddef
+
+def SetSplitClose()
+    ReplaceCloseCb(function('CloseSplit'))
+    Exit()
+enddef
+
+def SetTab()
+    ReplaceCloseCb(function('CloseTab'))
+    Exit()
+enddef
+
+export var split_edit_callbacks = {
+    "\<c-v>": function('SetVSplitClose'),
+    "\<c-s>": function('SetSplitClose'),
+    "\<c-t>": function('SetTab'),
+}
 
 # This function spawn a popup picker for user to select an item from a list.
 # params:
