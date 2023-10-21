@@ -9,7 +9,7 @@ def Select(wid: number, result: list<any>)
     norm! zz
 enddef
 
-export def InBufferStart(...keyword: list<any>)
+export def Start(...keyword: list<any>)
     var raw_lines = getline(1, '$')
     var max_line_len = len(string(len(raw_lines)))
     var lines = reduce(raw_lines,

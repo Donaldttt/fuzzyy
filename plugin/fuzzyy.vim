@@ -21,15 +21,15 @@ import autoload '../autoload/fuzzy/inbuffer.vim'
 import autoload '../autoload/fuzzy/buffers.vim'
 import autoload '../autoload/fuzzy/highlights.vim'
 
-command! -nargs=? FuzzyGrep ag.AgStart(<f-args>)
-command! -nargs=0 FuzzyFiles files.FilesStart()
-command! -nargs=0 FuzzyHelps helps.HelpsStart()
-command! -nargs=0 FuzzyColors colors.ColorsStart()
-command! -nargs=? FuzzyInBuffer inbuffer.InBufferStart(<f-args>)
-command! -nargs=0 FuzzyCommands commands.CommandsStart()
+command! -nargs=? FuzzyGrep ag.Start(<f-args>)
+command! -nargs=0 FuzzyFiles files.Start()
+command! -nargs=0 FuzzyHelps helps.Start()
+command! -nargs=0 FuzzyColors colors.Start()
+command! -nargs=? FuzzyInBuffer inbuffer.Start(<f-args>)
+command! -nargs=0 FuzzyCommands commands.Start()
 command! -nargs=0 FuzzyBuffers buffers.Start()
 command! -nargs=0 FuzzyHighlights highlights.Start()
-command! -nargs=0 FuzzyGitFiles files.FilesStart('git ls-files')
+command! -nargs=0 FuzzyGitFiles files.Start('git ls-files')
 
 if g:enable_fuzzyy_MRU_files
     import autoload '../autoload/fuzzy/mru.vim'

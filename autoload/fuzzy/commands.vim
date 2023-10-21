@@ -7,7 +7,7 @@ def Select(wid: number, result: list<any>)
     exe command
 enddef
 
-export def CommandsStart()
+export def Start()
     var li: list<string> = getcompletion('', 'command')
     var winds = selector.Start(li, {
         select_cb:  function('Select'),

@@ -263,7 +263,7 @@ enddef
 
 def Profiling()
     profile start ~/.vim/vim.log
-    profile func AgStart
+    profile func Start
     profile func AgUpdateMenu
     profile func Preview
     profile func UpdatePreviewHl
@@ -272,7 +272,7 @@ def Profiling()
     profile func Reducer
 enddef
 
-export def AgStart(...keyword: list<any>)
+export def Start(...keyword: list<any>)
     cwd = getcwd()
     cwdlen = len(cwd)
     cur_pattern = ''

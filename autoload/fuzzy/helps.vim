@@ -95,7 +95,7 @@ def CloseCb(wid: number, args: dict<any>)
     timer_stop(update_tid)
 enddef
 
-export def HelpsStart()
+export def Start()
     tag_files = []
     file_lines = []
     cur_pattern = ''

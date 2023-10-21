@@ -251,7 +251,7 @@ def Close(wid: number, opts: dict<any>)
     timer_stop(files_update_tid)
 enddef
 
-export def FilesStart(...args: list<any>)
+export def Start(...args: list<any>)
     last_result_len = -1
     cur_result = []
     cur_pattern = ''

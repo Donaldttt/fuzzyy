@@ -33,7 +33,7 @@ def Close(wid: number, result: dict<any>)
     endif
 enddef
 
-export def ColorsStart()
+export def Start()
     old_color = execute('colo')[1 :]
     old_bg = &bg
     var colors = GetColors()
