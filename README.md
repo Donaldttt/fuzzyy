@@ -141,7 +141,7 @@ let g:fuzzyy_mru_project_only = 0
 " you can override it by setting g:fuzzyy_window_layout
 " e.g. let g:fuzzyy_window_layout = { 'FuzzyFiles': { 'preview': 0 } }
 " default value:
-let windows = {
+{
     'FuzzyFiles': {
         'preview': 1,         " 1 means enable preview window, 0 means disable
         'preview_ratio': 0.5, " 0.5 means preview window will take 50% of the layout
