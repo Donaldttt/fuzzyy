@@ -136,6 +136,38 @@ let g:enable_fuzzyy_MRU_files = 1
 " FuzzyMRUFiles default shows MRU files that are in the current project
 " default to 0
 let g:fuzzyy_mru_project_only = 0
+
+" window layout configuraton
+" you can override it by setting g:fuzzyy_window_layout
+" e.g. let g:fuzzyy_window_layout = { 'FuzzyFiles': { 'preview': 0 } }
+" default value:
+let windows = {
+    'FuzzyFiles': {
+        'preview': 1,         " 1 means enable preview window, 0 means disable
+        'preview_ratio': 0.5, " 0.5 means preview window will take 50% of the layout
+        'width': 0.8,         " 0.8 means total width of the layout will take 80% of the screen
+    },
+    'FuzzyGrep': {
+        'preview': 1,
+        'preview_ratio': 0.5,
+        'width': 0.8,
+    },
+    'FuzzyBuffers': {
+        'preview': 1,
+        'preview_ratio': 0.5,
+        'width': 0.8,
+    },
+    'FuzzyMRUFiles': {
+        'preview': 1,
+        'preview_ratio': 0.5,
+        'width': 0.8,
+    },
+    'FuzzyHighlights': {
+        'preview': 1,
+        'preview_ratio': 0.7,
+        'width': 0.8,
+    },
+}
 ```
 
 ## Credit
