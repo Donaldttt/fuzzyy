@@ -19,6 +19,9 @@ def Preview(wid: number, opts: dict<any>)
     if enable_devicons
         result = strcharpart(result, devicon_char_width + 1)
     endif
+    if !has_key(opts.win_opts.partids, 'preview')
+        return
+    endif
     var preview_wid = opts.win_opts.partids['preview']
     result = result == '' ? result : fnamemodify(result, ':p')
     if !filereadable(result)
@@ -70,7 +73,7 @@ var key_callbacks = {
     "\<c-k>": function('ToggleScope'),
 }
 
-export def Start(...keyword: list<any>)
+export def Start(windows: dict<any>, ...keyword: list<any>)
     cwd = getcwd()
     mru_origin_list = mru.MruGetFiles()
     var mru_list: list<string> = copy(mru_origin_list)
@@ -84,14 +87,16 @@ export def Start(...keyword: list<any>)
         return acc
     }, [])
 
-    var winds = selector.Start(mru_list, {
+    var wids = selector.Start(mru_list, {
         close_cb:  function('Close'),
         preview_cb:  function('Preview'),
-        preview:  1,
+        preview:  windows.preview,
+        width: windows.width,
+        preview_ratio: windows.preview_ratio,
         scrollbar: 0,
         enable_devicons: enable_devicons,
         key_callbacks: extend(key_callbacks, selector.split_edit_callbacks),
     })
-    menu_wid = winds[0]
+    menu_wid = wids.menu
     popup_setoptions(menu_wid, {'title': len(mru_list)})
 enddef

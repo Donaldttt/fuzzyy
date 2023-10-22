@@ -4,7 +4,6 @@ import autoload 'utils/selector.vim'
 
 var old_color: string
 var old_bg: string
-var menu_wid: number
 
 def GetColors(): list<string>
    return uniq(sort(map(
@@ -38,7 +37,7 @@ export def Start()
     old_bg = &bg
     var colors = GetColors()
 
-    var winds = selector.Start(colors, {
+    var wids = selector.Start(colors, {
         preview_cb: function('Preview'),
         close_cb: function('Close'),
         preview: 0,
@@ -47,5 +46,4 @@ export def Start()
         scrollbar: 0,
         preview_ratio: 0.7,
     })
-    menu_wid = winds[0]
 enddef

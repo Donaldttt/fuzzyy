@@ -143,7 +143,7 @@ def Input(wid: number, args: dict<any>, ...li: list<any>)
 enddef
 
 def UpdatePreviewHl()
-    if !has_key(cur_dict, cur_menu_item) || cmd[: 3] == 'grep'
+    if !has_key(cur_dict, cur_menu_item) || cmd[: 3] == 'grep' || preview_wid < 0
         return
     endif
     var [path, linenr, colnr] = ParseAgStr(cur_menu_item)
@@ -272,7 +272,7 @@ def Profiling()
     profile func Reducer
 enddef
 
-export def Start(...keyword: list<any>)
+export def Start(windows: dict<any>, ...keyword: list<any>)
     cwd = getcwd()
     cwdlen = len(cwd)
     cur_pattern = ''
@@ -286,23 +286,23 @@ export def Start(...keyword: list<any>)
     last_result = []
     cur_dict = {}
 
-    var winds = selector.Start([],
+    var wids = selector.Start([],
      {
-         select_cb:  function('Select'),
-         input_cb:  function('Input'),
-         preview_cb:  function('Preview'),
-         preview:  1,
-         scrollbar:  0,
-         close_cb:  function('CloseCb'),
+        select_cb:  function('Select'),
+        input_cb:  function('Input'),
+        preview_cb:  function('Preview'),
+        preview:  windows.preview,
+        preview_ratio: 0.5,
+        width: 0.8, 
+        scrollbar:  0,
+        close_cb:  function('CloseCb'),
      })
-    menu_wid = winds[0]
-    preview_wid = winds[2]
+    menu_wid = wids.menu
+    preview_wid = wids.preview
     setwinvar(menu_wid, '&wrap', 0)
-    # setwinvar(preview_wid, '&cursorline', 1)
-    # setwinvar(preview_wid, '&cursorlineopt', 'line')
     ag_update_tid = timer_start(100, function('AgUpdateMenu'), {'repeat': -1})
     if len(keyword) > 0
-        popup.SetPrompt(winds[1], keyword[0])
+        popup.SetPrompt(wids.prompot, keyword[0])
     endif
     # Profiling()
 enddef

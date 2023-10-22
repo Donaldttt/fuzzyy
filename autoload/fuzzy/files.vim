@@ -156,6 +156,9 @@ def Preview(wid: number, opts: dict<any>)
     if enable_devicons
         result = strcharpart(result, devicon_char_width + 1)
     endif
+    if !has_key(opts.win_opts.partids, 'preview')
+        return
+    endif
     var preview_wid = opts.win_opts.partids['preview']
     if !filereadable(result)
         if result == ''
@@ -251,7 +254,7 @@ def Close(wid: number, opts: dict<any>)
     timer_stop(files_update_tid)
 enddef
 
-export def Start(...args: list<any>)
+export def Start(windows: dict<any>, ...args: list<any>)
     last_result_len = -1
     cur_result = []
     cur_pattern = ''
@@ -259,12 +262,14 @@ export def Start(...args: list<any>)
     cwd = getcwd()
     cwdlen = len(cwd)
     in_loading = 1
-    var winds = selector.Start([], {
+    var wids = selector.Start([], {
         select_cb:  function('Select'),
         preview_cb:  function('Preview'),
         input_cb:  function('Input'),
         close_cb:  function('Close'),
-        preview:  1,
+        preview:  windows.preview,
+        width: windows.width,
+        preview_ratio: windows.preview_ratio,
         scrollbar: 0,
         enable_devicons: enable_devicons,
         key_callbacks: selector.split_edit_callbacks,
@@ -276,7 +281,7 @@ export def Start(...args: list<any>)
         cmd = cmdstr
     endif
     FilesJobStart(cwd, cmd)
-    menu_wid = winds[0]
+    menu_wid = wids.menu
     timer_start(50, function('FilesUpdateMenu'))
     files_update_tid = timer_start(400, function('FilesUpdateMenu'), {'repeat': -1})
     # Profiling()

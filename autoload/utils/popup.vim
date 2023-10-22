@@ -531,7 +531,7 @@ enddef
 #       - input_cb: callback function when user input something
 # return:
 #   [menu_wid, prompt_wid, preview_wid]
-export def PopupSelection(user_opts: dict<any>): list<number>
+export def PopupSelection(user_opts: dict<any>): dict<any>
     triger_userautocmd = 1
     key_callbacks = has_key(user_opts, 'key_callbacks') ? user_opts.key_callbacks : {}
     var has_preview = has_key(user_opts, 'preview') && user_opts.preview
@@ -622,7 +622,12 @@ export def PopupSelection(user_opts: dict<any>): list<number>
         prompt:  prompt_wid,
     }
 
-    var ret = [menu_wid, prompt_wid]
+    var ret = {
+        menu: menu_wid,
+        prompt: prompt_wid,
+        preview: -1,
+        info: -1,
+    }
     if has_preview
         var preview_xoffset =  popup_wins[menu_wid].col + popup_wins[menu_wid].width
         var menu_row        =  popup_wins[menu_wid].line
@@ -637,9 +642,9 @@ export def PopupSelection(user_opts: dict<any>): list<number>
             xoffset:  preview_xoffset + 2,
             zindex:  1100,
         }
-        var preview_wid          =  PopupPreview(preview_opts)
+        var preview_wid      =  PopupPreview(preview_opts)
         connect_wins.preview =  preview_wid
-        add(ret, preview_wid)
+        ret.preview = preview_wid
     endif
 
     if has_key(user_opts, 'infowin') && user_opts.infowin
@@ -653,7 +658,7 @@ export def PopupSelection(user_opts: dict<any>): list<number>
             enable_border:  0,
         })
         connect_wins.info = info_wid
-        add(ret, info_wid)
+        ret.info = info_wid
     endif
 
     t_ve = &t_ve

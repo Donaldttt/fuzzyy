@@ -3,7 +3,6 @@ vim9script
 import autoload 'utils/selector.vim'
 import autoload 'utils/devicons.vim'
 
-const WIN_WIDTH = 0.8
 var buf_dict: dict<any>
 var devicon_char_width = devicons.GetDeviconCharWidth()
 
@@ -13,6 +12,9 @@ var enable_devicons = exists('g:fuzzyy_devicons') && exists('g:WebDevIconsGetFil
 def Preview(wid: number, opts: dict<any>)
     var result = opts.cursor_item
     if result == ''
+        return
+    endif
+    if !has_key(opts.win_opts.partids, 'preview')
         return
     endif
     var preview_wid = opts.win_opts.partids['preview']
@@ -56,23 +58,24 @@ def Close(wid: number, result: dict<any>)
     endif
 enddef
 
-export def Start()
+export def Start(windows: dict<any>)
     var buf_data = getbufinfo({'buflisted': 1, 'bufloaded': 1})
     buf_dict = {}
     var bufs = reduce(buf_data, (acc, buf) => {
         var file = fnamemodify(buf.name, ":~:.")
-        if len(file) > WIN_WIDTH / 2 * &columns
+        if len(file) > windows.width / 2 * &columns
             file = pathshorten(file)
         endif
         acc[file] = [buf.name, buf.bufnr, buf.lnum]
         return acc
     }, buf_dict)
-    var winds = selector.Start(keys(bufs), {
+    var wids = selector.Start(keys(bufs), {
         preview_cb:  function('Preview'),
         close_cb:  function('Close'),
-        width: WIN_WIDTH,
         dropdown: 0,
-        preview:  1,
+        preview: windows.preview,
+        width: windows.width,
+        preview_ratio: windows.preview_ratio,
         scrollbar: 0,
         enable_devicons: enable_devicons,
         key_callbacks: selector.split_edit_callbacks,

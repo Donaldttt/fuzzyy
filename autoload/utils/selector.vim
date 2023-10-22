@@ -329,7 +329,7 @@ export var split_edit_callbacks = {
 # return:
 #   - a list [menu_wid, prompt_wid]
 #   - if has preview = 1, then return [menu_wid, prompt_wid, preview_wid]
-export def Start(li_raw: list<string>, opts: dict<any>): list<number>
+export def Start(li_raw: list<string>, opts: dict<any>): dict<any>
     cwd = getcwd()
     prompt_str = ''
 
@@ -340,16 +340,11 @@ export def Start(li_raw: list<string>, opts: dict<any>): list<number>
     opts.input_cb = has_key(opts, 'input_cb') ? opts.input_cb : function('Input')
     opts.dropdown = enable_dropdown
 
-    var ret = popup.PopupSelection(opts)
-    const win_types = ['menu', 'prompt', 'preview', 'info']
-    for i in range(len(ret))
-        windows[win_types[i]] = ret[i]
-    endfor
-    menu_wid = ret[0]
+    windows = popup.PopupSelection(opts)
+    menu_wid = windows.menu
     fzf_list = li_raw
     var li = copy(li_raw)
     if enable_devicons
-         # map(li, 'g:WebDevIconsGetFileTypeSymbol(v:val) .. " " .. v:val')
          devicons.AddDevicons(li)
     endif
     popup.MenuSetText(menu_wid, li)
@@ -358,5 +353,5 @@ export def Start(li_raw: list<string>, opts: dict<any>): list<number>
     endif
 
     autocmd User PopupClosed ++once Cleanup()
-    return ret
+    return windows
 enddef

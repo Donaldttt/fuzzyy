@@ -12,6 +12,42 @@ g:loaded_fuzzyy = 1
 g:enable_fuzzyy_keymaps = exists('g:enable_fuzzyy_keymaps') ? g:enable_fuzzyy_keymaps : 1
 g:enable_fuzzyy_MRU_files = exists('g:enable_fuzzyy_MRU_files') ? g:enable_fuzzyy_MRU_files : 0
 
+var windows = {
+    FuzzyFiles: {
+        preview: 1,
+        preview_ratio: 0.5,
+        width: 0.8,
+    },
+    FuzzyGrep: {
+        preview: 1,
+        preview_ratio: 0.5,
+        width: 0.8,
+    },
+    FuzzyBuffers: {
+        preview: 1,
+        preview_ratio: 0.5,
+        width: 0.8,
+    },
+    FuzzyMRUFiles: {
+        preview: 1,
+        preview_ratio: 0.5,
+        width: 0.8,
+    },
+    FuzzyHighlights: {
+        preview: 1,
+        preview_ratio: 0.7,
+        width: 0.8,
+    },
+}
+
+if exists('g:fuzzyy_window_layout') && type(g:fuzzyy_window_layout) == v:t_dict
+    for [key, value] in items(windows)
+        if has_key(g:fuzzyy_window_layout, key)
+            windows[key] = extend(value, g:fuzzyy_window_layout[key])
+        endif
+    endfor
+endif
+
 import autoload '../autoload/fuzzy/commands.vim'
 import autoload '../autoload/fuzzy/ag.vim'
 import autoload '../autoload/fuzzy/files.vim'
@@ -21,19 +57,19 @@ import autoload '../autoload/fuzzy/inbuffer.vim'
 import autoload '../autoload/fuzzy/buffers.vim'
 import autoload '../autoload/fuzzy/highlights.vim'
 
-command! -nargs=? FuzzyGrep ag.Start(<f-args>)
-command! -nargs=0 FuzzyFiles files.Start()
+command! -nargs=? FuzzyGrep ag.Start(windows.FuzzyGrep, <f-args>)
+command! -nargs=0 FuzzyFiles files.Start(windows.FuzzyFiles)
 command! -nargs=0 FuzzyHelps helps.Start()
 command! -nargs=0 FuzzyColors colors.Start()
 command! -nargs=? FuzzyInBuffer inbuffer.Start(<f-args>)
 command! -nargs=0 FuzzyCommands commands.Start()
-command! -nargs=0 FuzzyBuffers buffers.Start()
-command! -nargs=0 FuzzyHighlights highlights.Start()
-command! -nargs=0 FuzzyGitFiles files.Start('git ls-files')
+command! -nargs=0 FuzzyBuffers buffers.Start(windows.FuzzyBuffers)
+command! -nargs=0 FuzzyHighlights highlights.Start(windows.FuzzyHighlights)
+command! -nargs=0 FuzzyGitFiles files.Start(windows.FuzzyFiles, 'git ls-files')
 
 if g:enable_fuzzyy_MRU_files
     import autoload '../autoload/fuzzy/mru.vim'
-    command! -nargs=0 FuzzyMRUFiles mru.Start()
+    command! -nargs=0 FuzzyMRUFiles mru.Start(windows.FuzzyMRUFiles)
 endif
 
 if g:enable_fuzzyy_keymaps

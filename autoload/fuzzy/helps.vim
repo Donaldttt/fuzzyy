@@ -101,7 +101,7 @@ export def Start()
     cur_pattern = ''
     tag_table = Tags()
     last_parttern = ''
-    var winds = selector.Start(keys(tag_table), {
+    var wids = selector.Start(keys(tag_table), {
         preview_cb: function('Preview'),
         close_cb:   function('CloseCb'),
         input_cb:   function('Input'),
@@ -112,7 +112,7 @@ export def Start()
         width: 0.5,
         dropdown: 1,
     })
-    menu_wid = winds[0]
+    menu_wid = wids.menu
     # popup_setoptions(menu_wid, {'title': string(len(tag_table))})
     update_tid = timer_start(20, function('HelpsUpdateMenu'), {'repeat': -1})
 enddef

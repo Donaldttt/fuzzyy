@@ -59,7 +59,7 @@ def AddHighlight(preview_wid: number)
     }, {repeat: -1})
 enddef
 
-export def Start()
+export def Start(windows: dict<any>)
     var highlights_raw = substitute(execute('hi'), "\n", " ", "g") .. ' fuzzyy_dummyy xxx'
     var highlights: list<any> = []
     def Helper(s: any): number
@@ -77,21 +77,23 @@ export def Start()
         hl_meta[name] = [idx + 1, xxxidx]
     endfor
 
-    var [menu_wid, _, preview_wid] = selector.Start(keys(hl_meta), {
+    var wids = selector.Start(keys(hl_meta), {
         preview_cb: function('Preview'),
         close_cb: function('Close'),
-        preview: 1,
-        width: 0.8,
+        preview: windows.preview,
+        width: windows.width,
+        preview_ratio: windows.preview_ratio,
         scrollbar: 0,
-        preview_ratio: 0.7,
         key_callbacks: key_callbacks,
     })
+
+    var preview_wid = wids.preview
+    var menu_wid = wids.menu
 
     setwinvar(preview_wid, '&number', 0)
     popup_setoptions(menu_wid, {'title': len(hl_meta)})
     # set preview buffer's content
     popup_settext(preview_wid, highlights)
-    # AddHighlight(preview_wid)
     for [hl, parts] in items(hl_meta)
         # add highlight to preview buffer
         var line = parts[0]
