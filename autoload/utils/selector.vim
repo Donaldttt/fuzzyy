@@ -272,7 +272,13 @@ def CloseVSplit(wid: number, result: dict<any>)
         if enable_devicons
             buf = strcharpart(buf, devicon_char_width + 1)
         endif
-        execute 'vs ' .. buf
+        var bufnr = bufnr(buf)
+        if bufnr >= 0
+            # this is necessary for special buffer like terminal buffers
+            execute 'vert sb ' .. bufnr
+        else
+            execute 'vsp ' .. buf
+        endif
     endif
 enddef
 
@@ -282,7 +288,12 @@ def CloseSplit(wid: number, result: dict<any>)
         if enable_devicons
             buf = strcharpart(buf, devicon_char_width + 1)
         endif
-        execute 'sp ' .. buf
+        var bufnr = bufnr(buf)
+        if bufnr >= 0
+            execute 'sb ' .. bufnr
+        else
+            execute 'sp ' .. buf
+        endif
     endif
 enddef
 
