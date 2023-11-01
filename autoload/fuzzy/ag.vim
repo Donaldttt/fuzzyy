@@ -11,6 +11,7 @@ var sep_pattern = '\:\d\+:\d\+:'
 var loading = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
 
 var cmd: string
+# TODO no windows default
 if executable('ag')
     cmd = ag_cmd
 elseif executable('rg')
@@ -273,6 +274,9 @@ def Profiling()
 enddef
 
 export def Start(windows: dict<any>, ...keyword: list<any>)
+    if cmd == ''
+        echom ['ag or rg or grep is required']
+    endif
     cwd = getcwd()
     cwdlen = len(cwd)
     cur_pattern = ''
