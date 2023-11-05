@@ -1,4 +1,4 @@
-vim9scrip
+vim9script
 
 import autoload 'utils/selector.vim'
 import autoload 'utils/popup.vim'
