@@ -306,7 +306,7 @@ export def Start(windows: dict<any>, ...keyword: list<any>)
     setwinvar(menu_wid, '&wrap', 0)
     ag_update_tid = timer_start(100, function('AgUpdateMenu'), {'repeat': -1})
     if len(keyword) > 0
-        popup.SetPrompt(wids.prompot, keyword[0])
+        popup.SetPrompt(wids.prompt, keyword[0])
     endif
     # Profiling()
 enddef
