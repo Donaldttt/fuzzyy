@@ -13,6 +13,9 @@ var keymaps: dict<any> = {
     'menu_select': ["\<CR>"],
     'preview_up': ["\<c-u>"],
     'preview_down': ["\<c-d>"],
+    'cursor_begining': ["\<c-a>"],
+    'cursor_end': ["\<c-e>"],
+    'delete_all': ["\<c-k>"],
     'exit': ["\<Esc>", "\<c-c>", "\<c-[>"],
 }
 
@@ -131,13 +134,13 @@ export def SetPrompt(wid: number, content: string)
 enddef
 
 def PromptFilter(wid: number, key: string): number
-    # echo [key, strgetchar(key, 0), strcharlen(key), strtrans(key)]
+    echo [key, key == "\<c-f>", char2nr(key)]
     var bufnr = popup_wins[wid].bufnr
     var line = popup_wins[wid].prompt.line
     var cur_pos = popup_wins[wid].cursor_args.cur_pos
     var max_pos = popup_wins[wid].cursor_args.max_pos
     var last_displayed_line = popup_wins[wid].prompt.displayed_line
-    if len(key) == 1
+    if len(key) == 1 && char2nr(key) >= 32 && char2nr(key) <= 126
         var ascii_val = char2nr(key)
         if ascii_val >= 32 && ascii_val <= 126
             if cur_pos == len(line)
@@ -161,16 +164,23 @@ def PromptFilter(wid: number, key: string): number
           0,
           cur_pos - 1
           ])
-    elseif key == "\<Left>" || key == "\<C-f>"
-            popup_wins[wid].cursor_args.cur_pos = max([
-              0,
-              cur_pos - 1
-              ])
-    elseif key == "\<Right>" || key == "\<C-b>"
+    elseif key == "\<Left>" || key == "\<c-b>"
+        popup_wins[wid].cursor_args.cur_pos = max([
+          0,
+          cur_pos - 1
+          ])
+    elseif key == "\<Right>" || key == "\<c-f>"
         popup_wins[wid].cursor_args.cur_pos = min([
           max_pos,
           cur_pos + 1
           ])
+    elseif index(keymaps['cursor_begining'], key) >= 0
+        popup_wins[wid].cursor_args.cur_pos = 0
+    elseif index(keymaps['cursor_end'], key) >= 0
+        popup_wins[wid].cursor_args.cur_pos = max_pos
+    elseif index(keymaps['delete_all'], key) >= 0
+        popup_wins[wid].cursor_args.cur_pos = 0
+        line = ''
     else
         # catch all unhandled keys
         return 1
@@ -246,7 +256,6 @@ def MenuFilter(wid: number, key: string): number
 enddef
 
 def PreviewFilter(wid: number, key: string): number
-    # echom key
     if index(keymaps['preview_up'], key) >= 0
         win_execute(wid, 'norm k')
     elseif index(keymaps['preview_down'], key) >= 0
