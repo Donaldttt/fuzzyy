@@ -111,6 +111,9 @@ let g:fuzzyy_keymaps = {
 \     'menu_select': ["\<CR>"],
 \     'preview_up': ["\<c-u>"],
 \     'preview_down': ["\<c-d>"],
+\     'cursor_begining': ["\<c-a>"],
+\     'cursor_end': ["\<c-e>"],
+\     'delete_all': ["\<c-k>"],
 \     'exit': ["\<Esc>", "\<c-c>", "\<c-[>"],
 \ }
 
