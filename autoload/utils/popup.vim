@@ -134,7 +134,6 @@ export def SetPrompt(wid: number, content: string)
 enddef
 
 def PromptFilter(wid: number, key: string): number
-    echo [key, key == "\<c-f>", char2nr(key)]
     var bufnr = popup_wins[wid].bufnr
     var line = popup_wins[wid].prompt.line
     var cur_pos = popup_wins[wid].cursor_args.cur_pos
