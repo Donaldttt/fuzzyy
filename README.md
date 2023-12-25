@@ -111,9 +111,9 @@ let g:fuzzyy_keymaps = {
 \     'menu_select': ["\<CR>"],
 \     'preview_up': ["\<c-u>"],
 \     'preview_down': ["\<c-d>"],
-\     'cursor_begining': ["\<c-a>"],
-\     'cursor_end': ["\<c-e>"],
-\     'delete_all': ["\<c-k>"],
+\     'cursor_begining': ["\<c-a>"],  " move cursor to the begining of the line in the prompt
+\     'cursor_end': ["\<c-e>"],       " move cursor to the end of the line in the prompt
+\     'delete_all': ["\<c-k>"],       " delete whole line of the prompt
 \     'exit': ["\<Esc>", "\<c-c>", "\<c-[>"],
 \ }
 
