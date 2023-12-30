@@ -180,6 +180,9 @@ def PromptFilter(wid: number, key: string): number
     elseif index(keymaps['delete_all'], key) >= 0
         popup_wins[wid].cursor_args.cur_pos = 0
         line = ''
+    elseif index(keymaps['delete_prefix'], key) >= 0
+        popup_wins[wid].cursor_args.cur_pos = 0
+        line = line[cur_pos :]
     else
         # catch all unhandled keys
         return 1
