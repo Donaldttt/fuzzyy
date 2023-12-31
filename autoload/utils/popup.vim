@@ -16,6 +16,7 @@ var keymaps: dict<any> = {
     'cursor_begining': ["\<c-a>"],
     'cursor_end': ["\<c-e>"],
     'delete_all': ["\<c-k>"],
+    'delete_prefix': [],
     'exit': ["\<Esc>", "\<c-c>", "\<c-[>"],
 }
 
