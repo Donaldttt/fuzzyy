@@ -111,11 +111,11 @@ let g:fuzzyy_keymaps = {
 \     'menu_select': ["\<CR>"],
 \     'preview_up': ["\<c-u>"],
 \     'preview_down': ["\<c-d>"],
-\     'cursor_begining': ["\<c-a>"],  " move cursor to the begining of the line in the prompt
-\     'cursor_end': ["\<c-e>"],       " move cursor to the end of the line in the prompt
-\     'delete_all': ["\<c-k>"],       " delete whole line of the prompt
-\.    'delete_prefix': [],            " delete to the start of the line'
-\     'exit': ["\<Esc>", "\<c-c>", "\<c-[>"],
+\     'cursor_begining': ["\<c-a>"],          " move cursor to the begining of the line in the prompt
+\     'cursor_end': ["\<c-e>"],               " move cursor to the end of the line in the prompt
+\     'delete_all': ["\<c-k>"],               " delete whole line of the prompt
+\.    'delete_prefix': [],                    " delete to the start of the line
+\     'exit': ["\<Esc>", "\<c-c>", "\<c-[>"], " exit fuzzyy
 \ }
 
 " Change highlight of the matched text when searching
