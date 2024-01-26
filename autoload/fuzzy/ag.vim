@@ -104,7 +104,7 @@ def AgJobStart(pattern: string)
         return
     endif
     job_running = 1
-    var cmd_str = printf(cmd, pattern, cwd)
+    var cmd_str = printf(cmd, escape(pattern, '"'), escape(cwd, '"'))
     jid = job_start(cmd_str, {
         out_cb: function('JobHandler'),
         out_mode: 'raw',
