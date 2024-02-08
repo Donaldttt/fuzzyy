@@ -167,7 +167,6 @@ def Worker(tid: number)
         # merge continus number
         var poss_result = MergeContinusNumber(poss[idx])
 
-        var t = copy(poss_result)
         # convert char index to byte index for highlighting
         for idx2 in range(len(poss_result))
             var temp = []
