@@ -141,7 +141,6 @@ def PromptFilter(wid: number, key: string): number
     var max_pos = popup_wins[wid].cursor_args.max_pos
     var last_displayed_line = popup_wins[wid].prompt.displayed_line
     var ascii_val = char2nr(key)
-    echom [key, ascii_val, cur_pos, len(line)]
     if (len(key) == 1 && ascii_val >= 32 && ascii_val <= 126)
         || (ascii_val >= 19968 && ascii_val <= 205743) # chinese or more character support
         if cur_pos == len(line)
@@ -199,7 +198,6 @@ def PromptFilter(wid: number, key: string): number
     # cursor hl
     var hl = popup_wins[wid].cursor_args.highlight
     matchdelete(popup_wins[wid].cursor_args.mid, wid)
-    echom [cur_pos, len(join(line[: cur_pos - 1], '')), line[: cur_pos]]
     var hi_end_pos = promptchar_len + 1
     if cur_pos > 0
         hi_end_pos += len(join(line[: cur_pos - 1], ''))
