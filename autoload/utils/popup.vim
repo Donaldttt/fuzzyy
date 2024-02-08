@@ -136,69 +136,59 @@ enddef
 
 def PromptFilter(wid: number, key: string): number
     var bufnr = popup_wins[wid].bufnr
-    var line = popup_wins[wid].prompt.line
-    var cur_pos = popup_wins[wid].cursor_args.cur_pos
+    var line = copy(popup_wins[wid].prompt.line)
+    var cur_pos = popup_wins[wid].cursor_args.cur_pos # index by number of char not byte
     var max_pos = popup_wins[wid].cursor_args.max_pos
     var last_displayed_line = popup_wins[wid].prompt.displayed_line
-    if len(key) == 1 && char2nr(key) >= 32 && char2nr(key) <= 126
-        var ascii_val = char2nr(key)
-        if ascii_val >= 32 && ascii_val <= 126
-            if cur_pos == len(line)
-                line ..= key
-            else
-                var pre = cur_pos - 1 >= 0 ? line[: cur_pos - 1] : ''
-                line = pre .. key .. line[cur_pos :]
-            endif
-            popup_wins[wid].cursor_args.cur_pos += 1
+    var ascii_val = char2nr(key)
+    if (len(key) == 1 && ascii_val >= 32 && ascii_val <= 126)
+        || (ascii_val >= 19968 && ascii_val <= 205743) # chinese or more character support
+        if cur_pos == len(line)
+            line->add(key)
         else
-            return 1
+            var pre = cur_pos - 1 >= 0 ? line[: cur_pos - 1] : []
+            line = pre + [key] + line[cur_pos :]
         endif
+        cur_pos += 1
     elseif key == "\<bs>"
         if cur_pos == len(line)
             line = line[: -2]
         else
-            var before = cur_pos - 2 >= 0 ? line[: cur_pos - 2] : ''
-            line = before .. line[cur_pos :]
+            var before = cur_pos - 2 >= 0 ? line[: cur_pos - 2] : []
+            line = before + line[cur_pos :]
         endif
-        popup_wins[wid].cursor_args.cur_pos = max([
-          0,
-          cur_pos - 1
-          ])
+        cur_pos = max([ 0, cur_pos - 1 ])
     elseif key == "\<Left>" || key == "\<c-b>"
-        popup_wins[wid].cursor_args.cur_pos = max([
-          0,
-          cur_pos - 1
-          ])
+        cur_pos = max([ 0, cur_pos - 1 ])
     elseif key == "\<Right>" || key == "\<c-f>"
-        popup_wins[wid].cursor_args.cur_pos = min([
-          max_pos,
-          cur_pos + 1
-          ])
+        cur_pos = min([ max_pos, cur_pos + 1 ])
     elseif index(keymaps['cursor_begining'], key) >= 0
-        popup_wins[wid].cursor_args.cur_pos = 0
+        cur_pos = 0
     elseif index(keymaps['cursor_end'], key) >= 0
-        popup_wins[wid].cursor_args.cur_pos = max_pos
+        cur_pos = max_pos
     elseif index(keymaps['delete_all'], key) >= 0
-        popup_wins[wid].cursor_args.cur_pos = 0
-        line = ''
+        line = []
+        cur_pos = 0
     elseif index(keymaps['delete_prefix'], key) >= 0
-        popup_wins[wid].cursor_args.cur_pos = 0
         line = line[cur_pos :]
+        cur_pos = 0
     else
         # catch all unhandled keys
         return 1
     endif
+    popup_wins[wid].cursor_args.cur_pos = cur_pos
 
+    var line_str = join(line, '')
     if has_key(popup_wins[wid].prompt, 'input_cb') && popup_wins[wid].prompt.line != line
         var prompt = popup_wins[wid].prompt.promptchar
-        var displayed_line = prompt .. line .. " "
+        var displayed_line = prompt .. line_str .. " "
         popup_settext(wid, displayed_line)
         popup_wins[wid].prompt.displayed_line = displayed_line
         popup_wins[wid].prompt.line = line
         # after a keystroke, we need to update the menu popup to display
         # appropriate content
         popup_wins[wid].prompt.input_cb(wid, {
-                str: line,
+                str: line_str,
                 win_opts: popup_wins[wid]})
     endif
 
@@ -207,9 +197,12 @@ def PromptFilter(wid: number, key: string): number
 
     # cursor hl
     var hl = popup_wins[wid].cursor_args.highlight
-    cur_pos = popup_wins[wid].cursor_args.cur_pos
     matchdelete(popup_wins[wid].cursor_args.mid, wid)
-    var mid = matchaddpos(hl, [[1, promptchar_len + 1 + cur_pos]], 10, -1,  {window: wid})
+    var hi_end_pos = promptchar_len + 1
+    if cur_pos > 0
+        hi_end_pos += len(join(line[: cur_pos - 1], ''))
+    endif
+    var mid = matchaddpos(hl, [[1, hi_end_pos]], 10, -1, {window: wid})
     popup_wins[wid].cursor_args.mid = mid
     return 1
 enddef
@@ -463,7 +456,7 @@ def PopupPrompt(args: dict<any>): number
     var prompt_char     =  has_key(args, 'prompt') ? args.prompt : '> '
     var prompt_char_len =  strcharlen(prompt_char)
     var prompt_opt      =  {
-     line:  '',
+     line:  [],
      promptchar:  prompt_char,
      displayed_line:  prompt_char .. " ",
      }
