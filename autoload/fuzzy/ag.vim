@@ -296,8 +296,8 @@ export def Start(windows: dict<any>, ...keyword: list<any>)
         input_cb:  function('Input'),
         preview_cb:  function('Preview'),
         preview:  windows.preview,
-        preview_ratio: 0.5,
-        width: 0.8, 
+        width: windows.width,
+        preview_ratio: windows.preview_ratio,
         scrollbar:  0,
         close_cb:  function('CloseCb'),
      })
