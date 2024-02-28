@@ -107,6 +107,18 @@ export def FuzzySearch(li: list<string>, pattern: string, ...args: list<any>): l
     for idx in range(0, len(strs) - 1)
         add(str_list, strs[idx])
         var poss_result = MergeContinusNumber(poss[idx])
+
+        # convert char index to byte index for highlighting
+        for idx2 in range(len(poss_result))
+            var temp = []
+            var r = poss_result[idx2]
+            add(temp, byteidx(strs[idx], r[0] - 1) + 1)
+            if len(poss_result[idx2]) == 2
+                add(temp, byteidx(strs[idx], r[0] - 1 + r[1]) + 1 - temp[0])
+            endif
+            poss_result[idx2] = temp
+        endfor
+
         hl_list += reduce(poss_result, (acc, val) => add(acc, [idx + 1] + val), [])
     endfor
     return [str_list, hl_list]
@@ -119,7 +131,7 @@ var async_results: list<any>
 var async_tid: number
 var AsyncCb: func
 
-# merge continus numbers and convert than from string index to vim column
+# merge continus numbers and convert them from string index to vim column
 # [1,3] means [start index, length
 # eg. [1,2,3,4,5,7,9] -> [[1,5], [7], [9]]
 # eg. [2,3,4,5,6,8,10] -> [[2,5], [8], [10]]
