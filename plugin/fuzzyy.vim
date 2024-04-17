@@ -12,6 +12,10 @@ g:loaded_fuzzyy = 1
 g:enable_fuzzyy_keymaps = exists('g:enable_fuzzyy_keymaps') ? g:enable_fuzzyy_keymaps : 1
 g:enable_fuzzyy_MRU_files = exists('g:enable_fuzzyy_MRU_files') ? g:enable_fuzzyy_MRU_files : 0
 
+var default_exclude_dir = ['.git', '.svn']
+g:fuzzyy_grep_exclude_dir = exists('g:fuzzyy_grep_exclude_dir') ? 
+    g:fuzzyy_grep_exclude_dir : default_exclude_dir
+
 # window layout
 # you can override it by setting g:fuzzyy_window_layout
 # e.g. let g:fuzzyy_window_layout = { 'FuzzyFiles': { 'preview': 0 } }

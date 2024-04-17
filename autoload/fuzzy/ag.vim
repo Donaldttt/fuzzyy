@@ -4,22 +4,29 @@ import autoload 'utils/selector.vim'
 import autoload 'utils/popup.vim'
 
 var max_count = 1000
-var rg_cmd = 'rg --column -M200 --vimgrep --max-count=' .. max_count .. ' -F "%s" "%s"'
-var ag_cmd = 'ag --column -W200 --vimgrep --max-count=' .. max_count .. ' -F "%s" "%s"'
-var grep_cmd = 'grep -n -r --max-count=' .. max_count .. ' "%s" "%s"'
+var rg_cmd = ['rg --column -M200 --vimgrep --max-count=' .. max_count, '-F "%s" "%s"']
+var ag_cmd = ['ag --column -W200 --vimgrep --max-count=' .. max_count, '-F "%s" "%s"']
+var grep_cmd = ['grep -n -r --max-count=' .. max_count, '"%s" "%s"']
 var sep_pattern = '\:\d\+:\d\+:'
 var loading = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
 
-var cmd: string
+def Config()
+enddef
+
+
+var cmd = []
+var exclude_dir = ''
 # TODO no windows default
 if executable('ag')
     cmd = ag_cmd
 elseif executable('rg')
     cmd = rg_cmd
 elseif executable('grep')
+    exclude_dir = join(map(g:fuzzyy_grep_exclude_dir, '"--exclude-dir=\"" .. v:val .. "\""'), " ")
     cmd = grep_cmd
     sep_pattern = '\:\d\+:'
 endif
+cmd = insert(cmd, exclude_dir, 1)
 
 var cwd: string
 var cwdlen = -1
@@ -104,7 +111,7 @@ def AgJobStart(pattern: string)
         return
     endif
     job_running = 1
-    var cmd_str = printf(cmd, escape(pattern, '"'), escape(cwd, '"'))
+    var cmd_str = printf(join(cmd, " "), escape(pattern, '"'), escape(cwd, '"'))
     jid = job_start(cmd_str, {
         out_cb: function('JobHandler'),
         out_mode: 'raw',
@@ -144,7 +151,7 @@ def Input(wid: number, args: dict<any>, ...li: list<any>)
 enddef
 
 def UpdatePreviewHl()
-    if !has_key(cur_dict, cur_menu_item) || cmd[: 3] == 'grep' || preview_wid < 0
+    if !has_key(cur_dict, cur_menu_item) || cmd[0][: 3] == 'grep' || preview_wid < 0
         return
     endif
     var [path, linenr, colnr] = ParseAgStr(cur_menu_item)
@@ -245,7 +252,7 @@ def AgUpdateMenu(...li: list<any>)
     endif
 
     var hl_list = cols
-    if cmd[: 3] == 'grep'
+    if cmd[0][: 3] == 'grep'
         hl_list = []
     endif
 
@@ -274,7 +281,7 @@ def Profiling()
 enddef
 
 export def Start(windows: dict<any>, ...keyword: list<any>)
-    if cmd == ''
+    if len(cmd) == 0
         echom ['ag or rg or grep is required']
     endif
     cwd = getcwd()
