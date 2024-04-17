@@ -15,7 +15,7 @@ It ultilizes vim's native matchfuzzypos function and popup window feature.
 - vim > 9.0
     - The maintained version is written in vim9, but it also has a vim8 branch for older vim.
 - any of grep, ag or rg
-- find
+- find or fd
 - [vim-devicons](https://github.com/ryanoasis/vim-devicons) (optional)
 
 ## Install
