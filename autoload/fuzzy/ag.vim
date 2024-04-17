@@ -275,7 +275,8 @@ enddef
 
 export def Start(windows: dict<any>, ...keyword: list<any>)
     if cmd == ''
-        echom ['ag or rg or grep is required']
+        echoe 'Please install ag, rg or grep to run :FuzzyGrep'
+        return
     endif
     cwd = getcwd()
     cwdlen = len(cwd)
