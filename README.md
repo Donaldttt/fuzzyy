@@ -37,6 +37,7 @@ Plug 'Donaldttt/fuzzyy'
 | FuzzyColors     | search installed colorscheme   | \<leader>fc    |
 | FuzzyInBuffer  \<args> | search lines in current buffer. if argument is given, it will search the \<args> | \<leader>fb    |
 | FuzzyCommands   | search commands                | \<leader>fi    |
+| FuzzyCmdHistory |  search command history  | None    |
 | FuzzyBuffers    | search opened buffers          | \<leader>ft    |
 | FuzzyHighlights | search highlights              | \<leader>fh    |
 | FuzzyMRUFiles | search the most recent used files. set g:enable_fuzzyy_MRU_files = 1 to enable this command(not enable by default)    | \<leader>fm    |

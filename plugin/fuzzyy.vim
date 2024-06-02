@@ -60,6 +60,7 @@ import autoload '../autoload/fuzzy/colors.vim'
 import autoload '../autoload/fuzzy/inbuffer.vim'
 import autoload '../autoload/fuzzy/buffers.vim'
 import autoload '../autoload/fuzzy/highlights.vim'
+import autoload '../autoload/fuzzy/cmdhistory.vim'
 
 command! -nargs=? FuzzyGrep ag.Start(windows.FuzzyGrep, <f-args>)
 command! -nargs=0 FuzzyFiles files.Start(windows.FuzzyFiles)
@@ -70,6 +71,7 @@ command! -nargs=0 FuzzyCommands commands.Start()
 command! -nargs=0 FuzzyBuffers buffers.Start(windows.FuzzyBuffers)
 command! -nargs=0 FuzzyHighlights highlights.Start(windows.FuzzyHighlights)
 command! -nargs=0 FuzzyGitFiles files.Start(windows.FuzzyFiles, 'git ls-files')
+command! -nargs=0 FuzzyCmdHistory cmdhistory.Start()
 
 if g:enable_fuzzyy_MRU_files
     import autoload '../autoload/fuzzy/mru.vim'
