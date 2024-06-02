@@ -349,8 +349,8 @@ export var split_edit_callbacks = {
 # params:
 #   - list: list of string to be selected. can be empty at init state
 #   - opts: dict of options
-#       - comfirm_cb: callback to be called when user select an item.
-#           comfirm_cb(menu_wid, result). result is a list like ['selected item']
+#       - select_cb: callback to be called when user select an item.
+#           select_cb(menu_wid, result). result is a list like ['selected item']
 #       - preview_cb: callback to be called when user move cursor on an item.
 #           preview_cb(menu_wid, result). result is a list like ['selected item', opts]
 #       - input_cb: callback to be called when user input something. If input_cb
@@ -365,8 +365,12 @@ export var split_edit_callbacks = {
 #       - scrollbar: wheather to show scrollbar in the menu window.
 #       - preview_ratio: ratio of the preview window. default 0.5
 # return:
-#   - a list [menu_wid, prompt_wid]
-#   - if has preview = 1, then return [menu_wid, prompt_wid, preview_wid]
+#   A dictionary:
+#    {
+#        menu: menu_wid,
+#        prompt: prompt_wid,
+#        preview: preview_wid,
+#    }
 export def Start(li_raw: list<string>, opts: dict<any>): dict<any>
     cwd = getcwd()
     prompt_str = ''

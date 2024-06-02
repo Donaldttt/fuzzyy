@@ -535,7 +535,12 @@ enddef
 #       - move_cb: callback function when cursor moves to a new value
 #       - input_cb: callback function when user input something
 # return:
-#   [menu_wid, prompt_wid, preview_wid]
+#   A dictionary:
+#    {
+#        menu: menu_wid,
+#        prompt: prompt_wid,
+#        preview: preview_wid,
+#    }
 export def PopupSelection(user_opts: dict<any>): dict<any>
     triger_userautocmd = 1
     key_callbacks = has_key(user_opts, 'key_callbacks') ? user_opts.key_callbacks : {}
