@@ -16,10 +16,7 @@ export def Start()
 
     var wins = selector.Start(cmds, {
         select_cb:  function('Select'),
-        preview:  0,
-        reverse_menu:  0,
         width:  0.6
     })
-
     popup_setoptions(wins.menu, {'title': string(len(cmds))})
 enddef
