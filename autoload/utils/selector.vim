@@ -78,6 +78,7 @@ export def GetFt(ft: string): string
     return ft
 enddef
 
+# Search pattern @pattern in a list of strings @li
 # if pattern is empty, return [li, []]
 # params:
 #  - li: list of string to be searched
@@ -86,7 +87,7 @@ enddef
 #      - limit: max number of results
 # return:
 # - a list [str_list, hl_list]
-#   - str_list: list of string to be displayed
+#   - str_list: list of search results
 #   - hl_list: list of highlight positions
 #       - [[line1, col1], [line1, col2], [line2, col1], ...]
 export def FuzzySearch(li: list<string>, pattern: string, ...args: list<any>): list<any>
