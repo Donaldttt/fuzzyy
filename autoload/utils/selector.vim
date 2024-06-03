@@ -1,8 +1,8 @@
 vim9script
 
 import autoload './popup.vim'
+import autoload './search.vim'
 import './devicons.vim'
-import './search.vim'
 
 var fzf_list: list<string>
 var cwd: string
@@ -97,7 +97,7 @@ def Input(wid: number, args: dict<any>, ...li: list<any>)
     var hl_list = []
     menu_wid = args.win_opts.partids.menu
     var ret: list<string>
-    [ret, hl_list] = FuzzySearch(fzf_list, val)
+    [ret, hl_list] = search.FuzzySearch(fzf_list, val)
 
     if enable_devicons
          map(ret, 'g:WebDevIconsGetFileTypeSymbol(v:val) .. " " .. v:val')

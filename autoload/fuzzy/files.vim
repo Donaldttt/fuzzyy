@@ -2,6 +2,7 @@ vim9script
 
 import autoload 'utils/selector.vim'
 import autoload 'utils/devicons.vim'
+import autoload 'utils/search.vim'
 
 var last_result_len: number
 var cur_pattern: string
@@ -143,7 +144,7 @@ def Input(wid: number, val: dict<any>, ...li: list<any>)
     var file_list = cur_result
 
     if pattern != ''
-        selector.FuzzySearchAsync(cur_result, cur_pattern, 200, function('AsyncCb'))
+        search.FuzzySearchAsync(cur_result, cur_pattern, 200, function('AsyncCb'))
     else
         selector.UpdateMenu(ProcessResult(cur_result, 100), [])
         popup_setoptions(menu_wid, {'title': len(cur_result)})
@@ -239,7 +240,7 @@ def FilesUpdateMenu(...li: list<any>)
     last_result_len = cur_result_len
 
         if cur_pattern != last_pattern
-            selector.FuzzySearchAsync(cur_result, cur_pattern, 200, function('AsyncCb'))
+            search.FuzzySearchAsync(cur_result, cur_pattern, 200, function('AsyncCb'))
             if cur_pattern == ''
                 selector.UpdateMenu(ProcessResult(cur_result, 100), [])
             endif

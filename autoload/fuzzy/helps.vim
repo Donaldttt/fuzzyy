@@ -1,6 +1,7 @@
 vim9script
 
 import autoload 'utils/selector.vim'
+import autoload 'utils/search.vim'
 
 var update_tid: number
 var tag_table: dict<any>
@@ -52,7 +53,7 @@ enddef
 def Input(wid: number, args: dict<any>, ...li: list<any>)
     var pattern = args.str
     cur_pattern = pattern
-    selector.FuzzySearchAsync(keys(tag_table), pattern, 200, function('AsyncCb'))
+    search.FuzzySearchAsync(keys(tag_table), pattern, 200, function('AsyncCb'))
 enddef
 
 var last_parttern: string
@@ -70,7 +71,7 @@ def HelpsUpdateMenu(...args: list<any>)
     file_lines = file_lines[STEP + 1 :]
 
     if cur_pattern != last_parttern
-        var [ret, hl_list] = selector.FuzzySearch(keys(tag_table), cur_pattern, 1000)
+        var [ret, hl_list] = search.FuzzySearch(keys(tag_table), cur_pattern, 1000)
         selector.UpdateMenu(ret, hl_list)
         last_parttern = cur_pattern
     endif
