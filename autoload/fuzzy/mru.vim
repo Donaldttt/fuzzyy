@@ -1,8 +1,8 @@
 vim9script
 
-import autoload 'utils/selector.vim'
-import autoload 'utils/devicons.vim'
-import autoload 'utils/mru.vim'
+import autoload '../utils/selector.vim'
+import autoload '../utils/devicons.vim'
+import autoload '../utils/mru.vim'
 
 var mru_origin_list: list<string>
 var devicon_char_width = devicons.GetDeviconCharWidth()

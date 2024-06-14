@@ -1,7 +1,7 @@
 vim9script
 
-import autoload 'utils/selector.vim'
-import autoload 'utils/popup.vim'
+import autoload '../utils/selector.vim'
+import autoload '../utils/popup.vim'
 
 def Select(wid: number, result: list<any>)
     exe ":leg " .. result[0]

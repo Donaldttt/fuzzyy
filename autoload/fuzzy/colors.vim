@@ -1,6 +1,6 @@
 vim9script
 
-import autoload 'utils/selector.vim'
+import autoload '../utils/selector.vim'
 
 var old_color: string
 var old_bg: string

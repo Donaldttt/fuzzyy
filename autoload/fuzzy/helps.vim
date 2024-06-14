@@ -1,6 +1,6 @@
 vim9script
 
-import autoload 'utils/selector.vim'
+import autoload '../utils/selector.vim'
 
 var update_tid: number
 var tag_table: dict<any>

@@ -1,7 +1,7 @@
 vim9script
 
-import autoload 'utils/selector.vim'
-import autoload 'utils/popup.vim'
+import autoload '../utils/selector.vim'
+import autoload '../utils/popup.vim'
 
 var max_count = 1000
 var rg_cmd = 'rg --column -M200 --vimgrep --max-count=' .. max_count .. ' -F "%s" "%s"'
