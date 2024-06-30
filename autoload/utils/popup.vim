@@ -11,8 +11,10 @@ var keymaps: dict<any> = {
     'menu_up': ["\<c-p>", "\<Up>"],
     'menu_down': ["\<c-n>", "\<Down>"],
     'menu_select': ["\<CR>"],
-    'preview_up': ["\<c-u>"],
-    'preview_down': ["\<c-d>"],
+    'preview_up': ["\<c-i>"],
+    'preview_down': ["\<c-f>"],
+    'preview_up_half_page': ["\<c-u>"],
+    'preview_down_half_page': ["\<c-d>"],
     'cursor_begining': ["\<c-a>"],
     'cursor_end': ["\<c-e>"],
     'delete_all': ["\<c-k>"],
@@ -256,6 +258,10 @@ def PreviewFilter(wid: number, key: string): number
         win_execute(wid, 'norm k')
     elseif index(keymaps['preview_down'], key) >= 0
         win_execute(wid, 'norm j')
+    elseif index(keymaps['preview_up_half_page'], key) >= 0
+        win_execute(wid, "norm \<c-u>")
+    elseif index(keymaps['preview_down_half_page'], key) >= 0
+        win_execute(wid, "norm \<c-d>")
     else
         return 0
     endif
