@@ -19,7 +19,6 @@ def Preview(wid: number, opts: dict<any>)
     endif
     var preview_wid = opts.win_opts.partids['preview']
     if enable_devicons
-        # echom [result]
         result = strcharpart(result, devicon_char_width + 1)
     endif
     var file = buf_dict[result][0]
@@ -59,17 +58,28 @@ def Close(wid: number, result: dict<any>)
 enddef
 
 export def Start(windows: dict<any>)
-    var buf_data = getbufinfo({'buflisted': 1, 'bufloaded': 1})
+    var buf_data = getbufinfo({'buflisted': 1, 'bufloaded': 0})
     buf_dict = {}
-    var bufs = reduce(buf_data, (acc, buf) => {
+
+    var exclude_buffers = exists('g:fuzzyy_buffers_exclude') ?
+        g:fuzzyy_buffers_exclude : []
+
+    reduce(buf_data, (acc, buf) => {
+        if index(exclude_buffers, fnamemodify(buf.name, ':t')) >= 0
+            return acc
+        endif
         var file = fnamemodify(buf.name, ":~:.")
         if len(file) > windows.width / 2 * &columns
             file = pathshorten(file)
         endif
-        acc[file] = [buf.name, buf.bufnr, buf.lnum]
+        acc[file] = [buf.name, buf.bufnr, buf.lnum, buf.lastused]
         return acc
     }, buf_dict)
-    var wids = selector.Start(keys(bufs), {
+    var bufs = keys(buf_dict)->sort((a, b) => {
+        return buf_dict[a][3] >= buf_dict[b][3] ? 0 : 1
+    })
+
+    var wids = selector.Start(bufs, {
         preview_cb:  function('Preview'),
         close_cb:  function('Close'),
         dropdown: 0,

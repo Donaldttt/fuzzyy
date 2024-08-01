@@ -11,6 +11,8 @@ g:loaded_fuzzyy = 1
 
 g:enable_fuzzyy_keymaps = exists('g:enable_fuzzyy_keymaps') ? g:enable_fuzzyy_keymaps : 1
 g:enable_fuzzyy_MRU_files = exists('g:enable_fuzzyy_MRU_files') ? g:enable_fuzzyy_MRU_files : 0
+g:fuzzyy_buffers_exclude = exists('g:fuzzyy_buffers_exclude') ? g:fuzzyy_buffers_exclude
+    : ['__vista__']
 
 # window layout
 # you can override it by setting g:fuzzyy_window_layout
