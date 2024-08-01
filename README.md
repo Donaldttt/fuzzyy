@@ -142,6 +142,10 @@ let g:enable_fuzzyy_MRU_files = 1
 " default to 0
 let g:fuzzyy_mru_project_only = 0
 
+" FuzzyBuffers will exclude the buffers in this list
+" default to ['__vista__']
+let g:fuzzyy_buffers_exclude = ['__vista__']
+
 " window layout configuraton
 " you can override it by setting g:fuzzyy_window_layout
 " e.g. You can disable preview window for FuzzyFiles command by doing this:
