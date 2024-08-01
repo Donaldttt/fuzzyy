@@ -58,7 +58,8 @@ word under cursor.
 
 Arrow keys or `ctrl + p`/ `ctrl + n` moves up/down the menu
 
-`ctrl + u`/`ctrl + d` moves up/down the buffer in preview window
+`ctrl + u`/`ctrl + d` moves up/down the buffer by half page in preview window
+`ctrl + i`/`ctrl + f` moves up/down the buffer by one line in preview window
 
 you can set `g:fuzzyy_keymaps` to change these defaults.
 
