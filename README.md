@@ -110,8 +110,10 @@ let g:fuzzyy_keymaps = {
 \     'menu_up': ["\<c-p>", "\<Up>"],
 \     'menu_down': ["\<c-n>", "\<Down>"],
 \     'menu_select': ["\<CR>"],
-\     'preview_up': ["\<c-u>"],
-\     'preview_down': ["\<c-d>"],
+\     'preview_up': ["\<c-i>"],
+\     'preview_down': ["\<c-f>"],
+\     'preview_up_half_page': ["\<c-u>"],
+\     'preview_down_half_page': ["\<c-d>"],
 \     'cursor_begining': ["\<c-a>"],          " move cursor to the begining of the line in the prompt
 \     'cursor_end': ["\<c-e>"],               " move cursor to the end of the line in the prompt
 \     'delete_all': ["\<c-k>"],               " delete whole line of the prompt
