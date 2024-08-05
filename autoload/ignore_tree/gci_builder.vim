@@ -32,7 +32,7 @@ enddef
 export def Build(ignore_tree_obj: dict<list<string>>): string
     var dir_ignore = ignore_tree.GetDirList(ignore_tree_obj)
     var file_ignore = ignore_tree.GetFileList(ignore_tree_obj)
-    var cmd = "powershell -command Get-ChildItem . -Name -File -Recurse | " .. BuildFilter(dir_ignore, file_ignore)
-    return cmd
+    var cmd = "Get-ChildItem . -Name -File -Recurse | " .. BuildFilter(dir_ignore, file_ignore)
+    return "powershell -command " .. '"' .. cmd .. '"'
 enddef
 
