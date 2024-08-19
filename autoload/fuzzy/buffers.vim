@@ -76,7 +76,8 @@ export def Start(windows: dict<any>)
         return acc
     }, buf_dict)
     var bufs = keys(buf_dict)->sort((a, b) => {
-        return buf_dict[a][3] >= buf_dict[b][3] ? 0 : 1
+        return buf_dict[a][3] == buf_dict[b][3] ? 0 :
+               buf_dict[a][3] <  buf_dict[b][3] ? 1 : -1
     })
 
     var wids = selector.Start(bufs, {
