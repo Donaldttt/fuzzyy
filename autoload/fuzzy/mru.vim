@@ -75,7 +75,7 @@ var key_callbacks = {
 
 export def Start(windows: dict<any>, ...keyword: list<any>)
     cwd = getcwd()
-    mru_origin_list = mru.MruGetFiles()
+    mru_origin_list = copy(v:oldfiles)->filter((_, val) => filereadable(expand(val)))
     var mru_list: list<string> = copy(mru_origin_list)
     if mru_project_only
         mru_list = filter(mru_list, (_, val) => {
