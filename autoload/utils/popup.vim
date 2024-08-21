@@ -3,6 +3,7 @@ var popup_wins: dict<any>
 var triger_userautocmd: number
 var t_ve = &t_ve
 var guicursor = &guicursor
+var exists_buffers = []
 
 # user can register callback for any key
 var key_callbacks: dict<any>
@@ -88,18 +89,6 @@ def GeneralPopupCallback(wid: number, select: any)
         endif
     endif
     remove(popup_wins, wid)
-enddef
-
-def CreateBuf(): number
-    noa var bufnr = bufadd('')
-    noa bufload(bufnr)
-    setbufvar(bufnr, '&buflisted', 0)
-    setbufvar(bufnr, '&modeline', 0)
-    setbufvar(bufnr, '&buftype', 'nofile')
-    setbufvar(bufnr, '&swapfile', 0)
-    setbufvar(bufnr, '&undolevels', -1)
-    setbufvar(bufnr, '&modifiable', 1)
-    return bufnr
 enddef
 
 # params
@@ -268,7 +257,7 @@ def PreviewFilter(wid: number, key: string): number
     return 1
 enddef
 
-def CreatePopup(bufnr: number, args: dict<any>): number
+def CreatePopup(args: dict<any>): number
     var opts = {
        line:  args.line,
        col:  args.col,
@@ -280,6 +269,7 @@ def CreatePopup(bufnr: number, args: dict<any>): number
        padding:  [0, 0, 0, 0],
        zindex:  1000,
        wrap:  0,
+       buftype: 'popup',
        cursorline: 0,
        callback:  function('GeneralPopupCallback'),
        border:  [1],
@@ -307,7 +297,7 @@ def CreatePopup(bufnr: number, args: dict<any>): number
     if has_key(opts, 'filter')
         opts.mapping = v:false
     endif
-    var wid = popup_create(bufnr, opts)
+    var wid = popup_create('', opts)
     if has_key(args, 'cursorline') && args.cursorline
         # we don't use popup option 'cursorline' because it is buggy (some
         # colorscheme will make cursorline highlight disappear)
@@ -371,10 +361,17 @@ def NewPopup(args: dict<any>): list<number>
      height:  final_height
      })
 
-    var bufnr = CreateBuf()
-    var wid = CreatePopup(bufnr, opts)
+    var wid = CreatePopup(opts)
+    var bufnr = winbufnr(wid)
+    setbufvar(bufnr, '&buflisted', 0)
+    setbufvar(bufnr, '&modeline', 0)
+    setbufvar(bufnr, '&buftype', 'nofile')
+    setbufvar(bufnr, '&swapfile', 0)
+    setbufvar(bufnr, '&undolevels', -1)
+    setbufvar(bufnr, '&modifiable', 1)
 
     popup_wins[wid].bufnr = bufnr
+    add(exists_buffers, bufnr)
 
     return [wid, bufnr]
 enddef
