@@ -2,10 +2,7 @@ vim9script
 
 import autoload 'utils/selector.vim'
 import autoload 'utils/devicons.vim'
-import autoload 'ignore_tree/ignore_tree.vim'
-import autoload 'ignore_tree/find_builder.vim'
-import autoload 'ignore_tree/fd_builder.vim'
-import autoload 'ignore_tree/gci_builder.vim'
+import autoload 'utils/cmdbuilder.vim'
 
 var last_result_len: number
 var cur_pattern: string
@@ -21,7 +18,6 @@ var cache: dict<any>
 var cmdstr: string
 var matched_hl_offset = 0
 var devicon_char_width = devicons.GetDeviconCharWidth()
-var fuzzyy_custom_ignore = {}
 
 var commands: dict<any>
 var has_git = executable('git') ? v:true : v:false
@@ -35,25 +31,19 @@ def InsideGitRepo(): bool
     endif
 enddef
 
-if exists('g:fuzzyy_custom_ignore')
-    fuzzyy_custom_ignore = g:fuzzyy_custom_ignore
-else
-    fuzzyy_custom_ignore = ignore_tree.MakeIgnoreTree()
-endif
-
 if executable('fd')
     commands = {
-        'default': fd_builder.Build(fuzzyy_custom_ignore),
+        'default': cmdbuilder.Build_fd(),
         'gitignore': 'fd --type f -H -E .git'
     }
 else
     if has('win32')
         commands = {
-            'default': gci_builder.Build(fuzzyy_custom_ignore)
+            'default': cmdbuilder.Build_gci()
         }
     else
         commands = {
-            'default': find_builder.Build(fuzzyy_custom_ignore)
+            'default': cmdbuilder.Build_find()
         }
     endif
     # TODO bugs
@@ -215,7 +205,6 @@ def FilesJobStart(path: string, cmd: string)
 enddef
 
 def ErrCb(channel: channel, msg: string)
-    # echom ['err']
 enddef
 
 def ExitCb(j: job, status: number)
@@ -291,6 +280,7 @@ export def Start(windows: dict<any>, ...args: list<any>)
     else
         cmd = cmdstr
     endif
+    echom cmd
     FilesJobStart(cwd, cmd)
     menu_wid = wids.menu
     timer_start(50, function('FilesUpdateMenu'))
