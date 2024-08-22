@@ -46,12 +46,12 @@ export def UpdateMenu(str_list: list<string>, hl_list: list<list<any>>, ...opts:
         if len(opts) > 0 && opts[0] == 1
             devicons.AddDevicons(str_list)
         endif
-        popup.MenuSetText(menu_wid, str_list)
-        popup.MenuSetHl('select', menu_wid, hl_list)
+        popup.MenuSetText(str_list)
+        popup.MenuSetHl('select', hl_list)
         devicons.AddColor(menu_wid)
     else
-        popup.MenuSetText(menu_wid, str_list)
-        popup.MenuSetHl('select', menu_wid, hl_list)
+        popup.MenuSetText(str_list)
+        popup.MenuSetHl('select', hl_list)
     endif
 enddef
 
@@ -272,8 +272,8 @@ def Input(wid: number, args: dict<any>, ...li: list<any>)
          }, [])
     endif
 
-    popup.MenuSetText(menu_wid, ret)
-    popup.MenuSetHl('select', menu_wid, hl_list)
+    popup.MenuSetText(ret)
+    popup.MenuSetHl('select', hl_list)
     if enable_devicons
         devicons.AddColor(menu_wid)
     endif
@@ -390,7 +390,7 @@ export def Start(li_raw: list<string>, opts: dict<any>): dict<any>
     if enable_devicons
          devicons.AddDevicons(li)
     endif
-    popup.MenuSetText(menu_wid, li)
+    popup.MenuSetText(li)
     if enable_devicons
         devicons.AddColor(menu_wid)
     endif

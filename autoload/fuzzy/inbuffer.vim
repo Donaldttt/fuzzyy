@@ -23,12 +23,6 @@ export def Start(...keyword: list<any>)
     })
 
     if len(keyword) > 0
-        popup.SetPrompt(winds.prompt, keyword[0])
+        popup.SetPrompt(keyword[0])
     endif
-    # var menu_wid = winds.menu
-    # var file = expand('%:p')
-    # var ext = fnamemodify(file, ':e')
-    # var ft = selector.GetFt(ext)
-    # var menu_bufnr = winbufnr(menu_wid)
-    # setbufvar(menu_bufnr, '&syntax', ft)
 enddef
