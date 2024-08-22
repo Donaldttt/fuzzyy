@@ -57,7 +57,7 @@ def ToggleScope()
     var mru_list: list<string> = copy(mru_origin_list)
     if mru_project_only
         mru_list = filter(mru_list, (_, val) => {
-            return stridx(val, cwd) >= 0
+            return stridx(fnamemodify(val, ':p'), cwd) >= 0
         })
     endif
     mru_list = reduce(mru_list, (acc, val) => {
