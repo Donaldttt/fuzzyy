@@ -13,8 +13,7 @@ It ultilizes vim's native matchfuzzypos function and popup window feature.
 ## Requirements
 
 - vim > 9.0
-  - The maintained version is written in vim9, but it also has a vim8 branch
-    for older vim.
+    - The maintained version is written in vim9, but it also has a vim8 branch for older vim.
 - any of grep, ag or rg
 - find or fd
 - [vim-devicons](https://github.com/ryanoasis/vim-devicons) (optional)
@@ -24,35 +23,36 @@ It ultilizes vim's native matchfuzzypos function and popup window feature.
 Any plugin manager will work.
 
 For vim-plug
-
 ```vim
 Plug 'Donaldttt/fuzzyy'
 ```
 
 ## Commands
 
-| Command               | Description                                                                      | Default Keymap |
-| --------------------- | -------------------------------------------------------------------------------- | -------------- |
-| FuzzyGrep \<args>     | grep string in project. if argument is given, it will search the \<args>         | \<leader>fr    |
-| FuzzyFiles            | search files in project                                                          | \<leader>ff    |
-| FuzzyHelps            | search :help documents                                                           | \<leader>fd    |
-| FuzzyColors           | search installed colorscheme                                                     | \<leader>fc    |
-| FuzzyInBuffer \<args> | search lines in current buffer. if argument is given, it will search the \<args> | \<leader>fb    |
-| FuzzyCommands         | search commands                                                                  | \<leader>fi    |
-| FuzzyCmdHistory       | search command history                                                           | None           |
-| FuzzyBuffers          | search opened buffers                                                            | \<leader>ft    |
-| FuzzyHighlights       | search highlights                                                                | \<leader>fh    |
-| FuzzyMRUFiles         | search the most recent used files.                                               | \<leader>fm    |
-| FuzzyGitFiles         | like FuzzyFiles but only shows file in git project                               | None           |
+| Command         | Description                    | Default Keymap |
+| ---             | ---                            | ---            |
+| FuzzyGrep \<args> | grep string in project. if argument is given, it will search the \<args> | \<leader>fr    |
+| FuzzyFiles      | search files in project        | \<leader>ff    |
+| FuzzyHelps      | search :help documents         | \<leader>fd    |
+| FuzzyColors     | search installed colorscheme   | \<leader>fc    |
+| FuzzyInBuffer  \<args> | search lines in current buffer. if argument is given, it will search the \<args> | \<leader>fb    |
+| FuzzyCommands   | search commands                | \<leader>fi    |
+| FuzzyCmdHistory |  search command history  | None    |
+| FuzzyBuffers    | search opened buffers          | \<leader>ft    |
+| FuzzyHighlights | search highlights              | \<leader>fh    |
+| FuzzyMRUFiles | search the most recent used files. set g:enable_fuzzyy_MRU_files = 1 to enable this command(not enable by default)    | \<leader>fm    |
+| FuzzyGitFiles |  like FuzzyFiles but only shows file in git project  | None    |
 
-- For FuzzyGrep and FuzzyInBuffer, you can define a keymap like this to search
-  the word under cursor.
-  `vim         nnoremap <Space>f :FuzzyGrep <C-R><C-W><CR>     `
+- For FuzzyGrep and FuzzyInBuffer, you can define a keymap like this to search the
+word under cursor.
+    ```vim
+        nnoremap <Space>f :FuzzyGrep <C-R><C-W><CR>
+    ```
 - FuzzyGrep requires any of grep, ag or rg command.
 
-- FuzzyFiles uses find command in unix (if not found it will use vim's glob
-  function, which is blocking) or powershell's Get-ChildItem in windows. (if
-  [fd](https://github.com/sharkdp/fd) is installed, it will be used)
+- FuzzyFiles uses find command in unix (if not found it will use vim's glob function,
+ which is blocking) or powershell's Get-ChildItem in windows.
+(if [fd](https://github.com/sharkdp/fd) is installed, it will be used)
 
 ## Navigation
 
@@ -65,20 +65,17 @@ Arrow keys or `ctrl + p`/ `ctrl + n` moves up/down the menu
 you can set `g:fuzzyy_keymaps` to change these defaults.
 
 ### Command Specific keymaps
-
 - FuzzyHighlights
-
-  - `ctrl + k` toggle white preview background color
-  - `Enter` will copy selected highlight
+    - `ctrl + k` toggle white preview background color
+    - `Enter` will copy selected highlight
 
 - FuzzyMRUFiles
-
-  - `ctrl + k` toggle global or project MRU files
+    - `ctrl + k` toggle global or project MRU files
 
 - FuzzyBuffers, FuzzyMRUFiles, FuzzyFiles, FuzzyGitFiles
-  - `ctrl + s` open selected file in horizontal spliting
-  - `ctrl + v` open selected file in vertical spliting
-  - `ctrl + t` open selected file in new tab page
+    - `ctrl + s` open selected file in horizontal spliting
+    - `ctrl + v` open selected file in vertical spliting
+    - `ctrl + t` open selected file in new tab page
 
 ## Default Keymaps
 
@@ -93,6 +90,7 @@ nnoremap <silent> <leader>fi :FuzzyCommands<CR>
 nnoremap <silent> <leader>fr :FuzzyGrep<CR>
 nnoremap <silent> <leader>ft :FuzzyBuffers<CR>
 nnoremap <silent> <leader>fh :FuzzyHighlights<CR>
+nnoremap <silent> <leader>fm :FuzzyMRUFiles<CR>
 ```
 
 ## Options
@@ -139,6 +137,10 @@ let g:fuzzyy_devicons = 1
 " Default to 0
 let g:fuzzyy_dropdown = 1
 
+" DEPRECATED: mru is always enabled
+" now this option has no effect
+let g:enable_fuzzyy_MRU_files = 1
+
 " FuzzyMRUFiles default shows MRU files that are in the current project
 " default to 0
 let g:fuzzyy_mru_project_only = 0
@@ -180,8 +182,3 @@ let g:fuzzyy_buffers_exclude = ['__vista__']
     },
 }
 ```
-
-## Credit
-
-The code in autoload/utils/mru.vim is modified from
-[yegappan/mru](https://github.com/yegappan/mru).
