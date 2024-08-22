@@ -2,7 +2,6 @@ vim9script
 
 import autoload 'utils/selector.vim'
 import autoload 'utils/devicons.vim'
-import autoload 'utils/mru.vim'
 
 var mru_origin_list: list<string>
 var devicon_char_width = devicons.GetDeviconCharWidth()
@@ -75,11 +74,13 @@ var key_callbacks = {
 
 export def Start(windows: dict<any>, ...keyword: list<any>)
     cwd = getcwd()
+    :wv
+    :rv!
     mru_origin_list = copy(v:oldfiles)->filter((_, val) => filereadable(expand(val)))
     var mru_list: list<string> = copy(mru_origin_list)
     if mru_project_only
         mru_list = filter(mru_list, (_, val) => {
-            return stridx(val, cwd) >= 0
+            return stridx(fnamemodify(val, ':p'), cwd) >= 0
         })
     endif
     mru_list = reduce(mru_list, (acc, val) => {
