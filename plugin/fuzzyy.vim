@@ -10,7 +10,6 @@ endif
 g:loaded_fuzzyy = 1
 
 g:enable_fuzzyy_keymaps = exists('g:enable_fuzzyy_keymaps') ? g:enable_fuzzyy_keymaps : 1
-g:enable_fuzzyy_MRU_files = exists('g:enable_fuzzyy_MRU_files') ? g:enable_fuzzyy_MRU_files : 0
 g:fuzzyy_buffers_exclude = exists('g:fuzzyy_buffers_exclude') ? g:fuzzyy_buffers_exclude
     : ['__vista__']
 
@@ -19,7 +18,7 @@ g:fuzzyy_buffers_exclude = exists('g:fuzzyy_buffers_exclude') ? g:fuzzyy_buffers
 # e.g. let g:fuzzyy_window_layout = { 'FuzzyFiles': { 'preview': 0 } }
 # default value:
 var windows = {
-    FuzzyFiles: { 
+    FuzzyFiles: {
         preview: 1,         # 1 means enable preview window, 0 means disable
         preview_ratio: 0.5, # 0.5 means preview window will take 50% of the layout
         width: 0.8,         # 0.8 means total width of the layout will take 80% of the screen
@@ -63,6 +62,7 @@ import autoload '../autoload/fuzzy/inbuffer.vim'
 import autoload '../autoload/fuzzy/buffers.vim'
 import autoload '../autoload/fuzzy/highlights.vim'
 import autoload '../autoload/fuzzy/cmdhistory.vim'
+import autoload '../autoload/fuzzy/mru.vim'
 
 command! -nargs=? FuzzyGrep ag.Start(windows.FuzzyGrep, <f-args>)
 command! -nargs=0 FuzzyFiles files.Start(windows.FuzzyFiles)
@@ -74,11 +74,7 @@ command! -nargs=0 FuzzyBuffers buffers.Start(windows.FuzzyBuffers)
 command! -nargs=0 FuzzyHighlights highlights.Start(windows.FuzzyHighlights)
 command! -nargs=0 FuzzyGitFiles files.Start(windows.FuzzyFiles, 'git ls-files')
 command! -nargs=0 FuzzyCmdHistory cmdhistory.Start()
-
-if g:enable_fuzzyy_MRU_files
-    import autoload '../autoload/fuzzy/mru.vim'
-    command! -nargs=0 FuzzyMRUFiles mru.Start(windows.FuzzyMRUFiles)
-endif
+command! -nargs=0 FuzzyMRUFiles mru.Start(windows.FuzzyMRUFiles)
 
 if g:enable_fuzzyy_keymaps
     nnoremap <silent> <leader>fb :FuzzyInBuffer<CR>
@@ -89,7 +85,5 @@ if g:enable_fuzzyy_keymaps
     nnoremap <silent> <leader>fr :FuzzyGrep<CR>
     nnoremap <silent> <leader>ft :FuzzyBuffers<CR>
     nnoremap <silent> <leader>fh :FuzzyHighlights<CR>
-    if g:enable_fuzzyy_MRU_files
-        nnoremap <silent> <leader>fm :FuzzyMRUFiles<CR>
-    endif
+    nnoremap <silent> <leader>fm :FuzzyMRUFiles<CR>
 endif

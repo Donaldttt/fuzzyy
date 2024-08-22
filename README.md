@@ -90,6 +90,7 @@ nnoremap <silent> <leader>fi :FuzzyCommands<CR>
 nnoremap <silent> <leader>fr :FuzzyGrep<CR>
 nnoremap <silent> <leader>ft :FuzzyBuffers<CR>
 nnoremap <silent> <leader>fh :FuzzyHighlights<CR>
+nnoremap <silent> <leader>fm :FuzzyMRUFiles<CR>
 ```
 
 ## Options
@@ -136,10 +137,8 @@ let g:fuzzyy_devicons = 1
 " Default to 0
 let g:fuzzyy_dropdown = 1
 
-" Enable FuzzyMRUFiles command.
-" If enabled, the MRU list will be recorded into ~/.vim_mru_files in Unix
-" and ~/_vim_mru_files in Windows
-" Default to 0
+" DEPRECATED: mru is always enabled
+" now this option has no effect
 let g:enable_fuzzyy_MRU_files = 1
 
 " FuzzyMRUFiles default shows MRU files that are in the current project
@@ -183,7 +182,3 @@ let g:fuzzyy_buffers_exclude = ['__vista__']
     },
 }
 ```
-
-## Credit
-
-The code in autoload/utils/mru.vim is modified from [yegappan/mru](https://github.com/yegappan/mru).
