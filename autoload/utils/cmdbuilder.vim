@@ -54,21 +54,33 @@ enddef
 #
 # That's why module builds GCI cmd and piping it into Where-filter
 export def Build_gci(): string
-    var TransformDir = (dir) => "'" .. dir .. "\\*" .. "'"
-    var build_dir_filter = reduce(dir_ignore, (acc, dir) => acc
-        .. "$_ -notlike " .. TransformDir(dir) .. " -and ", "")
+    var build_dir_filter = reduce(dir_ignore, (acc, dir) => acc .. "$_ -notlike '*\\"
+        .. dir ..  "\\*' -and $_ -notlike '" .. dir .. "\\*'"
+        .. " -and ", "")
             -> trim(" -and ", 2)
             -> Append(" ")
 
-    var TransformFile = (file) => "'" .. file .. "'"
     var build_file_filter = reduce(file_ignore, (acc, file) => acc
-        .. "$_ -notlike " .. TransformFile(file) .. " -and ", "")
+        .. "$_ -notlike '" .. file .. "' -and ", "")
             -> trim(" -and ", 2)
             -> Append(" ")
 
-    var build_filter = "Where-Object { " .. build_dir_filter .. "-and "
-        .. build_file_filter .. "} "
-    var cmd = "Get-ChildItem . -Name -File -Recurse | " .. build_filter
+    var build_filter = "| Where-Object { "
+    if len(dir_ignore) > 0
+        build_filter ..= build_dir_filter
+    endif
+    if len(dir_ignore) > 0 && len(file_ignore) > 0
+        build_filter ..= " -and "
+    endif
+    if len(file_ignore) > 0
+        build_filter ..= build_file_filter
+    endif
+    build_filter ..= "} "
+
+    var cmd = "Get-ChildItem . -Name -Force -File -Recurse "
+    if len(dir_ignore) > 0 || len(file_ignore) > 0
+        cmd ..= build_filter
+    endif
 
     return "powershell -command " .. '"' .. cmd .. '"'
 enddef
