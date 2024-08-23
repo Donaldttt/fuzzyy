@@ -14,8 +14,7 @@ It ultilizes vim's native matchfuzzypos function and popup window feature.
 
 - vim > 9.0
     - The maintained version is written in vim9, but it also has a vim8 branch for older vim.
-- any of grep, ag or rg
-- find or fd
+- any of grep, ag or rg for FuzzyGrep command
 - [vim-devicons](https://github.com/ryanoasis/vim-devicons) (optional)
 
 ## Install
@@ -106,6 +105,13 @@ let g:enable_fuzzyy_keymaps = 0
 " Default to 0
 let g:files_respect_gitignore = 1
 
+" FuzzyFiles will exclude the files/directory in these lists only work when
+" g:files_respect_gitignore = 0
+" The following is the default
+let g:fuzzyy_files_ignore_file = ['*.beam', '*.so', '*.exe', '*.dll', '*.dump',
+    '*.core', '*.swn', '*.swp']
+var g:fuzzyy_files_ignore_dir = ['.git', '.hg', '.svn', '.rebar', '.eunit']
+
 " Change navigation keymaps
 " The following is the default
 let g:fuzzyy_keymaps = {
@@ -132,9 +138,9 @@ let g:fuzzyy_menu_matched_hl = 'cursearch'
 " Default to 1 if vim-devicons is installed, 0 otherwise
 let g:fuzzyy_devicons = 1
 
-" Enable dropdown theme
+" Whether enable dropdown theme
 " Default to 0
-let g:fuzzyy_dropdown = 1
+let g:fuzzyy_dropdown = 0
 
 " Enable FuzzyMRUFiles command.
 " If enabled, the MRU list will be recorded into ~/.vim_mru_files in Unix
