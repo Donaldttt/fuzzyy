@@ -4,6 +4,15 @@ var file_ignore = ['*.beam', '*.so', '*.exe', '*.dll', '*.dump', '*.core',
     '*.swn', '*.swp']
 var dir_ignore = ['.git', '.hg', '.svn', '.rebar', '.eunit']
 
+var respect_gitignore = 0
+var only_git_files = 0
+if exists('g:files_respect_gitignore')
+    respect_gitignore = g:files_respect_gitignore
+endif
+if exists('g:files_only_git_files')
+    only_git_files = g:files_only_git_files
+endif
+
 if exists('g:fuzzyy_files_ignore_file')
         && type(g:fuzzyy_files_ignore_file) == v:t_list
     file_ignore = g:fuzzyy_files_ignore_file
@@ -16,7 +25,21 @@ endif
 
 var Append = (buf, char) => buf .. char
 
+var has_git = executable('git') ? v:true : v:false
+
+def InsideGitRepo(): bool
+    if has_git
+        return stridx(system('git rev-parse --is-inside-work-tree'), 'true') == 0
+    else
+        echom 'fuzzyy: git is not installed'
+        return v:false
+    endif
+enddef
+
 export def Build_fd(): string
+    if respect_gitignore
+        return 'fd --type f -H -E .git'
+    endif
     var dir_list_parsed = reduce(dir_ignore,
         (acc, dir) => acc .. "-E " .. dir .. " ", "")
 
@@ -83,4 +106,51 @@ export def Build_gci(): string
     endif
 
     return "powershell -command " .. '"' .. cmd .. '"'
+enddef
+
+export def Build_git_ls_files(): string
+enddef
+
+def RespectGitignore(): string
+    var cmdstr = ''
+    if executable('fd')
+        cmdstr = Build_fd()
+    elseif has_git && InsideGitRepo()
+        cmdstr = 'git ls-files --cached --other --exclude-standard --full-name .'
+    endif
+    return cmdstr
+enddef
+
+def OnlyGitFile(): string
+    var cmdstr = ''
+    if has_git && InsideGitRepo()
+        cmdstr = 'git ls-files'
+    endif
+    return cmdstr
+enddef
+
+export def Build(): string
+    var cmdstr = ''
+    if only_git_files
+        cmdstr = OnlyGitFile()
+        if cmdstr != ''
+            return cmdstr
+        endif
+    endif
+    if respect_gitignore
+        cmdstr = RespectGitignore()
+        if cmdstr != ''
+            return cmdstr
+        endif
+    endif
+    if executable('fd') #fd is cross-platform
+            cmdstr = Build_fd()
+    else
+        if has('win32')
+            cmdstr = Build_gci()
+        else
+            cmdstr = Build_find()
+        endif
+    endif
+    return cmdstr
 enddef
