@@ -105,8 +105,8 @@ let g:enable_fuzzyy_keymaps = 0
 " Default to 0
 let g:files_respect_gitignore = 1
 
-" FuzzyFiles will exclude the files/directory in these lists only work when
-" g:files_respect_gitignore = 0
+" FuzzyFiles will exclude the files/directory in these two lists
+" only work when g:files_respect_gitignore = 0
 " The following is the default
 let g:fuzzyy_files_ignore_file = ['*.beam', '*.so', '*.exe', '*.dll', '*.dump',
     '*.core', '*.swn', '*.swp']
