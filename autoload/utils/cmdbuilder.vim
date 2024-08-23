@@ -5,12 +5,12 @@ var file_ignore = ['*.beam', '*.so', '*.exe', '*.dll', '*.dump', '*.core',
 var dir_ignore = ['.git', '.hg', '.svn', '.rebar', '.eunit']
 
 if exists('g:fuzzyy_files_ignore_file')
-        && type(g:fuzzyy_files_ignore_files) == v:t_list
+        && type(g:fuzzyy_files_ignore_file) == v:t_list
     file_ignore = g:fuzzyy_files_ignore_file
 endif
 
 if exists('g:fuzzyy_files_ignore_dir')
-        && type(g:fuzzyy_files_ignore_files) == v:t_list
+        && type(g:fuzzyy_files_ignore_dir) == v:t_list
     dir_ignore = g:fuzzyy_files_ignore_dir
 endif
 
@@ -33,14 +33,15 @@ export def Build_find(): string
         (acc, file) => acc .. "-not -name " .. file .. " ", "")
 
     var ParseDir = (dir): string => "*/" .. dir .. "/*"
-    var dir_list_parsed = reduce(dir_ignore, (acc, dir) => acc .. "-path "
-        .. ParseDir(dir) .. " -prune -o ", "")
-                            ->trim("-o ", 2)
-                            ->Append(" ")
-    dir_list_parsed = "\\( " .. dir_list_parsed .. "\\) "
-
-    var result = "find " .. dir_list_parsed .. "-o " .. file_list_parsed
-        .. "-type f -print "
+    var dir_list_parsed = ""
+    if len(dir_ignore) > 0
+        dir_list_parsed = reduce(dir_ignore, (acc, dir) => acc .. "-not -path " .. ParseDir(dir) .. " ", " ")
+    endif
+    var result = "find . " .. dir_list_parsed
+    if len(file_ignore) > 0
+        result ..= reduce(file_ignore, (acc, file) => acc .. "-not -name " .. file .. " ", " ")
+    endif
+    result ..= "-type f -print "
 
     return result
 enddef
