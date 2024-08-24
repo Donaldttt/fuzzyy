@@ -1,29 +1,20 @@
 vim9script
 
-var file_ignore = ['*.beam', '*.so', '*.exe', '*.dll', '*.dump', '*.core',
-    '*.swn', '*.swp']
-var dir_ignore = ['.git', '.hg', '.svn', '.rebar', '.eunit']
+var file_ignore_default = ['*.beam', '*.so', '*.exe', '*.dll', '*.dump',
+    '*.core', '*.swn', '*.swp']
+var dir_ignore_default = ['.git', '.hg', '.svn', '.rebar', '.eunit']
 
-var respect_gitignore = 0
-var only_git_files = 0
-if exists('g:files_respect_gitignore')
-    respect_gitignore = g:files_respect_gitignore
-endif
-if exists('g:files_only_git_files')
-    only_git_files = g:files_only_git_files
-endif
-
-if exists('g:fuzzyy_files_ignore_file')
-        && type(g:fuzzyy_files_ignore_file) == v:t_list
-    file_ignore = g:fuzzyy_files_ignore_file
-endif
-
-if exists('g:fuzzyy_files_ignore_dir')
-        && type(g:fuzzyy_files_ignore_dir) == v:t_list
-    dir_ignore = g:fuzzyy_files_ignore_dir
-endif
-
-var Append = (buf, char) => buf .. char
+# OPTIONS
+var respect_gitignore = exists('g:files_respect_gitignore') ?
+    g:files_respect_gitignore : 0
+var only_git_files = exists('g:files_only_git_files') ?
+    g:files_only_git_files : 0
+var file_ignore = exists('g:fuzzyy_files_ignore_file')
+    && type(g:fuzzyy_files_ignore_file) == v:t_list ?
+    g:fuzzyy_files_ignore_file : file_ignore_default
+var dir_ignore = exists('g:fuzzyy_files_ignore_dir')
+    && type(g:fuzzyy_files_ignore_dir) == v:t_list ?
+    g:fuzzyy_files_ignore_dir : dir_ignore_default
 
 var has_git = executable('git') ? v:true : v:false
 
@@ -81,12 +72,10 @@ export def Build_gci(): string
         .. dir ..  "\\*' -and $_ -notlike '" .. dir .. "\\*'"
         .. " -and ", "")
             -> trim(" -and ", 2)
-            -> Append(" ")
 
     var build_file_filter = reduce(file_ignore, (acc, file) => acc
         .. "$_ -notlike '" .. file .. "' -and ", "")
             -> trim(" -and ", 2)
-            -> Append(" ")
 
     var build_filter = "| Where-Object { "
     if len(dir_ignore) > 0
