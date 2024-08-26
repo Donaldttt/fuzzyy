@@ -52,7 +52,8 @@ word under cursor.
 - FuzzyFiles uses find command in unix (if not found it will use vim's glob function,
  which is blocking) or powershell's Get-ChildItem in windows.
 (if [fd](https://github.com/sharkdp/fd) is installed, it will be used)
-- Patterns defined in `wildignore` option are excluded from the search.
+- Patterns defined in `wildignore` option are excluded from the
+  search. Patterns ending with `\*` are treated as directories.
 
 ## Navigation
 
