@@ -16,6 +16,13 @@ var dir_ignore = exists('g:fuzzyy_files_ignore_dir')
     && type(g:fuzzyy_files_ignore_dir) == v:t_list ?
     g:fuzzyy_files_ignore_dir : dir_ignore_default
 
+# Handle wildignore option
+var wildignore_dir = copy(split(&wildignore, ','))->filter('v:val =~ "\*$"')
+var wildignore_files = copy(split(&wildignore, ','))->filter('v:val !~ "\*$"')
+
+extend(file_ignore, wildignore_files)
+extend(dir_ignore, wildignore_dir)
+
 var has_git = executable('git') ? true : false
 
 def InsideGitRepo(): bool
