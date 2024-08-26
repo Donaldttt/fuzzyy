@@ -16,14 +16,14 @@ var dir_ignore = exists('g:fuzzyy_files_ignore_dir')
     && type(g:fuzzyy_files_ignore_dir) == v:t_list ?
     g:fuzzyy_files_ignore_dir : dir_ignore_default
 
-var has_git = executable('git') ? v:true : v:false
+var has_git = executable('git') ? true : false
 
 def InsideGitRepo(): bool
     if has_git
         return stridx(system('git rev-parse --is-inside-work-tree'), 'true') == 0
     else
         echom 'fuzzyy: git is not installed'
-        return v:false
+        return false
     endif
 enddef
 
