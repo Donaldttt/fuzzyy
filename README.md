@@ -93,6 +93,7 @@ nnoremap <silent> <leader>fi :FuzzyCommands<CR>
 nnoremap <silent> <leader>fr :FuzzyGrep<CR>
 nnoremap <silent> <leader>ft :FuzzyBuffers<CR>
 nnoremap <silent> <leader>fh :FuzzyHighlights<CR>
+nnoremap <silent> <leader>fm :FuzzyMRUFiles<CR>
 ```
 
 ## Options
@@ -108,6 +109,13 @@ let g:enable_fuzzyy_keymaps = 0
 " 2. or fd is installed
 " Default to 0
 let g:files_respect_gitignore = 1
+
+" FuzzyFiles will exclude the files/directory in these two lists
+" only work when g:files_respect_gitignore = 0
+" The following is the default
+let g:fuzzyy_files_ignore_file = ['*.beam', '*.so', '*.exe', '*.dll', '*.dump',
+    '*.core', '*.swn', '*.swp']
+var g:fuzzyy_files_ignore_dir = ['.git', '.hg', '.svn', '.rebar', '.eunit']
 
 " Change navigation keymaps
 " The following is the default
@@ -135,14 +143,12 @@ let g:fuzzyy_menu_matched_hl = 'cursearch'
 " Default to 1 if vim-devicons is installed, 0 otherwise
 let g:fuzzyy_devicons = 1
 
-" Enable dropdown theme
+" Whether enable dropdown theme
 " Default to 0
-let g:fuzzyy_dropdown = 1
+let g:fuzzyy_dropdown = 0
 
-" Enable FuzzyMRUFiles command.
-" If enabled, the MRU list will be recorded into ~/.vim_mru_files in Unix
-" and ~/_vim_mru_files in Windows
-" Default to 0
+" DEPRECATED: mru is always enabled
+" now this option has no effect
 let g:enable_fuzzyy_MRU_files = 1
 
 " FuzzyMRUFiles default shows MRU files that are in the current project
@@ -186,7 +192,3 @@ let g:fuzzyy_buffers_exclude = ['__vista__']
     },
 }
 ```
-
-## Credit
-
-The code in autoload/utils/mru.vim is modified from [yegappan/mru](https://github.com/yegappan/mru).

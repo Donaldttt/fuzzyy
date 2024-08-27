@@ -2,6 +2,7 @@ vim9script
 
 import autoload 'utils/selector.vim'
 import autoload 'utils/devicons.vim'
+import autoload 'utils/cmdbuilder.vim'
 
 var last_result_len: number
 var cur_pattern: string
@@ -14,55 +15,8 @@ var jid: job
 var menu_wid: number
 var files_update_tid: number
 var cache: dict<any>
-var cmdstr: string
 var matched_hl_offset = 0
 var devicon_char_width = devicons.GetDeviconCharWidth()
-
-var commands: dict<any>
-var has_git = executable('git') ? v:true : v:false
-
-def InsideGitRepo(): bool
-    if has_git
-        return stridx(system('git rev-parse --is-inside-work-tree'), 'true') == 0
-    else
-        echom 'fuzzyy: git is not installed'
-        return v:false
-    endif
-enddef
-
-if executable('fd')
-    commands = {
-        'default': 'fd --type f -H -I -E .git',
-        'gitignore': 'fd --type f -H -E .git',
-    }
-else
-    if has('win32')
-        commands = {
-            'default': 'powershell -command "gci . -r -n -File"',
-        }
-    else
-        commands = {
-            'default': 'find . -type f -not -path "*/.git/*"',
-        }
-    endif
-    # TODO bugs
-    if has_git && InsideGitRepo()
-        commands.gitignore = 'git ls-files --cached --other --exclude-standard --full-name .'
-    else
-        commands.gitignore = v:null
-    endif
-endif
-
-if has_git
-    commands.only_git_files = 'git ls-files'
-endif
-
-def GetOrDefault(name: string, default: any): any
-    if exists(name)
-        return eval(name)
-    endif
-    return default
-enddef
 
 var enable_devicons = exists('g:fuzzyy_devicons') && exists('g:WebDevIconsGetFileTypeSymbol') ?
     g:fuzzyy_devicons : exists('g:WebDevIconsGetFileTypeSymbol')
@@ -71,26 +25,7 @@ if enable_devicons
     matched_hl_offset = devicons.GetDeviconWidth() + 1
 endif
 
-# options
-var respect_gitignore = GetOrDefault('g:files_respect_gitignore', 0)
-var only_git_files = GetOrDefault('g:files_only_git_files', 0)
-
-def InitConfig()
-    cmdstr = ''
-    if only_git_files
-        && commands.only_git_files != v:null
-        && InsideGitRepo()
-        cmdstr = commands.only_git_files
-    elseif respect_gitignore
-        && commands.gitignore != v:null
-        && InsideGitRepo()
-        cmdstr = commands.gitignore
-    else
-        cmdstr = commands.default
-    endif
-enddef
-
-InitConfig()
+var cmdstr = cmdbuilder.Build()
 
 def ProcessResult(list_raw: list<string>, ...args: list<any>): list<string>
     var limit = -1
@@ -204,7 +139,6 @@ def FilesJobStart(path: string, cmd: string)
 enddef
 
 def ErrCb(channel: channel, msg: string)
-    # echom ['err']
 enddef
 
 def ExitCb(j: job, status: number)
@@ -286,3 +220,4 @@ export def Start(windows: dict<any>, ...args: list<any>)
     files_update_tid = timer_start(400, function('FilesUpdateMenu'), {'repeat': -1})
     # Profiling()
 enddef
+
