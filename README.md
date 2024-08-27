@@ -14,9 +14,12 @@ It ultilizes vim's native matchfuzzypos function and popup window feature.
 
 - vim > 9.0
     - The maintained version is written in vim9, but it also has a vim8 branch for older vim.
-- any of grep, ag or rg
-- find or fd
+- ag or rg (optional)
+- fd (optional)
 - [vim-devicons](https://github.com/ryanoasis/vim-devicons) (optional)
+
+fuzzyy strives to provide an out-of-box experience by using pre-installed programs
+to handle complex tasks.
 
 ## Install
 
@@ -48,7 +51,7 @@ word under cursor.
     ```vim
         nnoremap <Space>f :FuzzyGrep <C-R><C-W><CR>
     ```
-- FuzzyGrep requires any of grep, ag or rg command.
+- FuzzyGrep requires any of ag, rg, grep or FINDSTR command.
 
 - FuzzyFiles uses find command in unix (if not found it will use vim's glob function,
  which is blocking) or powershell's Get-ChildItem in windows.
