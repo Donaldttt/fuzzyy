@@ -7,8 +7,10 @@ var max_count = 1000
 var rg_cmd = 'rg --column -M200 --vimgrep --max-count=' .. max_count .. ' -F "%s" "%s"'
 var ag_cmd = 'ag --column -W200 --vimgrep --max-count=' .. max_count .. ' -F "%s" "%s"'
 var grep_cmd = 'grep -n -r --max-count=' .. max_count .. ' "%s" "%s"'
+var findstr_cmd = 'FINDSTR /S /N /I /O "%s" "%s/*"'
 var sep_pattern = '\:\d\+:\d\+:'
 var loading = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
+var highlight = true
 
 var cmd: string
 # TODO no windows default
@@ -19,6 +21,11 @@ elseif executable('rg')
 elseif executable('grep')
     cmd = grep_cmd
     sep_pattern = '\:\d\+:'
+    highlight = false
+elseif executable('findstr') # for Windows
+    cmd = findstr_cmd
+    sep_pattern = '\:\d\+:'
+    highlight = false
 endif
 
 var cwd: string
@@ -143,7 +150,7 @@ def Input(wid: number, args: dict<any>, ...li: list<any>)
 enddef
 
 def UpdatePreviewHl()
-    if !has_key(cur_dict, cur_menu_item) || cmd[: 3] == 'grep' || preview_wid < 0
+    if !has_key(cur_dict, cur_menu_item) || !highlight || preview_wid < 0
         return
     endif
     var [path, linenr, colnr] = ParseAgStr(cur_menu_item)
@@ -244,7 +251,7 @@ def AgUpdateMenu(...li: list<any>)
     endif
 
     var hl_list = cols
-    if cmd[: 3] == 'grep'
+    if !highlight
         hl_list = []
     endif
 
@@ -274,7 +281,7 @@ enddef
 
 export def Start(windows: dict<any>, ...keyword: list<any>)
     if cmd == ''
-        echoe 'Please install ag, rg or grep to run :FuzzyGrep'
+        echoe 'Please install ag, rg, grep or findstr to run :FuzzyGrep'
         return
     endif
     cwd = getcwd()
