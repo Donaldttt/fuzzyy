@@ -129,8 +129,9 @@ let g:fuzzyy_keymaps = {
 \     'preview_down_half_page': ["\<c-d>"],
 \     'cursor_begining': ["\<c-a>"],          " move cursor to the begining of the line in the prompt
 \     'cursor_end': ["\<c-e>"],               " move cursor to the end of the line in the prompt
+\     'backspace': ["\<bs>"],
 \     'delete_all': ["\<c-k>"],               " delete whole line of the prompt
-\.    'delete_prefix': [],                    " delete to the start of the line
+\     'delete_prefix': [],                    " delete to the start of the line
 \     'exit': ["\<Esc>", "\<c-c>", "\<c-[>"], " exit fuzzyy
 \ }
 
