@@ -18,6 +18,7 @@ var keymaps: dict<any> = {
     'preview_down_half_page': ["\<c-d>"],
     'cursor_begining': ["\<c-a>"],
     'cursor_end': ["\<c-e>"],
+    'backspace': ["\<bs>"],
     'delete_all': ["\<c-k>"],
     'delete_prefix': [],
     'exit': ["\<Esc>", "\<c-c>", "\<c-[>"],
@@ -135,7 +136,7 @@ def PromptFilter(wid: number, key: string): number
             line = pre + [key] + line[cur_pos :]
         endif
         cur_pos += 1
-    elseif key == "\<bs>"
+    elseif index(keymaps['backspace'], key) >= 0
         if cur_pos == len(line)
             line = line[: -2]
         else
