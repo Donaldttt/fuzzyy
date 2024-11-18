@@ -180,7 +180,7 @@ def MergeContinusNumber(li: list<number>): list<any>
 enddef
 
 def Worker(tid: number)
-    const ASYNC_STEP = 1000
+    const ASYNC_STEP = 10000
     var li = async_list[: ASYNC_STEP]
     var results: list<any> = matchfuzzypos(li, async_pattern)
     var processed_results = []
