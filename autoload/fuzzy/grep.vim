@@ -189,13 +189,8 @@ def Preview(wid: number, opts: dict<any>)
         var preview_bufnr = winbufnr(preview_wid)
         var fileraw = readfile(path)
         var ext = fnamemodify(path, ':e')
-        var ft = selector.GetFt(ext)
-        popup_settext(preview_wid, fileraw)
-        # set syntax won't invoke some error cause by filetype autocmd
-        try
-            setbufvar(preview_bufnr, '&syntax', ft)
-        catch
-        endtry
+        noautocmd call popup_settext(preview_wid, fileraw)
+        win_execute(preview_wid, 'silent! doautocmd filetypedetect BufNewFile *.' .. ext)
     endif
     if path != last_path || linenr != last_linenr
         win_execute(preview_wid, 'norm ' .. linenr .. 'G')

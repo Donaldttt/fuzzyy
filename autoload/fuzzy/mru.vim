@@ -34,12 +34,8 @@ def Preview(wid: number, opts: dict<any>)
     var preview_bufnr = winbufnr(preview_wid)
     var fileraw = readfile(result, '', 70)
     var ext = fnamemodify(result, ':e')
-    var ft = selector.GetFt(ext)
-    popup_settext(preview_wid, fileraw)
-    try
-        setbufvar(preview_bufnr, '&syntax', ft)
-    catch
-    endtry
+    noautocmd call popup_settext(preview_wid, fileraw)
+    win_execute(preview_wid, 'silent! doautocmd filetypedetect BufNewFile *.' .. ext)
 enddef
 
 def Close(wid: number, result: dict<any>)

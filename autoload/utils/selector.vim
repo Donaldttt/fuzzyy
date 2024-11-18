@@ -18,22 +18,6 @@ if enable_devicons
 endif
 export var windows: dict<any>
 
-var filetype_table = {
-    h:  'c',
-    hpp:  'cpp',
-    cc:  'cpp',
-    hh:  'cpp',
-    py:  'python',
-    js:  'javascript',
-    ts:  'typescript',
-    tsx:  'typescript',
-    jsx:  'typescript',
-    rs:  'rust',
-    json:  'json',
-    yml:  'yaml',
-    md:  'markdown',
-}
-
 var enable_dropdown = exists('g:fuzzyy_dropdown') ? g:fuzzyy_dropdown : 0
 
 # This function is used to render the menu window.
@@ -82,13 +66,6 @@ export def Split(str: string): list<string>
         sep = '\n'
     endif
     return split(str, sep)
-enddef
-
-export def GetFt(ft: string): string
-    if has_key(filetype_table, ft)
-        return filetype_table[ft]
-    endif
-    return ft
 enddef
 
 # Search pattern @pattern in a list of strings @li
