@@ -4,8 +4,8 @@ import autoload 'utils/selector.vim'
 import autoload 'utils/popup.vim'
 
 var max_count = 1000
-var rg_cmd = 'rg --column -M200 --vimgrep --max-count=' .. max_count .. ' -F "%s" "%s"'
-var ag_cmd = 'ag --column -W200 --vimgrep --max-count=' .. max_count .. ' -F "%s" "%s"'
+var rg_cmd = 'rg -M200 --vimgrep --max-count=' .. max_count .. ' -F "%s" "%s"'
+var ag_cmd = 'ag -W200 --vimgrep --max-count=' .. max_count .. ' -F "%s" "%s"'
 var grep_cmd = 'grep -n -r --max-count=' .. max_count .. ' "%s" "%s"'
 var findstr_cmd = 'FINDSTR /S /N /I /O "%s" "%s/*"'
 var sep_pattern = '\:\d\+:\d\+:'
