@@ -209,7 +209,7 @@ def Select(wid: number, result: list<any>)
     if path == v:null
         return
     endif
-    execute('edit ' .. path)
+    exe 'edit ' .. path
     exe 'norm! ' .. linenr .. 'G'
     exe 'norm! zz'
 enddef
