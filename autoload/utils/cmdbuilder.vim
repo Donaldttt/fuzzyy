@@ -4,17 +4,20 @@ var file_ignore_default = ['*.beam', '*.so', '*.exe', '*.dll', '*.dump',
     '*.core', '*.swn', '*.swp']
 var dir_ignore_default = ['.git', '.hg', '.svn', '.rebar', '.eunit']
 
-# OPTIONS
+# Options
 var respect_gitignore = exists('g:files_respect_gitignore') ?
     g:files_respect_gitignore : 0
-var only_git_files = exists('g:files_only_git_files') ?
-    g:files_only_git_files : 0
 var file_ignore = exists('g:fuzzyy_files_ignore_file')
     && type(g:fuzzyy_files_ignore_file) == v:t_list ?
     g:fuzzyy_files_ignore_file : file_ignore_default
 var dir_ignore = exists('g:fuzzyy_files_ignore_dir')
     && type(g:fuzzyy_files_ignore_dir) == v:t_list ?
     g:fuzzyy_files_ignore_dir : dir_ignore_default
+
+# Deprecated or removed options
+if exists('g:files_only_git_files') && g:files_only_git_files
+    echo 'fuzzyy: g:files_only_git_files is no longer supported, use :FuzzyGitFiles command instead'
+endif
 
 var has_git = executable('git') ? v:true : v:false
 
@@ -97,9 +100,6 @@ export def Build_gci(): string
     return "powershell -command " .. '"' .. cmd .. '"'
 enddef
 
-export def Build_git_ls_files(): string
-enddef
-
 def RespectGitignore(): string
     var cmdstr = ''
     if executable('fd')
@@ -113,22 +113,8 @@ def RespectGitignore(): string
     return cmdstr
 enddef
 
-def OnlyGitFile(): string
-    var cmdstr = ''
-    if has_git && InsideGitRepo()
-        cmdstr = 'git ls-files'
-    endif
-    return cmdstr
-enddef
-
 export def Build(): string
     var cmdstr = ''
-    if only_git_files
-        cmdstr = OnlyGitFile()
-        if cmdstr != ''
-            return cmdstr
-        endif
-    endif
     if respect_gitignore
         cmdstr = RespectGitignore()
         if cmdstr != ''
