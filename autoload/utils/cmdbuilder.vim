@@ -104,6 +104,9 @@ def RespectGitignore(): string
     var cmdstr = ''
     if executable('fd')
         cmdstr = Build_fd()
+    elseif executable('fdfind')
+        cmdstr = Build_fd()
+        cmdstr = substitute(cmdstr, '^fd ', 'fdfind ', '')
     elseif has_git && InsideGitRepo()
         cmdstr = 'git ls-files --cached --other --exclude-standard --full-name .'
     endif
@@ -132,8 +135,11 @@ export def Build(): string
             return cmdstr
         endif
     endif
-    if executable('fd') #fd is cross-platform
-            cmdstr = Build_fd()
+    if executable('fd') # fd is cross-platform
+        cmdstr = Build_fd()
+    elseif executable('fdfind') # debian installs fd as fdfind
+        cmdstr = Build_fd()
+        cmdstr = substitute(cmdstr, '^fd ', 'fdfind ', '')
     else
         if has('win32')
             cmdstr = Build_gci()
