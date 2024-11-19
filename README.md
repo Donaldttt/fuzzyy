@@ -103,12 +103,12 @@ nnoremap <silent> <leader>fm :FuzzyMRUFiles<CR>
 " Default to 1
 let g:enable_fuzzyy_keymaps = 0
 
-" Make FuzzyFiles respect .gitignore if set to 1
+" Make FuzzyFiles respect .gitignore if possible
 " only work when
 " 1. inside a git repository and git is installed
 " 2. or fd is installed
-" Default to 0
-let g:files_respect_gitignore = 1
+" Default to 1
+let g:files_respect_gitignore = 0
 
 " FuzzyFiles will exclude the files/directory in these two lists
 " only work when g:files_respect_gitignore = 0

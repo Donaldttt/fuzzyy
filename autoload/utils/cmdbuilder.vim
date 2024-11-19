@@ -6,7 +6,7 @@ var dir_ignore_default = ['.git', '.hg', '.svn', '.rebar', '.eunit']
 
 # Options
 var respect_gitignore = exists('g:files_respect_gitignore') ?
-    g:files_respect_gitignore : 0
+    g:files_respect_gitignore : 1
 var file_ignore = exists('g:fuzzyy_files_ignore_file')
     && type(g:fuzzyy_files_ignore_file) == v:t_list ?
     g:fuzzyy_files_ignore_file : file_ignore_default
