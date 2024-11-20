@@ -130,10 +130,10 @@ def FilesJobStart(path: string, cmd: string)
         return
     endif
     jid = job_start(cmd, {
-        out_cb: function('JobHandler'),
+        out_cb: JobHandler,
         out_mode: 'raw',
-        exit_cb: function('ExitCb'),
-        err_cb: function('ErrCb'),
+        exit_cb: ExitCb,
+        err_cb: ErrCb,
         cwd: path
     })
 enddef
@@ -196,11 +196,11 @@ export def Start(windows: dict<any>, ...args: list<any>)
     cwd = getcwd()
     cwdlen = len(cwd)
     in_loading = 1
-    var wids = selector.Start([], {
-        select_cb:  function('Select'),
-        preview_cb:  function('Preview'),
-        input_cb:  function('Input'),
-        close_cb:  function('Close'),
+    selector.Start([], {
+        select_cb:  Select,
+        preview_cb:  Preview,
+        input_cb:  Input,
+        close_cb:  Close,
         preview:  windows.preview,
         width: windows.width,
         preview_ratio: windows.preview_ratio,
@@ -215,9 +215,8 @@ export def Start(windows: dict<any>, ...args: list<any>)
         cmd = cmdstr
     endif
     FilesJobStart(cwd, cmd)
-    menu_wid = wids.menu
-    timer_start(50, function('FilesUpdateMenu'))
-    files_update_tid = timer_start(400, function('FilesUpdateMenu'), {'repeat': -1})
+    menu_wid = selector.windows.menu
+    timer_start(50, FilesUpdateMenu)
+    files_update_tid = timer_start(400, FilesUpdateMenu, {'repeat': -1})
     # Profiling()
 enddef
-
