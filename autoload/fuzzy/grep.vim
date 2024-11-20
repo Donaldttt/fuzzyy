@@ -6,7 +6,7 @@ import autoload 'utils/popup.vim'
 var max_count = 1000
 var rg_cmd = 'rg -M200 -S --vimgrep --max-count=' .. max_count .. ' -F "%s" "%s"'
 var ag_cmd = 'ag -W200 -S --vimgrep --max-count=' .. max_count .. ' -F "%s" "%s"'
-var grep_cmd = 'grep -n -r -i --max-count=' .. max_count .. ' "%s" "%s"'
+var grep_cmd = 'grep -n -r -i --max-count=' .. max_count .. ' -F "%s" "%s"'
 var findstr_cmd = 'FINDSTR /S /N /I /O /i "%s" "%s/*"'
 var sep_pattern = '\:\d\+:\d\+:'
 var loading = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
