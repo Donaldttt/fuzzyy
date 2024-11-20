@@ -19,17 +19,6 @@ if exists('g:files_only_git_files') && g:files_only_git_files
     echo 'fuzzyy: g:files_only_git_files is no longer supported, use :FuzzyGitFiles command instead'
 endif
 
-var has_git = executable('git') ? v:true : v:false
-
-def InsideGitRepo(): bool
-    if has_git
-        return stridx(system('git rev-parse --is-inside-work-tree'), 'true') == 0
-    else
-        echom 'fuzzyy: git is not installed'
-        return v:false
-    endif
-enddef
-
 export def Build_fd(): string
     if respect_gitignore
         return 'fd --type f -H -E .git'
@@ -100,38 +89,23 @@ export def Build_gci(): string
     return "powershell -command " .. '"' .. cmd .. '"'
 enddef
 
-def RespectGitignore(): string
-    var cmdstr = ''
-    if executable('fd')
-        cmdstr = Build_fd()
-    elseif executable('fdfind')
-        cmdstr = Build_fd()
-        cmdstr = substitute(cmdstr, '^fd ', 'fdfind ', '')
-    elseif has_git && InsideGitRepo()
-        cmdstr = 'git ls-files --cached --other --exclude-standard .'
-    endif
-    return cmdstr
+def InsideGitRepo(): bool
+    return stridx(system('git rev-parse --is-inside-work-tree'), 'true') == 0
 enddef
 
 export def Build(): string
     var cmdstr = ''
-    if respect_gitignore
-        cmdstr = RespectGitignore()
-        if cmdstr != ''
-            return cmdstr
-        endif
-    endif
     if executable('fd') # fd is cross-platform
         cmdstr = Build_fd()
     elseif executable('fdfind') # debian installs fd as fdfind
         cmdstr = Build_fd()
         cmdstr = substitute(cmdstr, '^fd ', 'fdfind ', '')
+    elseif respect_gitignore && executable('git') && InsideGitRepo()
+        cmdstr = 'git ls-files --cached --other --exclude-standard .'
+    elseif has('win32')
+        cmdstr = Build_gci()
     else
-        if has('win32')
-            cmdstr = Build_gci()
-        else
-            cmdstr = Build_find()
-        endif
+        cmdstr = Build_find()
     endif
     return cmdstr
 enddef
