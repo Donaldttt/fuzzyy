@@ -108,10 +108,10 @@ let g:enable_fuzzyy_keymaps = 0
 " 1. inside a git repository and git is installed
 " 2. or fd is installed
 " Default to 1
-let g:files_respect_gitignore = 0
+let g:fuzzyy_files_respect_gitignore = 0
 
 " FuzzyFiles will exclude the files/directory in these two lists
-" only work when g:files_respect_gitignore = 0
+" only work when g:fuzzyy_files_respect_gitignore = 0
 " The following is the default
 let g:fuzzyy_files_ignore_file = ['*.beam', '*.so', '*.exe', '*.dll', '*.dump',
     '*.core', '*.swn', '*.swp']

@@ -4,20 +4,24 @@ var file_ignore_default = ['*.beam', '*.so', '*.exe', '*.dll', '*.dump',
     '*.core', '*.swn', '*.swp']
 var dir_ignore_default = ['.git', '.hg', '.svn', '.rebar', '.eunit']
 
+# Deprecated or removed options
+if exists('g:files_only_git_files') && g:files_only_git_files
+    echo 'fuzzyy: g:files_only_git_files is no longer supported, use :FuzzyGitFiles command instead'
+endif
+if exists('g:files_respect_gitignore')
+    echo 'fuzzyy: g:files_respect_gitignore is deprecated, gitignore is now respected by default'
+    g:fuzzyy_files_respect_gitignore = g:files_respect_gitignore
+endif
+
 # Options
-var respect_gitignore = exists('g:files_respect_gitignore') ?
-    g:files_respect_gitignore : 1
+var respect_gitignore = exists('g:fuzzyy_files_respect_gitignore') ?
+    g:fuzzyy_files_respect_gitignore : 1
 var file_ignore = exists('g:fuzzyy_files_ignore_file')
     && type(g:fuzzyy_files_ignore_file) == v:t_list ?
     g:fuzzyy_files_ignore_file : file_ignore_default
 var dir_ignore = exists('g:fuzzyy_files_ignore_dir')
     && type(g:fuzzyy_files_ignore_dir) == v:t_list ?
     g:fuzzyy_files_ignore_dir : dir_ignore_default
-
-# Deprecated or removed options
-if exists('g:files_only_git_files') && g:files_only_git_files
-    echo 'fuzzyy: g:files_only_git_files is no longer supported, use :FuzzyGitFiles command instead'
-endif
 
 export def Build_fd(): string
     if respect_gitignore
