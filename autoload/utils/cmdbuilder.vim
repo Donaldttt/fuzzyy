@@ -108,7 +108,7 @@ def RespectGitignore(): string
         cmdstr = Build_fd()
         cmdstr = substitute(cmdstr, '^fd ', 'fdfind ', '')
     elseif has_git && InsideGitRepo()
-        cmdstr = 'git ls-files --cached --other --exclude-standard --full-name .'
+        cmdstr = 'git ls-files --cached --other --exclude-standard .'
     endif
     return cmdstr
 enddef
