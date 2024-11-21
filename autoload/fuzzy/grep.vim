@@ -12,12 +12,18 @@ var sep_pattern = '\:\d\+:\d\+:'
 var loading = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
 var highlight = true
 
+def InsideGitRepo(): bool
+    return stridx(system('git rev-parse --is-inside-work-tree'), 'true') == 0
+enddef
+
 var cmd: string
 # TODO no windows default
 if executable('ag')
     cmd = ag_cmd
 elseif executable('rg')
     cmd = rg_cmd
+elseif executable('git') && InsideGitRepo()
+    cmd = 'git grep -n -i --column --untracked --exclude-standard -F "%s" "%s"'
 elseif executable('grep')
     cmd = grep_cmd
     sep_pattern = '\:\d\+:'
@@ -76,9 +82,11 @@ def Reducer(pattern: string, acc: dict<any>, val: string): dict<any>
         col = str2nr(linecol[1])
     endif
     var path = strpart(val, 0, seq[1])
+    # note: git-grep command results relative paths
+    var absolute_path = fnamemodify(path, ':p')
     var str = strpart(val, seq[2])
     var centerd_str = str
-    var relative_path = strpart(path, len(cwd) + 1)
+    var relative_path = strpart(absolute_path, len(cwd) + 1)
 
     var prefix = relative_path .. seq[0]
     var col_list = [col + len(prefix), len(pattern)]
