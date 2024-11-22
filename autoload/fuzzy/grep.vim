@@ -6,8 +6,8 @@ import autoload 'utils/popup.vim'
 var max_count = 1000
 var rg_cmd = 'rg -M200 -S --vimgrep --max-count=' .. max_count .. ' -F "%s" "%s"'
 var ag_cmd = 'ag -W200 -S --vimgrep --max-count=' .. max_count .. ' -F "%s" "%s"'
-var grep_cmd = 'grep -n -r -i --max-count=' .. max_count .. ' -F "%s" "%s"'
-var findstr_cmd = 'FINDSTR /S /N /I /O /i "%s" "%s/*"'
+var grep_cmd = 'grep -n -r -i -I --max-count=' .. max_count .. ' -F "%s" "%s"'
+var findstr_cmd = 'FINDSTR /S /N /I /O /P "%s" "%s/*"'
 var sep_pattern = '\:\d\+:\d\+:'
 var loading = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
 var highlight = true
@@ -23,7 +23,7 @@ if executable('ag')
 elseif executable('rg')
     cmd = rg_cmd
 elseif executable('git') && InsideGitRepo()
-    cmd = 'git grep -n -i --column --untracked --exclude-standard -F "%s" "%s"'
+    cmd = 'git grep -n -i -I --column --untracked --exclude-standard -F "%s" "%s"'
 elseif executable('grep')
     cmd = grep_cmd
     sep_pattern = '\:\d\+:'
