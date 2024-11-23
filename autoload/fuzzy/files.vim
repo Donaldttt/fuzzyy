@@ -46,7 +46,7 @@ def Select(wid: number, result: list<any>)
     if enable_devicons
         path = strcharpart(path, devicon_char_width + 1)
     endif
-    execute('edit ' .. path)
+    exe 'edit ' .. path
 enddef
 
 def AsyncCb(result: list<any>)
