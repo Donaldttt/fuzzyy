@@ -4,7 +4,13 @@ import autoload 'utils/selector.vim'
 
 def Select(wid: number, result: list<any>)
     var command = result[0]
-    exe command
+    var info = split(execute(':filter /\<' .. command .. '\>/ command ' .. command), '\n')[-1]
+    var nargs = split(matchstr(info, '\<' .. command .. '\>\s\+\S'), '\s\+')[-1]
+    if nargs == "0"
+        exe command
+    else
+        call feedkeys(':' .. command .. ' ', 'n')
+    endif
 enddef
 
 export def Start()
