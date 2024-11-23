@@ -55,10 +55,21 @@ export def UpdateMenu(str_list: list<string>, hl_list: list<list<any>>, ...opts:
     endif
 enddef
 
-export def MenuGetCursorItem(): string
+# This function is used to get the line under the cursor in the menu window.
+# params:
+# - stripped: get the line after striping the devicon or any other prefix
+# return:
+# - the line under the cursor
+export def MenuGetCursorItem(stripped: bool): string
     var bufnr = winbufnr(windows.menu)
     var cursorlinepos = line('.', windows.menu)
-    return getbufline(bufnr, cursorlinepos, cursorlinepos)[0]
+    var bufline = getbufline(bufnr, cursorlinepos, cursorlinepos)[0]
+    if stripped
+        if enable_devicons
+            bufline = strcharpart(bufline, devicon_char_width + 1)
+        endif
+    endif
+    return bufline
 enddef
 
 export def Split(str: string): list<string>

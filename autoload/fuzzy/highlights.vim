@@ -101,7 +101,7 @@ export def Start(windows: dict<any>)
         var mid = matchaddpos(hl, [[line, xxxidx + 1, 3]], 99, -1,  {window: preview_wid})
     endfor
     timer_start(1, (timer) => {
-        var line = hl_meta[selector.MenuGetCursorItem()][0]
+        var line = hl_meta[selector.MenuGetCursorItem(false)][0]
         win_execute(preview_wid, 'normal! ' .. line .. 'G')
         win_execute(preview_wid, 'normal! zz')
     })
