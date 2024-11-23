@@ -1,8 +1,8 @@
 vim9script
 var popup_wins: dict<any>
 var wins = { 'menu': -1, 'prompt': -1, 'preview': -1, 'info': -1 }
-var t_ve = &t_ve
-var guicursor = &guicursor
+var t_ve: string
+var hlcursor: dict<any>
 var exists_buffers = []
 export var active = false
 
@@ -44,8 +44,8 @@ def Restore()
     if &t_ve != t_ve
         &t_ve = t_ve
     endif
-    if &guicursor != guicursor
-        &guicursor = guicursor
+    if get(hlget('Cursor')[0], 'cleared', v:false)
+        hlset([hlcursor])
     endif
     active = false
 enddef
@@ -660,9 +660,9 @@ export def PopupSelection(user_opts: dict<any>): dict<any>
     popup_wins[wins.prompt].partids = wins
 
     t_ve = &t_ve
-    guicursor = &guicursor
     setlocal t_ve=
     # hide cursor in macvim or other guivim
-    set guicursor=a:xxx
+    hlcursor = hlget('Cursor')[0]
+    hlset([{name: 'Cursor', cleared: v:true}])
     return wins
 enddef
