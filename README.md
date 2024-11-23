@@ -162,7 +162,7 @@ let g:fuzzyy_buffers_exclude = ['__vista__']
 
 " FuzzyBuffer keymap for commands speicific to FuzzyBuffers
 " default to is the following
-let g:fuzzyy_buffer_keymap = {
+let g:fuzzyy_buffers_keymap = {
 \    'delete_buffer': "",
 \    'close_buffer': "\<c-l>",
 \ }
