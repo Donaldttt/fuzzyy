@@ -22,25 +22,21 @@ endif
 
 def Preview(wid: number, opts: dict<any>)
     var result = opts.cursor_item
-    if result == ''
-        return
-    endif
     if !has_key(opts.win_opts.partids, 'preview')
         return
     endif
     var preview_wid = opts.win_opts.partids['preview']
+    if result == ''
+        popup_settext(preview_wid, '')
+        return
+    endif
     if enable_devicons
         result = strcharpart(result, devicon_char_width + 1)
     endif
     var file: string
     var lnum: number
-    try
-        file = buf_dict[result][0]
-        lnum = buf_dict[result][2]
-    catch
-        echom 'Error FuzzyBuffer - Preview: buffer not found'
-        echom [buf_dict, result]
-    endtry
+    file = buf_dict[result][0]
+    lnum = buf_dict[result][2]
     if !filereadable(file)
         if file == ''
             popup_settext(preview_wid, '')
@@ -105,11 +101,26 @@ enddef
 def DeleteSelectedBuffer()
     var buf = selector.MenuGetCursorItem(true)
     delete(buf)
+    if buf == ''
+        return
+    endif
+    execute(':bw ' .. buf)
+    var li = GetBufList()
+    selector.UpdateMenu(li, [], 1)
+    selector.UpdateFzfList(li)
+    selector.RefreshMenu()
 enddef
+
 def CloseSelectedBuffer()
     var buf = selector.MenuGetCursorItem(true)
+    if buf == ''
+        return
+    endif
     execute(':bw ' .. buf)
-    selector.UpdateMenu(GetBufList(), [], 1)
+    var li = GetBufList()
+    selector.UpdateMenu(li, [], 1)
+    selector.UpdateFzfList(li)
+    selector.RefreshMenu()
 enddef
 
 key_callbacks[keymaps.delete_buffer] = function("DeleteSelectedBuffer")
