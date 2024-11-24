@@ -111,11 +111,13 @@ let g:enable_fuzzyy_keymaps = 0
 let g:fuzzyy_files_respect_gitignore = 0
 
 " FuzzyFiles will exclude the files/directory in these two lists
-" only work when g:fuzzyy_files_respect_gitignore = 0
+" only work when
+" 1. g:fuzzyy_files_respect_gitignore = 0
+" 2. or fd not installed and not in git repository
 " The following is the default
-let g:fuzzyy_files_ignore_file = ['*.beam', '*.so', '*.exe', '*.dll', '*.dump',
+let g:fuzzyy_files_exclude_file = ['*.beam', '*.so', '*.exe', '*.dll', '*.dump',
     '*.core', '*.swn', '*.swp']
-let g:fuzzyy_files_ignore_dir = ['.git', '.hg', '.svn', '.rebar', '.eunit']
+let g:fuzzyy_files_exclude_dir = ['.git', '.hg', '.svn', '.rebar', '.eunit']
 
 " Change navigation keymaps
 " The following is the default

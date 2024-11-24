@@ -1,8 +1,8 @@
 vim9script
 
-var file_ignore_default = ['*.beam', '*.so', '*.exe', '*.dll', '*.dump',
+var file_exclude_default = ['*.beam', '*.so', '*.exe', '*.dll', '*.dump',
     '*.core', '*.swn', '*.swp']
-var dir_ignore_default = ['.git', '.hg', '.svn', '.rebar', '.eunit']
+var dir_exclude_default = ['.git', '.hg', '.svn', '.rebar', '.eunit']
 
 # Deprecated or removed options
 if exists('g:files_only_git_files') && g:files_only_git_files
@@ -12,25 +12,33 @@ if exists('g:files_respect_gitignore')
     echo 'fuzzyy: g:files_respect_gitignore is deprecated, gitignore is now respected by default'
     g:fuzzyy_files_respect_gitignore = g:files_respect_gitignore
 endif
+if exists('g:fuzzyy_files_ignore_file')
+    echo 'fuzzyy: g:fuzzyy_files_ignore_file is deprecated, use g:fuzzyy_files_exclude_file instead'
+    g:fuzzyy_files_exclude_file = g:fuzzyy_files_ignore_file
+endif
+if exists('g:fuzzyy_files_ignore_dir')
+    echo 'fuzzyy: g:fuzzyy_files_ignore_dir is deprecated, use g:fuzzyy_files_exclude_dir instead'
+    g:fuzzyy_files_exclude_dir = g:fuzzyy_files_ignore_dir
+endif
 
 # Options
 var respect_gitignore = exists('g:fuzzyy_files_respect_gitignore') ?
     g:fuzzyy_files_respect_gitignore : 1
-var file_ignore = exists('g:fuzzyy_files_ignore_file')
-    && type(g:fuzzyy_files_ignore_file) == v:t_list ?
-    g:fuzzyy_files_ignore_file : file_ignore_default
-var dir_ignore = exists('g:fuzzyy_files_ignore_dir')
-    && type(g:fuzzyy_files_ignore_dir) == v:t_list ?
-    g:fuzzyy_files_ignore_dir : dir_ignore_default
+var file_exclude = exists('g:fuzzyy_files_exclude_file')
+    && type(g:fuzzyy_files_exclude_file) == v:t_list ?
+    g:fuzzyy_files_exclude_file : file_exclude_default
+var dir_exclude = exists('g:fuzzyy_files_exclude_dir')
+    && type(g:fuzzyy_files_exclude_dir) == v:t_list ?
+    g:fuzzyy_files_exclude_dir : dir_exclude_default
 
 export def Build_fd(): string
     if respect_gitignore
         return 'fd --type f -H -E .git'
     endif
-    var dir_list_parsed = reduce(dir_ignore,
+    var dir_list_parsed = reduce(dir_exclude,
         (acc, dir) => acc .. "-E " .. dir .. " ", "")
 
-    var file_list_parsed = reduce(file_ignore,
+    var file_list_parsed = reduce(file_exclude,
         (acc, file) => acc .. "-E " .. file .. " ", "")
 
     var result = "fd --type f -H -I " .. dir_list_parsed .. file_list_parsed
@@ -39,17 +47,17 @@ export def Build_fd(): string
 enddef
 
 export def Build_find(): string
-    var file_list_parsed = reduce(file_ignore,
+    var file_list_parsed = reduce(file_exclude,
         (acc, file) => acc .. "-not -name " .. file .. " ", "")
 
     var ParseDir = (dir): string => "*/" .. dir .. "/*"
     var dir_list_parsed = ""
-    if len(dir_ignore) > 0
-        dir_list_parsed = reduce(dir_ignore, (acc, dir) => acc .. "-not -path " .. ParseDir(dir) .. " ", " ")
+    if len(dir_exclude) > 0
+        dir_list_parsed = reduce(dir_exclude, (acc, dir) => acc .. "-not -path " .. ParseDir(dir) .. " ", " ")
     endif
     var result = "find . " .. dir_list_parsed
-    if len(file_ignore) > 0
-        result ..= reduce(file_ignore, (acc, file) => acc .. "-not -name " .. file .. " ", " ")
+    if len(file_exclude) > 0
+        result ..= reduce(file_exclude, (acc, file) => acc .. "-not -name " .. file .. " ", " ")
     endif
     result ..= "-type f -print "
 
@@ -64,29 +72,29 @@ enddef
 #
 # That's why module builds GCI cmd and piping it into Where-filter
 export def Build_gci(): string
-    var build_dir_filter = reduce(dir_ignore, (acc, dir) => acc .. "$_ -notlike '*\\"
+    var build_dir_filter = reduce(dir_exclude, (acc, dir) => acc .. "$_ -notlike '*\\"
         .. dir ..  "\\*' -and $_ -notlike '" .. dir .. "\\*'"
         .. " -and ", "")
             -> trim(" -and ", 2)
 
-    var build_file_filter = reduce(file_ignore, (acc, file) => acc
+    var build_file_filter = reduce(file_exclude, (acc, file) => acc
         .. "$_ -notlike '" .. file .. "' -and ", "")
             -> trim(" -and ", 2)
 
     var build_filter = "| Where-Object { "
-    if len(dir_ignore) > 0
+    if len(dir_exclude) > 0
         build_filter ..= build_dir_filter
     endif
-    if len(dir_ignore) > 0 && len(file_ignore) > 0
+    if len(dir_exclude) > 0 && len(file_exclude) > 0
         build_filter ..= " -and "
     endif
-    if len(file_ignore) > 0
+    if len(file_exclude) > 0
         build_filter ..= build_file_filter
     endif
     build_filter ..= "} "
 
     var cmd = "Get-ChildItem . -Name -Force -File -Recurse "
-    if len(dir_ignore) > 0 || len(file_ignore) > 0
+    if len(dir_exclude) > 0 || len(file_exclude) > 0
         cmd ..= build_filter
     endif
 
