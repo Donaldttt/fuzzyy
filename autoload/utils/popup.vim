@@ -4,6 +4,7 @@ var wins = { 'menu': -1, 'prompt': -1, 'preview': -1, 'info': -1 }
 var t_ve = &t_ve
 var guicursor = &guicursor
 var exists_buffers = []
+export var active = false
 
 # user can register callback for any key
 var key_callbacks: dict<any>
@@ -37,6 +38,18 @@ export def SetPopupWinProp(wid: number, key: string, val: any)
     endif
 enddef
 
+# restore things to normal
+def Restore()
+    # restore cursor
+    if &t_ve != t_ve
+        &t_ve = t_ve
+    endif
+    if &guicursor != guicursor
+        &guicursor = guicursor
+    endif
+    active = false
+enddef
+
 # Called usually when popup window is closed
 # It will only execute when menu window is closed
 # params:
@@ -53,6 +66,7 @@ def GeneralPopupCallback(wid: number, select: any)
         wins[key] = -1
     endfor
 
+    Restore()
     # only press enter select will be a list
     var has_selection = v:false
     if type(select) == v:t_list
@@ -72,13 +86,6 @@ def GeneralPopupCallback(wid: number, select: any)
         endif
         opt.cursor_item = popup_wins[wid].cursor_item
         popup_wins[wid].close_cb(wid, opt)
-    endif
-    # restore cursor
-    if &t_ve != t_ve
-        &t_ve = t_ve
-    endif
-    if &guicursor != guicursor
-        &guicursor = guicursor
     endif
     if exists('#User#PopupClosed')
         doautocmd User PopupClosed
@@ -529,6 +536,10 @@ enddef
 #        preview: wins.preview,
 #    }
 export def PopupSelection(user_opts: dict<any>): dict<any>
+    if active
+        return { 'menu': -1, 'prompt': -1, 'preview': -1 }
+    endif
+    active = true
     key_callbacks = has_key(user_opts, 'key_callbacks') ? user_opts.key_callbacks : {}
     var has_preview = has_key(user_opts, 'preview') && user_opts.preview
 

@@ -309,6 +309,9 @@ export def Start(windows: dict<any>, ...keyword: list<any>)
         close_cb:  function('CloseCb'),
      })
     menu_wid = wids.menu
+    if menu_wid == -1
+        return
+    endif
     preview_wid = wids.preview
     setwinvar(menu_wid, '&wrap', 0)
     ag_update_tid = timer_start(100, function('AgUpdateMenu'), {'repeat': -1})
