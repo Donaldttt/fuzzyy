@@ -138,8 +138,8 @@ let g:fuzzyy_keymaps = {
 \ }
 
 " Change highlight of the matched text when searching
-" Default to cursearch
-let g:fuzzyy_menu_matched_hl = 'cursearch'
+" Default to Special
+let g:fuzzyy_menu_matched_hl = 'Special'
 
 " Whether show devicons when using FuzzyFiles or FuzzyBuffers
 " Requires vim-devicons

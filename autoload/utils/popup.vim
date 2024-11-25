@@ -28,7 +28,7 @@ var keymaps: dict<any> = {
 keymaps = exists('g:fuzzyy_keymaps') && type(g:fuzzyy_keymaps) == v:t_dict ?
     extend(keymaps, g:fuzzyy_keymaps) : keymaps
 var menu_matched_hl = exists('g:fuzzyy_menu_matched_hl') ?
-    g:fuzzyy_menu_matched_hl : 'cursearch'
+    g:fuzzyy_menu_matched_hl : 'Special'
 
 export def SetPopupWinProp(wid: number, key: string, val: any)
     if has_key(popup_wins, wid) && has_key(popup_wins[wid], key)
