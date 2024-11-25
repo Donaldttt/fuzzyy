@@ -6,10 +6,9 @@ def Select(wid: number, result: list<any>)
     var command = result[0]
     var info = split(execute(':filter /\<' .. command .. '\>/ command ' .. command), '\n')[-1]
     var nargs = split(matchstr(info, '\<' .. command .. '\>\s\+\S'), '\s\+')[-1]
+    call feedkeys(':' .. command .. ' ', 'n')
     if nargs == "0"
-        exe command
-    else
-        call feedkeys(':' .. command .. ' ', 'n')
+        call feedkeys("\<CR>", 'n')
     endif
 enddef
 
