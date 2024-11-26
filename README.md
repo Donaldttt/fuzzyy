@@ -106,7 +106,7 @@ let g:enable_fuzzyy_keymaps = 0
 " Make FuzzyFiles respect .gitignore if possible
 " only work when
 " 1. inside a git repository and git is installed
-" 2. or fd is installed
+" 2. or either fd or rg is installed
 " Default to 1
 let g:fuzzyy_files_respect_gitignore = 0
 

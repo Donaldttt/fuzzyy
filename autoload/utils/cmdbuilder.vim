@@ -46,6 +46,21 @@ export def Build_fd(): string
     return result
 enddef
 
+export def Build_rg(): string
+    if respect_gitignore
+        return 'rg --files --hidden -g !.git'
+    endif
+    var dir_list_parsed = reduce(dir_exclude,
+        (acc, dir) => acc .. "-g !" .. dir .. " ", "")
+
+    var file_list_parsed = reduce(file_exclude,
+        (acc, file) => acc .. "-g !" .. file .. " ", "")
+
+    var result = "rg --files -H --no-ignore " .. dir_list_parsed .. file_list_parsed
+
+    return result
+enddef
+
 export def Build_find(): string
     var file_list_parsed = reduce(file_exclude,
         (acc, file) => acc .. "-not -name " .. file .. " ", "")
@@ -112,6 +127,8 @@ export def Build(): string
     elseif executable('fdfind') # debian installs fd as fdfind
         cmdstr = Build_fd()
         cmdstr = substitute(cmdstr, '^fd ', 'fdfind ', '')
+    elseif executable('rg') # rg is also cross-plaform
+        cmdstr = Build_rg()
     elseif respect_gitignore && executable('git') && InsideGitRepo()
         cmdstr = 'git ls-files --cached --other --exclude-standard .'
     elseif has('win32')
