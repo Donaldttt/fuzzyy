@@ -124,7 +124,12 @@ def JobStart(pattern: string)
         out_cb: function('JobHandler'),
         out_mode: 'raw',
         exit_cb: function('ExitCb'),
+        err_cb: function('ErrCb'),
     })
+enddef
+
+def ErrCb(channel: channel, msg: string)
+    echoerr msg
 enddef
 
 def ExitCb(id: job, status: number)

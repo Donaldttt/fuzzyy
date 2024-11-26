@@ -134,6 +134,7 @@ def FilesJobStart(path: string, cmd: string)
 enddef
 
 def ErrCb(channel: channel, msg: string)
+    echoerr msg
 enddef
 
 def ExitCb(j: job, status: number)
