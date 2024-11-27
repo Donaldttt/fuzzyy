@@ -1,8 +1,7 @@
 vim9script
 
-var file_exclude_default = ['*.beam', '*.so', '*.exe', '*.dll', '*.dump',
-    '*.core', '*.swn', '*.swp']
-var dir_exclude_default = ['.git', '.hg', '.svn', '.rebar', '.eunit']
+var file_exclude_default = ['*.swp', 'tags']
+var dir_exclude_default = ['.git', '.hg', '.svn']
 
 # Deprecated or removed options
 if exists('g:files_only_git_files') && g:files_only_git_files

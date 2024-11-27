@@ -115,9 +115,8 @@ let g:fuzzyy_files_respect_gitignore = 0
 " 1. g:fuzzyy_files_respect_gitignore = 0
 " 2. or fd not installed and not in git repository
 " The following is the default
-let g:fuzzyy_files_exclude_file = ['*.beam', '*.so', '*.exe', '*.dll', '*.dump',
-    '*.core', '*.swn', '*.swp']
-let g:fuzzyy_files_exclude_dir = ['.git', '.hg', '.svn', '.rebar', '.eunit']
+let g:fuzzyy_files_exclude_file = ['*.swp', 'tags']
+let g:fuzzyy_files_exclude_dir = ['.git', '.hg', '.svn']
 
 " Change navigation keymaps
 " The following is the default
