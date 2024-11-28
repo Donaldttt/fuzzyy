@@ -31,8 +31,9 @@ var dir_exclude = exists('g:fuzzyy_files_exclude_dir')
     g:fuzzyy_files_exclude_dir : dir_exclude_default
 
 export def Build_fd(): string
-    if respect_gitignore
-        return 'fd --type f -H -E .git'
+    var result = 'fd --type f -H'
+    if ! respect_gitignore
+        result ..= ' --no-ignore'
     endif
     var dir_list_parsed = reduce(dir_exclude,
         (acc, dir) => acc .. "-E " .. dir .. " ", "")
@@ -40,14 +41,13 @@ export def Build_fd(): string
     var file_list_parsed = reduce(file_exclude,
         (acc, file) => acc .. "-E " .. file .. " ", "")
 
-    var result = "fd --type f -H -I " .. dir_list_parsed .. file_list_parsed
-
-    return result
+    return result .. ' ' .. dir_list_parsed .. file_list_parsed
 enddef
 
 export def Build_rg(): string
-    if respect_gitignore
-        return 'rg --files --hidden -g !.git'
+    var result = 'rg --files --hidden'
+    if ! respect_gitignore
+        result ..= ' --no-ignore'
     endif
     var dir_list_parsed = reduce(dir_exclude,
         (acc, dir) => acc .. "-g !" .. dir .. " ", "")
@@ -55,9 +55,7 @@ export def Build_rg(): string
     var file_list_parsed = reduce(file_exclude,
         (acc, file) => acc .. "-g !" .. file .. " ", "")
 
-    var result = "rg --files -H --no-ignore " .. dir_list_parsed .. file_list_parsed
-
-    return result
+    return result .. ' ' .. dir_list_parsed .. file_list_parsed
 enddef
 
 export def Build_find(): string

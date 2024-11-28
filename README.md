@@ -110,10 +110,7 @@ let g:enable_fuzzyy_keymaps = 0
 " Default to 1
 let g:fuzzyy_files_respect_gitignore = 0
 
-" FuzzyFiles will exclude the files/directory in these two lists
-" only work when
-" 1. g:fuzzyy_files_respect_gitignore = 0
-" 2. or fd not installed and not in git repository
+" FuzzyFiles will always exclude the files/directory in these two lists
 " The following is the default
 let g:fuzzyy_files_exclude_file = ['*.swp', 'tags']
 let g:fuzzyy_files_exclude_dir = ['.git', '.hg', '.svn']
