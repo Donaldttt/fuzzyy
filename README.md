@@ -154,9 +154,11 @@ let g:enable_fuzzyy_MRU_files = 1
 " default to 0
 let g:fuzzyy_mru_project_only = 0
 
-" FuzzyBuffers will exclude the buffers in this list
-" default to ['__vista__']
-let g:fuzzyy_buffers_exclude = ['__vista__']
+" FuzzyBuffers will exclude the buffers in this list. Buffers not included in
+" Vim's buffer list are excluded by default, so this is only necessary for
+" buffers included in Vim's buffer list, but you want hidden by FuzzyBuffers
+" default to []
+let g:fuzzyy_buffers_exclude = []
 
 " FuzzyBuffer keymap for commands speicific to FuzzyBuffers
 " default to is the following

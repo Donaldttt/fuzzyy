@@ -16,8 +16,6 @@ if exists('g:enable_fuzzyy_keymaps')
 endif
 
 g:fuzzyy_enable_mappings = exists('g:fuzzyy_enable_mappings') ? g:fuzzyy_enable_mappings : 1
-g:fuzzyy_buffers_exclude = exists('g:fuzzyy_buffers_exclude') ? g:fuzzyy_buffers_exclude
-    : ['__vista__']
 
 # window layout
 # you can override it by setting g:fuzzyy_window_layout

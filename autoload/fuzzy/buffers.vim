@@ -11,6 +11,9 @@ var devicon_char_width = devicons.GetDeviconCharWidth()
 # Options
 var enable_devicons = exists('g:fuzzyy_devicons') && exists('g:WebDevIconsGetFileTypeSymbol') ?
     g:fuzzyy_devicons : exists('g:WebDevIconsGetFileTypeSymbol')
+var exclude_buffers = exists('g:fuzzyy_buffers_exclude') ?
+    g:fuzzyy_buffers_exclude : []
+
 
 var keymaps = {
     'delete_buffer': "",
@@ -74,9 +77,6 @@ enddef
 def GetBufList(): list<string>
     var buf_data = getbufinfo({'buflisted': 1, 'bufloaded': 0})
     buf_dict = {}
-
-    var exclude_buffers = exists('g:fuzzyy_buffers_exclude') ?
-        g:fuzzyy_buffers_exclude : []
 
     reduce(buf_data, (acc, buf) => {
         if index(exclude_buffers, fnamemodify(buf.name, ':t')) >= 0
