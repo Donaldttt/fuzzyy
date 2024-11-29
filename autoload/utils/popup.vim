@@ -27,8 +27,11 @@ var keymaps: dict<any> = {
 
 keymaps = exists('g:fuzzyy_keymaps') && type(g:fuzzyy_keymaps) == v:t_dict ?
     extend(keymaps, g:fuzzyy_keymaps) : keymaps
-var menu_matched_hl = exists('g:fuzzyy_menu_matched_hl') ?
-    g:fuzzyy_menu_matched_hl : 'Special'
+
+# Removed option, use :highlight fuzzyyMatching instead
+if exists('g:fuzzyy_menu_matched_hl')
+    echo 'fuzzyy: g:fuzzyy_menu_matched_hl is no longer supported, use fuzzyyMatching highlight group instead'
+endif
 
 export def SetPopupWinProp(wid: number, key: string, val: any)
     if has_key(popup_wins, wid) && has_key(popup_wins[wid], key)
@@ -276,8 +279,8 @@ def CreatePopup(args: dict<any>): number
        callback:  function('GeneralPopupCallback'),
        border:  [1],
        borderchars:  ['─', '│', '─', '│', '╭', '╮', '╯', '╰'],
-       borderhighlight:  ['Normal'],
-       highlight:  'Normal', }
+       borderhighlight:  ['fuzzyyBorder'],
+       highlight:  'fuzzyyNormal', }
 
     if has_key(args, 'enable_border') && !args.enable_border
         remove(opts, 'border')
@@ -445,7 +448,7 @@ export def MenuSetHl(name: string, hl_list_raw: list<any>)
     # in MS-Windows, matchaddpos() has maximum limit of 8 position groups
     var idx = 0
     while idx < len(hl_list)
-        matchaddpos(menu_matched_hl, hl_list[idx : idx + 7 ], 99, -1,  {'window': wins.menu})
+        matchaddpos('fuzzyyMatching', hl_list[idx : idx + 7 ], 99, -1,  {'window': wins.menu})
         idx += 8
     endwhile
 enddef
@@ -471,7 +474,7 @@ def PopupPrompt(args: dict<any>): number
      max_pos:  0,
      promptchar_len:  prompt_char_len,
      cur_pos:  0,
-     highlight:  'Search',
+     highlight:  'fuzzyyCursor',
      mid:  -1,
      }
 

@@ -57,6 +57,12 @@ if exists('g:fuzzyy_window_layout') && type(g:fuzzyy_window_layout) == v:t_dict
     endfor
 endif
 
+highlight default link fuzzyyCursor Search
+highlight default link fuzzyyNormal Normal
+highlight default link fuzzyyBorder Normal
+highlight default link fuzzyyMatching Special
+highlight default link fuzzyyPreviewMatch CurSearch
+
 import autoload '../autoload/fuzzy/commands.vim'
 import autoload '../autoload/fuzzy/grep.vim'
 import autoload '../autoload/fuzzy/files.vim'

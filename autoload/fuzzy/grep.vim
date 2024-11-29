@@ -169,7 +169,7 @@ def UpdatePreviewHl()
     var [path, linenr, colnr] = ParseResult(cur_menu_item)
     clearmatches(preview_wid)
     var hl_list = [cur_dict[cur_menu_item]]
-    matchaddpos('cursearch', hl_list, 9999, -1,  {'window': preview_wid})
+    matchaddpos('fuzzyyPreviewMatch', hl_list, 9999, -1,  {'window': preview_wid})
 enddef
 
 def Preview(wid: number, opts: dict<any>)

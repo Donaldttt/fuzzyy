@@ -133,10 +133,6 @@ let g:fuzzyy_keymaps = {
 \     'exit': ["\<Esc>", "\<c-c>", "\<c-[>"], " exit fuzzyy
 \ }
 
-" Change highlight of the matched text when searching
-" Default to Special
-let g:fuzzyy_menu_matched_hl = 'Special'
-
 " Whether show devicons when using FuzzyFiles or FuzzyBuffers
 " Requires vim-devicons
 " Default to 1 if vim-devicons is installed, 0 otherwise
@@ -199,7 +195,13 @@ let g:fuzzyy_window_layout = {
 \        'width': 0.8,
 \    },
 \ }
+
+" It is also possible to modify the colors used for highlighting
+" The defaults are shown below, you can change them in your vimrc
+" See :help :highlight if you are unfamiliar with Vim highlighting
+highlight default link fuzzyyCursor Search
+highlight default link fuzzyyNormal Normal
+highlight default link fuzzyyBorder Normal
+highlight default link fuzzyyMatching Special
+highlight default link fuzzyyPreviewMatch CurSearch
 ```
-
-
-
