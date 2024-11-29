@@ -82,7 +82,7 @@ you can set `g:fuzzyy_keymaps` to change these defaults.
 
 ## Default Keymaps
 
-you can set `g:enable_fuzzyy_keymaps = 0` to disable default keymaps
+you can set `g:fuzzyy_enable_mappings = 0` to disable default mappings
 
 ```vim
 nnoremap <silent> <leader>fb :FuzzyInBuffer<CR>
@@ -101,7 +101,7 @@ nnoremap <silent> <leader>fm :FuzzyMRUFiles<CR>
 ```vim
 " Set to 0 to disable default keybindings
 " Default to 1
-let g:enable_fuzzyy_keymaps = 0
+let g:fuzzyy_enable_mappings = 0
 
 " Make FuzzyFiles respect .gitignore if possible
 " only work when

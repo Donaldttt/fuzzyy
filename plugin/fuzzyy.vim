@@ -9,7 +9,13 @@ if exists("g:loaded_fuzzyy")
 endif
 g:loaded_fuzzyy = 1
 
-g:enable_fuzzyy_keymaps = exists('g:enable_fuzzyy_keymaps') ? g:enable_fuzzyy_keymaps : 1
+# Deprecated options
+if exists('g:enable_fuzzyy_keymaps')
+    echo 'fuzzyy: g:enable_fuzzyy_keymaps is deprecated, use g:fuzzyy_enable_mappings'
+    g:fuzzyy_enable_mappings = g:enable_fuzzyy_keymaps
+endif
+
+g:fuzzyy_enable_mappings = exists('g:fuzzyy_enable_mappings') ? g:fuzzyy_enable_mappings : 1
 g:fuzzyy_buffers_exclude = exists('g:fuzzyy_buffers_exclude') ? g:fuzzyy_buffers_exclude
     : ['__vista__']
 
@@ -76,7 +82,7 @@ command! -nargs=0 FuzzyGitFiles files.Start(windows.FuzzyFiles, 'git ls-files')
 command! -nargs=0 FuzzyCmdHistory cmdhistory.Start()
 command! -nargs=0 FuzzyMRUFiles mru.Start(windows.FuzzyMRUFiles)
 
-if g:enable_fuzzyy_keymaps
+if g:fuzzyy_enable_mappings
     nnoremap <silent> <leader>fb :FuzzyInBuffer<CR>
     nnoremap <silent> <leader>fc :FuzzyColors<CR>
     nnoremap <silent> <leader>fd :FuzzyHelps<CR>
