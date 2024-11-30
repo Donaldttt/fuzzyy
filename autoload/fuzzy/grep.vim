@@ -4,13 +4,18 @@ import autoload 'utils/selector.vim'
 import autoload 'utils/popup.vim'
 
 var max_count = 1000
-var rg_cmd = 'rg -M200 -S --vimgrep --max-count=' .. max_count .. ' -F "%s" "%s"'
-var ag_cmd = 'ag -W200 -S --vimgrep --max-count=' .. max_count .. ' -F "%s" "%s"'
-var grep_cmd = 'grep -n -r -i -I --max-count=' .. max_count .. ' -F "%s" "%s"'
-var findstr_cmd = 'FINDSTR /S /N /I /O /P "%s" "%s/*"'
+var rg_cmd = 'rg -M200 -S --vimgrep --max-count=' .. max_count .. ' -F %s "%s" "%s"'
+var ag_cmd = 'ag -W200 -S --vimgrep --max-count=' .. max_count .. ' -F %s "%s" "%s"'
+var grep_cmd = 'grep -n -r -I --max-count=' .. max_count .. ' -F %s "%s" "%s"'
+var findstr_cmd = 'FINDSTR /S /N /O /P %s "%s" "%s/*"'
 var sep_pattern = '\:\d\+:\d\+:'
 var loading = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
 var highlight = true
+
+# Set to ignore case option for grep programs that do not support smart case
+# When set, smart case will be emulated by adding ignore case option when
+# search pattern does not include any characters Vim considers upper case
+var ignore_case: string
 
 def InsideGitRepo(): bool
     return stridx(system('git rev-parse --is-inside-work-tree'), 'true') == 0
@@ -23,13 +28,16 @@ if executable('ag')
 elseif executable('rg')
     cmd = rg_cmd
 elseif executable('git') && InsideGitRepo()
-    cmd = 'git grep -n -i -I --column --untracked --exclude-standard -F "%s" "%s"'
+    cmd = 'git grep -n -I --column --untracked --exclude-standard -F %s "%s" "%s"'
+    ignore_case = '-i'
 elseif executable('grep')
     cmd = grep_cmd
+    ignore_case = '-i'
     sep_pattern = '\:\d\+:'
     highlight = false
 elseif executable('findstr') # for Windows
     cmd = findstr_cmd
+    ignore_case = '/I'
     sep_pattern = '\:\d\+:'
     highlight = false
 endif
@@ -119,7 +127,14 @@ def JobStart(pattern: string)
         return
     endif
     job_running = 1
-    var cmd_str = printf(cmd, escape(pattern, '"'), escape(cwd, '"'))
+    var cmd_str: string
+    # fudge smart-case for grep programs that don't natively support it
+    # adds ignore case option to arguments when no upper case chars found
+    if !empty(ignore_case) && match(pattern, '\u') == -1
+        cmd_str = printf(cmd, ignore_case, escape(pattern, '"'), escape(cwd, '"'))
+    else
+        cmd_str = printf(cmd, '', escape(pattern, '"'), escape(cwd, '"'))
+    endif
     jid = job_start(cmd_str, {
         out_cb: function('JobHandler'),
         out_mode: 'raw',
