@@ -25,8 +25,6 @@ if enable_devicons
     matched_hl_offset = devicons.GetDeviconWidth() + 1
 endif
 
-var cmdstr = cmdbuilder.Build()
-
 def ProcessResult(list_raw: list<string>, ...args: list<any>): list<string>
     var limit = -1
     var li: list<string>
@@ -212,7 +210,7 @@ export def Start(windows: dict<any>, ...args: list<any>)
     if len(args) > 0 && type(args[0]) == 1
         cmd = args[0]
     else
-        cmd = cmdstr
+        cmd = cmdbuilder.Build()
     endif
     FilesJobStart(cwd, cmd)
     timer_start(50, function('FilesUpdateMenu'))

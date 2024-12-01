@@ -8,10 +8,13 @@ var rg_cmd = 'rg -M200 -S --vimgrep --max-count=' .. max_count .. ' -F %s "%s" "
 var ag_cmd = 'ag -W200 -S --vimgrep --max-count=' .. max_count .. ' -F %s "%s" "%s"'
 var grep_cmd = 'grep -n -r -I --max-count=' .. max_count .. ' -F %s "%s" "%s"'
 var findstr_cmd = 'FINDSTR /S /N /O /P %s "%s" "%s/*"'
-var sep_pattern = '\:\d\+:\d\+:'
 var loading = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
-var highlight = true
 
+# Script scoped vars reset for each invocation of Start(). Allows directory
+# change between invocations and git-grep only to be used when in git repo.
+var cmd: string
+var sep_pattern: string
+var highlight: bool
 # Set to ignore case option for grep programs that do not support smart case
 # When set, smart case will be emulated by adding ignore case option when
 # search pattern does not include any characters Vim considers upper case
@@ -21,26 +24,34 @@ def InsideGitRepo(): bool
     return stridx(system('git rev-parse --is-inside-work-tree'), 'true') == 0
 enddef
 
-var cmd: string
-# TODO no windows default
-if executable('ag')
-    cmd = ag_cmd
-elseif executable('rg')
-    cmd = rg_cmd
-elseif executable('git') && InsideGitRepo()
-    cmd = 'git grep -n -I --column --untracked --exclude-standard -F %s "%s" "%s"'
-    ignore_case = '-i'
-elseif executable('grep')
-    cmd = grep_cmd
-    ignore_case = '-i'
-    sep_pattern = '\:\d\+:'
-    highlight = false
-elseif executable('findstr') # for Windows
-    cmd = findstr_cmd
-    ignore_case = '/I'
-    sep_pattern = '\:\d\+:'
-    highlight = false
-endif
+def Build()
+    if executable('ag')
+        cmd = ag_cmd
+        ignore_case = ''
+        sep_pattern = '\:\d\+:\d\+:'
+        highlight = true
+    elseif executable('rg')
+        cmd = rg_cmd
+        ignore_case = ''
+        sep_pattern = '\:\d\+:\d\+:'
+        highlight = true
+    elseif executable('git') && InsideGitRepo()
+        cmd = 'git grep -n -I --column --untracked --exclude-standard -F %s "%s" "%s"'
+        ignore_case = '-i'
+        sep_pattern = '\:\d\+:\d\+:'
+        highlight = true
+    elseif executable('grep')
+        cmd = grep_cmd
+        ignore_case = '-i'
+        sep_pattern = '\:\d\+:'
+        highlight = false
+    elseif executable('findstr') # for Windows
+        cmd = findstr_cmd
+        ignore_case = '/I'
+        sep_pattern = '\:\d\+:'
+        highlight = false
+    endif
+enddef
 
 var cwd: string
 var cwdlen = -1
@@ -303,6 +314,7 @@ def Profiling()
 enddef
 
 export def Start(windows: dict<any>, ...keyword: list<any>)
+    Build()
     if cmd == ''
         echoe 'Please install ag, rg, grep or findstr to run :FuzzyGrep'
         return
