@@ -5,7 +5,7 @@ import autoload 'utils/popup.vim'
 
 var max_count = 1000
 var rg_cmd = 'rg -M200 -S --vimgrep --max-count=' .. max_count .. ' -F %s "%s" "%s"'
-var ag_cmd = 'ag -W200 -S --vimgrep --max-count=' .. max_count .. ' -F %s "%s" "%s"'
+var ag_cmd = 'ag -W200 -S --vimgrep --silent --max-count=' .. max_count .. ' -F %s "%s" "%s"'
 var git_cmd = 'git grep -n -I --column --untracked --exclude-standard  --max-count=' .. max_count .. ' -F %s "%s" "%s"'
 var grep_cmd = 'grep -n -r -I --max-count=' .. max_count .. ' -F %s "%s" "%s"'
 var findstr_cmd = 'FINDSTR /S /N /O /P /L %s "%s" "%s/*"'
