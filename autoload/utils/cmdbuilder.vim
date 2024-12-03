@@ -30,7 +30,7 @@ var dir_exclude = exists('g:fuzzyy_files_exclude_dir')
     && type(g:fuzzyy_files_exclude_dir) == v:t_list ?
     g:fuzzyy_files_exclude_dir : dir_exclude_default
 
-export def Build_fd(): string
+def Build_fd(): string
     var result = 'fd --type f -H'
     if ! respect_gitignore
         result ..= ' --no-ignore'
@@ -58,7 +58,7 @@ export def Build_rg(): string
     return result .. ' ' .. dir_list_parsed .. file_list_parsed
 enddef
 
-export def Build_find(): string
+def Build_find(): string
     var file_list_parsed = reduce(file_exclude,
         (acc, file) => acc .. "-not -name " .. file .. " ", "")
 
@@ -83,7 +83,7 @@ enddef
 # https://stackoverflow.com/questions/15294836/how-can-i-exclude-multiple-folders-using-get-childitem-exclude#:~:text=The%20documentation%20isn%27t%20clear%20on%20this%2C%20but%20Get%2DChildItem%20%2DRecurse%20%2DExclude%20only%20matches%20exclusion%20on%20the%20leaf%20(Split%2DPath%20%24_.FullName%20%2DLeaf)%2C%20not%20the%20parent%20path%20(Split%2DPath%20%24_.FullName%20%2DParent).
 #
 # That's why module builds GCI cmd and piping it into Where-filter
-export def Build_gci(): string
+def Build_gci(): string
     var build_dir_filter = reduce(dir_exclude, (acc, dir) => acc .. "$_ -notlike '*\\"
         .. dir ..  "\\*' -and $_ -notlike '" .. dir .. "\\*'"
         .. " -and ", "")
