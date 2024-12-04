@@ -18,21 +18,21 @@ var loading = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "�
 
 var max_count = 1000
 
-def Build_ag(): string
-    var result = 'ag -W200 -S --vimgrep --silent --max-count=' .. max_count .. ' -F'
-    var dir_list_parsed = reduce(dir_exclude,
-        (acc, dir) => acc .. "--ignore " .. dir .. " ", "")
-    var file_list_parsed = reduce(file_exclude,
-        (acc, file) => acc .. "--ignore " .. file .. " ", "")
-    return result .. ' ' .. dir_list_parsed .. file_list_parsed .. ' %s "%s" "%s"'
-enddef
-
 def Build_rg(): string
     var result = 'rg -M200 -S --vimgrep --max-count=' .. max_count .. ' -F'
     var dir_list_parsed = reduce(dir_exclude,
         (acc, dir) => acc .. "-g !" .. dir .. " ", "")
     var file_list_parsed = reduce(file_exclude,
         (acc, file) => acc .. "-g !" .. file .. " ", "")
+    return result .. ' ' .. dir_list_parsed .. file_list_parsed .. ' %s "%s" "%s"'
+enddef
+
+def Build_ag(): string
+    var result = 'ag -W200 -S --vimgrep --silent --max-count=' .. max_count .. ' -F'
+    var dir_list_parsed = reduce(dir_exclude,
+        (acc, dir) => acc .. "--ignore " .. dir .. " ", "")
+    var file_list_parsed = reduce(file_exclude,
+        (acc, file) => acc .. "--ignore " .. file .. " ", "")
     return result .. ' ' .. dir_list_parsed .. file_list_parsed .. ' %s "%s" "%s"'
 enddef
 
@@ -64,13 +64,13 @@ def InsideGitRepo(): bool
 enddef
 
 def Build()
-    if executable('ag')
-        cmd = Build_ag()
+    if executable('rg')
+        cmd = Build_rg()
         ignore_case = ''
         sep_pattern = '\:\d\+:\d\+:'
         highlight = true
-    elseif executable('rg')
-        cmd = Build_rg()
+    elseif executable('ag')
+        cmd = Build_ag()
         ignore_case = ''
         sep_pattern = '\:\d\+:\d\+:'
         highlight = true

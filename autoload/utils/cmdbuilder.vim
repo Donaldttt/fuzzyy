@@ -30,6 +30,20 @@ var dir_exclude = exists('g:fuzzyy_files_exclude_dir')
     && type(g:fuzzyy_files_exclude_dir) == v:t_list ?
     g:fuzzyy_files_exclude_dir : dir_exclude_default
 
+def Build_rg(): string
+    var result = 'rg --files --hidden'
+    if ! respect_gitignore
+        result ..= ' --no-ignore'
+    endif
+    var dir_list_parsed = reduce(dir_exclude,
+        (acc, dir) => acc .. "-g !" .. dir .. " ", "")
+
+    var file_list_parsed = reduce(file_exclude,
+        (acc, file) => acc .. "-g !" .. file .. " ", "")
+
+    return result .. ' ' .. dir_list_parsed .. file_list_parsed
+enddef
+
 def Build_fd(): string
     var result = 'fd --type f -H'
     if ! respect_gitignore
@@ -40,20 +54,6 @@ def Build_fd(): string
 
     var file_list_parsed = reduce(file_exclude,
         (acc, file) => acc .. "-E " .. file .. " ", "")
-
-    return result .. ' ' .. dir_list_parsed .. file_list_parsed
-enddef
-
-export def Build_rg(): string
-    var result = 'rg --files --hidden'
-    if ! respect_gitignore
-        result ..= ' --no-ignore'
-    endif
-    var dir_list_parsed = reduce(dir_exclude,
-        (acc, dir) => acc .. "-g !" .. dir .. " ", "")
-
-    var file_list_parsed = reduce(file_exclude,
-        (acc, file) => acc .. "-g !" .. file .. " ", "")
 
     return result .. ' ' .. dir_list_parsed .. file_list_parsed
 enddef
@@ -119,13 +119,13 @@ enddef
 
 export def Build(): string
     var cmdstr = ''
-    if executable('fd') # fd is cross-platform
+    if executable('rg') # rg is cross-plaform
+        cmdstr = Build_rg()
+    elseif executable('fd') # fd is also cross-platform
         cmdstr = Build_fd()
     elseif executable('fdfind') # debian installs fd as fdfind
         cmdstr = Build_fd()
         cmdstr = substitute(cmdstr, '^fd ', 'fdfind ', '')
-    elseif executable('rg') # rg is also cross-plaform
-        cmdstr = Build_rg()
     elseif respect_gitignore && executable('git') && InsideGitRepo()
         cmdstr = 'git ls-files --cached --other --exclude-standard .'
     elseif has('win32')
