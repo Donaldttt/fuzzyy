@@ -51,6 +51,8 @@ def Build()
         ignore_case = '/I'
         sep_pattern = '\:\d\+:'
         highlight = false
+    else
+        echoerr 'Please install ag, rg, grep or findstr to run :FuzzyGrep'
     endif
 enddef
 
@@ -316,10 +318,6 @@ enddef
 
 export def Start(windows: dict<any>, ...keyword: list<any>)
     Build()
-    if cmd == ''
-        echoe 'Please install ag, rg, grep or findstr to run :FuzzyGrep'
-        return
-    endif
     cwd = getcwd()
     cwdlen = len(cwd)
     cur_pattern = ''
