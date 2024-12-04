@@ -115,6 +115,12 @@ let g:fuzzyy_files_respect_gitignore = 0
 let g:fuzzyy_files_exclude_file = ['*.swp', 'tags']
 let g:fuzzyy_files_exclude_dir = ['.git', '.hg', '.svn']
 
+" FuzzyGrep will always exclude the files/directory in these two lists
+" These are different to the FuzzyyFiles lists, with the same defaults
+" The following is the default
+let g:fuzzyy_grep_exclude_file = ['*.swp', 'tags']
+let g:fuzzyy_grep_exclude_dir = ['.git', '.hg', '.svn']
+
 " Change navigation keymaps
 " The following is the default
 let g:fuzzyy_keymaps = {

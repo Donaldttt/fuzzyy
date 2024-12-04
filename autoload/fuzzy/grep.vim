@@ -3,13 +3,51 @@ vim9script
 import autoload 'utils/selector.vim'
 import autoload 'utils/popup.vim'
 
-var max_count = 1000
-var rg_cmd = 'rg -M200 -S --vimgrep --max-count=' .. max_count .. ' -F %s "%s" "%s"'
-var ag_cmd = 'ag -W200 -S --vimgrep --silent --max-count=' .. max_count .. ' -F %s "%s" "%s"'
-var git_cmd = 'git grep -n -I --column --untracked --exclude-standard  --max-count=' .. max_count .. ' -F %s "%s" "%s"'
-var grep_cmd = 'grep -n -r -I --max-count=' .. max_count .. ' -F %s "%s" "%s"'
-var findstr_cmd = 'FINDSTR /S /N /O /P /L %s "%s" "%s/*"'
+var file_exclude_default = ['*.swp', 'tags']
+var dir_exclude_default = ['.git', '.hg', '.svn']
+
+# Options
+var file_exclude = exists('g:fuzzyy_grep_exclude_file')
+    && type(g:fuzzyy_grep_exclude_file) == v:t_list ?
+    g:fuzzyy_grep_exclude_file : file_exclude_default
+var dir_exclude = exists('g:fuzzyy_grep_exclude_dir')
+    && type(g:fuzzyy_grep_exclude_dir) == v:t_list ?
+    g:fuzzyy_grep_exclude_dir : dir_exclude_default
+
 var loading = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
+
+var max_count = 1000
+
+def Build_ag(): string
+    var result = 'ag -W200 -S --vimgrep --silent --max-count=' .. max_count .. ' -F'
+    var dir_list_parsed = reduce(dir_exclude,
+        (acc, dir) => acc .. "--ignore " .. dir .. " ", "")
+    var file_list_parsed = reduce(file_exclude,
+        (acc, file) => acc .. "--ignore " .. file .. " ", "")
+    return result .. ' ' .. dir_list_parsed .. file_list_parsed .. ' %s "%s" "%s"'
+enddef
+
+def Build_rg(): string
+    var result = 'rg -M200 -S --vimgrep --max-count=' .. max_count .. ' -F'
+    var dir_list_parsed = reduce(dir_exclude,
+        (acc, dir) => acc .. "-g !" .. dir .. " ", "")
+    var file_list_parsed = reduce(file_exclude,
+        (acc, file) => acc .. "-g !" .. file .. " ", "")
+    return result .. ' ' .. dir_list_parsed .. file_list_parsed .. ' %s "%s" "%s"'
+enddef
+
+def Build_grep(): string
+    var result = 'grep -n -r -I --max-count=' .. max_count .. ' -F'
+    var dir_list_parsed = reduce(dir_exclude,
+        (acc, dir) => acc .. "--exclude-dir " .. dir .. " ", "")
+    var file_list_parsed = reduce(file_exclude,
+        (acc, file) => acc .. "--exclude " .. file .. " ", "")
+    return result .. ' ' .. dir_list_parsed .. file_list_parsed .. ' %s "%s" "%s"'
+enddef
+
+# Neither git-grep nor findstr support custom excludes
+var git_cmd = 'git grep -n -I --column --untracked --exclude-standard  --max-count=' .. max_count .. ' -F %s "%s" "%s"'
+var findstr_cmd = 'FINDSTR /S /N /O /P /L %s "%s" "%s/*"'
 
 # Script scoped vars reset for each invocation of Start(). Allows directory
 # change between invocations and git-grep only to be used when in git repo.
@@ -27,12 +65,12 @@ enddef
 
 def Build()
     if executable('ag')
-        cmd = ag_cmd
+        cmd = Build_ag()
         ignore_case = ''
         sep_pattern = '\:\d\+:\d\+:'
         highlight = true
     elseif executable('rg')
-        cmd = rg_cmd
+        cmd = Build_rg()
         ignore_case = ''
         sep_pattern = '\:\d\+:\d\+:'
         highlight = true
@@ -42,7 +80,7 @@ def Build()
         sep_pattern = '\:\d\+:\d\+:'
         highlight = true
     elseif executable('grep')
-        cmd = grep_cmd
+        cmd = Build_grep()
         ignore_case = '-i'
         sep_pattern = '\:\d\+:'
         highlight = false
