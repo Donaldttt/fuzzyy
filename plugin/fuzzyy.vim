@@ -54,7 +54,7 @@ if exists('g:fuzzyy_window_layout') && type(g:fuzzyy_window_layout) == v:t_dict
 endif
 
 import autoload '../autoload/fuzzy/commands.vim'
-import autoload '../autoload/fuzzy/ag.vim'
+import autoload '../autoload/fuzzy/grep.vim'
 import autoload '../autoload/fuzzy/files.vim'
 import autoload '../autoload/fuzzy/helps.vim'
 import autoload '../autoload/fuzzy/colors.vim'
@@ -64,7 +64,7 @@ import autoload '../autoload/fuzzy/highlights.vim'
 import autoload '../autoload/fuzzy/cmdhistory.vim'
 import autoload '../autoload/fuzzy/mru.vim'
 
-command! -nargs=? FuzzyGrep ag.Start(windows.FuzzyGrep, <f-args>)
+command! -nargs=? FuzzyGrep grep.Start(windows.FuzzyGrep, <f-args>)
 command! -nargs=0 FuzzyFiles files.Start(windows.FuzzyFiles)
 command! -nargs=0 FuzzyHelps helps.Start()
 command! -nargs=0 FuzzyColors colors.Start()

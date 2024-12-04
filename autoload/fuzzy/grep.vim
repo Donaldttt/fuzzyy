@@ -45,7 +45,7 @@ var preview_wid = -1
 
 # return:
 #   [path, linenr]
-def ParseAgStr(str: string): list<any>
+def ParseResult(str: string): list<any>
     var seq = matchstrpos(str, sep_pattern)
     if seq[1] == -1
         return [v:null, -1, -1]
@@ -102,7 +102,7 @@ def JobHandler(channel: channel, msg: string)
     cur_result += lists
 enddef
 
-def AgJobStart(pattern: string)
+def JobStart(pattern: string)
     if type(jid) == v:t_job
         try | job_stop(jid) | catch | endtry
     endif
@@ -146,14 +146,14 @@ enddef
 def Input(wid: number, args: dict<any>, ...li: list<any>)
     var pattern = args.str
     cur_pattern = pattern
-    AgJobStart(pattern)
+    JobStart(pattern)
 enddef
 
 def UpdatePreviewHl()
     if !has_key(cur_dict, cur_menu_item) || !highlight || preview_wid < 0
         return
     endif
-    var [path, linenr, colnr] = ParseAgStr(cur_menu_item)
+    var [path, linenr, colnr] = ParseResult(cur_menu_item)
     clearmatches(preview_wid)
     var hl_list = [cur_dict[cur_menu_item]]
     matchaddpos('cursearch', hl_list, 9999, -1,  {'window': preview_wid})
@@ -162,12 +162,12 @@ enddef
 def Preview(wid: number, opts: dict<any>)
     var result = opts.cursor_item
     var last_item = opts.last_cursor_item
-    var [path, linenr, colnr] = ParseAgStr(result)
+    var [path, linenr, colnr] = ParseResult(result)
     var last_path: string
     var last_linenr: number
     if type(last_item) == v:t_string  && type(last_item) == v:t_string && last_item != ''
         try
-        [last_path, last_linenr, _] = ParseAgStr(last_item)
+        [last_path, last_linenr, _] = ParseResult(last_item)
         catch
             return
         endtry
@@ -205,7 +205,7 @@ def Preview(wid: number, opts: dict<any>)
 enddef
 
 def Select(wid: number, result: list<any>)
-    var [path, linenr, _] = ParseAgStr(result[0])
+    var [path, linenr, _] = ParseResult(result[0])
     if path == v:null
         return
     endif
@@ -214,7 +214,7 @@ def Select(wid: number, result: list<any>)
     exe 'norm! zz'
 enddef
 
-def AgUpdateMenu(...li: list<any>)
+def UpdateMenu(...li: list<any>)
     var cur_result_len = len(cur_result)
     if cur_pattern == ''
         selector.UpdateMenu([], [])
@@ -271,7 +271,7 @@ enddef
 def Profiling()
     profile start ~/.vim/vim.log
     profile func Start
-    profile func AgUpdateMenu
+    profile func UpdateMenu
     profile func Preview
     profile func UpdatePreviewHl
     profile func JobHandler
@@ -314,7 +314,7 @@ export def Start(windows: dict<any>, ...keyword: list<any>)
     endif
     preview_wid = wids.preview
     setwinvar(menu_wid, '&wrap', 0)
-    ag_update_tid = timer_start(100, function('AgUpdateMenu'), {'repeat': -1})
+    ag_update_tid = timer_start(100, function('UpdateMenu'), {'repeat': -1})
     if len(keyword) > 0
         popup.SetPrompt(keyword[0])
     endif
