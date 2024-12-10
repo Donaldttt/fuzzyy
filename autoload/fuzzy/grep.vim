@@ -19,7 +19,7 @@ var loading = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "�
 var max_count = 1000
 
 def Build_rg(): string
-    var result = 'rg -M200 -S --vimgrep --max-count=' .. max_count .. ' -F'
+    var result = 'rg -M200 -S --vimgrep --hidden --max-count=' .. max_count .. ' -F'
     var dir_list_parsed = reduce(dir_exclude,
         (acc, dir) => acc .. "-g !" .. dir .. " ", "")
     var file_list_parsed = reduce(file_exclude,
@@ -28,7 +28,7 @@ def Build_rg(): string
 enddef
 
 def Build_ag(): string
-    var result = 'ag -W200 -S --vimgrep --silent --max-count=' .. max_count .. ' -F'
+    var result = 'ag -W200 -S --vimgrep --silent --hidden --max-count=' .. max_count .. ' -F'
     var dir_list_parsed = reduce(dir_exclude,
         (acc, dir) => acc .. "--ignore " .. dir .. " ", "")
     var file_list_parsed = reduce(file_exclude,
