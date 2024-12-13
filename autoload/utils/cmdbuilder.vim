@@ -33,6 +33,9 @@ var include_hidden = exists('g:fuzzyy_files_include_hidden') ?
     g:fuzzyy_files_include_hidden : 1
 var follow_symlinks = exists('g:fuzzyy_files_follow_symlinks') ?
     g:fuzzyy_files_follow_symlinks : 0
+var ripgrep_options = exists('g:fuzzyy_files_ripgrep_options')
+    && type(g:fuzzyy_files_ripgrep_options) == v:t_list ?
+    g:fuzzyy_files_ripgrep_options : []
 
 def Build_rg(): string
     var result = 'rg --files'
@@ -53,7 +56,8 @@ def Build_rg(): string
     var file_list_parsed = reduce(file_exclude,
         (acc, file) => acc .. "-g !" .. file .. " ", "")
 
-    return result .. ' ' .. dir_list_parsed .. file_list_parsed
+    return result .. ' ' .. dir_list_parsed .. file_list_parsed ..
+        ' ' .. join(ripgrep_options, ' ')
 enddef
 
 def Build_fd(): string

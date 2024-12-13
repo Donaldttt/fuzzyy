@@ -19,6 +19,9 @@ var include_hidden = exists('g:fuzzyy_grep_include_hidden') ?
     g:fuzzyy_grep_include_hidden : 1
 var follow_symlinks = exists('g:fuzzyy_grep_follow_symlinks') ?
     g:fuzzyy_grep_follow_symlinks : 0
+var ripgrep_options = exists('g:fuzzyy_grep_ripgrep_options')
+    && type(g:fuzzyy_grep_ripgrep_options) == v:t_list ?
+    g:fuzzyy_grep_ripgrep_options : []
 
 var loading = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
 
@@ -41,7 +44,8 @@ def Build_rg(): string
         (acc, dir) => acc .. "-g !" .. dir .. " ", "")
     var file_list_parsed = reduce(file_exclude,
         (acc, file) => acc .. "-g !" .. file .. " ", "")
-    return result .. ' ' .. dir_list_parsed .. file_list_parsed .. ' %s "%s" "%s"'
+    return result .. ' ' .. dir_list_parsed .. file_list_parsed ..
+        ' ' .. join(ripgrep_options, ' ') .. ' %s "%s" "%s"'
 enddef
 
 def Build_ag(): string

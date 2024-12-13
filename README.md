@@ -174,6 +174,30 @@ let g:fuzzyy_files_exclude_dir = ['.git', '.hg', '.svn']
 let g:fuzzyy_grep_exclude_file = ['*.swp', 'tags']
 let g:fuzzyy_grep_exclude_dir = ['.git', '.hg', '.svn']
 
+" Add custom ripgrep options for FuzzyFiles
+" These are appended to the generated options
+" Default to []
+let g:fuzzyy_files_ripgrep_options = []
+" Example usage
+let g:fuzzyy_files_ripgrep_options = [
+  \ "--no-config",
+  \ "--no-ignore-parent"
+  \ ]
+
+" Add custom ripgrep options for FuzzyGrep
+" These are appended to the generated options
+" Default to []
+let g:fuzzyy_grep_ripgrep_options = []
+" Example usage
+let g:fuzzyy_grep_ripgrep_options = [
+  \ "--no-config",
+  \ "--no-hidden",
+  \ "--case-sensitive",
+  \ "--max-filesize=1M",
+  \ "--no-ignore-parent",
+  \ "--ignore-file " . expand('~/.ignore')
+  \ ]
+
 " Change navigation keymaps
 " The following is the default
 let g:fuzzyy_keymaps = {
