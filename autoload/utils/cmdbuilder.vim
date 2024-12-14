@@ -59,21 +59,16 @@ def Build_fd(): string
 enddef
 
 def Build_find(): string
+    var result = "find . -type f -print"
+
+    var ParseDir = (dir): string => "*/" .. dir .. "/*"
+    var dir_list_parsed = reduce(dir_exclude,
+        (acc, dir) => acc .. "-not -path " .. ParseDir(dir) .. " ", " ")
+
     var file_list_parsed = reduce(file_exclude,
         (acc, file) => acc .. "-not -name " .. file .. " ", "")
 
-    var ParseDir = (dir): string => "*/" .. dir .. "/*"
-    var dir_list_parsed = ""
-    if len(dir_exclude) > 0
-        dir_list_parsed = reduce(dir_exclude, (acc, dir) => acc .. "-not -path " .. ParseDir(dir) .. " ", " ")
-    endif
-    var result = "find . " .. dir_list_parsed
-    if len(file_exclude) > 0
-        result ..= reduce(file_exclude, (acc, file) => acc .. "-not -name " .. file .. " ", " ")
-    endif
-    result ..= "-type f -print "
-
-    return result
+    return result .. ' ' .. dir_list_parsed .. file_list_parsed
 enddef
 
 # GCI doc isn't clear. Get-ChildItem -Recurse -Exclude only matches exclusion
