@@ -45,7 +45,7 @@ def Build_rg(): string
 enddef
 
 def Build_fd(): string
-    var result = 'fd --type f -H'
+    var result = 'fd --type f --hidden'
     if ! respect_gitignore
         result ..= ' --no-ignore'
     endif
