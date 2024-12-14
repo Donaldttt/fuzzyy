@@ -100,7 +100,7 @@ def Build_gci(): string
     endif
     build_filter ..= "} "
 
-    var cmd = "Get-ChildItem . -Name -Force -File -Recurse "
+    var cmd = "Get-ChildItem . -Name -Force -File -Recurse -Hidden"
     if len(dir_exclude) > 0 || len(file_exclude) > 0
         cmd ..= build_filter
     endif
