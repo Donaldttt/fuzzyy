@@ -2,7 +2,10 @@
 
 A fuzzy picker for files, strings, help documents and many other things.
 
-It ultilizes vim's native matchfuzzypos function and popup window feature.
+It utilizes Vim's native matchfuzzypos function and popup window feature.
+
+Fuzzyy strives to provide an out-of-box experience by using pre-installed
+programs to handle complex tasks.
 
 ## Screenshots
 
@@ -12,22 +15,33 @@ It ultilizes vim's native matchfuzzypos function and popup window feature.
 
 ## Requirements
 
-- vim > 9.0
-    - The maintained version is written in vim9, but it also has a vim8 branch for older vim.
-- ag or rg (optional)
-- fd (optional)
-- [vim-devicons](https://github.com/ryanoasis/vim-devicons) (optional)
+- Vim >= 9.0 (there is an old vim8 branch, which works but is no longer maintained)
 
-fuzzyy strives to provide an out-of-box experience by using pre-installed programs
-to handle complex tasks.
+## Suggested dependencies
+- [ripgrep](https://github.com/BurntSushi/ripgrep) (used for FuzzyGrep and
+  FuzzyFiles if installed, faster than the defaults and respects gitignore)
+- [vim-devicons](https://github.com/ryanoasis/vim-devicons) (used to show
+  [devicons](https://devicon.dev/) when listing files if installed)
+
+## Optional dependencies
+- [ag](https://github.com/ggreer/the_silver_searcher) (used for FuzzyGrep if
+  ripgrep not installed)
+- [fd](https://github.com/sharkdp/fd) (used for FuzzyFiles if ripgrep not installed)
+- [git](https://git-scm.com/) (used for FuzzyGrep and FuzzyFiles when inside git
+  repo and no alternative dependency installed)
 
 ## Install
 
-Any plugin manager will work.
+Any plugin manager will work, or you can use Vim's built-in package support:
 
 For vim-plug
 ```vim
 Plug 'Donaldttt/fuzzyy'
+```
+
+As Vim package
+```
+git clone https://github.com/Donaldttt/fuzzyy ~/.vim/pack/Donaldttt/start/fuzzyy
 ```
 
 ## Commands
@@ -51,11 +65,10 @@ word under cursor.
     ```vim
         nnoremap <Space>f :FuzzyGrep <C-R><C-W><CR>
     ```
-- FuzzyGrep requires any of ag, rg, grep or FINDSTR command.
+- FuzzyGrep requires any of `rg`, `ag`, `grep` or `FINDSTR` command.
 
-- FuzzyFiles uses find command in unix (if not found it will use vim's glob function,
- which is blocking) or powershell's Get-ChildItem in windows.
-(if [fd](https://github.com/sharkdp/fd) is installed, it will be used)
+- FuzzyFiles uses `find` command on UNIX or PowerShell's `Get-ChildItem` on Windows.
+  If `rg` of `fd` are installed they will be used instead, with `rg` preferred.
 
 ## Navigation
 
@@ -103,19 +116,32 @@ nnoremap <silent> <leader>fm :FuzzyMRUFiles<CR>
 " Default to 1
 let g:fuzzyy_enable_mappings = 0
 
+" Show devicons when using FuzzyFiles or FuzzyBuffers
+" Requires vim-devicons
+" Default to 1 if vim-devicons is installed, 0 otherwise
+let g:fuzzyy_devicons = 1
+
+" Enable dropdown theme (prompt at top rather than bottom)
+" Default to 0
+let g:fuzzyy_dropdown = 0
+
+" DEPRECATED: mru is always enabled
+" now this option has no effect
+let g:enable_fuzzyy_MRU_files = 1
+
 " Make FuzzyFiles respect .gitignore if possible
 " only work when
 " 1. inside a git repository and git is installed
-" 2. or either fd or rg is installed
+" 2. or either rg or fd is installed
 " Default to 1
-let g:fuzzyy_files_respect_gitignore = 0
+let g:fuzzyy_files_respect_gitignore = 1
 
 " Make FuzzyGrep respect .gitignore if possible
 " only work when
 " 1. inside a git repository and git is installed
-" 2. or either ag or rg is installed
+" 2. or either rg or ag is installed
 " Default to 1
-let g:fuzzyy_grep_respect_gitignore = 0
+let g:fuzzyy_grep_respect_gitignore = 1
 
 " FuzzyFiles will always exclude the files/directory in these two lists
 " The following is the default
@@ -145,19 +171,6 @@ let g:fuzzyy_keymaps = {
 \     'delete_prefix': [],                    " delete to the start of the line
 \     'exit': ["\<Esc>", "\<c-c>", "\<c-[>"], " exit fuzzyy
 \ }
-
-" Whether show devicons when using FuzzyFiles or FuzzyBuffers
-" Requires vim-devicons
-" Default to 1 if vim-devicons is installed, 0 otherwise
-let g:fuzzyy_devicons = 1
-
-" Whether enable dropdown theme
-" Default to 0
-let g:fuzzyy_dropdown = 0
-
-" DEPRECATED: mru is always enabled
-" now this option has no effect
-let g:enable_fuzzyy_MRU_files = 1
 
 " FuzzyMRUFiles default shows MRU files that are in the current project
 " default to 0
