@@ -32,7 +32,9 @@ var dir_exclude = exists('g:fuzzyy_files_exclude_dir')
 
 def Build_rg(): string
     var result = 'rg --files --hidden'
-    if ! respect_gitignore
+    if respect_gitignore
+        result ..= ' --no-require-git'
+    else
         result ..= ' --no-ignore'
     endif
     var dir_list_parsed = reduce(dir_exclude,
@@ -46,7 +48,9 @@ enddef
 
 def Build_fd(): string
     var result = 'fd --type f --hidden'
-    if ! respect_gitignore
+    if respect_gitignore
+        result ..= ' --no-require-git'
+    else
         result ..= ' --no-ignore'
     endif
     var dir_list_parsed = reduce(dir_exclude,
