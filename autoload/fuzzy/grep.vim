@@ -7,6 +7,8 @@ var file_exclude_default = ['*.swp', 'tags']
 var dir_exclude_default = ['.git', '.hg', '.svn']
 
 # Options
+var respect_gitignore = exists('g:fuzzyy_grep_respect_gitignore') ?
+    g:fuzzyy_grep_respect_gitignore : 1
 var file_exclude = exists('g:fuzzyy_grep_exclude_file')
     && type(g:fuzzyy_grep_exclude_file) == v:t_list ?
     g:fuzzyy_grep_exclude_file : file_exclude_default
@@ -20,6 +22,11 @@ var max_count = 1000
 
 def Build_rg(): string
     var result = 'rg -M200 -S --vimgrep --hidden --max-count=' .. max_count .. ' -F'
+    if respect_gitignore
+        result ..= ' --no-require-git'
+    else
+        result ..= ' --no-ignore'
+    endif
     var dir_list_parsed = reduce(dir_exclude,
         (acc, dir) => acc .. "-g !" .. dir .. " ", "")
     var file_list_parsed = reduce(file_exclude,
@@ -29,6 +36,9 @@ enddef
 
 def Build_ag(): string
     var result = 'ag -W200 -S --vimgrep --silent --hidden --max-count=' .. max_count .. ' -F'
+    if ! respect_gitignore
+        result ..= ' --all-text'
+    endif
     var dir_list_parsed = reduce(dir_exclude,
         (acc, dir) => acc .. "--ignore " .. dir .. " ", "")
     var file_list_parsed = reduce(file_exclude,
@@ -74,7 +84,7 @@ def Build()
         ignore_case = ''
         sep_pattern = '\:\d\+:\d\+:'
         highlight = true
-    elseif executable('git') && InsideGitRepo()
+    elseif respect_gitignore && executable('git') && InsideGitRepo()
         cmd = git_cmd
         ignore_case = '-i'
         sep_pattern = '\:\d\+:\d\+:'

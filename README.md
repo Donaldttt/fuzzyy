@@ -110,6 +110,13 @@ let g:fuzzyy_enable_mappings = 0
 " Default to 1
 let g:fuzzyy_files_respect_gitignore = 0
 
+" Make FuzzyGrep respect .gitignore if possible
+" only work when
+" 1. inside a git repository and git is installed
+" 2. or either ag or rg is installed
+" Default to 1
+let g:fuzzyy_grep_respect_gitignore = 0
+
 " FuzzyFiles will always exclude the files/directory in these two lists
 " The following is the default
 let g:fuzzyy_files_exclude_file = ['*.swp', 'tags']
