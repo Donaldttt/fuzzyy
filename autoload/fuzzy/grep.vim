@@ -17,6 +17,8 @@ var dir_exclude = exists('g:fuzzyy_grep_exclude_dir')
     g:fuzzyy_grep_exclude_dir : dir_exclude_default
 var include_hidden = exists('g:fuzzyy_grep_include_hidden') ?
     g:fuzzyy_grep_include_hidden : 1
+var follow_symlinks = exists('g:fuzzyy_grep_follow_symlinks') ?
+    g:fuzzyy_grep_follow_symlinks : 0
 
 var loading = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
 
@@ -26,6 +28,9 @@ def Build_rg(): string
     var result = 'rg -M200 -S --vimgrep --max-count=' .. max_count .. ' -F'
     if include_hidden
         result ..= ' --hidden'
+    endif
+    if follow_symlinks
+        result ..= ' --follow'
     endif
     if respect_gitignore
         result ..= ' --no-require-git'
@@ -44,6 +49,9 @@ def Build_ag(): string
     if include_hidden
         result ..= ' --hidden'
     endif
+    if follow_symlinks
+        result ..= ' --follow'
+    endif
     if ! respect_gitignore
         result ..= ' --all-text'
     endif
@@ -56,6 +64,9 @@ enddef
 
 def Build_grep(): string
     var result = 'grep -n -r -I --max-count=' .. max_count .. ' -F'
+    if follow_symlinks
+        result ..= ' -S'
+    endif
     var dir_list_parsed = reduce(dir_exclude,
         (acc, dir) => acc .. "--exclude-dir " .. dir .. " ", "")
     var file_list_parsed = reduce(file_exclude,

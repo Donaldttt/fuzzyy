@@ -153,6 +153,16 @@ let g:fuzzyy_files_include_hidden = 1
 " Default to 1
 let g:fuzzyy_grep_include_hidden = 1
 
+" Make FuzzyFiles follow symbolic links
+" Not applied when using git-ls-files
+" Default to 0
+let g:fuzzyy_files_follow_symlinks = 0
+
+" Make FuzzyGrep follow symbolic links
+" Not applied when using git-grep or FINDSTR
+" Default to 0
+let g:fuzzyy_grep_follow_symlinks = 0
+
 " FuzzyFiles will always exclude the files/directory in these two lists
 " The following is the default
 let g:fuzzyy_files_exclude_file = ['*.swp', 'tags']

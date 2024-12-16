@@ -31,11 +31,16 @@ var dir_exclude = exists('g:fuzzyy_files_exclude_dir')
     g:fuzzyy_files_exclude_dir : dir_exclude_default
 var include_hidden = exists('g:fuzzyy_files_include_hidden') ?
     g:fuzzyy_files_include_hidden : 1
+var follow_symlinks = exists('g:fuzzyy_files_follow_symlinks') ?
+    g:fuzzyy_files_follow_symlinks : 0
 
 def Build_rg(): string
     var result = 'rg --files'
     if include_hidden
         result ..= ' --hidden'
+    endif
+    if follow_symlinks
+        result ..= ' --follow'
     endif
     if respect_gitignore
         result ..= ' --no-require-git'
@@ -56,6 +61,9 @@ def Build_fd(): string
     if include_hidden
         result ..= ' --hidden'
     endif
+    if follow_symlinks
+        result ..= ' --follow'
+    endif
     if respect_gitignore
         result ..= ' --no-require-git'
     else
@@ -71,7 +79,11 @@ def Build_fd(): string
 enddef
 
 def Build_find(): string
-    var result = "find . -type f -print"
+    var opts = ''
+    if follow_symlinks
+        opts ..= '-L'
+    endif
+    var result = "find " .. opts .. " . -type f -print"
 
     var ParseDir = (dir): string => "*/" .. dir .. "/*"
     var dir_list_parsed = reduce(dir_exclude,
@@ -115,6 +127,9 @@ def Build_gci(): string
     var cmd = "Get-ChildItem . -Name -Force -File -Recurse"
     if include_hidden
         cmd ..= ' -Hidden'
+    endif
+    if follow_symlinks
+        cmd ..= ' -FollowSymlink'
     endif
     if len(dir_exclude) > 0 || len(file_exclude) > 0
         cmd ..= build_filter
