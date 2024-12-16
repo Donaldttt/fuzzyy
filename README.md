@@ -143,6 +143,16 @@ let g:fuzzyy_files_respect_gitignore = 1
 " Default to 1
 let g:fuzzyy_grep_respect_gitignore = 1
 
+" Make FuzzyFiles always include hidden files
+" Only applied with rg, fd and PowerShell Get-ChildItem
+" Default to 1
+let g:fuzzyy_files_include_hidden = 1
+
+" Make FuzzyGrep always include hidden files
+" Only applied with rg and ag
+" Default to 1
+let g:fuzzyy_grep_include_hidden = 1
+
 " FuzzyFiles will always exclude the files/directory in these two lists
 " The following is the default
 let g:fuzzyy_files_exclude_file = ['*.swp', 'tags']
