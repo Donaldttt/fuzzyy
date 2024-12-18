@@ -47,6 +47,7 @@ def Close(wid: number, result: dict<any>)
         if enable_devicons
             path = strcharpart(path, devicon_char_width + 1)
         endif
+        selector.MoveToUsableWindow()
         exe 'edit ' .. path
     endif
 enddef

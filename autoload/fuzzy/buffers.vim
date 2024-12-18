@@ -69,6 +69,7 @@ def Close(wid: number, result: dict<any>)
         endif
         var bufnr = buf_dict[buf][1]
         if bufnr != bufnr('$')
+            selector.MoveToUsableWindow()
             execute 'buffer' bufnr
         endif
     endif

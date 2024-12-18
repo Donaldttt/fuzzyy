@@ -12,6 +12,9 @@ var menu_hl_list: list<any>
 var devicon_char_width = devicons.GetDeviconCharWidth()
 var enable_devicons = exists('g:fuzzyy_devicons') && exists('g:WebDevIconsGetFileTypeSymbol') ?
     g:fuzzyy_devicons : exists('g:WebDevIconsGetFileTypeSymbol')
+var reuse_windows = exists('g:fuzzyy_reuse_windows')
+    && type(g:fuzzyy_reuse_windows) == v:t_list ?
+    g:fuzzyy_reuse_windows : ['netrw']
 
 if enable_devicons
     matched_hl_offset = devicons.GetDeviconWidth() + 1
@@ -341,6 +344,15 @@ export var split_edit_callbacks = {
     "\<c-s>": function('SetSplitClose'),
     "\<c-t>": function('SetTab'),
 }
+
+export def MoveToUsableWindow()
+  var c = 0
+  var wincount = winnr('$')
+  while ( !empty(&buftype) && index(reuse_windows, &ft) == -1 && c < wincount )
+    wincmd w
+    c = c + 1
+  endwhile
+enddef
 
 # This function spawn a popup picker for user to select an item from a list.
 # params:

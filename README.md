@@ -126,6 +126,14 @@ let g:fuzzyy_devicons = 1
 " Default to 0
 let g:fuzzyy_dropdown = 0
 
+" Fuzzyy avoids opening files in windows containing special buffers, like
+" buffers created by file explorer plugins or help and quickfix buffers.
+" You can use this to set up some exceptions, the match is on filetype.
+" Defaults to ['netrw'] (Netrw is Vim's built-in file explorer plugin)
+let g:fuzzyy_reuse_windows = ['netrw']
+" Example usage
+let g:fuzzyy_reuse_windows = ['netrw', 'bufexplorer', 'mru']
+
 " Make FuzzyFiles respect .gitignore if possible
 " only work when
 " 1. inside a git repository and git is installed
