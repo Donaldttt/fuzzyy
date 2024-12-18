@@ -74,9 +74,22 @@ var key_callbacks = {
 export def Start(windows: dict<any>, cwd: string = '')
     mru_cwd = empty(cwd) ? getcwd() : cwd
     mru_cwd_only = !empty(cwd)
-    :wv
-    :rv!
-    mru_origin_list = copy(v:oldfiles)->filter((_, val) => filereadable(expand(val)))
+    # sorted files from buffers opened during this session, including unlisted
+    var mru_buffers = split(execute('buffers! t'), '\n')->map((_, val) => {
+            var bufnumber = str2nr(matchstr(val, '\M\s\*\(\d\+\)'))
+            if match(val, 'line 0$') == -1 # opened files have buffer line >= 1
+                return fnamemodify(bufname(bufnumber), ':p')
+            else
+                return ''
+            endif
+        })->filter((_, val) => filereadable(val))
+    # oldfiles that are not already included in buffers from this session
+    var mru_oldfiles = copy(v:oldfiles)->map((_, val) => {
+            return fnamemodify(expand(val), ':p')
+        })->filter((_, val) => {
+            return filereadable(val) && index(mru_buffers, val) == -1
+        })
+    mru_origin_list = mru_buffers + mru_oldfiles
     var mru_list: list<string> = copy(mru_origin_list)
     if mru_cwd_only
         mru_list = filter(mru_list, (_, val) => {
