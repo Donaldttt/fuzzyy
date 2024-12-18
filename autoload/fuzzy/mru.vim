@@ -5,13 +5,16 @@ import autoload 'utils/devicons.vim'
 
 var mru_origin_list: list<string>
 var devicon_char_width = devicons.GetDeviconCharWidth()
-var cwd: string
+var mru_cwd: string
+var mru_cwd_only: bool
 var menu_wid: number
 
 var enable_devicons = exists('g:fuzzyy_devicons') && exists('g:WebDevIconsGetFileTypeSymbol') ?
     g:fuzzyy_devicons : exists('g:WebDevIconsGetFileTypeSymbol')
 
-var mru_project_only = exists('g:fuzzyy_mru_project_only') ? g:fuzzyy_mru_project_only : 0
+if exists('g:fuzzyy_mru_project_only') && g:fuzzyy_mru_project_only
+    echo 'fuzzyy: g:fuzzyy_mru_project_only is no longer supported, use :FuzzyMruCwd command instead'
+endif
 
 def Preview(wid: number, opts: dict<any>)
     var result = opts.cursor_item
@@ -49,11 +52,11 @@ def Close(wid: number, result: dict<any>)
 enddef
 
 def ToggleScope()
-    mru_project_only = mru_project_only ? 0 : 1
+    mru_cwd_only = mru_cwd_only ? 0 : 1
     var mru_list: list<string> = copy(mru_origin_list)
-    if mru_project_only
+    if mru_cwd_only
         mru_list = filter(mru_list, (_, val) => {
-            return stridx(fnamemodify(val, ':p'), cwd) >= 0
+            return stridx(fnamemodify(val, ':p'), mru_cwd) >= 0
         })
     endif
     mru_list = reduce(mru_list, (acc, val) => {
@@ -68,15 +71,16 @@ var key_callbacks = {
     "\<c-k>": function('ToggleScope'),
 }
 
-export def Start(windows: dict<any>, ...keyword: list<any>)
-    cwd = getcwd()
+export def Start(windows: dict<any>, cwd: string = '')
+    mru_cwd = empty(cwd) ? getcwd() : cwd
+    mru_cwd_only = !empty(cwd)
     :wv
     :rv!
     mru_origin_list = copy(v:oldfiles)->filter((_, val) => filereadable(expand(val)))
     var mru_list: list<string> = copy(mru_origin_list)
-    if mru_project_only
+    if mru_cwd_only
         mru_list = filter(mru_list, (_, val) => {
-            return stridx(fnamemodify(val, ':p'), cwd) >= 0
+            return stridx(fnamemodify(val, ':p'), mru_cwd) >= 0
         })
     endif
     mru_list = reduce(mru_list, (acc, val) => {

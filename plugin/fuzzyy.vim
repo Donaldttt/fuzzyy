@@ -85,6 +85,7 @@ command! -nargs=0 FuzzyHighlights highlights.Start(windows.FuzzyHighlights)
 command! -nargs=0 FuzzyGitFiles files.Start(windows.FuzzyFiles, 'git ls-files')
 command! -nargs=0 FuzzyCmdHistory cmdhistory.Start()
 command! -nargs=0 FuzzyMru mru.Start(windows.FuzzyMru)
+command! -nargs=0 FuzzyMruCwd mru.Start(windows.FuzzyMru, getcwd())
 
 if g:fuzzyy_enable_mappings
     nnoremap <silent> <leader>fb :FuzzyInBuffer<CR>

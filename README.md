@@ -57,8 +57,9 @@ git clone https://github.com/Donaldttt/fuzzyy ~/.vim/pack/Donaldttt/start/fuzzyy
 | FuzzyCmdHistory |  search command history  | None    |
 | FuzzyBuffers    | search opened buffers          | \<leader>ft    |
 | FuzzyHighlights | search highlights              | \<leader>fh    |
-| FuzzyMru | search the most recent used files | \<leader>fm    |
-| FuzzyGitFiles |  like FuzzyFiles but only shows file in git project  | None    |
+| FuzzyMru        | search the most recent used files | \<leader>fm    |
+| FuzzyMruCwd     | search the most recent used files in the current working directory | None   |
+| FuzzyGitFiles   |  like FuzzyFiles but only shows file in git project  | None    |
 
 - For FuzzyGrep and FuzzyInBuffer, you can define a keymap like this to search the
 word under cursor.
@@ -85,8 +86,8 @@ you can set `g:fuzzyy_keymaps` to change these defaults.
     - `ctrl + k` toggle white preview background color
     - `Enter` will copy selected highlight
 
-- FuzzyMru
-    - `ctrl + k` toggle global or project MRU files
+- FuzzyMru/FuzzyMruCwd
+    - `ctrl + k` toggle between all MRU files and cwd only
 
 - FuzzyBuffers, FuzzyMru, FuzzyFiles, FuzzyGitFiles
     - `ctrl + s` open selected file in horizontal spliting
@@ -211,10 +212,6 @@ let g:fuzzyy_keymaps = {
 \     'delete_prefix': [],                    " delete to the start of the line
 \     'exit': ["\<Esc>", "\<c-c>", "\<c-[>"], " exit fuzzyy
 \ }
-
-" FuzzyMru default shows MRU files that are in the current project
-" default to 0
-let g:fuzzyy_mru_project_only = 0
 
 " FuzzyBuffers will exclude the buffers in this list. Buffers not included in
 " Vim's buffer list are excluded by default, so this is only necessary for
