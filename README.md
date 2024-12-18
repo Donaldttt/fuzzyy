@@ -57,7 +57,7 @@ git clone https://github.com/Donaldttt/fuzzyy ~/.vim/pack/Donaldttt/start/fuzzyy
 | FuzzyCmdHistory |  search command history  | None    |
 | FuzzyBuffers    | search opened buffers          | \<leader>ft    |
 | FuzzyHighlights | search highlights              | \<leader>fh    |
-| FuzzyMRUFiles | search the most recent used files. set g:enable_fuzzyy_MRU_files = 1 to enable this command(not enable by default)    | \<leader>fm    |
+| FuzzyMRUFiles | search the most recent used files | \<leader>fm    |
 | FuzzyGitFiles |  like FuzzyFiles but only shows file in git project  | None    |
 
 - For FuzzyGrep and FuzzyInBuffer, you can define a keymap like this to search the
@@ -124,10 +124,6 @@ let g:fuzzyy_devicons = 1
 " Enable dropdown theme (prompt at top rather than bottom)
 " Default to 0
 let g:fuzzyy_dropdown = 0
-
-" DEPRECATED: mru is always enabled
-" now this option has no effect
-let g:enable_fuzzyy_MRU_files = 1
 
 " Make FuzzyFiles respect .gitignore if possible
 " only work when
