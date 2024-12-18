@@ -57,7 +57,7 @@ git clone https://github.com/Donaldttt/fuzzyy ~/.vim/pack/Donaldttt/start/fuzzyy
 | FuzzyCmdHistory |  search command history  | None    |
 | FuzzyBuffers    | search opened buffers          | \<leader>ft    |
 | FuzzyHighlights | search highlights              | \<leader>fh    |
-| FuzzyMRUFiles | search the most recent used files | \<leader>fm    |
+| FuzzyMru | search the most recent used files | \<leader>fm    |
 | FuzzyGitFiles |  like FuzzyFiles but only shows file in git project  | None    |
 
 - For FuzzyGrep and FuzzyInBuffer, you can define a keymap like this to search the
@@ -85,10 +85,10 @@ you can set `g:fuzzyy_keymaps` to change these defaults.
     - `ctrl + k` toggle white preview background color
     - `Enter` will copy selected highlight
 
-- FuzzyMRUFiles
+- FuzzyMru
     - `ctrl + k` toggle global or project MRU files
 
-- FuzzyBuffers, FuzzyMRUFiles, FuzzyFiles, FuzzyGitFiles
+- FuzzyBuffers, FuzzyMru, FuzzyFiles, FuzzyGitFiles
     - `ctrl + s` open selected file in horizontal spliting
     - `ctrl + v` open selected file in vertical spliting
     - `ctrl + t` open selected file in new tab page
@@ -106,7 +106,7 @@ nnoremap <silent> <leader>fi :FuzzyCommands<CR>
 nnoremap <silent> <leader>fr :FuzzyGrep<CR>
 nnoremap <silent> <leader>ft :FuzzyBuffers<CR>
 nnoremap <silent> <leader>fh :FuzzyHighlights<CR>
-nnoremap <silent> <leader>fm :FuzzyMRUFiles<CR>
+nnoremap <silent> <leader>fm :FuzzyMru<CR>
 ```
 
 ## Options
@@ -212,7 +212,7 @@ let g:fuzzyy_keymaps = {
 \     'exit': ["\<Esc>", "\<c-c>", "\<c-[>"], " exit fuzzyy
 \ }
 
-" FuzzyMRUFiles default shows MRU files that are in the current project
+" FuzzyMru default shows MRU files that are in the current project
 " default to 0
 let g:fuzzyy_mru_project_only = 0
 
@@ -250,7 +250,7 @@ let g:fuzzyy_window_layout = {
 \        'preview_ratio': 0.5,
 \        'width': 0.8,
 \    },
-\    'FuzzyMRUFiles': {
+\    'FuzzyMru': {
 \        'preview': 1,
 \        'preview_ratio': 0.5,
 \        'width': 0.8,

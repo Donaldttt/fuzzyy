@@ -37,7 +37,7 @@ var windows = {
         preview_ratio: 0.5,
         width: 0.8,
     },
-    FuzzyMRUFiles: {
+    FuzzyMru: {
         preview: 1,
         preview_ratio: 0.5,
         width: 0.8,
@@ -84,7 +84,7 @@ command! -nargs=0 FuzzyBuffers buffers.Start(windows.FuzzyBuffers)
 command! -nargs=0 FuzzyHighlights highlights.Start(windows.FuzzyHighlights)
 command! -nargs=0 FuzzyGitFiles files.Start(windows.FuzzyFiles, 'git ls-files')
 command! -nargs=0 FuzzyCmdHistory cmdhistory.Start()
-command! -nargs=0 FuzzyMRUFiles mru.Start(windows.FuzzyMRUFiles)
+command! -nargs=0 FuzzyMru mru.Start(windows.FuzzyMru)
 
 if g:fuzzyy_enable_mappings
     nnoremap <silent> <leader>fb :FuzzyInBuffer<CR>
@@ -95,5 +95,5 @@ if g:fuzzyy_enable_mappings
     nnoremap <silent> <leader>fr :FuzzyGrep<CR>
     nnoremap <silent> <leader>ft :FuzzyBuffers<CR>
     nnoremap <silent> <leader>fh :FuzzyHighlights<CR>
-    nnoremap <silent> <leader>fm :FuzzyMRUFiles<CR>
+    nnoremap <silent> <leader>fm :FuzzyMru<CR>
 endif
