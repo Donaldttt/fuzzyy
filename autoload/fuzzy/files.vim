@@ -107,6 +107,7 @@ def Preview(wid: number, opts: dict<any>)
     var ext = fnamemodify(result, ':e')
     noautocmd call popup_settext(preview_wid, fileraw)
     win_execute(preview_wid, 'silent! doautocmd filetypedetect BufNewFile *.' .. ext)
+    noautocmd win_execute(preview_wid, 'silent! setlocal nospell nolist')
 enddef
 
 def FilesJobStart(path: string, cmd: string)
