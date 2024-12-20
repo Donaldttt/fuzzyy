@@ -3,25 +3,22 @@ vim9script
 import autoload 'utils/selector.vim'
 import autoload 'utils/popup.vim'
 
-var file_exclude_default = ['*.swp', 'tags']
-var dir_exclude_default = ['.git', '.hg', '.svn']
-
 # Options
 var respect_gitignore = exists('g:fuzzyy_grep_respect_gitignore') ?
-    g:fuzzyy_grep_respect_gitignore : 1
+    g:fuzzyy_grep_respect_gitignore : g:fuzzyy_respect_gitignore
 var file_exclude = exists('g:fuzzyy_grep_exclude_file')
     && type(g:fuzzyy_grep_exclude_file) == v:t_list ?
-    g:fuzzyy_grep_exclude_file : file_exclude_default
+    g:fuzzyy_grep_exclude_file : g:fuzzyy_exclude_file
 var dir_exclude = exists('g:fuzzyy_grep_exclude_dir')
     && type(g:fuzzyy_grep_exclude_dir) == v:t_list ?
-    g:fuzzyy_grep_exclude_dir : dir_exclude_default
+    g:fuzzyy_grep_exclude_dir : g:fuzzyy_exclude_dir
 var include_hidden = exists('g:fuzzyy_grep_include_hidden') ?
-    g:fuzzyy_grep_include_hidden : 1
+    g:fuzzyy_grep_include_hidden : g:fuzzyy_include_hidden
 var follow_symlinks = exists('g:fuzzyy_grep_follow_symlinks') ?
-    g:fuzzyy_grep_follow_symlinks : 0
+    g:fuzzyy_grep_follow_symlinks : g:fuzzyy_follow_symlinks
 var ripgrep_options = exists('g:fuzzyy_grep_ripgrep_options')
     && type(g:fuzzyy_grep_ripgrep_options) == v:t_list ?
-    g:fuzzyy_grep_ripgrep_options : []
+    g:fuzzyy_grep_ripgrep_options : g:fuzzyy_ripgrep_options
 
 var loading = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
 

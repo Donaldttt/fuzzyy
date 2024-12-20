@@ -129,74 +129,53 @@ let g:fuzzyy_reuse_windows = ['netrw']
 " Example usage
 let g:fuzzyy_reuse_windows = ['netrw', 'bufexplorer', 'mru']
 
-" Make FuzzyFiles respect .gitignore if possible
+" Make FuzzyFiles & FuzzyGrep respect .gitignore
 " only work when
 " 1. inside a git repository and git is installed
-" 2. or either rg or fd is installed
+" 2. or either rg or fd is installed for FuzzyFiles
+" 3. or either rg or ag is installed for FuzzyGrep
 " Default to 1
-let g:fuzzyy_files_respect_gitignore = 1
+let g:fuzzyy_respect_gitignore = 1
+" This option can also be set specifically for FuzzyFiles and/or FuzzyGrep using
+" g:fuzzyy_files_respect_gitignore and g:fuzzyy_grep_respect_gitignore
 
-" Make FuzzyGrep respect .gitignore if possible
-" only work when
-" 1. inside a git repository and git is installed
-" 2. or either rg or ag is installed
+" Make FuzzyFiles & FuzzyGrep include hidden files
+" Only applied when
+" 1. rg, fd or PowerShell Get-ChildItem used with FuzzyFiles
+" 2. rg or ag used with FuzzyGrep
 " Default to 1
-let g:fuzzyy_grep_respect_gitignore = 1
+let g:fuzzyy_include_hidden = 1
+" This option can also be set specifically for FuzzyFiles and/or FuzzyGrep using
+" g:fuzzyy_files_include_hidden and g:fuzzyy_grep_include_hidden
 
-" Make FuzzyFiles always include hidden files
-" Only applied with rg, fd and PowerShell Get-ChildItem
-" Default to 1
-let g:fuzzyy_files_include_hidden = 1
-
-" Make FuzzyGrep always include hidden files
-" Only applied with rg and ag
-" Default to 1
-let g:fuzzyy_grep_include_hidden = 1
-
-" Make FuzzyFiles follow symbolic links
-" Not applied when using git-ls-files
+" Make FuzzyFiles & FuzzyGrep follow symbolic links
+" Not applied when using git-ls-files, git-grep or FINDSTR
 " Default to 0
 let g:fuzzyy_files_follow_symlinks = 0
+" This option can also be set specifically for FuzzyFiles and/or FuzzyGrep using
+" g:fuzzyy_files_follow_symlinks and g:fuzzyy_grep_follow_symlinks
 
-" Make FuzzyGrep follow symbolic links
-" Not applied when using git-grep or FINDSTR
-" Default to 0
-let g:fuzzyy_grep_follow_symlinks = 0
+" Make FuzzyFiles & FuzzyGrep always exclude files/directories
+" This applies whether .gitignore is respected or not
+" The following are the defaults
+let g:fuzzyy_exclude_file = ['*.swp', 'tags']
+let g:fuzzyy_exclude_dir = ['.git', '.hg', '.svn']
+" These options can also be set specifically for FuzzyFiles and/or FuzzyGrep using
+" g:fuzzyy_files_exclude_file, g:fuzzyy_grep_exclude_file etc.
 
-" FuzzyFiles will always exclude the files/directory in these two lists
-" The following is the default
-let g:fuzzyy_files_exclude_file = ['*.swp', 'tags']
-let g:fuzzyy_files_exclude_dir = ['.git', '.hg', '.svn']
-
-" FuzzyGrep will always exclude the files/directory in these two lists
-" These are different to the FuzzyyFiles lists, with the same defaults
-" The following is the default
-let g:fuzzyy_grep_exclude_file = ['*.swp', 'tags']
-let g:fuzzyy_grep_exclude_dir = ['.git', '.hg', '.svn']
-
-" Add custom ripgrep options for FuzzyFiles
+" Add custom ripgrep options for FuzzyFiles & FuzzyGrep
 " These are appended to the generated options
 " Default to []
-let g:fuzzyy_files_ripgrep_options = []
+let g:fuzzyy_ripgrep_options = []
 " Example usage
-let g:fuzzyy_files_ripgrep_options = [
+let g:fuzzyy_files_options = [
   \ "--no-config",
-  \ "--no-ignore-parent"
-  \ ]
-
-" Add custom ripgrep options for FuzzyGrep
-" These are appended to the generated options
-" Default to []
-let g:fuzzyy_grep_ripgrep_options = []
-" Example usage
-let g:fuzzyy_grep_ripgrep_options = [
-  \ "--no-config",
-  \ "--no-hidden",
-  \ "--case-sensitive",
   \ "--max-filesize=1M",
   \ "--no-ignore-parent",
   \ "--ignore-file " . expand('~/.ignore')
   \ ]
+" This option can also be set specifically for FuzzyFiles and/or FuzzyGrep using
+" g:fuzzyy_files_ripgrep_options and g:fuzzyy_grep_ripgrep_options
 
 " Change navigation keymaps
 " The following is the default
