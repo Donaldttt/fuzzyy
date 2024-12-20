@@ -301,9 +301,8 @@ def Preview(wid: number, opts: dict<any>)
     if path != last_path
         var preview_bufnr = winbufnr(preview_wid)
         var fileraw = readfile(path)
-        var ext = fnamemodify(path, ':e')
         noautocmd call popup_settext(preview_wid, fileraw)
-        win_execute(preview_wid, 'silent! doautocmd filetypedetect BufNewFile *.' .. ext)
+        win_execute(preview_wid, 'silent! doautocmd filetypedetect BufNewFile ' .. path)
         noautocmd win_execute(preview_wid, 'silent! setlocal nospell nolist')
     endif
     if path != last_path || linenr != last_linenr
