@@ -88,13 +88,10 @@ command! -nargs=0 FuzzyMru mru.Start(windows.FuzzyMru)
 command! -nargs=0 FuzzyMruCwd mru.Start(windows.FuzzyMru, getcwd())
 
 if g:fuzzyy_enable_mappings
-    nnoremap <silent> <leader>fb :FuzzyInBuffer<CR>
-    nnoremap <silent> <leader>fc :FuzzyColors<CR>
-    nnoremap <silent> <leader>fd :FuzzyHelps<CR>
+    nnoremap <silent> <leader>fb :FuzzyBuffers<CR>
+    nnoremap <silent> <leader>fc :FuzzyCommands<CR>
     nnoremap <silent> <leader>ff :FuzzyFiles<CR>
-    nnoremap <silent> <leader>fi :FuzzyCommands<CR>
-    nnoremap <silent> <leader>fr :FuzzyGrep<CR>
-    nnoremap <silent> <leader>ft :FuzzyBuffers<CR>
-    nnoremap <silent> <leader>fh :FuzzyHighlights<CR>
+    nnoremap <silent> <leader>fg :FuzzyGrep<CR>
+    nnoremap <silent> <leader>fh :FuzzyHelps<CR>
     nnoremap <silent> <leader>fm :FuzzyMru<CR>
 endif

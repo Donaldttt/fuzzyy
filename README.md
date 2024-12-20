@@ -46,25 +46,25 @@ git clone https://github.com/Donaldttt/fuzzyy ~/.vim/pack/Donaldttt/start/fuzzyy
 
 ## Commands
 
-| Command         | Description                    | Default Keymap |
+| Command         | Description                    | Default mapping |
 | ---             | ---                            | ---            |
-| FuzzyGrep \<args> | grep string in project. if argument is given, it will search the \<args> | \<leader>fr    |
 | FuzzyFiles      | search files in project        | \<leader>ff    |
-| FuzzyHelps      | search :help documents         | \<leader>fd    |
-| FuzzyColors     | search installed colorscheme   | \<leader>fc    |
-| FuzzyInBuffer  \<args> | search lines in current buffer. if argument is given, it will search the \<args> | \<leader>fb    |
-| FuzzyCommands   | search commands                | \<leader>fi    |
-| FuzzyCmdHistory |  search command history  | None    |
-| FuzzyBuffers    | search opened buffers          | \<leader>ft    |
-| FuzzyHighlights | search highlights              | \<leader>fh    |
+| FuzzyBuffers    | search opened buffers          | \<leader>fb    |
+| FuzzyGrep \<args> | grep string in project. if argument is given, it will search the \<args> | \<leader>fg    |
 | FuzzyMru        | search the most recent used files | \<leader>fm    |
 | FuzzyMruCwd     | search the most recent used files in the current working directory | None   |
+| FuzzyInBuffer  \<args> | search lines in current buffer. if argument is given, it will search the \<args> | None    |
+| FuzzyHelps      | search :help documents         | None    |
+| FuzzyColors     | search installed colorscheme   | None    |
+| FuzzyCommands   | search commands                | None    |
+| FuzzyCmdHistory |  search command history  | None    |
+| FuzzyHighlights | search highlights              | None    |
 | FuzzyGitFiles   |  like FuzzyFiles but only shows file in git project  | None    |
 
 - For FuzzyGrep and FuzzyInBuffer, you can define a keymap like this to search the
 word under cursor.
     ```vim
-        nnoremap <Space>f :FuzzyGrep <C-R><C-W><CR>
+        nnoremap <leader>fw :FuzzyGrep <C-R><C-W><CR>
     ```
 - FuzzyGrep requires any of `rg`, `ag`, `grep` or `FINDSTR` command.
 
@@ -79,7 +79,7 @@ Arrow keys or `ctrl + p`/ `ctrl + n` moves up/down the menu
 
 `ctrl + i`/`ctrl + f` moves up/down the buffer by one line in preview window
 
-you can set `g:fuzzyy_keymaps` to change these defaults.
+You can set `g:fuzzyy_keymaps` to change these defaults.
 
 ### Command Specific keymaps
 - FuzzyHighlights
@@ -94,19 +94,14 @@ you can set `g:fuzzyy_keymaps` to change these defaults.
     - `ctrl + v` open selected file in vertical spliting
     - `ctrl + t` open selected file in new tab page
 
-## Default Keymaps
+## Default mappings
 
-you can set `g:fuzzyy_enable_mappings = 0` to disable default mappings
+You can set `g:fuzzyy_enable_mappings = 0` to disable default mappings
 
 ```vim
-nnoremap <silent> <leader>fb :FuzzyInBuffer<CR>
-nnoremap <silent> <leader>fc :FuzzyColors<CR>
-nnoremap <silent> <leader>fd :FuzzyHelps<CR>
 nnoremap <silent> <leader>ff :FuzzyFiles<CR>
-nnoremap <silent> <leader>fi :FuzzyCommands<CR>
-nnoremap <silent> <leader>fr :FuzzyGrep<CR>
-nnoremap <silent> <leader>ft :FuzzyBuffers<CR>
-nnoremap <silent> <leader>fh :FuzzyHighlights<CR>
+nnoremap <silent> <leader>fg :FuzzyGrep<CR>
+nnoremap <silent> <leader>fb :FuzzyBuffers<CR>
 nnoremap <silent> <leader>fm :FuzzyMru<CR>
 ```
 
