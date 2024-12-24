@@ -155,12 +155,12 @@ let g:fuzzyy_files_follow_symlinks = 0
 " This option can also be set specifically for FuzzyFiles and/or FuzzyGrep using
 " g:fuzzyy_files_follow_symlinks and g:fuzzyy_grep_follow_symlinks
 
-" Make FuzzyFiles & FuzzyGrep always exclude files/directories
+" Make FuzzyFiles, FuzzyGrep, and FuzzyMru always exclude files/directories
 " This applies whether .gitignore is respected or not
 " The following are the defaults
 let g:fuzzyy_exclude_file = ['*.swp', 'tags']
 let g:fuzzyy_exclude_dir = ['.git', '.hg', '.svn']
-" These options can also be set specifically for FuzzyFiles and/or FuzzyGrep using
+" Set options specifically for FuzzyFiles, FuzzyGrep, and FuzzyMru using
 " g:fuzzyy_files_exclude_file, g:fuzzyy_grep_exclude_file etc.
 
 " Add custom ripgrep options for FuzzyFiles & FuzzyGrep

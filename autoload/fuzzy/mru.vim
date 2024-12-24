@@ -16,6 +16,14 @@ if exists('g:fuzzyy_mru_project_only') && g:fuzzyy_mru_project_only
     echo 'fuzzyy: g:fuzzyy_mru_project_only is no longer supported, use :FuzzyMruCwd command instead'
 endif
 
+# Options
+var file_exclude = exists('g:fuzzyy_mru_exclude_file')
+    && type(g:fuzzyy_mru_exclude_file) == v:t_list ?
+    g:fuzzyy_mru_exclude_file : g:fuzzyy_exclude_file
+var dir_exclude = exists('g:fuzzyy_mru_exclude_dir')
+    && type(g:fuzzyy_mru_exclude_dir) == v:t_list ?
+    g:fuzzyy_mru_exclude_dir : g:fuzzyy_exclude_dir
+
 def Preview(wid: number, opts: dict<any>)
     var result = opts.cursor_item
     if enable_devicons
@@ -91,6 +99,19 @@ export def Start(windows: dict<any>, cwd: string = '')
             return filereadable(val) && index(mru_buffers, val) == -1
         })
     mru_origin_list = mru_buffers + mru_oldfiles
+    filter(mru_origin_list, (_, val) => {
+        for dir in dir_exclude
+            if val =~# glob2regpat('**/' .. dir .. '/**')
+                return false
+            endif
+        endfor
+        for glob in file_exclude
+            if fnamemodify(val, ':t') =~# glob2regpat(glob)
+                return false
+            endif
+        endfor
+        return true
+    })
     var mru_list: list<string> = copy(mru_origin_list)
     if mru_cwd_only
         mru_list = filter(mru_list, (_, val) => {
