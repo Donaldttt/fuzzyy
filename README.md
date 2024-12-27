@@ -54,7 +54,7 @@ git clone https://github.com/Donaldttt/fuzzyy ~/.vim/pack/Donaldttt/start/fuzzyy
 | FuzzyMru        | search the most recent used files | \<leader>fm    |
 | FuzzyMruCwd     | search the most recent used files in the current working directory | None   |
 | FuzzyInBuffer  \<args> | search lines in current buffer. if argument is given, it will search the \<args> | None    |
-| FuzzyHelps      | search :help documents         | None    |
+| FuzzyHelp       | search :help documents         | None    |
 | FuzzyColors     | search installed colorscheme   | None    |
 | FuzzyCommands   | search commands                | None    |
 | FuzzyCmdHistory |  search command history  | None    |

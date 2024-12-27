@@ -75,7 +75,7 @@ highlight default link fuzzyyPreviewMatch CurSearch
 import autoload '../autoload/fuzzy/commands.vim'
 import autoload '../autoload/fuzzy/grep.vim'
 import autoload '../autoload/fuzzy/files.vim'
-import autoload '../autoload/fuzzy/helps.vim'
+import autoload '../autoload/fuzzy/help.vim'
 import autoload '../autoload/fuzzy/colors.vim'
 import autoload '../autoload/fuzzy/inbuffer.vim'
 import autoload '../autoload/fuzzy/buffers.vim'
@@ -85,7 +85,7 @@ import autoload '../autoload/fuzzy/mru.vim'
 
 command! -nargs=? FuzzyGrep grep.Start(windows.FuzzyGrep, <f-args>)
 command! -nargs=0 FuzzyFiles files.Start(windows.FuzzyFiles)
-command! -nargs=0 FuzzyHelps helps.Start()
+command! -nargs=0 FuzzyHelp help.Start()
 command! -nargs=0 FuzzyColors colors.Start()
 command! -nargs=? FuzzyInBuffer inbuffer.Start(<f-args>)
 command! -nargs=0 FuzzyCommands commands.Start()
@@ -101,6 +101,6 @@ if g:fuzzyy_enable_mappings
     nnoremap <silent> <leader>fc :FuzzyCommands<CR>
     nnoremap <silent> <leader>ff :FuzzyFiles<CR>
     nnoremap <silent> <leader>fg :FuzzyGrep<CR>
-    nnoremap <silent> <leader>fh :FuzzyHelps<CR>
+    nnoremap <silent> <leader>fh :FuzzyHelp<CR>
     nnoremap <silent> <leader>fm :FuzzyMru<CR>
 endif
