@@ -13,12 +13,16 @@ def Tags(): dict<any>
     var sorted = sort(split(globpath(&runtimepath, 'doc/tags', 1), '\n'))
     tag_files = uniq(sorted)
     var result: dict<any> = {}
+    var file_index = 0
     for file in tag_files
-        file_lines += readfile(file)
+        for line in readfile(file)
+            file_lines += [ line .. ' ' .. file_index ]
+        endfor
+        file_index += 1
     endfor
     reduce(file_lines[: 1000], (acc, val) => {
         var li = split(val)
-        acc[li[0]] = [li[1], li[2]]
+        acc[li[0]] = [li[1], li[2], li[3]]
         return acc
     }, result)
     file_lines = file_lines[1001 :]
@@ -26,12 +30,29 @@ def Tags(): dict<any>
     return result
 enddef
 
+def EscQuotes(str: string): string
+    return substitute(str, "'", "''", 'g')
+enddef
+
 def Preview(wid: number, opts: dict<any>)
     var result = opts.cursor_item
-    if len(result) == 0
+    if !has_key(opts.win_opts.partids, 'preview')
         return
     endif
-    exe ':belowright help ' .. result
+    var preview_wid = opts.win_opts.partids['preview']
+    if result == ''
+        popup_settext(preview_wid, '')
+        return
+    endif
+    var preview_bufnr = winbufnr(preview_wid)
+    setbufvar(preview_bufnr, '&syntax', 'help')
+    var tag_file = tag_files[str2nr(tag_table[result][2])]
+    # Note: forward slash path separator tested on Windows, works fine
+    var doc_file = fnamemodify(tag_file, ':h') .. '/' .. tag_table[result][0]
+    popup_settext(preview_wid, readfile(doc_file))
+    var tag_name = substitute(tag_table[result][1], '\v^(\/\*)(.*)(\*)$', '\2', '')
+    win_execute(preview_wid, "exec 'norm! ' .. search('\\m\\*" .. EscQuotes(tag_name) .. "\\*', 'w')")
+    win_execute(preview_wid, 'norm! zz')
 enddef
 
 def AsyncCb(result: list<any>)
@@ -64,7 +85,7 @@ def HelpsUpdateMenu(...args: list<any>)
     endif
     reduce(file_lines[: STEP], (acc, val) => {
         var li = split(val)
-        acc[li[0]] = [li[1], li[2]]
+        acc[li[0]] = [li[1], li[2], li[3]]
         return acc
     }, tag_table)
     file_lines = file_lines[STEP + 1 :]
@@ -80,7 +101,7 @@ enddef
 def CloseCb(wid: number, args: dict<any>)
     if has_key(args, 'selected_item')
         var tag = args.selected_item
-        exe ':belowright help ' .. tag
+        exe ':help ' .. tag
     else
         var tabnr = tabpagenr()
         var wins = gettabinfo(tabnr)[0].windows
@@ -105,11 +126,9 @@ export def Start()
         preview_cb: function('Preview'),
         close_cb:   function('CloseCb'),
         input_cb:   function('Input'),
-        preview:  0,
-        yoffset: 2,
-        height: 0.4,
+        preview: 1,
+        preview_ratio: 0.6, # reasonable default for a laptop to avoid wrapping
         scrollbar: 0,
-        width: 0.5,
         dropdown: 1,
     })
     menu_wid = wids.menu
