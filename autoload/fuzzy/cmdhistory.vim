@@ -4,7 +4,9 @@ import autoload 'utils/selector.vim'
 import autoload 'utils/popup.vim'
 
 def Select(wid: number, result: list<any>)
-    exe ":leg " .. result[0]
+    var command = result[0]
+    call feedkeys(':' .. command .. ' ', 'n')
+    call feedkeys("\<CR>", 'n')
 enddef
 
 export def Start()
