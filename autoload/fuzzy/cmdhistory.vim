@@ -12,7 +12,7 @@ export def Start()
 
     # remove index of command history
     cmds = reduce(cmds,
-       (a, v) => add(a, join(split(v)[1 : ])), [])
+        (a, v) => add(a, substitute(v, '\m^.*\d\+\s\+', '', '')), [])
 
     var wins = selector.Start(cmds, {
         select_cb:  function('Select'),
