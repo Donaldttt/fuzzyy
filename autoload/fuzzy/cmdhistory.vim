@@ -16,7 +16,7 @@ export def Start()
     cmds = reduce(cmds,
         (a, v) => add(a, substitute(v, '\m^.*\d\+\s\+', '', '')), [])
 
-    var wins = selector.Start(cmds, {
+    var wins = selector.Start(reverse(cmds), {
         select_cb:  function('Select'),
         width:  0.6
     })
