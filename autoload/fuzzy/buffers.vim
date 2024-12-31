@@ -137,7 +137,6 @@ export def Start(windows: dict<any>)
         preview: _windows.preview,
         width: _windows.width,
         preview_ratio: _windows.preview_ratio,
-        scrollbar: 0,
         enable_devicons: enable_devicons,
         key_callbacks: extend(selector.split_edit_callbacks, key_callbacks),
     })

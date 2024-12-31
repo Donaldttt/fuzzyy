@@ -128,7 +128,6 @@ export def Start()
         input_cb:   function('Input'),
         preview: 1,
         preview_ratio: 0.6, # reasonable default for a laptop to avoid wrapping
-        scrollbar: 0,
         dropdown: 1,
     })
     menu_wid = wids.menu

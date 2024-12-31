@@ -598,7 +598,7 @@ export def PopupSelection(user_opts: dict<any>): dict<any>
     var menu_opts = {
         callback:  has_key(user_opts, 'select_cb') ? user_opts.select_cb : v:null,
         close_cb:  has_key(user_opts, 'close_cb') ? user_opts.close_cb : v:null,
-        scrollbar:  has_key(user_opts, 'scrollbar') ? user_opts.scrollbar : 1,
+        scrollbar:  has_key(user_opts, 'scrollbar') ? user_opts.scrollbar : 0,
         reverse_menu: reverse_menu,
         yoffset:  menu_yoffset,
         xoffset:  xoffset,

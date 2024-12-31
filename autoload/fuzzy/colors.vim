@@ -43,7 +43,6 @@ export def Start()
         preview: 0,
         width: 0.25,
         xoffset: 0.7,
-        scrollbar: 0,
         preview_ratio: 0.7,
     })
 enddef
