@@ -128,7 +128,6 @@ export def Start()
         input_cb:   function('Input'),
         preview: 1,
         preview_ratio: 0.6, # reasonable default for a laptop to avoid wrapping
-        dropdown: 1,
     })
     menu_wid = wids.menu
     # popup_setoptions(menu_wid, {'title': string(len(tag_table))})

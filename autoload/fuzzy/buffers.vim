@@ -133,7 +133,6 @@ export def Start(windows: dict<any>)
     var wids = selector.Start(GetBufList(), {
         preview_cb:  function('Preview'),
         close_cb:  function('Close'),
-        dropdown: 0,
         preview: _windows.preview,
         width: _windows.width,
         preview_ratio: _windows.preview_ratio,
