@@ -9,7 +9,7 @@ def Select(wid: number, result: list<any>)
     norm! zz
 enddef
 
-export def Start(...keyword: list<any>)
+export def Start(windows: dict<any>, ...keyword: list<any>)
     var raw_lines = getline(1, '$')
     var max_line_len = len(string(len(raw_lines)))
     var lines = reduce(raw_lines,
@@ -17,9 +17,7 @@ export def Start(...keyword: list<any>)
 
     var winds = selector.Start(lines, {
         select_cb:  function('Select'),
-        preview:  0,
-        reverse_menu:  0,
-        width:  0.7
+        width:  windows.width
     })
 
     if len(keyword) > 0

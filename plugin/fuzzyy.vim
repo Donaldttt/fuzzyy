@@ -56,6 +56,23 @@ var windows = {
         preview_ratio: 0.7,
         width: 0.8,
     },
+    cmdhistory: {
+        width: 0.6
+    },
+    colors: {
+        width: 0.25,
+        xoffset: 0.7,
+    },
+    commands: {
+        width: 0.4,
+    },
+    help: {
+        preview: 1,
+        preview_ratio: 0.6 # reasonable default for a laptop to avoid wrapping
+    },
+    inbuffer: {
+        width: 0.7,
+    },
 }
 
 if exists('g:fuzzyy_window_layout') && type(g:fuzzyy_window_layout) == v:t_dict
@@ -85,14 +102,14 @@ import autoload '../autoload/fuzzy/mru.vim'
 
 command! -nargs=? FuzzyGrep grep.Start(windows.grep, <f-args>)
 command! -nargs=0 FuzzyFiles files.Start(windows.files)
-command! -nargs=0 FuzzyHelp help.Start()
-command! -nargs=0 FuzzyColors colors.Start()
-command! -nargs=? FuzzyInBuffer inbuffer.Start(<f-args>)
-command! -nargs=0 FuzzyCommands commands.Start()
+command! -nargs=0 FuzzyHelp help.Start(windows.help)
+command! -nargs=0 FuzzyColors colors.Start(windows.colors)
+command! -nargs=? FuzzyInBuffer inbuffer.Start(windows.inbuffer, <f-args>)
+command! -nargs=0 FuzzyCommands commands.Start(windows.commands)
 command! -nargs=0 FuzzyBuffers buffers.Start(windows.buffers)
 command! -nargs=0 FuzzyHighlights highlights.Start(windows.highlights)
 command! -nargs=0 FuzzyGitFiles files.Start(windows.files, 'git ls-files')
-command! -nargs=0 FuzzyCmdHistory cmdhistory.Start()
+command! -nargs=0 FuzzyCmdHistory cmdhistory.Start(windows.cmdhistory)
 command! -nargs=0 FuzzyMru mru.Start(windows.mru)
 command! -nargs=0 FuzzyMruCwd mru.Start(windows.mru, getcwd())
 

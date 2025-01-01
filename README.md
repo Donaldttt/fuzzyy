@@ -239,6 +239,23 @@ let g:fuzzyy_window_layout = {
 \        'preview_ratio': 0.7,
 \        'width': 0.8,
 \    },
+\    'cmdhistory': {
+\        'width': 0.6
+\    },
+\    'colors': {
+\        'width': 0.25,
+\        'xoffset': 0.7,
+\    },
+\    'commands': {
+\        'width': 0.4,
+\    },
+\    help: {
+\        'preview': 1,
+\        'preview_ratio': 0.6 # reasonable default for a laptop to avoid wrapping
+\    },
+\    'inbuffer': {
+\        'width': 0.7,
+\    },
 \ }
 
 " It is also possible to modify the colors used for highlighting

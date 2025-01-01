@@ -550,13 +550,12 @@ export def PopupSelection(user_opts: dict<any>): dict<any>
     var height: any  = 0.8
     width   = has_key(user_opts, 'width') ? user_opts.width : width
     height  = has_key(user_opts, 'height') ? user_opts.height : height
-    var xoffset = width < 1 ? (1 - width) / 2 : (&columns  - width) / 2
-    var yoffset = height < 1 ? (1 - height) / 2 : (&lines - height) / 2
 
     var preview_ratio = 0.5
     preview_ratio = has_key(user_opts, 'preview_ratio') ? user_opts.preview_ratio : preview_ratio
 
-    # user's input always override the default
+    var xoffset = width < 1 ? (1 - width) / 2 : (&columns  - width) / 2
+    var yoffset = height < 1 ? (1 - height) / 2 : (&lines - height) / 2
     xoffset =  has_key(user_opts, 'xoffset') ? user_opts.xoffset : xoffset
     yoffset =  has_key(user_opts, 'yoffset') ? user_opts.yoffset : yoffset
 

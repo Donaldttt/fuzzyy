@@ -9,7 +9,7 @@ def Select(wid: number, result: list<any>)
     call feedkeys("\<CR>", 'n')
 enddef
 
-export def Start()
+export def Start(windows: dict<any>)
     var cmds = split(execute("history"), '\n')[1 : ]
 
     # remove index of command history
@@ -18,7 +18,7 @@ export def Start()
 
     var wins = selector.Start(reverse(cmds), {
         select_cb:  function('Select'),
-        width:  0.6
+        width: windows.width
     })
     popup_setoptions(wins.menu, {'title': string(len(cmds))})
 enddef

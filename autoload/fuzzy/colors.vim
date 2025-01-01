@@ -32,7 +32,7 @@ def Close(wid: number, result: dict<any>)
     endif
 enddef
 
-export def Start()
+export def Start(windows: dict<any>)
     old_color = execute('colo')[1 :]
     old_bg = &bg
     var colors = GetColors()
@@ -40,9 +40,7 @@ export def Start()
     var wids = selector.Start(colors, {
         preview_cb: function('Preview'),
         close_cb: function('Close'),
-        preview: 0,
-        width: 0.25,
-        xoffset: 0.7,
-        preview_ratio: 0.7,
+        width: windows.width,
+        xoffset: windows.xoffset,
     })
 enddef

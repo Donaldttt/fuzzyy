@@ -116,7 +116,7 @@ def CloseCb(wid: number, args: dict<any>)
     timer_stop(update_tid)
 enddef
 
-export def Start()
+export def Start(windows: dict<any>)
     tag_files = []
     file_lines = []
     cur_pattern = ''
@@ -126,8 +126,8 @@ export def Start()
         preview_cb: function('Preview'),
         close_cb:   function('CloseCb'),
         input_cb:   function('Input'),
-        preview: 1,
-        preview_ratio: 0.6, # reasonable default for a laptop to avoid wrapping
+        preview: windows.preview,
+        preview_ratio: windows.preview_ratio,
     })
     menu_wid = wids.menu
     # popup_setoptions(menu_wid, {'title': string(len(tag_table))})
