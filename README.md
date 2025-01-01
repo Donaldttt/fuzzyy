@@ -168,7 +168,7 @@ let g:fuzzyy_exclude_dir = ['.git', '.hg', '.svn']
 " Default to []
 let g:fuzzyy_ripgrep_options = []
 " Example usage
-let g:fuzzyy_files_options = [
+let g:fuzzyy_ripgrep_options = [
   \ "--no-config",
   \ "--max-filesize=1M",
   \ "--no-ignore-parent",
