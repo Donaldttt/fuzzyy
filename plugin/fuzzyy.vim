@@ -28,30 +28,30 @@ g:fuzzyy_ripgrep_options = exists('g:fuzzyy_ripgrep_options')
 
 # window layout
 # you can override it by setting g:fuzzyy_window_layout
-# e.g. let g:fuzzyy_window_layout = { 'FuzzyFiles': { 'preview': 0 } }
+# e.g. let g:fuzzyy_window_layout = { 'files': { 'preview': 0 } }
 # default value:
 var windows = {
-    FuzzyFiles: {
+    files: {
         preview: 1,         # 1 means enable preview window, 0 means disable
         preview_ratio: 0.5, # 0.5 means preview window will take 50% of the layout
         width: 0.8,         # 0.8 means total width of the layout will take 80% of the screen
     },
-    FuzzyGrep: {
+    grep: {
         preview: 1,
         preview_ratio: 0.5,
         width: 0.8,
     },
-    FuzzyBuffers: {
+    buffers: {
         preview: 1,
         preview_ratio: 0.5,
         width: 0.8,
     },
-    FuzzyMru: {
+    mru: {
         preview: 1,
         preview_ratio: 0.5,
         width: 0.8,
     },
-    FuzzyHighlights: {
+    highlights: {
         preview: 1,
         preview_ratio: 0.7,
         width: 0.8,
@@ -83,18 +83,18 @@ import autoload '../autoload/fuzzy/highlights.vim'
 import autoload '../autoload/fuzzy/cmdhistory.vim'
 import autoload '../autoload/fuzzy/mru.vim'
 
-command! -nargs=? FuzzyGrep grep.Start(windows.FuzzyGrep, <f-args>)
-command! -nargs=0 FuzzyFiles files.Start(windows.FuzzyFiles)
+command! -nargs=? FuzzyGrep grep.Start(windows.grep, <f-args>)
+command! -nargs=0 FuzzyFiles files.Start(windows.files)
 command! -nargs=0 FuzzyHelp help.Start()
 command! -nargs=0 FuzzyColors colors.Start()
 command! -nargs=? FuzzyInBuffer inbuffer.Start(<f-args>)
 command! -nargs=0 FuzzyCommands commands.Start()
-command! -nargs=0 FuzzyBuffers buffers.Start(windows.FuzzyBuffers)
-command! -nargs=0 FuzzyHighlights highlights.Start(windows.FuzzyHighlights)
-command! -nargs=0 FuzzyGitFiles files.Start(windows.FuzzyFiles, 'git ls-files')
+command! -nargs=0 FuzzyBuffers buffers.Start(windows.buffers)
+command! -nargs=0 FuzzyHighlights highlights.Start(windows.highlights)
+command! -nargs=0 FuzzyGitFiles files.Start(windows.files, 'git ls-files')
 command! -nargs=0 FuzzyCmdHistory cmdhistory.Start()
-command! -nargs=0 FuzzyMru mru.Start(windows.FuzzyMru)
-command! -nargs=0 FuzzyMruCwd mru.Start(windows.FuzzyMru, getcwd())
+command! -nargs=0 FuzzyMru mru.Start(windows.mru)
+command! -nargs=0 FuzzyMruCwd mru.Start(windows.mru, getcwd())
 
 if g:fuzzyy_enable_mappings
     nnoremap <silent> <leader>fb :FuzzyBuffers<CR>
