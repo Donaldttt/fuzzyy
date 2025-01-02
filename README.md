@@ -218,43 +218,54 @@ let g:fuzzyy_window_layout = {
 \        'preview': 1,         " 1 means enable preview window, 0 means disable
 \        'preview_ratio': 0.5, " 0.5 means preview window will take 50% of the layout
 \        'width': 0.8,         " 0.8 means total width of the layout will take 80% of the screen
+\        'height:' 0.8,        # 0.8 means total height of the layout will take 80% of the screen
 \    },
 \    'grep': {
 \        'preview': 1,
 \        'preview_ratio': 0.5,
 \        'width': 0.8,
+\        'height:' 0.8,
 \    },
 \    'buffers': {
 \        'preview': 1,
 \        'preview_ratio': 0.5,
 \        'width': 0.8,
+\        'height:' 0.8,
 \    },
 \    'mru': {
 \        'preview': 1,
 \        'preview_ratio': 0.5,
 \        'width': 0.8,
+\        'height:' 0.8,
 \    },
 \    'highlights': {
 \        'preview': 1,
 \        'preview_ratio': 0.7,
 \        'width': 0.8,
+\        'height:' 0.8,
 \    },
 \    'cmdhistory': {
-\        'width': 0.6
+\        'width': 0.6,
+\        'height:' 0.8,
 \    },
 \    'colors': {
 \        'width': 0.25,
+\        'height:' 0.8,
 \        'xoffset': 0.7,
 \    },
 \    'commands': {
 \        'width': 0.4,
+\        'height:' 0.8,
 \    },
 \    help: {
 \        'preview': 1,
 \        'preview_ratio': 0.6 # reasonable default for a laptop to avoid wrapping
+\        'width': 0.8,
+\        'height:' 0.8,
 \    },
 \    'inbuffer': {
 \        'width': 0.7,
+\        'height:' 0.8,
 \    },
 \ }
 

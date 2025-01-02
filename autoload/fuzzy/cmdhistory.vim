@@ -18,7 +18,8 @@ export def Start(windows: dict<any>)
 
     var wins = selector.Start(reverse(cmds), {
         select_cb:  function('Select'),
-        width: windows.width
+        width: windows.width,
+        height: windows.height,
     })
     popup_setoptions(wins.menu, {'title': string(len(cmds))})
 enddef

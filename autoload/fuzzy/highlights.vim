@@ -81,8 +81,9 @@ export def Start(windows: dict<any>)
         preview_cb: function('Preview'),
         close_cb: function('Close'),
         preview: windows.preview,
-        width: windows.width,
         preview_ratio: windows.preview_ratio,
+        width: windows.width,
+        height: windows.height,
         key_callbacks: key_callbacks,
     })
 

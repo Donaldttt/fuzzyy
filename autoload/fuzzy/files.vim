@@ -197,8 +197,9 @@ export def Start(windows: dict<any>, ...args: list<any>)
         input_cb:  function('Input'),
         close_cb:  function('Close'),
         preview:  windows.preview,
-        width: windows.width,
         preview_ratio: windows.preview_ratio,
+        width: windows.width,
+        height: windows.height,
         enable_devicons: enable_devicons,
         key_callbacks: selector.split_edit_callbacks,
     })

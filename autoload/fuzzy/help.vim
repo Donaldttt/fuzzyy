@@ -128,6 +128,8 @@ export def Start(windows: dict<any>)
         input_cb:   function('Input'),
         preview: windows.preview,
         preview_ratio: windows.preview_ratio,
+        width: windows.width,
+        height: windows.height,
     })
     menu_wid = wids.menu
     # popup_setoptions(menu_wid, {'title': string(len(tag_table))})

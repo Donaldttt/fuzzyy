@@ -405,8 +405,9 @@ export def Start(windows: dict<any>, ...keyword: list<any>)
         input_cb:  function('Input'),
         preview_cb:  function('Preview'),
         preview:  windows.preview,
-        width: windows.width,
         preview_ratio: windows.preview_ratio,
+        width: windows.width,
+        height: windows.height,
         close_cb:  function('CloseCb'),
      })
     menu_wid = wids.menu

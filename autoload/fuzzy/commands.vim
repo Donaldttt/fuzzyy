@@ -17,5 +17,6 @@ export def Start(windows: dict<any>)
     var wids = selector.Start(li, {
         select_cb:  function('Select'),
         width: windows.width,
+        height: windows.height,
     })
 enddef

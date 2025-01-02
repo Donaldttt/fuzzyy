@@ -41,6 +41,7 @@ export def Start(windows: dict<any>)
         preview_cb: function('Preview'),
         close_cb: function('Close'),
         width: windows.width,
+        height: windows.height,
         xoffset: windows.xoffset,
     })
 enddef

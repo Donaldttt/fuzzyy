@@ -17,7 +17,8 @@ export def Start(windows: dict<any>, ...keyword: list<any>)
 
     var winds = selector.Start(lines, {
         select_cb:  function('Select'),
-        width:  windows.width
+        width:  windows.width,
+        height: windows.height,
     })
 
     if len(keyword) > 0
