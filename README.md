@@ -210,62 +210,49 @@ let g:fuzzyy_buffers_keymap = {
 
 " window layout configuraton
 " you can override it by setting g:fuzzyy_window_layout
-" e.g. You can disable preview window for FuzzyFiles command by doing this:
+" e.g. You can disable preview window for FuzzyFiles commands by doing this:
 " let g:fuzzyy_window_layout = { 'files': { 'preview': 0 } }
-" default value:
+" or you change the width of the preview window for FuzzyFiles by doing this:
+" let g:fuzzyy_window_layout = { 'files': { 'preview_ratio': 0.6 } }
+" Allowed options and their defaults are:
+"     'preview': 0,         " 1 means enable preview window, 0 means disable
+"     'preview_ratio': 0.5, " 0.5 means preview window will take 50% of the layout
+"     'width': 0.8,         " 0.8 means total width of the layout will take 80% of the screen
+"     'height': 0.8,        " 0.8 means total height of the layout will take 80% of the screen
+"     'xoffset': v:none     " x offset of the windows, the windows are centered by default
+" Default window layout configuration is:
 let g:fuzzyy_window_layout = {
 \    'files': {
-\        'preview': 1,         " 1 means enable preview window, 0 means disable
-\        'preview_ratio': 0.5, " 0.5 means preview window will take 50% of the layout
-\        'width': 0.8,         " 0.8 means total width of the layout will take 80% of the screen
-\        'height:' 0.8,        # 0.8 means total height of the layout will take 80% of the screen
+\        'preview': 1,
 \    },
 \    'grep': {
 \        'preview': 1,
-\        'preview_ratio': 0.5,
-\        'width': 0.8,
-\        'height:' 0.8,
 \    },
 \    'buffers': {
 \        'preview': 1,
-\        'preview_ratio': 0.5,
-\        'width': 0.8,
-\        'height:' 0.8,
 \    },
 \    'mru': {
 \        'preview': 1,
-\        'preview_ratio': 0.5,
-\        'width': 0.8,
-\        'height:' 0.8,
 \    },
 \    'highlights': {
 \        'preview': 1,
-\        'preview_ratio': 0.7,
-\        'width': 0.8,
-\        'height:' 0.8,
 \    },
 \    'cmdhistory': {
 \        'width': 0.6,
-\        'height:' 0.8,
 \    },
 \    'colors': {
 \        'width': 0.25,
-\        'height:' 0.8,
 \        'xoffset': 0.7,
 \    },
 \    'commands': {
 \        'width': 0.4,
-\        'height:' 0.8,
 \    },
 \    help: {
 \        'preview': 1,
 \        'preview_ratio': 0.6 # reasonable default for a laptop to avoid wrapping
-\        'width': 0.8,
-\        'height:' 0.8,
 \    },
 \    'inbuffer': {
 \        'width': 0.7,
-\        'height:' 0.8,
 \    },
 \ }
 

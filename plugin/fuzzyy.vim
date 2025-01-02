@@ -39,50 +39,33 @@ var windows = {
     },
     grep: {
         preview: 1,
-        preview_ratio: 0.5,
-        width: 0.8,
-        height: 0.8,
     },
     buffers: {
         preview: 1,
-        preview_ratio: 0.5,
-        width: 0.8,
-        height: 0.8,
     },
     mru: {
         preview: 1,
-        preview_ratio: 0.5,
-        width: 0.8,
-        height: 0.8,
     },
     highlights: {
         preview: 1,
         preview_ratio: 0.7,
-        width: 0.8,
-        height: 0.8,
     },
     cmdhistory: {
         width: 0.6,
-        height: 0.8,
     },
     colors: {
         width: 0.25,
-        height: 0.8,
         xoffset: 0.7,
     },
     commands: {
         width: 0.4,
-        height: 0.8,
     },
     help: {
         preview: 1,
         preview_ratio: 0.6, # reasonable default for a laptop to avoid wrapping
-        width: 0.8,
-        height: 0.8,
     },
     inbuffer: {
         width: 0.7,
-        height: 0.8,
     },
 }
 

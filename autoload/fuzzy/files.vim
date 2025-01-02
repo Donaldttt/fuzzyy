@@ -183,7 +183,7 @@ def Close(wid: number, opts: dict<any>)
     timer_stop(files_update_tid)
 enddef
 
-export def Start(windows: dict<any>, ...args: list<any>)
+export def Start(windows: dict<any> = {}, ...args: list<any>)
     last_result_len = -1
     cur_result = []
     cur_pattern = ''
@@ -191,18 +191,14 @@ export def Start(windows: dict<any>, ...args: list<any>)
     cwd = getcwd()
     cwdlen = len(cwd)
     in_loading = 1
-    var wids = selector.Start([], {
+    var wids = selector.Start([], extend(windows, {
         select_cb: function('Select'),
         preview_cb: function('Preview'),
         input_cb: function('Input'),
         close_cb: function('Close'),
-        preview: windows.preview,
-        preview_ratio: windows.preview_ratio,
-        width: windows.width,
-        height: windows.height,
         enable_devicons: enable_devicons,
         key_callbacks: selector.split_edit_callbacks,
-    })
+    }))
     menu_wid = wids.menu
     if menu_wid == -1
         return

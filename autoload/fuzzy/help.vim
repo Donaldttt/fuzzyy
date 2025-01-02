@@ -116,23 +116,18 @@ def CloseCb(wid: number, args: dict<any>)
     timer_stop(update_tid)
 enddef
 
-export def Start(windows: dict<any>)
+export def Start(windows: dict<any> = {})
     tag_files = []
     file_lines = []
     cur_pattern = ''
     tag_table = Tags()
     last_parttern = ''
-    var wids = selector.Start(keys(tag_table), {
+    var wids = selector.Start(keys(tag_table), extend(windows, {
         preview_cb: function('Preview'),
         close_cb: function('CloseCb'),
         input_cb: function('Input'),
-        preview: windows.preview,
-        preview_ratio: windows.preview_ratio,
-        width: windows.width,
-        height: windows.height,
-    })
+    }))
     menu_wid = wids.menu
     # popup_setoptions(menu_wid, {'title': string(len(tag_table))})
     update_tid = timer_start(20, function('HelpsUpdateMenu'), {'repeat': -1})
 enddef
-

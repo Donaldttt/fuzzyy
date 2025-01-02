@@ -80,7 +80,7 @@ var key_callbacks = {
     "\<c-k>": function('ToggleScope'),
 }
 
-export def Start(windows: dict<any>, cwd: string = '')
+export def Start(windows: dict<any> = {}, cwd: string = '')
     mru_cwd = empty(cwd) ? getcwd() : cwd
     mru_cwd_only = !empty(cwd)
     # sorted files from buffers opened during this session, including unlisted
@@ -123,16 +123,12 @@ export def Start(windows: dict<any>, cwd: string = '')
         return acc
     }, [])
 
-    var wids = selector.Start(mru_list, {
+    var wids = selector.Start(mru_list, extend(windows, {
         close_cb: function('Close'),
         preview_cb: function('Preview'),
-        preview: windows.preview,
-        preview_ratio: windows.preview_ratio,
-        width: windows.width,
-        height: windows.height,
         enable_devicons: enable_devicons,
         key_callbacks: extend(key_callbacks, selector.split_edit_callbacks),
-    })
+    }))
     menu_wid = wids.menu
     popup_setoptions(menu_wid, {'title': len(mru_list)})
 enddef

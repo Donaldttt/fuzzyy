@@ -5,8 +5,8 @@ import autoload 'utils/devicons.vim'
 
 var buf_dict: dict<any>
 var key_callbacks: dict<any>
-var _windows: dict<any>
 var devicon_char_width = devicons.GetDeviconCharWidth()
+var _window_width: float
 
 # Options
 var enable_devicons = exists('g:fuzzyy_devicons') && exists('g:WebDevIconsGetFileTypeSymbol') ?
@@ -85,7 +85,7 @@ def GetBufList(): list<string>
             return acc
         endif
         var file = fnamemodify(buf.name, ":~:.")
-        if len(file) > _windows.width / 2 * &columns
+        if len(file) > _window_width / 2 * &columns
             file = pathshorten(file)
         endif
         acc[file] = [buf.name, buf.bufnr, buf.lnum, buf.lastused]
@@ -127,17 +127,15 @@ enddef
 key_callbacks[keymaps.delete_buffer] = function("DeleteSelectedBuffer")
 key_callbacks[keymaps.close_buffer] = function("CloseSelectedBuffer")
 
-export def Start(windows: dict<any>)
-    _windows = windows
+export def Start(windows: dict<any> = {})
+    # FIXME: allows the file path to be shortened to fit in the results window
+    # without wrapping. Other file selectors do not do this, maybe remove it.
+    _window_width = get(windows, 'width', 0.8)
 
-    var wids = selector.Start(GetBufList(), {
+    var wids = selector.Start(GetBufList(), extend(windows, {
         preview_cb: function('Preview'),
         close_cb: function('Close'),
-        preview: _windows.preview,
-        preview_ratio: _windows.preview_ratio,
-        width: _windows.width,
-        height: _windows.height,
         enable_devicons: enable_devicons,
         key_callbacks: extend(selector.split_edit_callbacks, key_callbacks),
-    })
+    }))
 enddef

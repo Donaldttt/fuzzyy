@@ -9,17 +9,15 @@ def Select(wid: number, result: list<any>)
     call feedkeys("\<CR>", 'n')
 enddef
 
-export def Start(windows: dict<any>)
+export def Start(windows: dict<any> = {})
     var cmds = split(execute("history"), '\n')[1 : ]
 
     # remove index of command history
     cmds = reduce(cmds,
         (a, v) => add(a, substitute(v, '\m^.*\d\+\s\+', '', '')), [])
 
-    var wins = selector.Start(reverse(cmds), {
+    var wins = selector.Start(reverse(cmds), extend(windows, {
         select_cb: function('Select'),
-        width: windows.width,
-        height: windows.height,
-    })
+    }))
     popup_setoptions(wins.menu, {'title': string(len(cmds))})
 enddef
