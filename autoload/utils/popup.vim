@@ -353,7 +353,7 @@ def NewPopup(args: dict<any>): list<number>
     var final_height = min([max([1, height >= 1 ? height : float2nr(lines * height)]), lines])
 
     var line = yoffset >= 1 ? yoffset : float2nr(yoffset * lines)
-    var col = xoffset >=  1 ? xoffset : float2nr(xoffset * columns)
+    var col = xoffset >= 1 ? xoffset : float2nr(xoffset * columns)
 
     # Managing the differences
     line = min([max([0, line]), lines - final_height])
@@ -459,11 +459,11 @@ def PopupPrompt(args: dict<any>): number
      height: 1,
      filter: function('PromptFilter')
      }
-    opts            =  extend(opts, args)
-    var [wid, bufnr]    =  NewPopup(opts)
-    var prompt_char     =  has_key(args, 'prompt') ? args.prompt : '> '
-    var prompt_char_len =  strcharlen(prompt_char)
-    var prompt_opt      =  {
+    opts            = extend(opts, args)
+    var [wid, bufnr]    = NewPopup(opts)
+    var prompt_char     = has_key(args, 'prompt') ? args.prompt : '> '
+    var prompt_char_len = strcharlen(prompt_char)
+    var prompt_opt      = {
      line: [],
      promptchar: prompt_char,
      displayed_line: prompt_char .. " ",
@@ -556,14 +556,14 @@ export def PopupSelection(opts: dict<any>): dict<any>
 
     var xoffset = width < 1 ? (1 - width) / 2 : (&columns  - width) / 2
     var yoffset = height < 1 ? (1 - height) / 2 : (&lines - height) / 2
-    xoffset =  has_key(opts, 'xoffset') ? opts.xoffset : xoffset
-    yoffset =  has_key(opts, 'yoffset') ? opts.yoffset : yoffset
+    xoffset = has_key(opts, 'xoffset') ? opts.xoffset : xoffset
+    yoffset = has_key(opts, 'yoffset') ? opts.yoffset : yoffset
 
     # convert all pos to number
-    yoffset       =  yoffset < 1 ? float2nr(yoffset * &lines) : float2nr(yoffset)
-    xoffset       =  xoffset < 1 ? float2nr(xoffset * &columns) : float2nr(xoffset)
-    height        =  height < 1 ? float2nr(height * &lines) : float2nr(height)
-    width         =  width < 1 ? float2nr(width * &columns) : float2nr(width)
+    yoffset       = yoffset < 1 ? float2nr(yoffset * &lines) : float2nr(yoffset)
+    xoffset       = xoffset < 1 ? float2nr(xoffset * &columns) : float2nr(xoffset)
+    height        = height < 1 ? float2nr(height * &lines) : float2nr(height)
+    width         = width < 1 ? float2nr(width * &columns) : float2nr(width)
 
     var preview_width = 0
     var menu_width    = 0
@@ -576,8 +576,8 @@ export def PopupSelection(opts: dict<any>): dict<any>
 
     var dropdown = has_key(opts, 'dropdown') && opts.dropdown
 
-    var prompt_height =  3
-    var menu_height   =  height - prompt_height
+    var prompt_height = 3
+    var menu_height   = height - prompt_height
 
     var prompt_yoffset: number
     var menu_yoffset: number
@@ -625,20 +625,20 @@ export def PopupSelection(opts: dict<any>): dict<any>
     wins.prompt = PopupPrompt(prompt_opts)
 
     if has_preview
-        var preview_xoffset =  popup_wins[wins.menu].col + popup_wins[wins.menu].width
-        var menu_row        =  popup_wins[wins.menu].line
-        var prompt_row      =  popup_wins[wins.prompt].line
-        prompt_height   =  popup_wins[wins.prompt].height
-        # var preview_height  =  prompt_row - menu_row + prompt_height
-        var preview_height  =   menu_height + prompt_height + 2
-        var preview_opts    =  {
+        var preview_xoffset = popup_wins[wins.menu].col + popup_wins[wins.menu].width
+        var menu_row        = popup_wins[wins.menu].line
+        var prompt_row      = popup_wins[wins.prompt].line
+        prompt_height   = popup_wins[wins.prompt].height
+        # var preview_height  = prompt_row - menu_row + prompt_height
+        var preview_height  =  menu_height + prompt_height + 2
+        var preview_opts    = {
             width: preview_width,
             height: preview_height,
             yoffset: yoffset,
             xoffset: preview_xoffset + 2,
             zindex: 1100,
         }
-        wins.preview      =  PopupPreview(preview_opts)
+        wins.preview      = PopupPreview(preview_opts)
         wins.preview = wins.preview
         popup_wins[wins.preview].partids = wins
     endif
