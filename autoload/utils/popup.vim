@@ -538,26 +538,26 @@ enddef
 #        prompt: wins.prompt,
 #        preview: wins.preview,
 #    }
-export def PopupSelection(user_opts: dict<any>): dict<any>
+export def PopupSelection(opts: dict<any>): dict<any>
     if active
         return { 'menu': -1, 'prompt': -1, 'preview': -1 }
     endif
     active = true
-    key_callbacks = has_key(user_opts, 'key_callbacks') ? user_opts.key_callbacks : {}
-    var has_preview = has_key(user_opts, 'preview') && user_opts.preview
+    key_callbacks = has_key(opts, 'key_callbacks') ? opts.key_callbacks : {}
+    var has_preview = has_key(opts, 'preview') && opts.preview
 
     var width: any   = 0.8
     var height: any  = 0.8
-    width   = has_key(user_opts, 'width') ? user_opts.width : width
-    height  = has_key(user_opts, 'height') ? user_opts.height : height
+    width   = has_key(opts, 'width') ? opts.width : width
+    height  = has_key(opts, 'height') ? opts.height : height
 
     var preview_ratio = 0.5
-    preview_ratio = has_key(user_opts, 'preview_ratio') ? user_opts.preview_ratio : preview_ratio
+    preview_ratio = has_key(opts, 'preview_ratio') ? opts.preview_ratio : preview_ratio
 
     var xoffset = width < 1 ? (1 - width) / 2 : (&columns  - width) / 2
     var yoffset = height < 1 ? (1 - height) / 2 : (&lines - height) / 2
-    xoffset =  has_key(user_opts, 'xoffset') ? user_opts.xoffset : xoffset
-    yoffset =  has_key(user_opts, 'yoffset') ? user_opts.yoffset : yoffset
+    xoffset =  has_key(opts, 'xoffset') ? opts.xoffset : xoffset
+    yoffset =  has_key(opts, 'yoffset') ? opts.yoffset : yoffset
 
     # convert all pos to number
     yoffset       =  yoffset < 1 ? float2nr(yoffset * &lines) : float2nr(yoffset)
@@ -574,7 +574,7 @@ export def PopupSelection(user_opts: dict<any>): dict<any>
         menu_width    = width
     endif
 
-    var dropdown = has_key(user_opts, 'dropdown') && user_opts.dropdown
+    var dropdown = has_key(opts, 'dropdown') && opts.dropdown
 
     var prompt_height =  3
     var menu_height   =  height - prompt_height
@@ -592,12 +592,12 @@ export def PopupSelection(user_opts: dict<any>): dict<any>
         prompt_yoffset = yoffset + menu_height + 2
         reverse_menu = 1
     endif
-    reverse_menu = has_key(user_opts, 'reverse_menu') ? user_opts.reverse_menu : reverse_menu
+    reverse_menu = has_key(opts, 'reverse_menu') ? opts.reverse_menu : reverse_menu
 
     var menu_opts = {
-        callback:  has_key(user_opts, 'select_cb') ? user_opts.select_cb : v:null,
-        close_cb:  has_key(user_opts, 'close_cb') ? user_opts.close_cb : v:null,
-        scrollbar:  has_key(user_opts, 'scrollbar') ? user_opts.scrollbar : 0,
+        callback:  has_key(opts, 'select_cb') ? opts.select_cb : v:null,
+        close_cb:  has_key(opts, 'close_cb') ? opts.close_cb : v:null,
+        scrollbar:  has_key(opts, 'scrollbar') ? opts.scrollbar : 0,
         reverse_menu: reverse_menu,
         yoffset:  menu_yoffset,
         xoffset:  xoffset,
@@ -607,8 +607,8 @@ export def PopupSelection(user_opts: dict<any>): dict<any>
     }
 
     for key in ['title', 'move_cb']
-        if has_key(user_opts, key)
-            menu_opts[key] = user_opts[key]
+        if has_key(opts, key)
+            menu_opts[key] = opts[key]
         endif
     endfor
 
@@ -618,8 +618,8 @@ export def PopupSelection(user_opts: dict<any>): dict<any>
         yoffset:  prompt_yoffset,
         xoffset:  xoffset,
         width:  menu_width,
-        input_cb:  has_key(user_opts, 'input_cb') ? user_opts.input_cb : v:null,
-        prompt: has_key(user_opts, 'prompt') ? user_opts.prompt : '> ',
+        input_cb:  has_key(opts, 'input_cb') ? opts.input_cb : v:null,
+        prompt: has_key(opts, 'prompt') ? opts.prompt : '> ',
         zindex:  1010,
     }
     wins.prompt = PopupPrompt(prompt_opts)
@@ -643,7 +643,7 @@ export def PopupSelection(user_opts: dict<any>): dict<any>
         popup_wins[wins.preview].partids = wins
     endif
 
-    if has_key(user_opts, 'infowin') && user_opts.infowin
+    if has_key(opts, 'infowin') && opts.infowin
         var info_bufnr: number
         [wins.info, info_bufnr] = NewPopup({
             width:  menu_width - 1,
