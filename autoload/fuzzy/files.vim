@@ -192,11 +192,11 @@ export def Start(windows: dict<any>, ...args: list<any>)
     cwdlen = len(cwd)
     in_loading = 1
     var wids = selector.Start([], {
-        select_cb:  function('Select'),
-        preview_cb:  function('Preview'),
-        input_cb:  function('Input'),
-        close_cb:  function('Close'),
-        preview:  windows.preview,
+        select_cb: function('Select'),
+        preview_cb: function('Preview'),
+        input_cb: function('Input'),
+        close_cb: function('Close'),
+        preview: windows.preview,
         preview_ratio: windows.preview_ratio,
         width: windows.width,
         height: windows.height,

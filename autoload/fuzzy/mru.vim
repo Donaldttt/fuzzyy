@@ -124,9 +124,9 @@ export def Start(windows: dict<any>, cwd: string = '')
     }, [])
 
     var wids = selector.Start(mru_list, {
-        close_cb:  function('Close'),
-        preview_cb:  function('Preview'),
-        preview:  windows.preview,
+        close_cb: function('Close'),
+        preview_cb: function('Preview'),
+        preview: windows.preview,
         preview_ratio: windows.preview_ratio,
         width: windows.width,
         height: windows.height,

@@ -16,8 +16,8 @@ export def Start(windows: dict<any>, ...keyword: list<any>)
        (a, v) => add(a, printf('%' .. max_line_len .. 'd:%s', len(a) + 1,  v)), [])
 
     var winds = selector.Start(lines, {
-        select_cb:  function('Select'),
-        width:  windows.width,
+        select_cb: function('Select'),
+        width: windows.width,
         height: windows.height,
     })
 

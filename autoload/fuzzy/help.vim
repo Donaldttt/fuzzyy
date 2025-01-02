@@ -124,8 +124,8 @@ export def Start(windows: dict<any>)
     last_parttern = ''
     var wids = selector.Start(keys(tag_table), {
         preview_cb: function('Preview'),
-        close_cb:   function('CloseCb'),
-        input_cb:   function('Input'),
+        close_cb: function('CloseCb'),
+        input_cb: function('Input'),
         preview: windows.preview,
         preview_ratio: windows.preview_ratio,
         width: windows.width,

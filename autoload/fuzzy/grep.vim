@@ -401,14 +401,14 @@ export def Start(windows: dict<any>, ...keyword: list<any>)
 
     var wids = selector.Start([],
      {
-        select_cb:  function('Select'),
-        input_cb:  function('Input'),
-        preview_cb:  function('Preview'),
-        preview:  windows.preview,
+        select_cb: function('Select'),
+        input_cb: function('Input'),
+        preview_cb: function('Preview'),
+        preview: windows.preview,
         preview_ratio: windows.preview_ratio,
         width: windows.width,
         height: windows.height,
-        close_cb:  function('CloseCb'),
+        close_cb: function('CloseCb'),
      })
     menu_wid = wids.menu
     if menu_wid == -1

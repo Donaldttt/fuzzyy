@@ -17,7 +17,7 @@ export def Start(windows: dict<any>)
         (a, v) => add(a, substitute(v, '\m^.*\d\+\s\+', '', '')), [])
 
     var wins = selector.Start(reverse(cmds), {
-        select_cb:  function('Select'),
+        select_cb: function('Select'),
         width: windows.width,
         height: windows.height,
     })

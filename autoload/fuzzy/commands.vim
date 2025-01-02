@@ -15,7 +15,7 @@ enddef
 export def Start(windows: dict<any>)
     var li: list<string> = getcompletion('', 'command')
     var wids = selector.Start(li, {
-        select_cb:  function('Select'),
+        select_cb: function('Select'),
         width: windows.width,
         height: windows.height,
     })

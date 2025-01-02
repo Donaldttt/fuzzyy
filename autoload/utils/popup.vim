@@ -264,23 +264,23 @@ enddef
 
 def CreatePopup(args: dict<any>): number
     var opts = {
-       line:  args.line,
-       col:  args.col,
-       minwidth:  args.width,
-       maxwidth:  args.width,
-       minheight:  args.height,
-       maxheight:  args.height,
-       scrollbar:  v:false,
-       padding:  [0, 0, 0, 0],
-       zindex:  1000,
-       wrap:  0,
+       line: args.line,
+       col: args.col,
+       minwidth: args.width,
+       maxwidth: args.width,
+       minheight: args.height,
+       maxheight: args.height,
+       scrollbar: v:false,
+       padding: [0, 0, 0, 0],
+       zindex: 1000,
+       wrap: 0,
        buftype: 'popup',
        cursorline: 0,
-       callback:  function('GeneralPopupCallback'),
-       border:  [1],
-       borderchars:  ['─', '│', '─', '│', '╭', '╮', '╯', '╰'],
-       borderhighlight:  ['fuzzyyBorder'],
-       highlight:  'fuzzyyNormal', }
+       callback: function('GeneralPopupCallback'),
+       border: [1],
+       borderchars: ['─', '│', '─', '│', '╭', '╮', '╯', '╰'],
+       borderhighlight: ['fuzzyyBorder'],
+       highlight: 'fuzzyyNormal', }
 
     if has_key(args, 'enable_border') && !args.enable_border
         remove(opts, 'border')
@@ -311,20 +311,20 @@ def CreatePopup(args: dict<any>): number
        setwinvar(wid, '&cursorlineopt', 'line')
     endif
     popup_wins[wid] = {
-         close_funcs:  [],
-         highlights:  {},
-         noscrollbar_width:  noscrollbar_width,
-         validrow:  0,
-         move_cb:  v:null,
-         line:  args.line,
-         col:  args.col,
-         width:  args.width,
-         height:  args.height,
-         reverse_menu:  0,
-         cursor_item:  v:null,
-         wid:  wid,
-         update_delay_timer:  -1,
-         prompt_delay_timer:  -1,
+         close_funcs: [],
+         highlights: {},
+         noscrollbar_width: noscrollbar_width,
+         validrow: 0,
+         move_cb: v:null,
+         line: args.line,
+         col: args.col,
+         width: args.width,
+         height: args.height,
+         reverse_menu: 0,
+         cursor_item: v:null,
+         wid: wid,
+         update_delay_timer: -1,
+         prompt_delay_timer: -1,
          }
 
     for key in ['reverse_menu', 'move_cb', 'close_cb']
@@ -360,10 +360,10 @@ def NewPopup(args: dict<any>): list<number>
     col = min([max([0, col]), columns - final_width])
 
     var opts = extend(args, {
-     line:  line,
-     col:  col,
-     width:  final_width,
-     height:  final_height
+     line: line,
+     col: col,
+     width: final_width,
+     height: final_height
      })
 
     var wid = CreatePopup(opts)
@@ -455,27 +455,27 @@ enddef
 
 def PopupPrompt(args: dict<any>): number
     var opts = {
-     width:  0.4,
-     height:  1,
-     filter:  function('PromptFilter')
+     width: 0.4,
+     height: 1,
+     filter: function('PromptFilter')
      }
     opts            =  extend(opts, args)
     var [wid, bufnr]    =  NewPopup(opts)
     var prompt_char     =  has_key(args, 'prompt') ? args.prompt : '> '
     var prompt_char_len =  strcharlen(prompt_char)
     var prompt_opt      =  {
-     line:  [],
-     promptchar:  prompt_char,
-     displayed_line:  prompt_char .. " ",
+     line: [],
+     promptchar: prompt_char,
+     displayed_line: prompt_char .. " ",
      }
 
     var cursor_args = {
-     min_pos:  0,
-     max_pos:  0,
-     promptchar_len:  prompt_char_len,
-     cur_pos:  0,
-     highlight:  'fuzzyyCursor',
-     mid:  -1,
+     min_pos: 0,
+     max_pos: 0,
+     promptchar_len: prompt_char_len,
+     cur_pos: 0,
+     highlight: 'fuzzyyCursor',
+     mid: -1,
      }
 
     popup_wins[wid].cursor_args = cursor_args
@@ -595,15 +595,15 @@ export def PopupSelection(opts: dict<any>): dict<any>
     reverse_menu = has_key(opts, 'reverse_menu') ? opts.reverse_menu : reverse_menu
 
     var menu_opts = {
-        callback:  has_key(opts, 'select_cb') ? opts.select_cb : v:null,
-        close_cb:  has_key(opts, 'close_cb') ? opts.close_cb : v:null,
-        scrollbar:  has_key(opts, 'scrollbar') ? opts.scrollbar : 0,
+        callback: has_key(opts, 'select_cb') ? opts.select_cb : v:null,
+        close_cb: has_key(opts, 'close_cb') ? opts.close_cb : v:null,
+        scrollbar: has_key(opts, 'scrollbar') ? opts.scrollbar : 0,
         reverse_menu: reverse_menu,
-        yoffset:  menu_yoffset,
-        xoffset:  xoffset,
-        width:  menu_width,
-        height:  menu_height,
-        zindex:  1200,
+        yoffset: menu_yoffset,
+        xoffset: xoffset,
+        width: menu_width,
+        height: menu_height,
+        zindex: 1200,
     }
 
     for key in ['title', 'move_cb']
@@ -615,12 +615,12 @@ export def PopupSelection(opts: dict<any>): dict<any>
     wins.menu = PopupMenu(menu_opts)
 
     var prompt_opts = {
-        yoffset:  prompt_yoffset,
-        xoffset:  xoffset,
-        width:  menu_width,
-        input_cb:  has_key(opts, 'input_cb') ? opts.input_cb : v:null,
+        yoffset: prompt_yoffset,
+        xoffset: xoffset,
+        width: menu_width,
+        input_cb: has_key(opts, 'input_cb') ? opts.input_cb : v:null,
         prompt: has_key(opts, 'prompt') ? opts.prompt : '> ',
-        zindex:  1010,
+        zindex: 1010,
     }
     wins.prompt = PopupPrompt(prompt_opts)
 
@@ -632,11 +632,11 @@ export def PopupSelection(opts: dict<any>): dict<any>
         # var preview_height  =  prompt_row - menu_row + prompt_height
         var preview_height  =   menu_height + prompt_height + 2
         var preview_opts    =  {
-            width:  preview_width,
-            height:  preview_height,
-            yoffset:  yoffset,
-            xoffset:  preview_xoffset + 2,
-            zindex:  1100,
+            width: preview_width,
+            height: preview_height,
+            yoffset: yoffset,
+            xoffset: preview_xoffset + 2,
+            zindex: 1100,
         }
         wins.preview      =  PopupPreview(preview_opts)
         wins.preview = wins.preview
@@ -646,13 +646,13 @@ export def PopupSelection(opts: dict<any>): dict<any>
     if has_key(opts, 'infowin') && opts.infowin
         var info_bufnr: number
         [wins.info, info_bufnr] = NewPopup({
-            width:  menu_width - 1,
-            height:  1,
-            yoffset:  yoffset + 1,
-            xoffset:  xoffset + 1,
-            padding:  [0, 0, 0, 1],
-            zindex:  2000,
-            enable_border:  0,
+            width: menu_width - 1,
+            height: 1,
+            yoffset: yoffset + 1,
+            xoffset: xoffset + 1,
+            padding: [0, 0, 0, 1],
+            zindex: 2000,
+            enable_border: 0,
         })
         wins.info = wins.info
         popup_wins[wins.info].partids = wins
