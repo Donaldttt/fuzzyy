@@ -9,17 +9,17 @@ def Select(wid: number, result: list<any>)
     norm! zz
 enddef
 
-export def Start(windows: dict<any> = {}, ...keyword: list<any>)
+export def Start(opts: dict<any> = {})
     var raw_lines = getline(1, '$')
     var max_line_len = len(string(len(raw_lines)))
     var lines = reduce(raw_lines,
        (a, v) => add(a, printf('%' .. max_line_len .. 'd:%s', len(a) + 1,  v)), [])
 
-    var winds = selector.Start(lines, extend(windows, {
+    var winds = selector.Start(lines, extend(opts, {
         select_cb: function('Select'),
     }))
 
-    if len(keyword) > 0
-        popup.SetPrompt(keyword[0])
+    if len(get(opts, 'search', '')) > 0
+        popup.SetPrompt(opts.search)
     endif
 enddef

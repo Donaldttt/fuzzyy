@@ -94,18 +94,18 @@ import autoload '../autoload/fuzzyy/highlights.vim'
 import autoload '../autoload/fuzzyy/cmdhistory.vim'
 import autoload '../autoload/fuzzyy/mru.vim'
 
-command! -nargs=? FuzzyGrep grep.Start(windows.grep, <f-args>)
+command! -nargs=? FuzzyGrep grep.Start(extend(windows.grep, { 'search': <q-args> }))
 command! -nargs=0 FuzzyFiles files.Start(windows.files)
 command! -nargs=0 FuzzyHelp help.Start(windows.help)
 command! -nargs=0 FuzzyColors colors.Start(windows.colors)
-command! -nargs=? FuzzyInBuffer inbuffer.Start(windows.inbuffer, <f-args>)
+command! -nargs=? FuzzyInBuffer inbuffer.Start(extend(windows.inbuffer, { 'search': <q-args> }))
 command! -nargs=0 FuzzyCommands commands.Start(windows.commands)
 command! -nargs=0 FuzzyBuffers buffers.Start(windows.buffers)
 command! -nargs=0 FuzzyHighlights highlights.Start(windows.highlights)
-command! -nargs=0 FuzzyGitFiles files.Start(windows.files, 'git ls-files')
+command! -nargs=0 FuzzyGitFiles files.Start(extend(windows.files, { 'command': 'git ls-files' }))
 command! -nargs=0 FuzzyCmdHistory cmdhistory.Start(windows.cmdhistory)
 command! -nargs=0 FuzzyMru mru.Start(windows.mru)
-command! -nargs=0 FuzzyMruCwd mru.Start(windows.mru, getcwd())
+command! -nargs=0 FuzzyMruCwd mru.Start(extend(windows.mru, { 'cwd': getcwd() }))
 
 if g:fuzzyy_enable_mappings
     nnoremap <silent> <leader>fb :FuzzyBuffers<CR>

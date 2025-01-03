@@ -384,7 +384,7 @@ def Profiling()
     profile func Reducer
 enddef
 
-export def Start(windows: dict<any> = {}, ...keyword: list<any>)
+export def Start(opts: dict<any> = {})
     Build()
     cwd = getcwd()
     cwdlen = len(cwd)
@@ -399,7 +399,7 @@ export def Start(windows: dict<any> = {}, ...keyword: list<any>)
     last_result = []
     cur_dict = {}
 
-    var wids = selector.Start([], extend(windows, {
+    var wids = selector.Start([], extend(opts, {
         select_cb: function('Select'),
         input_cb: function('Input'),
         preview_cb: function('Preview'),
@@ -412,8 +412,8 @@ export def Start(windows: dict<any> = {}, ...keyword: list<any>)
     preview_wid = wids.preview
     setwinvar(menu_wid, '&wrap', 0)
     ag_update_tid = timer_start(100, function('UpdateMenu'), {'repeat': -1})
-    if len(keyword) > 0
-        popup.SetPrompt(keyword[0])
+    if len(get(opts, 'search', '')) > 0
+        popup.SetPrompt(opts.search)
     endif
     # Profiling()
 enddef

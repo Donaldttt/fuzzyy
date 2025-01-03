@@ -59,7 +59,7 @@ def AddHighlight(preview_wid: number)
     }, {repeat: -1})
 enddef
 
-export def Start(windows: dict<any> = {})
+export def Start(opts: dict<any> = {})
     var highlights_raw = substitute(execute('hi'), "\n", " ", "g") .. ' fuzzyy_dummyy xxx'
     var highlights: list<any> = []
     def Helper(s: any): number
@@ -77,7 +77,7 @@ export def Start(windows: dict<any> = {})
         hl_meta[name] = [idx + 1, xxxidx]
     endfor
 
-    var wids = selector.Start(keys(hl_meta), extend(windows, {
+    var wids = selector.Start(keys(hl_meta), extend(opts, {
         preview_cb: function('Preview'),
         close_cb: function('Close'),
         key_callbacks: key_callbacks,

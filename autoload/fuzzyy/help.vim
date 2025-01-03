@@ -116,13 +116,13 @@ def CloseCb(wid: number, args: dict<any>)
     timer_stop(update_tid)
 enddef
 
-export def Start(windows: dict<any> = {})
+export def Start(opts: dict<any> = {})
     tag_files = []
     file_lines = []
     cur_pattern = ''
     tag_table = Tags()
     last_parttern = ''
-    var wids = selector.Start(keys(tag_table), extend(windows, {
+    var wids = selector.Start(keys(tag_table), extend(opts, {
         preview_cb: function('Preview'),
         close_cb: function('CloseCb'),
         input_cb: function('Input'),

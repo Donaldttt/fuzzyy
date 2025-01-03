@@ -127,12 +127,12 @@ enddef
 key_callbacks[keymaps.delete_buffer] = function("DeleteSelectedBuffer")
 key_callbacks[keymaps.close_buffer] = function("CloseSelectedBuffer")
 
-export def Start(windows: dict<any> = {})
+export def Start(opts: dict<any> = {})
     # FIXME: allows the file path to be shortened to fit in the results window
     # without wrapping. Other file selectors do not do this, maybe remove it.
-    _window_width = get(windows, 'width', 0.8)
+    _window_width = get(opts, 'width', 0.8)
 
-    var wids = selector.Start(GetBufList(), extend(windows, {
+    var wids = selector.Start(GetBufList(), extend(opts, {
         preview_cb: function('Preview'),
         close_cb: function('Close'),
         enable_devicons: enable_devicons,

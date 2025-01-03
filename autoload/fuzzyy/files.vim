@@ -183,7 +183,7 @@ def Close(wid: number, opts: dict<any>)
     timer_stop(files_update_tid)
 enddef
 
-export def Start(windows: dict<any> = {}, ...args: list<any>)
+export def Start(opts: dict<any> = {})
     last_result_len = -1
     cur_result = []
     cur_pattern = ''
@@ -191,7 +191,7 @@ export def Start(windows: dict<any> = {}, ...args: list<any>)
     cwd = getcwd()
     cwdlen = len(cwd)
     in_loading = 1
-    var wids = selector.Start([], extend(windows, {
+    var wids = selector.Start([], extend(opts, {
         select_cb: function('Select'),
         preview_cb: function('Preview'),
         input_cb: function('Input'),
@@ -204,8 +204,8 @@ export def Start(windows: dict<any> = {}, ...args: list<any>)
         return
     endif
     var cmd: string
-    if len(args) > 0 && type(args[0]) == 1
-        cmd = args[0]
+    if len(get(opts, 'command', '')) > 0
+        cmd = opts.command
     else
         cmd = cmdbuilder.Build()
     endif

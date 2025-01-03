@@ -12,9 +12,9 @@ def Select(wid: number, result: list<any>)
     endif
 enddef
 
-export def Start(windows: dict<any> = {})
+export def Start(opts: dict<any> = {})
     var li: list<string> = getcompletion('', 'command')
-    var wids = selector.Start(li, extend(windows, {
+    var wids = selector.Start(li, extend(opts, {
         select_cb: function('Select'),
     }))
 enddef

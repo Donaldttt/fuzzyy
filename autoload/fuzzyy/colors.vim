@@ -32,12 +32,12 @@ def Close(wid: number, result: dict<any>)
     endif
 enddef
 
-export def Start(windows: dict<any> = {})
+export def Start(opts: dict<any> = {})
     old_color = execute('colo')[1 :]
     old_bg = &bg
     var colors = GetColors()
 
-    var wids = selector.Start(colors, extend(windows, {
+    var wids = selector.Start(colors, extend(opts, {
         preview_cb: function('Preview'),
         close_cb: function('Close'),
     }))

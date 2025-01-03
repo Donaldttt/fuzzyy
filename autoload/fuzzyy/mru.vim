@@ -80,9 +80,9 @@ var key_callbacks = {
     "\<c-k>": function('ToggleScope'),
 }
 
-export def Start(windows: dict<any> = {}, cwd: string = '')
-    mru_cwd = empty(cwd) ? getcwd() : cwd
-    mru_cwd_only = !empty(cwd)
+export def Start(opts: dict<any> = {})
+    mru_cwd = len(get(opts, 'cwd', '')) > 0 ? opts.cwd : getcwd()
+    mru_cwd_only = len(get(opts, 'cwd', '')) > 0
     # sorted files from buffers opened during this session, including unlisted
     var mru_buffers = split(execute('buffers! t'), '\n')->map((_, val) => {
             var bufnumber = str2nr(matchstr(val, '\M\s\*\(\d\+\)'))
@@ -123,7 +123,7 @@ export def Start(windows: dict<any> = {}, cwd: string = '')
         return acc
     }, [])
 
-    var wids = selector.Start(mru_list, extend(windows, {
+    var wids = selector.Start(mru_list, extend(opts, {
         close_cb: function('Close'),
         preview_cb: function('Preview'),
         enable_devicons: enable_devicons,
