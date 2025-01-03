@@ -1,7 +1,7 @@
 vim9script
 
-import autoload 'utils/selector.vim'
-import autoload 'utils/popup.vim'
+import autoload './utils/selector.vim'
+import autoload './utils/popup.vim'
 
 # Options
 var respect_gitignore = exists('g:fuzzyy_grep_respect_gitignore') ?

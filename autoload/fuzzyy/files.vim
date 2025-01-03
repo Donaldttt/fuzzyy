@@ -1,8 +1,8 @@
 vim9script
 
-import autoload 'utils/selector.vim'
-import autoload 'utils/devicons.vim'
-import autoload 'utils/cmdbuilder.vim'
+import autoload './utils/selector.vim'
+import autoload './utils/devicons.vim'
+import autoload './utils/cmdbuilder.vim'
 
 var last_result_len: number
 var cur_pattern: string

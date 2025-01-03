@@ -1,6 +1,6 @@
 vim9script
 
-import autoload 'utils/selector.vim'
+import autoload './utils/selector.vim'
 
 def Select(wid: number, result: list<any>)
     var command = result[0]
