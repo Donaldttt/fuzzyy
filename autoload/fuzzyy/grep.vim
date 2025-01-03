@@ -172,7 +172,8 @@ def Reducer(pattern: string, acc: dict<any>, val: string): dict<any>
         col = str2nr(linecol[1])
     endif
     var path = strpart(val, 0, seq[1])
-    # note: git-grep command results relative paths
+    # note: git-grep command returns relative paths, but we want to generate
+    # a path relative to the cwd provided (not the current Vim working dir)
     var absolute_path = fnamemodify(path, ':p')
     var str = strpart(val, seq[2])
     var centerd_str = str
@@ -272,7 +273,7 @@ enddef
 def Preview(wid: number, opts: dict<any>)
     var result = opts.cursor_item
     var last_item = opts.last_cursor_item
-    var [path, linenr, colnr] = ParseResult(result)
+    var [relative_path, linenr, colnr] = ParseResult(result)
     var last_path: string
     var last_linenr: number
     if type(last_item) == v:t_string  && type(last_item) == v:t_string && last_item != ''
@@ -286,6 +287,7 @@ def Preview(wid: number, opts: dict<any>)
     endif
     cur_menu_item = result
 
+    var path = cwd .. '/' .. relative_path
     if !path || !filereadable(path)
         if path == v:null
             popup_settext(preview_wid, '')
@@ -310,10 +312,11 @@ def Preview(wid: number, opts: dict<any>)
 enddef
 
 def Select(wid: number, result: list<any>)
-    var [path, linenr, _] = ParseResult(result[0])
-    if path == v:null
+    var [relative_path, linenr, _] = ParseResult(result[0])
+    if relative_path == v:null
         return
     endif
+    var path = cwd .. '/' .. relative_path
     exe 'edit ' .. path
     exe 'norm! ' .. linenr .. 'G'
     exe 'norm! zz'
@@ -386,7 +389,7 @@ enddef
 
 export def Start(opts: dict<any> = {})
     Build()
-    cwd = getcwd()
+    cwd = len(get(opts, 'cwd', '')) > 0 ? opts.cwd : getcwd()
     cwdlen = len(cwd)
     cur_pattern = ''
     cur_result = []
