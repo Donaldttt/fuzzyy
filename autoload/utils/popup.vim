@@ -548,16 +548,17 @@ export def PopupSelection(opts: dict<any>): dict<any>
 
     var width: any = 0.8
     var height: any = 0.8
-    width = has_key(opts, 'width') ? opts.width : width
-    height = has_key(opts, 'height') ? opts.height : height
+    width = has_key(opts, 'width') && opts.width > 0 ? opts.width : width
+    height = has_key(opts, 'height') && opts.height > 0 ? opts.height : height
 
     var preview_ratio = 0.5
-    preview_ratio = has_key(opts, 'preview_ratio') ? opts.preview_ratio : preview_ratio
+    preview_ratio = has_key(opts, 'preview_ratio') && opts.preview_ratio > 0 &&
+        opts.preview_ratio < 1 ? opts.preview_ratio : preview_ratio
 
     var xoffset = width < 1 ? (1 - width) / 2 : (&columns  - width) / 2
     var yoffset = height < 1 ? (1 - height) / 2 : (&lines - height) / 2
-    xoffset = has_key(opts, 'xoffset') ? opts.xoffset : xoffset
-    yoffset = has_key(opts, 'yoffset') ? opts.yoffset : yoffset
+    xoffset = has_key(opts, 'xoffset') && opts.xoffset > 0 ? opts.xoffset : xoffset
+    yoffset = has_key(opts, 'yoffset') && opts.yoffset > 0 ? opts.yoffset : yoffset
 
     # convert all pos to number
     yoffset = yoffset < 1 ? float2nr(yoffset * &lines) : float2nr(yoffset)

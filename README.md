@@ -224,6 +224,7 @@ let g:fuzzyy_buffers_keymap = {
 " x and y offsets are by default calculated to center the windows on the screen
 " width, height, and x and y offsets > 0 and < 1 are resolved as percentages
 " width, height, and x and y offsets >= 1 are fixed numbers of lines and cols
+" invalid values for preview_ratio, width, height, and x and y offsets are ignored
 " Default window layout configuration is:
 let g:fuzzyy_window_layout = {
 \    'files': {
