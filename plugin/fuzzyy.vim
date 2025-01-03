@@ -83,16 +83,16 @@ highlight default link fuzzyyBorder Normal
 highlight default link fuzzyyMatching Special
 highlight default link fuzzyyPreviewMatch CurSearch
 
-import autoload '../autoload/fuzzy/commands.vim'
-import autoload '../autoload/fuzzy/grep.vim'
-import autoload '../autoload/fuzzy/files.vim'
-import autoload '../autoload/fuzzy/help.vim'
-import autoload '../autoload/fuzzy/colors.vim'
-import autoload '../autoload/fuzzy/inbuffer.vim'
-import autoload '../autoload/fuzzy/buffers.vim'
-import autoload '../autoload/fuzzy/highlights.vim'
-import autoload '../autoload/fuzzy/cmdhistory.vim'
-import autoload '../autoload/fuzzy/mru.vim'
+import autoload '../autoload/fuzzyy/commands.vim'
+import autoload '../autoload/fuzzyy/grep.vim'
+import autoload '../autoload/fuzzyy/files.vim'
+import autoload '../autoload/fuzzyy/help.vim'
+import autoload '../autoload/fuzzyy/colors.vim'
+import autoload '../autoload/fuzzyy/inbuffer.vim'
+import autoload '../autoload/fuzzyy/buffers.vim'
+import autoload '../autoload/fuzzyy/highlights.vim'
+import autoload '../autoload/fuzzyy/cmdhistory.vim'
+import autoload '../autoload/fuzzyy/mru.vim'
 
 command! -nargs=? FuzzyGrep grep.Start(windows.grep, <f-args>)
 command! -nargs=0 FuzzyFiles files.Start(windows.files)
