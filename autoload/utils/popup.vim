@@ -339,8 +339,8 @@ def CreatePopup(args: dict<any>): number
 enddef
 
 def NewPopup(args: dict<any>): list<number>
-    var width   = get(args, 'width', 0.4)
-    var height  = get(args, 'height', 0.4)
+    var width = get(args, 'width', 0.4)
+    var height = get(args, 'height', 0.4)
     var xoffset = get(args, 'xoffset', 0.3)
     var yoffset = get(args, 'yoffset', 0.3)
 
@@ -459,11 +459,11 @@ def PopupPrompt(args: dict<any>): number
      height: 1,
      filter: function('PromptFilter')
      }
-    opts            = extend(opts, args)
-    var [wid, bufnr]    = NewPopup(opts)
-    var prompt_char     = has_key(args, 'prompt') ? args.prompt : '> '
+    opts = extend(opts, args)
+    var [wid, bufnr] = NewPopup(opts)
+    var prompt_char = has_key(args, 'prompt') ? args.prompt : '> '
     var prompt_char_len = strcharlen(prompt_char)
-    var prompt_opt      = {
+    var prompt_opt = {
      line: [],
      promptchar: prompt_char,
      displayed_line: prompt_char .. " ",
@@ -546,10 +546,10 @@ export def PopupSelection(opts: dict<any>): dict<any>
     key_callbacks = has_key(opts, 'key_callbacks') ? opts.key_callbacks : {}
     var has_preview = has_key(opts, 'preview') && opts.preview
 
-    var width: any   = 0.8
-    var height: any  = 0.8
-    width   = has_key(opts, 'width') ? opts.width : width
-    height  = has_key(opts, 'height') ? opts.height : height
+    var width: any = 0.8
+    var height: any = 0.8
+    width = has_key(opts, 'width') ? opts.width : width
+    height = has_key(opts, 'height') ? opts.height : height
 
     var preview_ratio = 0.5
     preview_ratio = has_key(opts, 'preview_ratio') ? opts.preview_ratio : preview_ratio
@@ -560,24 +560,24 @@ export def PopupSelection(opts: dict<any>): dict<any>
     yoffset = has_key(opts, 'yoffset') ? opts.yoffset : yoffset
 
     # convert all pos to number
-    yoffset       = yoffset < 1 ? float2nr(yoffset * &lines) : float2nr(yoffset)
-    xoffset       = xoffset < 1 ? float2nr(xoffset * &columns) : float2nr(xoffset)
-    height        = height < 1 ? float2nr(height * &lines) : float2nr(height)
-    width         = width < 1 ? float2nr(width * &columns) : float2nr(width)
+    yoffset = yoffset < 1 ? float2nr(yoffset * &lines) : float2nr(yoffset)
+    xoffset = xoffset < 1 ? float2nr(xoffset * &columns) : float2nr(xoffset)
+    height = height < 1 ? float2nr(height * &lines) : float2nr(height)
+    width = width < 1 ? float2nr(width * &columns) : float2nr(width)
 
     var preview_width = 0
-    var menu_width    = 0
+    var menu_width = 0
     if has_preview
         preview_width = float2nr(width * preview_ratio)
-        menu_width    = width - preview_width
+        menu_width = width - preview_width
     else
-        menu_width    = width
+        menu_width = width
     endif
 
     var dropdown = has_key(opts, 'dropdown') && opts.dropdown
 
     var prompt_height = 3
-    var menu_height   = height - prompt_height
+    var menu_height = height - prompt_height
 
     var prompt_yoffset: number
     var menu_yoffset: number
@@ -626,19 +626,19 @@ export def PopupSelection(opts: dict<any>): dict<any>
 
     if has_preview
         var preview_xoffset = popup_wins[wins.menu].col + popup_wins[wins.menu].width
-        var menu_row        = popup_wins[wins.menu].line
-        var prompt_row      = popup_wins[wins.prompt].line
-        prompt_height   = popup_wins[wins.prompt].height
-        # var preview_height  = prompt_row - menu_row + prompt_height
-        var preview_height  =  menu_height + prompt_height + 2
-        var preview_opts    = {
+        var menu_row = popup_wins[wins.menu].line
+        var prompt_row = popup_wins[wins.prompt].line
+        prompt_height = popup_wins[wins.prompt].height
+        # var preview_height = prompt_row - menu_row + prompt_height
+        var preview_height =  menu_height + prompt_height + 2
+        var preview_opts = {
             width: preview_width,
             height: preview_height,
             yoffset: yoffset,
             xoffset: preview_xoffset + 2,
             zindex: 1100,
         }
-        wins.preview      = PopupPreview(preview_opts)
+        wins.preview = PopupPreview(preview_opts)
         wins.preview = wins.preview
         popup_wins[wins.preview].partids = wins
     endif
