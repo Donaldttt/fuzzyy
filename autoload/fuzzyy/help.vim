@@ -77,7 +77,7 @@ def Input(wid: number, args: dict<any>, ...li: list<any>)
 enddef
 
 var last_pattern: string
-def HelpsUpdateMenu(...args: list<any>)
+def UpdateMenu(...args: list<any>)
     const STEP = 1000 
     if len(tag_files) == 0
         timer_stop(update_tid)
@@ -129,5 +129,5 @@ export def Start(opts: dict<any> = {})
     }))
     menu_wid = wids.menu
     # popup_setoptions(menu_wid, {'title': string(len(tag_table))})
-    update_tid = timer_start(20, function('HelpsUpdateMenu'), {'repeat': -1})
+    update_tid = timer_start(20, function('UpdateMenu'), {'repeat': -1})
 enddef

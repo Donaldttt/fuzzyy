@@ -109,7 +109,7 @@ def Preview(wid: number, opts: dict<any>)
     noautocmd win_execute(preview_wid, 'silent! setlocal nospell nolist')
 enddef
 
-def FilesJobStart(path: string, cmd: string)
+def JobStart(path: string, cmd: string)
     if type(jid) == v:t_job && job_status(jid) == 'run'
         job_stop(jid)
     endif
@@ -156,10 +156,10 @@ def Profiling()
     profile func Reducer
     profile func Preview
     profile func JobHandler
-    profile func FilesUpdateMenu
+    profile func UpdateMenu
 enddef
 
-def FilesUpdateMenu(...li: list<any>)
+def UpdateMenu(...li: list<any>)
     var cur_result_len = len(cur_result)
     popup_setoptions(menu_wid, {'title': string(len(cur_result))})
     if cur_result_len == last_result_len
@@ -209,9 +209,9 @@ export def Start(opts: dict<any> = {})
     else
         cmd = cmdbuilder.Build()
     endif
-    FilesJobStart(cwd, cmd)
-    timer_start(50, function('FilesUpdateMenu'))
-    files_update_tid = timer_start(400, function('FilesUpdateMenu'), {'repeat': -1})
+    JobStart(cwd, cmd)
+    timer_start(50, function('UpdateMenu'))
+    files_update_tid = timer_start(400, function('UpdateMenu'), {'repeat': -1})
     # Profiling()
 enddef
 

@@ -245,7 +245,7 @@ export def ReplaceCloseCb(Close_cb: func)
     popup.SetPopupWinProp(menu_wid, 'close_cb', Close_cb)
 enddef
 
-export def Exit()
+export def Close()
     popup_close(menu_wid)
 enddef
 
@@ -326,23 +326,23 @@ enddef
 
 def SetVSplitClose()
     ReplaceCloseCb(function('CloseVSplit'))
-    Exit()
+    Close()
 enddef
 
 def SetSplitClose()
     ReplaceCloseCb(function('CloseSplit'))
-    Exit()
+    Close()
 enddef
 
-def SetTab()
+def SetTabClose()
     ReplaceCloseCb(function('CloseTab'))
-    Exit()
+    Close()
 enddef
 
 export var split_edit_callbacks = {
     "\<c-v>": function('SetVSplitClose'),
     "\<c-s>": function('SetSplitClose'),
-    "\<c-t>": function('SetTab'),
+    "\<c-t>": function('SetTabClose'),
 }
 
 export def MoveToUsableWindow()
