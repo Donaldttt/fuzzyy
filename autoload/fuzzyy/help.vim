@@ -76,7 +76,7 @@ def Input(wid: number, args: dict<any>, ...li: list<any>)
     selector.FuzzySearchAsync(keys(tag_table), pattern, 200, function('AsyncCb'))
 enddef
 
-var last_parttern: string
+var last_pattern: string
 def HelpsUpdateMenu(...args: list<any>)
     const STEP = 1000 
     if len(tag_files) == 0
@@ -90,10 +90,10 @@ def HelpsUpdateMenu(...args: list<any>)
     }, tag_table)
     file_lines = file_lines[STEP + 1 :]
 
-    if cur_pattern != last_parttern
+    if cur_pattern != last_pattern
         var [ret, hl_list] = selector.FuzzySearch(keys(tag_table), cur_pattern, 1000)
         selector.UpdateMenu(ret, hl_list)
-        last_parttern = cur_pattern
+        last_pattern = cur_pattern
     endif
     # popup_setoptions(menu_wid, {'title': string(len(tag_table))})
 enddef
@@ -121,7 +121,7 @@ export def Start(opts: dict<any> = {})
     file_lines = []
     cur_pattern = ''
     tag_table = Tags()
-    last_parttern = ''
+    last_pattern = ''
     var wids = selector.Start(keys(tag_table), extend(opts, {
         preview_cb: function('Preview'),
         close_cb: function('CloseCb'),
