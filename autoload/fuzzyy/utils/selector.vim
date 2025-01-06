@@ -342,12 +342,13 @@ export var split_edit_callbacks = {
 }
 
 export def MoveToUsableWindow()
-  var c = 0
-  var wincount = winnr('$')
-  while ( !empty(&buftype) && index(reuse_windows, &ft) == -1 && c < wincount )
-    wincmd w
-    c = c + 1
-  endwhile
+    var c = 0
+    var wincount = winnr('$')
+    while ( !empty(&buftype) && index(reuse_windows, &buftype) == -1 &&
+            index(reuse_windows, &filetype) == -1 && c < wincount )
+        wincmd w
+        c = c + 1
+    endwhile
 enddef
 
 # This function spawn a popup picker for user to select an item from a list.
