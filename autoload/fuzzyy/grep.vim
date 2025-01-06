@@ -198,11 +198,6 @@ def Reducer(pattern: string, acc: dict<any>, val: string): dict<any>
     return acc
 enddef
 
-def JobHandler(channel: channel, msg: string)
-    var lists = selector.Split(msg)
-    cur_result += lists
-enddef
-
 def JobStart(pattern: string)
     if type(jid) == v:t_job
         try | job_stop(jid) | catch | endtry
@@ -221,18 +216,23 @@ def JobStart(pattern: string)
         cmd_str = printf(cmd, '', escape(pattern, '"'), escape(cwd, '"'))
     endif
     jid = job_start(cmd_str, {
-        out_cb: function('JobHandler'),
+        out_cb: function('JobOutCb'),
         out_mode: 'raw',
-        exit_cb: function('ExitCb'),
-        err_cb: function('ErrCb'),
+        exit_cb: function('JobExitCb'),
+        err_cb: function('JobErrCb'),
     })
 enddef
 
-def ErrCb(channel: channel, msg: string)
+def JobOutCb(channel: channel, msg: string)
+    var lists = selector.Split(msg)
+    cur_result += lists
+enddef
+
+def JobErrCb(channel: channel, msg: string)
     echoerr msg
 enddef
 
-def ExitCb(id: job, status: number)
+def JobExitCb(id: job, status: number)
     if id == jid
         job_running = 0
     endif
