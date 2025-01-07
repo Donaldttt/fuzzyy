@@ -34,8 +34,12 @@ def ProcessResult(list_raw: list<string>, ...args: list<any>): list<string>
         li = list_raw
     endif
     if enable_devicons
-         return map(li, 'g:WebDevIconsGetFileTypeSymbol(v:val) .. " " .. v:val')
+         map(li, 'g:WebDevIconsGetFileTypeSymbol(v:val) .. " " .. v:val')
     endif
+    # Hack for Git-Bash / Mingw-w64, Cygwin, and possibly other friends
+    # External commands like rg may return paths with Windows file separator,
+    # but Vim thinks it has a UNIX environment, so needs UNIX file separator
+    map(li, (_, val) => fnamemodify(val, ':.'))
     return li
 enddef
 

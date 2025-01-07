@@ -174,6 +174,8 @@ def Reducer(pattern: string, acc: dict<any>, val: string): dict<any>
     var path = strpart(val, 0, seq[1])
     # note: git-grep command returns relative paths, but we want to generate
     # a path relative to the cwd provided (not the current Vim working dir)
+    # note2: also currently required for Git-Bash and friends, as this fixes
+    # windows file separator in paths returned from external commands like rg
     var absolute_path = fnamemodify(path, ':p')
     var str = strpart(val, seq[2])
     var centerd_str = str
