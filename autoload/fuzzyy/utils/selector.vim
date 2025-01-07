@@ -285,7 +285,14 @@ def CloseTab(wid: number, result: dict<any>)
         if enable_devicons
             buf = strcharpart(buf, devicon_char_width + 1)
         endif
-        execute 'tabnew ' .. buf
+        var bufnr = bufnr(buf)
+        if bufnr >= 0
+            # for special buffers that cannot be edited
+            execute 'tabnew'
+            execute 'buffer ' .. bufnr
+        else
+            execute 'tabnew ' .. buf
+        endif
     endif
 enddef
 
@@ -297,7 +304,7 @@ def CloseVSplit(wid: number, result: dict<any>)
         endif
         var bufnr = bufnr(buf)
         if bufnr >= 0
-            # this is necessary for special buffer like terminal buffers
+            # for special buffers that cannot be edited
             execute 'vert sb ' .. bufnr
         else
             execute 'vsp ' .. buf
@@ -313,6 +320,7 @@ def CloseSplit(wid: number, result: dict<any>)
         endif
         var bufnr = bufnr(buf)
         if bufnr >= 0
+            # for special buffers that cannot be edited
             execute 'sb ' .. bufnr
         else
             execute 'sp ' .. buf
