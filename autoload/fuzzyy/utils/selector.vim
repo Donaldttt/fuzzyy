@@ -15,6 +15,9 @@ var enable_devicons = exists('g:fuzzyy_devicons') && exists('g:WebDevIconsGetFil
 var reuse_windows = exists('g:fuzzyy_reuse_windows')
     && type(g:fuzzyy_reuse_windows) == v:t_list ?
     g:fuzzyy_reuse_windows : ['netrw']
+var async_step = exists('g:fuzzyy_async_step')
+    && type(g:fuzzyy_async_step) == v:t_number ?
+    g:fuzzyy_async_step : 10000
 
 if enable_devicons
     matched_hl_offset = devicons.GetDeviconWidth() + 1
@@ -160,8 +163,7 @@ def MergeContinusNumber(li: list<number>): list<any>
 enddef
 
 def Worker(tid: number)
-    const ASYNC_STEP = 10000
-    var li = async_list[: ASYNC_STEP]
+    var li = async_list[: async_step]
     var results: list<any> = matchfuzzypos(li, async_pattern)
     var processed_results = []
 
@@ -202,7 +204,7 @@ def Worker(tid: number)
     endif
     AsyncCb(async_results)
 
-    async_list = async_list[ASYNC_STEP + 1 :]
+    async_list = async_list[async_step + 1 :]
     if len(async_results) >= async_limit || len(async_list) == 0
         timer_stop(tid)
         return

@@ -261,6 +261,14 @@ let g:fuzzyy_window_layout = {
 \    },
 \ }
 
+" async step processing configuration, normally you can leave this alone, but...
+" Fuzzyy mimics async processing to fuzzy match in batches, which avoids
+" problems running Vim's built in fuzzy matching on massive lists at once
+" The size of these batches is the async step value, which defaults to 10,000
+" This default should work well for most developer workstations, but you might
+" want to reduce if you notice a lack of responsiveness on low spec machines
+let g:fuzzyy_async_step = 10000
+
 " It is also possible to modify the colors used for highlighting
 " The defaults are shown below, you can change them in your vimrc
 " See :help :highlight if you are unfamiliar with Vim highlighting
