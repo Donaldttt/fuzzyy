@@ -84,7 +84,7 @@ def Build_find(): string
     if follow_symlinks
         opts ..= '-L'
     endif
-    var result = "find " .. opts .. " . -type f -print"
+    var result = "find " .. opts .. " . -type f"
 
     var ParseDir = (dir): string => "*/" .. dir .. "/*"
     var dir_list_parsed = reduce(dir_exclude,
@@ -93,7 +93,7 @@ def Build_find(): string
     var file_list_parsed = reduce(file_exclude,
         (acc, file) => acc .. "-not -name " .. file .. " ", "")
 
-    return result .. ' ' .. dir_list_parsed .. file_list_parsed
+    return result .. dir_list_parsed .. file_list_parsed .. '-print'
 enddef
 
 # GCI doc isn't clear. Get-ChildItem -Recurse -Exclude only matches exclusion
