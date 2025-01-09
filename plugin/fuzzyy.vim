@@ -107,6 +107,9 @@ command! -nargs=0 FuzzyCmdHistory cmdhistory.Start(windows.cmdhistory)
 command! -nargs=0 FuzzyMru mru.Start(windows.mru)
 command! -nargs=0 FuzzyMruCwd mru.Start(extend(windows.mru, { 'cwd': getcwd() }))
 
+# Deprecated/renamed commands
+command! -nargs=0 FuzzyMRUFiles echo 'fuzzyy: FuzzyMRUFiles command is deprecated, use FuzzyMru instead' | FuzzyMru
+
 if g:fuzzyy_enable_mappings
     nnoremap <silent> <leader>fb :FuzzyBuffers<CR>
     nnoremap <silent> <leader>fc :FuzzyCommands<CR>
