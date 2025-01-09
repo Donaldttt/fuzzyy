@@ -15,7 +15,8 @@ programs to handle complex tasks.
 
 ## Requirements
 
-- Vim >= 9.0 (there is an old vim8 branch, which works but is no longer maintained)
+- Vim >= 9.0 (plugin is written in vim9scipt, Vim 9+ required, NeoVim not
+  supported)
 
 ## Suggested dependencies
 - [ripgrep](https://github.com/BurntSushi/ripgrep) (used for FuzzyGrep and
@@ -46,30 +47,34 @@ git clone https://github.com/Donaldttt/fuzzyy ~/.vim/pack/Donaldttt/start/fuzzyy
 
 ## Commands
 
-| Command         | Description                    | Default mapping |
-| ---             | ---                            | ---            |
-| FuzzyFiles      | search files in project        | \<leader>ff    |
-| FuzzyBuffers    | search opened buffers          | \<leader>fb    |
-| FuzzyGrep \<args> | grep string in project. if argument is given, it will search the \<args> | \<leader>fg    |
-| FuzzyMru        | search the most recent used files | \<leader>fm    |
-| FuzzyMruCwd     | search the most recent used files in the current working directory | None   |
-| FuzzyInBuffer  \<args> | search lines in current buffer. if argument is given, it will search the \<args> | None    |
-| FuzzyHelp       | search :help documents         | None    |
-| FuzzyColors     | search installed colorscheme   | None    |
-| FuzzyCommands   | search commands                | None    |
-| FuzzyCmdHistory |  search command history  | None    |
-| FuzzyHighlights | search highlights              | None    |
-| FuzzyGitFiles   |  like FuzzyFiles but only shows file in git project  | None    |
+| Command               | Description                                           | Default mapping |
+| ---                   | ---                                                   | ---             |
+| FuzzyFiles            | search files in current working directory (CWD)       | \<leader>ff     |
+| FuzzyBuffers          | search opened buffers                                 | \<leader>fb     |
+| FuzzyGrep \<str>      | search for string in CWD, use \<str> if provided      | \<leader>fg     |
+| FuzzyMru              | search most recent used files                         | \<leader>fm     |
+| FuzzyMruCwd           | search most recent used files in CWD                  | None    |
+| FuzzyInBuffer \<str>  | search for string in buffer, use \<str> if provided   | None    |
+| FuzzyHelp             | search subjects/tags in :help documents               | None    |
+| FuzzyColors           | search installed color schemes                        | None    |
+| FuzzyCommands         | search commands                                       | None    |
+| FuzzyCmdHistory       | search command history                                | None    |
+| FuzzyHighlights       | search highlight groups                               | None    |
+| FuzzyGitFiles         | search files in output from `git ls-files`            | None    |
+| FuzzyHelps            | deprecated alias for FuzzyHelp, will be removed       | None    |
+| FuzzyMRUFiles         | deprecated alias for FuzzyMru, will be removed        | None    |
 
 - For FuzzyGrep and FuzzyInBuffer, you can define a keymap like this to search the
 word under cursor.
     ```vim
         nnoremap <leader>fw :FuzzyGrep <C-R><C-W><CR>
     ```
-- FuzzyGrep requires any of `rg`, `ag`, `grep` or `FINDSTR` command.
+- FuzzyGrep requires one of `rg`, `ag`, `grep` or `FINDSTR` commands. If neither
+  `rg` or `ag` are installed it will also use `git-grep` when in a git repo.
 
-- FuzzyFiles uses `find` command on UNIX or PowerShell's `Get-ChildItem` on Windows.
-  If `rg` of `fd` are installed they will be used instead, with `rg` preferred.
+- FuzzyFiles requires one of `rg`, `fd`, `find` or `powershell` commands. If
+  neither `rg` or `fd` are installed it will also use `git-ls-files` when in a
+  git repo.
 
 ## Navigation
 
@@ -110,7 +115,7 @@ nnoremap <silent> <leader>fm :FuzzyMru<CR>
 ```vim
 " Set to 0 to disable default keybindings
 " Default to 1
-let g:fuzzyy_enable_mappings = 0
+let g:fuzzyy_enable_mappings = 1
 
 " Show devicons when using FuzzyFiles or FuzzyBuffers
 " Requires vim-devicons
