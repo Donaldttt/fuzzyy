@@ -108,6 +108,7 @@ command! -nargs=0 FuzzyMru mru.Start(windows.mru)
 command! -nargs=0 FuzzyMruCwd mru.Start(extend(windows.mru, { 'cwd': getcwd() }))
 
 # Deprecated/renamed commands
+command! -nargs=0 FuzzyHelps echo 'fuzzyy: FuzzyHelps command is deprecated, use FuzzyHelp instead' | FuzzyHelp
 command! -nargs=0 FuzzyMRUFiles echo 'fuzzyy: FuzzyMRUFiles command is deprecated, use FuzzyMru instead' | FuzzyMru
 
 if g:fuzzyy_enable_mappings
