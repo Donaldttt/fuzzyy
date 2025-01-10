@@ -33,7 +33,7 @@ enddef
 export def Start(opts: dict<any> = {})
     raw_lines = getline(1, '$')
     file_type = &filetype
-    var max_line_len = len(string(len(raw_lines)))
+    var max_line_len = len(string(line('$')))
     var lines = reduce(raw_lines,
        (a, v) => add(a, printf(' %' .. max_line_len .. 'd │ %s', len(a) + 1,  v)), [])
 
