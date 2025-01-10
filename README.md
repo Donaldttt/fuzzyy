@@ -255,9 +255,7 @@ let g:fuzzyy_window_layout = {
 \    help: {
 \        'preview_ratio': 0.6
 \    },
-\    'inbuffer': {
-\        'width': 0.7,
-\    },
+\    'inbuffer': {},
 \ }
 
 " async step processing configuration, normally you can leave this alone, but...

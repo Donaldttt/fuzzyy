@@ -74,9 +74,7 @@ var windows: dict<any> = {
     help: {
         preview_ratio: 0.6,
     },
-    inbuffer: {
-        width: 0.7,
-    },
+    inbuffer: {},
 }
 if exists('g:fuzzyy_window_layout') && type(g:fuzzyy_window_layout) == v:t_dict
     for [key, value] in items(windows)
