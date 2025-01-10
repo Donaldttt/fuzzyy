@@ -1,22 +1,5 @@
 vim9script
 
-# Deprecated or removed options
-if exists('g:files_only_git_files') && g:files_only_git_files
-    echo 'fuzzyy: g:files_only_git_files is no longer supported, use :FuzzyGitFiles command instead'
-endif
-if exists('g:files_respect_gitignore')
-    echo 'fuzzyy: g:files_respect_gitignore is deprecated, gitignore is now respected by default'
-    g:fuzzyy_files_respect_gitignore = g:files_respect_gitignore
-endif
-if exists('g:fuzzyy_files_ignore_file')
-    echo 'fuzzyy: g:fuzzyy_files_ignore_file is deprecated, use g:fuzzyy_files_exclude_file instead'
-    g:fuzzyy_files_exclude_file = g:fuzzyy_files_ignore_file
-endif
-if exists('g:fuzzyy_files_ignore_dir')
-    echo 'fuzzyy: g:fuzzyy_files_ignore_dir is deprecated, use g:fuzzyy_files_exclude_dir instead'
-    g:fuzzyy_files_exclude_dir = g:fuzzyy_files_ignore_dir
-endif
-
 # Options
 var respect_gitignore = exists('g:fuzzyy_files_respect_gitignore') ?
     g:fuzzyy_files_respect_gitignore : g:fuzzyy_respect_gitignore

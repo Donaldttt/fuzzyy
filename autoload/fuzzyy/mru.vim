@@ -12,10 +12,6 @@ var menu_wid: number
 var enable_devicons = exists('g:fuzzyy_devicons') && exists('g:WebDevIconsGetFileTypeSymbol') ?
     g:fuzzyy_devicons : exists('g:WebDevIconsGetFileTypeSymbol')
 
-if exists('g:fuzzyy_mru_project_only') && g:fuzzyy_mru_project_only
-    echo 'fuzzyy: g:fuzzyy_mru_project_only is no longer supported, use :FuzzyMruCwd command instead'
-endif
-
 # Options
 var file_exclude = exists('g:fuzzyy_mru_exclude_file')
     && type(g:fuzzyy_mru_exclude_file) == v:t_list ?
