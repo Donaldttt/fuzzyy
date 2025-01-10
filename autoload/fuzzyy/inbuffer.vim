@@ -1,5 +1,7 @@
 vim9script
 
+scriptencoding utf-8
+
 import autoload './utils/selector.vim'
 import autoload './utils/popup.vim'
 
@@ -19,7 +21,7 @@ def Preview(wid: number, opts: dict<any>)
     endif
     var preview_wid = opts.win_opts.partids['preview']
     var preview_bufnr = winbufnr(preview_wid)
-    var lnum = split(result, ':')[0]
+    var lnum = split(trim(result[0 : 10]), ' ')[0]
     if popup_getpos(preview_wid).lastline == 1
         popup_settext(preview_wid, raw_lines)
         setbufvar(preview_bufnr, '&syntax', file_type)
@@ -33,7 +35,7 @@ export def Start(opts: dict<any> = {})
     file_type = &filetype
     var max_line_len = len(string(len(raw_lines)))
     var lines = reduce(raw_lines,
-       (a, v) => add(a, printf('%' .. max_line_len .. 'd:%s', len(a) + 1,  v)), [])
+       (a, v) => add(a, printf(' %' .. max_line_len .. 'd │ %s', len(a) + 1,  v)), [])
 
     var winds = selector.Start(lines, extend(opts, {
         select_cb: function('Select'),
