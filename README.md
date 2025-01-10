@@ -53,11 +53,11 @@ git clone https://github.com/Donaldttt/fuzzyy ~/.vim/pack/Donaldttt/start/fuzzyy
 | FuzzyBuffers          | search opened buffers                                 | \<leader>fb     |
 | FuzzyGrep \<str>      | search for string in CWD, use \<str> if provided      | \<leader>fg     |
 | FuzzyMru              | search most recent used files                         | \<leader>fm     |
-| FuzzyMruCwd           | search most recent used files in CWD                  | None    |
-| FuzzyInBuffer \<str>  | search for string in buffer, use \<str> if provided   | None    |
-| FuzzyHelp             | search subjects/tags in :help documents               | None    |
+| FuzzyMruCwd           | search most recent used files in CWD                  | \<leader>fr     |
+| FuzzyInBuffer \<str>  | search for string in buffer, use \<str> if provided   | \<leader>fi     |
+| FuzzyHelp             | search subjects/tags in :help documents               | \<leader>fh     |
+| FuzzyCommands         | search commands                                       | \<leader>fc     |
 | FuzzyColors           | search installed color schemes                        | None    |
-| FuzzyCommands         | search commands                                       | None    |
 | FuzzyCmdHistory       | search command history                                | None    |
 | FuzzyHighlights       | search highlight groups                               | None    |
 | FuzzyGitFiles         | search files in output from `git ls-files`            | None    |
@@ -104,10 +104,14 @@ You can set `g:fuzzyy_keymaps` to change these defaults.
 You can set `g:fuzzyy_enable_mappings = 0` to disable default mappings
 
 ```vim
+nnoremap <silent> <leader>fb :FuzzyBuffers<CR>
+nnoremap <silent> <leader>fc :FuzzyCommands<CR>
 nnoremap <silent> <leader>ff :FuzzyFiles<CR>
 nnoremap <silent> <leader>fg :FuzzyGrep<CR>
-nnoremap <silent> <leader>fb :FuzzyBuffers<CR>
+nnoremap <silent> <leader>fh :FuzzyHelp<CR>
+nnoremap <silent> <leader>fi :FuzzyInBuffer<CR>
 nnoremap <silent> <leader>fm :FuzzyMru<CR>
+nnoremap <silent> <leader>fr :FuzzyMruCwd<CR>
 ```
 
 ## Options

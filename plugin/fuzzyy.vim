@@ -133,5 +133,7 @@ if g:fuzzyy_enable_mappings
     nnoremap <silent> <leader>ff :FuzzyFiles<CR>
     nnoremap <silent> <leader>fg :FuzzyGrep<CR>
     nnoremap <silent> <leader>fh :FuzzyHelp<CR>
+    nnoremap <silent> <leader>fi :FuzzyInBuffer<CR>
     nnoremap <silent> <leader>fm :FuzzyMru<CR>
+    nnoremap <silent> <leader>fr :FuzzyMruCwd<CR>
 endif
