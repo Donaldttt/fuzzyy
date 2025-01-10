@@ -40,5 +40,6 @@ export def Start(opts: dict<any> = {})
     var wids = selector.Start(colors, extend(opts, {
         preview_cb: function('Preview'),
         close_cb: function('Close'),
+        preview: 0
     }))
 enddef

@@ -50,28 +50,15 @@ g:fuzzyy_exclude_dir = exists('g:fuzzyy_exclude_dir')
 g:fuzzyy_ripgrep_options = exists('g:fuzzyy_ripgrep_options')
     && type(g:fuzzyy_ripgrep_options) == v:t_list ? g:fuzzyy_ripgrep_options : []
 
-# window layout
+# window layout customization for particular selectors
 # you can override it by setting g:fuzzyy_window_layout
 # e.g. let g:fuzzyy_window_layout = { 'files': { 'preview': 0 } }
-# default value:
-var windows = {
-    files: {
-        preview: 1,         # 1 means enable preview window, 0 means disable
-        preview_ratio: 0.5, # 0.5 means preview window will take 50% of the layout
-        width: 0.8,         # 0.8 means total width of the layout will take 80% of the screen
-        height: 0.8,        # 0.8 means total height of the layout will take 80% of the screen
-    },
-    grep: {
-        preview: 1,
-    },
-    buffers: {
-        preview: 1,
-    },
-    mru: {
-        preview: 1,
-    },
+var windows: dict<any> = {
+    files: {},
+    grep: {},
+    buffers: {},
+    mru: {},
     highlights: {
-        preview: 1,
         preview_ratio: 0.7,
     },
     cmdhistory: {
@@ -85,14 +72,12 @@ var windows = {
         width: 0.4,
     },
     help: {
-        preview: 1,
-        preview_ratio: 0.6, # reasonable default for a laptop to avoid wrapping
+        preview_ratio: 0.6,
     },
     inbuffer: {
         width: 0.7,
     },
 }
-
 if exists('g:fuzzyy_window_layout') && type(g:fuzzyy_window_layout) == v:t_dict
     for [key, value] in items(windows)
         if has_key(g:fuzzyy_window_layout, key)

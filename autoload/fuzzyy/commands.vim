@@ -16,5 +16,6 @@ export def Start(opts: dict<any> = {})
     var li: list<string> = getcompletion('', 'command')
     var wids = selector.Start(li, extend(opts, {
         select_cb: function('Select'),
+        preview: 0
     }))
 enddef

@@ -18,6 +18,7 @@ export def Start(opts: dict<any> = {})
 
     var wins = selector.Start(reverse(cmds), extend(opts, {
         select_cb: function('Select'),
+        preview: 0
     }))
     popup_setoptions(wins.menu, {'title': string(len(cmds))})
 enddef

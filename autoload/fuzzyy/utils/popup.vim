@@ -539,7 +539,7 @@ export def PopupSelection(opts: dict<any>): dict<any>
     endif
     active = true
     key_callbacks = has_key(opts, 'key_callbacks') ? opts.key_callbacks : {}
-    var has_preview = has_key(opts, 'preview') && opts.preview
+    var has_preview = has_key(opts, 'preview') ? opts.preview : 1
 
     var width: any = 0.8
     var height: any = 0.8

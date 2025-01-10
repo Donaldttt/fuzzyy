@@ -17,6 +17,7 @@ export def Start(opts: dict<any> = {})
 
     var winds = selector.Start(lines, extend(opts, {
         select_cb: function('Select'),
+        preview: 0
     }))
 
     if len(get(opts, 'search', '')) > 0

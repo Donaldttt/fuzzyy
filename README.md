@@ -213,40 +213,31 @@ let g:fuzzyy_buffers_keymap = {
 \    'close_buffer': "\<c-l>",
 \ }
 
-" window layout configuraton
+" window layout customization
 " you can override it by setting g:fuzzyy_window_layout
 " e.g. You can disable preview window for FuzzyFiles commands by doing this:
 " let g:fuzzyy_window_layout = { 'files': { 'preview': 0 } }
 " or you change the width of the preview window for FuzzyFiles by doing this:
 " let g:fuzzyy_window_layout = { 'files': { 'preview_ratio': 0.6 } }
 " Allowed options and their defaults are:
-"     'preview': 0,         " 1 means enable preview window, 0 means disable
+"     'preview': 1,         " 1 means enable preview window, 0 means disable
 "     'preview_ratio': 0.5, " 0.5 means preview window will take 50% of the layout
 "     'width': 0.8,         " 0.8 means total width of the layout will take 80% of the screen
 "     'height': 0.8,        " 0.8 means total height of the layout will take 80% of the screen
 "     'xoffset': v:none     " x offset of the windows, 0.1 means 10% from left of the screen
 "     'yoffset': v:none     " x offset of the windows, 0.1 means 10% from top of the screen
+" preview is ignored by commands that do not support it, e.g. FuzzyCmdHistory
 " x and y offsets are by default calculated to center the windows on the screen
 " width, height, and x and y offsets > 0 and < 1 are resolved as percentages
 " width, height, and x and y offsets >= 1 are fixed numbers of lines and cols
 " invalid values for preview_ratio, width, height, and x and y offsets are ignored
 " Default window layout configuration is:
 let g:fuzzyy_window_layout = {
-\    'files': {
-\        'preview': 1,
-\    },
-\    'grep': {
-\        'preview': 1,
-\    },
-\    'buffers': {
-\        'preview': 1,
-\    },
-\    'mru': {
-\        'preview': 1,
-\    },
-\    'highlights': {
-\        'preview': 1,
-\    },
+\    'files': {},
+\    'grep': {},
+\    'buffers': {},
+\    'mru': {},
+\    'highlights': {},
 \    'cmdhistory': {
 \        'width': 0.6,
 \    },
@@ -258,8 +249,7 @@ let g:fuzzyy_window_layout = {
 \        'width': 0.4,
 \    },
 \    help: {
-\        'preview': 1,
-\        'preview_ratio': 0.6 # reasonable default for a laptop to avoid wrapping
+\        'preview_ratio': 0.6
 \    },
 \    'inbuffer': {
 \        'width': 0.7,
