@@ -409,6 +409,7 @@ export def Start(opts: dict<any> = {})
         input_cb: function('Input'),
         preview_cb: function('Preview'),
         close_cb: function('CloseCb'),
+        key_callbacks: selector.split_edit_callbacks
      }))
     menu_wid = wids.menu
     if menu_wid == -1
