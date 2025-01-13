@@ -290,8 +290,8 @@ def Preview(wid: number, opts: dict<any>)
     cur_menu_item = result
 
     var path = cwd .. '/' .. relative_path
-    if !path || !filereadable(path)
-        if path == v:null
+    if !filereadable(path)
+        if relative_path == v:null
             popup_settext(preview_wid, '')
         else
             popup_settext(preview_wid, path .. ' not found')
