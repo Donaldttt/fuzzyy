@@ -1,6 +1,6 @@
 vim9script
 
-import autoload 'utils/selector.vim'
+import autoload './utils/selector.vim'
 
 var old_color: string
 var old_bg: string
@@ -32,18 +32,14 @@ def Close(wid: number, result: dict<any>)
     endif
 enddef
 
-export def Start()
+export def Start(opts: dict<any> = {})
     old_color = execute('colo')[1 :]
     old_bg = &bg
     var colors = GetColors()
 
-    var wids = selector.Start(colors, {
+    var wids = selector.Start(colors, extend(opts, {
         preview_cb: function('Preview'),
         close_cb: function('Close'),
-        preview: 0,
-        width: 0.25,
-        xoffset: 0.7,
-        scrollbar: 0,
-        preview_ratio: 0.7,
-    })
+        preview: 0
+    }))
 enddef

@@ -12,27 +12,17 @@ var menu_hl_list: list<any>
 var devicon_char_width = devicons.GetDeviconCharWidth()
 var enable_devicons = exists('g:fuzzyy_devicons') && exists('g:WebDevIconsGetFileTypeSymbol') ?
     g:fuzzyy_devicons : exists('g:WebDevIconsGetFileTypeSymbol')
+var reuse_windows = exists('g:fuzzyy_reuse_windows')
+    && type(g:fuzzyy_reuse_windows) == v:t_list ?
+    g:fuzzyy_reuse_windows : ['netrw']
+var async_step = exists('g:fuzzyy_async_step')
+    && type(g:fuzzyy_async_step) == v:t_number ?
+    g:fuzzyy_async_step : 10000
 
 if enable_devicons
     matched_hl_offset = devicons.GetDeviconWidth() + 1
 endif
 export var windows: dict<any>
-
-var filetype_table = {
-    h:  'c',
-    hpp:  'cpp',
-    cc:  'cpp',
-    hh:  'cpp',
-    py:  'python',
-    js:  'javascript',
-    ts:  'typescript',
-    tsx:  'typescript',
-    jsx:  'typescript',
-    rs:  'rust',
-    json:  'json',
-    yml:  'yaml',
-    md:  'markdown',
-}
 
 var enable_dropdown = exists('g:fuzzyy_dropdown') ? g:fuzzyy_dropdown : 0
 
@@ -82,13 +72,6 @@ export def Split(str: string): list<string>
         sep = '\n'
     endif
     return split(str, sep)
-enddef
-
-export def GetFt(ft: string): string
-    if has_key(filetype_table, ft)
-        return filetype_table[ft]
-    endif
-    return ft
 enddef
 
 # Search pattern @pattern in a list of strings @li
@@ -180,8 +163,7 @@ def MergeContinusNumber(li: list<number>): list<any>
 enddef
 
 def Worker(tid: number)
-    const ASYNC_STEP = 1000
-    var li = async_list[: ASYNC_STEP]
+    var li = async_list[: async_step]
     var results: list<any> = matchfuzzypos(li, async_pattern)
     var processed_results = []
 
@@ -222,7 +204,7 @@ def Worker(tid: number)
     endif
     AsyncCb(async_results)
 
-    async_list = async_list[ASYNC_STEP + 1 :]
+    async_list = async_list[async_step + 1 :]
     if len(async_results) >= async_limit || len(async_list) == 0
         timer_stop(tid)
         return
@@ -257,15 +239,11 @@ export def FuzzySearchAsync(li: list<string>, pattern: string, limit: number, Cb
     return async_tid
 enddef
 
-export def GetPrompt(): string
-    return prompt_str
-enddef
-
-export def ReplaceCloseCb(Close_cb: func)
+def ReplaceCloseCb(Close_cb: func)
     popup.SetPopupWinProp(menu_wid, 'close_cb', Close_cb)
 enddef
 
-export def Exit()
+def Close()
     popup_close(menu_wid)
 enddef
 
@@ -309,7 +287,14 @@ def CloseTab(wid: number, result: dict<any>)
         if enable_devicons
             buf = strcharpart(buf, devicon_char_width + 1)
         endif
-        execute 'tabnew ' .. buf
+        var bufnr = bufnr(buf)
+        if bufnr >= 0
+            # for special buffers that cannot be edited
+            execute 'tabnew'
+            execute 'buffer ' .. bufnr
+        else
+            execute 'tabnew ' .. buf
+        endif
     endif
 enddef
 
@@ -321,7 +306,7 @@ def CloseVSplit(wid: number, result: dict<any>)
         endif
         var bufnr = bufnr(buf)
         if bufnr >= 0
-            # this is necessary for special buffer like terminal buffers
+            # for special buffers that cannot be edited
             execute 'vert sb ' .. bufnr
         else
             execute 'vsp ' .. buf
@@ -337,6 +322,7 @@ def CloseSplit(wid: number, result: dict<any>)
         endif
         var bufnr = bufnr(buf)
         if bufnr >= 0
+            # for special buffers that cannot be edited
             execute 'sb ' .. bufnr
         else
             execute 'sp ' .. buf
@@ -346,24 +332,34 @@ enddef
 
 def SetVSplitClose()
     ReplaceCloseCb(function('CloseVSplit'))
-    Exit()
+    Close()
 enddef
 
 def SetSplitClose()
     ReplaceCloseCb(function('CloseSplit'))
-    Exit()
+    Close()
 enddef
 
-def SetTab()
+def SetTabClose()
     ReplaceCloseCb(function('CloseTab'))
-    Exit()
+    Close()
 enddef
 
 export var split_edit_callbacks = {
     "\<c-v>": function('SetVSplitClose'),
     "\<c-s>": function('SetSplitClose'),
-    "\<c-t>": function('SetTab'),
+    "\<c-t>": function('SetTabClose'),
 }
+
+export def MoveToUsableWindow()
+    var c = 0
+    var wincount = winnr('$')
+    while ( !empty(&buftype) && index(reuse_windows, &buftype) == -1 &&
+            index(reuse_windows, &filetype) == -1 && c < wincount )
+        wincmd w
+        c = c + 1
+    endwhile
+enddef
 
 # This function spawn a popup picker for user to select an item from a list.
 # params:
@@ -394,6 +390,11 @@ export var split_edit_callbacks = {
 export def Start(li_raw: list<string>, opts: dict<any>): dict<any>
     if popup.active
         return { 'menu': -1, 'prompt': -1, 'preview': -1 }
+    endif
+    if exists('g:__fuzzyy_warnings_found') && g:__fuzzyy_warnings_found
+        echohl WarningMsg
+        echo 'Fuzzyy started with warnings, use :FuzzyShowWarnings command to see details'
+        echohl None
     endif
     cwd = getcwd()
     prompt_str = ''

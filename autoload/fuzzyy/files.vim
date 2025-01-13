@@ -1,8 +1,8 @@
 vim9script
 
-import autoload 'utils/selector.vim'
-import autoload 'utils/devicons.vim'
-import autoload 'utils/cmdbuilder.vim'
+import autoload './utils/selector.vim'
+import autoload './utils/devicons.vim'
+import autoload './utils/cmdbuilder.vim'
 
 var last_result_len: number
 var cur_pattern: string
@@ -25,8 +25,6 @@ if enable_devicons
     matched_hl_offset = devicons.GetDeviconWidth() + 1
 endif
 
-var cmdstr = cmdbuilder.Build()
-
 def ProcessResult(list_raw: list<string>, ...args: list<any>): list<string>
     var limit = -1
     var li: list<string>
@@ -36,8 +34,12 @@ def ProcessResult(list_raw: list<string>, ...args: list<any>): list<string>
         li = list_raw
     endif
     if enable_devicons
-         return map(li, 'g:WebDevIconsGetFileTypeSymbol(v:val) .. " " .. v:val')
+         map(li, 'g:WebDevIconsGetFileTypeSymbol(v:val) .. " " .. v:val')
     endif
+    # Hack for Git-Bash / Mingw-w64, Cygwin, and possibly other friends
+    # External commands like rg may return paths with Windows file separator,
+    # but Vim thinks it has a UNIX environment, so needs UNIX file separator
+    map(li, (_, val) => fnamemodify(val, ':.'))
     return li
 enddef
 
@@ -46,6 +48,7 @@ def Select(wid: number, result: list<any>)
     if enable_devicons
         path = strcharpart(path, devicon_char_width + 1)
     endif
+    selector.MoveToUsableWindow()
     exe 'edit ' .. path
 enddef
 
@@ -105,17 +108,12 @@ def Preview(wid: number, opts: dict<any>)
     endif
     var preview_bufnr = winbufnr(preview_wid)
     var fileraw = readfile(result, '', 70)
-    var ext = fnamemodify(result, ':e')
-    var ft = selector.GetFt(ext)
-    popup_settext(preview_wid, fileraw)
-    # set syntax won't invoke some error cause by filetype autocmd
-    try
-        setbufvar(preview_bufnr, '&syntax', ft)
-    catch
-    endtry
+    noautocmd call popup_settext(preview_wid, fileraw)
+    win_execute(preview_wid, 'silent! doautocmd filetypedetect BufNewFile ' .. result)
+    noautocmd win_execute(preview_wid, 'silent! setlocal nospell nolist')
 enddef
 
-def FilesJobStart(path: string, cmd: string)
+def JobStart(path: string, cmd: string)
     if type(jid) == v:t_job && job_status(jid) == 'run'
         job_stop(jid)
     endif
@@ -139,6 +137,7 @@ def FilesJobStart(path: string, cmd: string)
 enddef
 
 def ErrCb(channel: channel, msg: string)
+    echoerr msg
 enddef
 
 def ExitCb(j: job, status: number)
@@ -161,10 +160,10 @@ def Profiling()
     profile func Reducer
     profile func Preview
     profile func JobHandler
-    profile func FilesUpdateMenu
+    profile func UpdateMenu
 enddef
 
-def FilesUpdateMenu(...li: list<any>)
+def UpdateMenu(...li: list<any>)
     var cur_result_len = len(cur_result)
     popup_setoptions(menu_wid, {'title': string(len(cur_result))})
     if cur_result_len == last_result_len
@@ -188,7 +187,7 @@ def Close(wid: number, opts: dict<any>)
     timer_stop(files_update_tid)
 enddef
 
-export def Start(windows: dict<any>, ...args: list<any>)
+export def Start(opts: dict<any> = {})
     last_result_len = -1
     cur_result = []
     cur_pattern = ''
@@ -196,31 +195,27 @@ export def Start(windows: dict<any>, ...args: list<any>)
     cwd = getcwd()
     cwdlen = len(cwd)
     in_loading = 1
-    var wids = selector.Start([], {
-        select_cb:  function('Select'),
-        preview_cb:  function('Preview'),
-        input_cb:  function('Input'),
-        close_cb:  function('Close'),
-        preview:  windows.preview,
-        width: windows.width,
-        preview_ratio: windows.preview_ratio,
-        scrollbar: 0,
+    var wids = selector.Start([], extend(opts, {
+        select_cb: function('Select'),
+        preview_cb: function('Preview'),
+        input_cb: function('Input'),
+        close_cb: function('Close'),
         enable_devicons: enable_devicons,
         key_callbacks: selector.split_edit_callbacks,
-    })
+    }))
     menu_wid = wids.menu
     if menu_wid == -1
         return
     endif
     var cmd: string
-    if len(args) > 0 && type(args[0]) == 1
-        cmd = args[0]
+    if len(get(opts, 'command', '')) > 0
+        cmd = opts.command
     else
-        cmd = cmdstr
+        cmd = cmdbuilder.Build()
     endif
-    FilesJobStart(cwd, cmd)
-    timer_start(50, function('FilesUpdateMenu'))
-    files_update_tid = timer_start(400, function('FilesUpdateMenu'), {'repeat': -1})
+    JobStart(cwd, cmd)
+    timer_start(50, function('UpdateMenu'))
+    files_update_tid = timer_start(400, function('UpdateMenu'), {'repeat': -1})
     # Profiling()
 enddef
 

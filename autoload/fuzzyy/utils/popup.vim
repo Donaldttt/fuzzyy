@@ -1,8 +1,8 @@
 vim9script
 var popup_wins: dict<any>
 var wins = { 'menu': -1, 'prompt': -1, 'preview': -1, 'info': -1 }
-var t_ve = &t_ve
-var guicursor = &guicursor
+var t_ve: string
+var hlcursor: dict<any>
 var exists_buffers = []
 export var active = false
 
@@ -27,8 +27,6 @@ var keymaps: dict<any> = {
 
 keymaps = exists('g:fuzzyy_keymaps') && type(g:fuzzyy_keymaps) == v:t_dict ?
     extend(keymaps, g:fuzzyy_keymaps) : keymaps
-var menu_matched_hl = exists('g:fuzzyy_menu_matched_hl') ?
-    g:fuzzyy_menu_matched_hl : 'cursearch'
 
 export def SetPopupWinProp(wid: number, key: string, val: any)
     if has_key(popup_wins, wid) && has_key(popup_wins[wid], key)
@@ -44,8 +42,8 @@ def Restore()
     if &t_ve != t_ve
         &t_ve = t_ve
     endif
-    if &guicursor != guicursor
-        &guicursor = guicursor
+    if get(hlget('Cursor')[0], 'cleared', v:false)
+        hlset([hlcursor])
     endif
     active = false
 enddef
@@ -261,23 +259,23 @@ enddef
 
 def CreatePopup(args: dict<any>): number
     var opts = {
-       line:  args.line,
-       col:  args.col,
-       minwidth:  args.width,
-       maxwidth:  args.width,
-       minheight:  args.height,
-       maxheight:  args.height,
-       scrollbar:  v:false,
-       padding:  [0, 0, 0, 0],
-       zindex:  1000,
-       wrap:  0,
+       line: args.line,
+       col: args.col,
+       minwidth: args.width,
+       maxwidth: args.width,
+       minheight: args.height,
+       maxheight: args.height,
+       scrollbar: v:false,
+       padding: [0, 0, 0, 0],
+       zindex: 1000,
+       wrap: 0,
        buftype: 'popup',
        cursorline: 0,
-       callback:  function('GeneralPopupCallback'),
-       border:  [1],
-       borderchars:  ['─', '│', '─', '│', '╭', '╮', '╯', '╰'],
-       borderhighlight:  ['Normal'],
-       highlight:  'Normal', }
+       callback: function('GeneralPopupCallback'),
+       border: [1],
+       borderchars: ['─', '│', '─', '│', '╭', '╮', '╯', '╰'],
+       borderhighlight: ['fuzzyyBorder'],
+       highlight: 'fuzzyyNormal', }
 
     if has_key(args, 'enable_border') && !args.enable_border
         remove(opts, 'border')
@@ -308,20 +306,20 @@ def CreatePopup(args: dict<any>): number
        setwinvar(wid, '&cursorlineopt', 'line')
     endif
     popup_wins[wid] = {
-         close_funcs:  [],
-         highlights:  {},
-         noscrollbar_width:  noscrollbar_width,
-         validrow:  0,
-         move_cb:  v:null,
-         line:  args.line,
-         col:  args.col,
-         width:  args.width,
-         height:  args.height,
-         reverse_menu:  0,
-         cursor_item:  v:null,
-         wid:  wid,
-         update_delay_timer:  -1,
-         prompt_delay_timer:  -1,
+         close_funcs: [],
+         highlights: {},
+         noscrollbar_width: noscrollbar_width,
+         validrow: 0,
+         move_cb: v:null,
+         line: args.line,
+         col: args.col,
+         width: args.width,
+         height: args.height,
+         reverse_menu: 0,
+         cursor_item: v:null,
+         wid: wid,
+         update_delay_timer: -1,
+         prompt_delay_timer: -1,
          }
 
     for key in ['reverse_menu', 'move_cb', 'close_cb']
@@ -336,8 +334,8 @@ def CreatePopup(args: dict<any>): number
 enddef
 
 def NewPopup(args: dict<any>): list<number>
-    var width   = get(args, 'width', 0.4)
-    var height  = get(args, 'height', 0.4)
+    var width = get(args, 'width', 0.4)
+    var height = get(args, 'height', 0.4)
     var xoffset = get(args, 'xoffset', 0.3)
     var yoffset = get(args, 'yoffset', 0.3)
 
@@ -350,17 +348,17 @@ def NewPopup(args: dict<any>): list<number>
     var final_height = min([max([1, height >= 1 ? height : float2nr(lines * height)]), lines])
 
     var line = yoffset >= 1 ? yoffset : float2nr(yoffset * lines)
-    var col = xoffset >=  1 ? xoffset : float2nr(xoffset * columns)
+    var col = xoffset >= 1 ? xoffset : float2nr(xoffset * columns)
 
     # Managing the differences
     line = min([max([0, line]), lines - final_height])
     col = min([max([0, col]), columns - final_width])
 
     var opts = extend(args, {
-     line:  line,
-     col:  col,
-     width:  final_width,
-     height:  final_height
+     line: line,
+     col: col,
+     width: final_width,
+     height: final_height
      })
 
     var wid = CreatePopup(opts)
@@ -445,34 +443,34 @@ export def MenuSetHl(name: string, hl_list_raw: list<any>)
     # in MS-Windows, matchaddpos() has maximum limit of 8 position groups
     var idx = 0
     while idx < len(hl_list)
-        matchaddpos(menu_matched_hl, hl_list[idx : idx + 7 ], 99, -1,  {'window': wins.menu})
+        matchaddpos('fuzzyyMatching', hl_list[idx : idx + 7 ], 99, -1,  {'window': wins.menu})
         idx += 8
     endwhile
 enddef
 
 def PopupPrompt(args: dict<any>): number
     var opts = {
-     width:  0.4,
-     height:  1,
-     filter:  function('PromptFilter')
+     width: 0.4,
+     height: 1,
+     filter: function('PromptFilter')
      }
-    opts            =  extend(opts, args)
-    var [wid, bufnr]    =  NewPopup(opts)
-    var prompt_char     =  has_key(args, 'prompt') ? args.prompt : '> '
-    var prompt_char_len =  strcharlen(prompt_char)
-    var prompt_opt      =  {
-     line:  [],
-     promptchar:  prompt_char,
-     displayed_line:  prompt_char .. " ",
+    opts = extend(opts, args)
+    var [wid, bufnr] = NewPopup(opts)
+    var prompt_char = has_key(args, 'prompt') ? args.prompt : '> '
+    var prompt_char_len = strcharlen(prompt_char)
+    var prompt_opt = {
+     line: [],
+     promptchar: prompt_char,
+     displayed_line: prompt_char .. " ",
      }
 
     var cursor_args = {
-     min_pos:  0,
-     max_pos:  0,
-     promptchar_len:  prompt_char_len,
-     cur_pos:  0,
-     highlight:  'Search',
-     mid:  -1,
+     min_pos: 0,
+     max_pos: 0,
+     promptchar_len: prompt_char_len,
+     cur_pos: 0,
+     highlight: 'fuzzyyCursor',
+     mid: -1,
      }
 
     popup_wins[wid].cursor_args = cursor_args
@@ -535,47 +533,47 @@ enddef
 #        prompt: wins.prompt,
 #        preview: wins.preview,
 #    }
-export def PopupSelection(user_opts: dict<any>): dict<any>
+export def PopupSelection(opts: dict<any>): dict<any>
     if active
         return { 'menu': -1, 'prompt': -1, 'preview': -1 }
     endif
     active = true
-    key_callbacks = has_key(user_opts, 'key_callbacks') ? user_opts.key_callbacks : {}
-    var has_preview = has_key(user_opts, 'preview') && user_opts.preview
+    key_callbacks = has_key(opts, 'key_callbacks') ? opts.key_callbacks : {}
+    var has_preview = has_key(opts, 'preview') ? opts.preview : 1
 
-    var width: any   = 0.8
-    var height: any  = 0.8
-    width   = has_key(user_opts, 'width') ? user_opts.width : width
-    height  = has_key(user_opts, 'height') ? user_opts.height : height
-    var xoffset = width < 1 ? (1 - width) / 2 : (&columns  - width) / 2
-    var yoffset = height < 1 ? (1 - height) / 2 : (&lines - height) / 2
+    var width: any = 0.8
+    var height: any = 0.8
+    width = has_key(opts, 'width') && opts.width > 0 ? opts.width : width
+    height = has_key(opts, 'height') && opts.height > 0 ? opts.height : height
 
     var preview_ratio = 0.5
-    preview_ratio = has_key(user_opts, 'preview_ratio') ? user_opts.preview_ratio : preview_ratio
+    preview_ratio = has_key(opts, 'preview_ratio') && opts.preview_ratio > 0 &&
+        opts.preview_ratio < 1 ? opts.preview_ratio : preview_ratio
 
-    # user's input always override the default
-    xoffset =  has_key(user_opts, 'xoffset') ? user_opts.xoffset : xoffset
-    yoffset =  has_key(user_opts, 'yoffset') ? user_opts.yoffset : yoffset
+    var xoffset = width < 1 ? (1 - width) / 2 : (&columns  - width) / 2
+    var yoffset = height < 1 ? (1 - height) / 2 : (&lines - height) / 2
+    xoffset = has_key(opts, 'xoffset') && opts.xoffset > 0 ? opts.xoffset : xoffset
+    yoffset = has_key(opts, 'yoffset') && opts.yoffset > 0 ? opts.yoffset : yoffset
 
     # convert all pos to number
-    yoffset       =  yoffset < 1 ? float2nr(yoffset * &lines) : float2nr(yoffset)
-    xoffset       =  xoffset < 1 ? float2nr(xoffset * &columns) : float2nr(xoffset)
-    height        =  height < 1 ? float2nr(height * &lines) : float2nr(height)
-    width         =  width < 1 ? float2nr(width * &columns) : float2nr(width)
+    yoffset = yoffset < 1 ? float2nr(yoffset * &lines) : float2nr(yoffset)
+    xoffset = xoffset < 1 ? float2nr(xoffset * &columns) : float2nr(xoffset)
+    height = height < 1 ? float2nr(height * &lines) : float2nr(height)
+    width = width < 1 ? float2nr(width * &columns) : float2nr(width)
 
     var preview_width = 0
-    var menu_width    = 0
+    var menu_width = 0
     if has_preview
         preview_width = float2nr(width * preview_ratio)
-        menu_width    = width - preview_width
+        menu_width = width - preview_width
     else
-        menu_width    = width
+        menu_width = width
     endif
 
-    var dropdown = has_key(user_opts, 'dropdown') && user_opts.dropdown
+    var dropdown = has_key(opts, 'dropdown') && opts.dropdown
 
-    var prompt_height =  3
-    var menu_height   =  height - prompt_height
+    var prompt_height = 3
+    var menu_height = height - prompt_height
 
     var prompt_yoffset: number
     var menu_yoffset: number
@@ -590,67 +588,67 @@ export def PopupSelection(user_opts: dict<any>): dict<any>
         prompt_yoffset = yoffset + menu_height + 2
         reverse_menu = 1
     endif
-    reverse_menu = has_key(user_opts, 'reverse_menu') ? user_opts.reverse_menu : reverse_menu
+    reverse_menu = has_key(opts, 'reverse_menu') ? opts.reverse_menu : reverse_menu
 
     var menu_opts = {
-        callback:  has_key(user_opts, 'select_cb') ? user_opts.select_cb : v:null,
-        close_cb:  has_key(user_opts, 'close_cb') ? user_opts.close_cb : v:null,
-        scrollbar:  has_key(user_opts, 'scrollbar') ? user_opts.scrollbar : 1,
+        callback: has_key(opts, 'select_cb') ? opts.select_cb : v:null,
+        close_cb: has_key(opts, 'close_cb') ? opts.close_cb : v:null,
+        scrollbar: has_key(opts, 'scrollbar') ? opts.scrollbar : 0,
         reverse_menu: reverse_menu,
-        yoffset:  menu_yoffset,
-        xoffset:  xoffset,
-        width:  menu_width,
-        height:  menu_height,
-        zindex:  1200,
+        yoffset: menu_yoffset,
+        xoffset: xoffset,
+        width: menu_width,
+        height: menu_height,
+        zindex: 1200,
     }
 
     for key in ['title', 'move_cb']
-        if has_key(user_opts, key)
-            menu_opts[key] = user_opts[key]
+        if has_key(opts, key)
+            menu_opts[key] = opts[key]
         endif
     endfor
 
     wins.menu = PopupMenu(menu_opts)
 
     var prompt_opts = {
-        yoffset:  prompt_yoffset,
-        xoffset:  xoffset,
-        width:  menu_width,
-        input_cb:  has_key(user_opts, 'input_cb') ? user_opts.input_cb : v:null,
-        prompt: has_key(user_opts, 'prompt') ? user_opts.prompt : '> ',
-        zindex:  1010,
+        yoffset: prompt_yoffset,
+        xoffset: xoffset,
+        width: menu_width,
+        input_cb: has_key(opts, 'input_cb') ? opts.input_cb : v:null,
+        prompt: has_key(opts, 'prompt') ? opts.prompt : '> ',
+        zindex: 1010,
     }
     wins.prompt = PopupPrompt(prompt_opts)
 
     if has_preview
-        var preview_xoffset =  popup_wins[wins.menu].col + popup_wins[wins.menu].width
-        var menu_row        =  popup_wins[wins.menu].line
-        var prompt_row      =  popup_wins[wins.prompt].line
-        prompt_height   =  popup_wins[wins.prompt].height
-        # var preview_height  =  prompt_row - menu_row + prompt_height
-        var preview_height  =   menu_height + prompt_height + 2
-        var preview_opts    =  {
-            width:  preview_width,
-            height:  preview_height,
-            yoffset:  yoffset,
-            xoffset:  preview_xoffset + 2,
-            zindex:  1100,
+        var preview_xoffset = popup_wins[wins.menu].col + popup_wins[wins.menu].width
+        var menu_row = popup_wins[wins.menu].line
+        var prompt_row = popup_wins[wins.prompt].line
+        prompt_height = popup_wins[wins.prompt].height
+        # var preview_height = prompt_row - menu_row + prompt_height
+        var preview_height =  menu_height + prompt_height + 2
+        var preview_opts = {
+            width: preview_width,
+            height: preview_height,
+            yoffset: yoffset,
+            xoffset: preview_xoffset + 2,
+            zindex: 1100,
         }
-        wins.preview      =  PopupPreview(preview_opts)
+        wins.preview = PopupPreview(preview_opts)
         wins.preview = wins.preview
         popup_wins[wins.preview].partids = wins
     endif
 
-    if has_key(user_opts, 'infowin') && user_opts.infowin
+    if has_key(opts, 'infowin') && opts.infowin
         var info_bufnr: number
         [wins.info, info_bufnr] = NewPopup({
-            width:  menu_width - 1,
-            height:  1,
-            yoffset:  yoffset + 1,
-            xoffset:  xoffset + 1,
-            padding:  [0, 0, 0, 1],
-            zindex:  2000,
-            enable_border:  0,
+            width: menu_width - 1,
+            height: 1,
+            yoffset: yoffset + 1,
+            xoffset: xoffset + 1,
+            padding: [0, 0, 0, 1],
+            zindex: 2000,
+            enable_border: 0,
         })
         wins.info = wins.info
         popup_wins[wins.info].partids = wins
@@ -660,9 +658,9 @@ export def PopupSelection(user_opts: dict<any>): dict<any>
     popup_wins[wins.prompt].partids = wins
 
     t_ve = &t_ve
-    guicursor = &guicursor
     setlocal t_ve=
     # hide cursor in macvim or other guivim
-    set guicursor=a:xxx
+    hlcursor = hlget('Cursor')[0]
+    hlset([{name: 'Cursor', cleared: v:true}])
     return wins
 enddef
