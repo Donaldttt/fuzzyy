@@ -2,8 +2,13 @@ vim9script
 
 import autoload './utils/selector.vim'
 import autoload './utils/popup.vim'
+import autoload './utils/devicons.vim'
+
+var devicon_char_width = devicons.GetDeviconCharWidth()
 
 # Options
+var enable_devicons = exists('g:fuzzyy_devicons') && exists('g:WebDevIconsGetFileTypeSymbol') ?
+    g:fuzzyy_devicons : exists('g:WebDevIconsGetFileTypeSymbol')
 var respect_gitignore = exists('g:fuzzyy_grep_respect_gitignore') ?
     g:fuzzyy_grep_respect_gitignore : g:fuzzyy_respect_gitignore
 var file_exclude = exists('g:fuzzyy_grep_exclude_file')
@@ -198,11 +203,6 @@ def Reducer(pattern: string, acc: dict<any>, val: string): dict<any>
     return acc
 enddef
 
-def JobHandler(channel: channel, msg: string)
-    var lists = selector.Split(msg)
-    cur_result += lists
-enddef
-
 def JobStart(pattern: string)
     if type(jid) == v:t_job
         try | job_stop(jid) | catch | endtry
@@ -221,18 +221,23 @@ def JobStart(pattern: string)
         cmd_str = printf(cmd, '', escape(pattern, '"'), escape(cwd, '"'))
     endif
     jid = job_start(cmd_str, {
-        out_cb: function('JobHandler'),
+        out_cb: function('JobOutCb'),
         out_mode: 'raw',
-        exit_cb: function('ExitCb'),
-        err_cb: function('ErrCb'),
+        exit_cb: function('JobExitCb'),
+        err_cb: function('JobErrCb'),
     })
 enddef
 
-def ErrCb(channel: channel, msg: string)
+def JobOutCb(channel: channel, msg: string)
+    var lists = selector.Split(msg)
+    cur_result += lists
+enddef
+
+def JobErrCb(channel: channel, msg: string)
     echoerr msg
 enddef
 
-def ExitCb(id: job, status: number)
+def JobExitCb(id: job, status: number)
     if id == jid
         job_running = 0
     endif
@@ -274,6 +279,9 @@ enddef
 
 def Preview(wid: number, opts: dict<any>)
     var result = opts.cursor_item
+    if enable_devicons
+        result = strcharpart(result, devicon_char_width + 1)
+    endif
     var last_item = opts.last_cursor_item
     var [relative_path, linenr, colnr] = ParseResult(result)
     var last_path: string
@@ -317,6 +325,9 @@ def Select(wid: number, result: list<any>)
     var [relative_path, linenr, _] = ParseResult(result[0])
     if relative_path == v:null
         return
+    endif
+    if enable_devicons
+        relative_path = strcharpart(relative_path, devicon_char_width + 1)
     endif
     var path = cwd .. '/' .. relative_path
     exe 'edit ' .. path
@@ -365,6 +376,12 @@ def UpdateMenu(...li: list<any>)
         hl_list = []
     endif
 
+    if enable_devicons
+        map(strs, (_, val) => {
+            return g:WebDevIconsGetFileTypeSymbol(split(val, ':')[0]) .. ' ' .. val
+        })
+    endif
+
     selector.UpdateMenu(strs, hl_list)
     UpdatePreviewHl()
     last_pattern = cur_pattern
@@ -409,6 +426,8 @@ export def Start(opts: dict<any> = {})
         input_cb: function('Input'),
         preview_cb: function('Preview'),
         close_cb: function('CloseCb'),
+        enable_devicons: enable_devicons,
+        key_callbacks: selector.split_edit_callbacks
      }))
     menu_wid = wids.menu
     if menu_wid == -1

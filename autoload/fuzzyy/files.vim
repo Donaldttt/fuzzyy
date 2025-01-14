@@ -86,7 +86,6 @@ def Input(wid: number, val: dict<any>, ...li: list<any>)
         selector.UpdateMenu(ProcessResult(cur_result, 100), [])
         popup_setoptions(menu_wid, {'title': len(cur_result)})
     endif
-
 enddef
 
 def Preview(wid: number, opts: dict<any>)
@@ -128,30 +127,30 @@ def JobStart(path: string, cmd: string)
         return
     endif
     jid = job_start(cmd, {
-        out_cb: function('JobHandler'),
+        out_cb: function('JobOutCb'),
         out_mode: 'raw',
-        exit_cb: function('ExitCb'),
-        err_cb: function('ErrCb'),
+        exit_cb: function('JobExitCb'),
+        err_cb: function('JobErrCb'),
         cwd: path
     })
 enddef
 
-def ErrCb(channel: channel, msg: string)
+def JobOutCb(channel: channel, msg: string)
+    var lists = selector.Split(msg)
+    cur_result += lists
+enddef
+
+def JobErrCb(channel: channel, msg: string)
     echoerr msg
 enddef
 
-def ExitCb(j: job, status: number)
+def JobExitCb(id: job, status: number)
     in_loading = 0
     timer_stop(files_update_tid)
-	if last_result_len <= 0
+    if last_result_len <= 0
         selector.UpdateMenu(ProcessResult(cur_result, 100), [])
-	endif
+    endif
     popup_setoptions(menu_wid, {'title': len(cur_result)})
-enddef
-
-def JobHandler(channel: channel, msg: string)
-    var lists = selector.Split(msg)
-    cur_result += lists
 enddef
 
 def Profiling()
@@ -171,13 +170,13 @@ def UpdateMenu(...li: list<any>)
     endif
     last_result_len = cur_result_len
 
-        if cur_pattern != last_pattern
-            selector.FuzzySearchAsync(cur_result, cur_pattern, 200, function('AsyncCb'))
-            if cur_pattern == ''
-                selector.UpdateMenu(ProcessResult(cur_result, 100), [])
-            endif
-            last_pattern = cur_pattern
+    if cur_pattern != last_pattern
+        selector.FuzzySearchAsync(cur_result, cur_pattern, 200, function('AsyncCb'))
+        if cur_pattern == ''
+            selector.UpdateMenu(ProcessResult(cur_result, 100), [])
         endif
+        last_pattern = cur_pattern
+    endif
 enddef
 
 def Close(wid: number, opts: dict<any>)

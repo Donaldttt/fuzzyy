@@ -283,49 +283,61 @@ enddef
 # For split callbacks
 def CloseTab(wid: number, result: dict<any>)
     if has_key(result, 'cursor_item')
-        var buf = result.cursor_item
+        var [buf, linenr] = split(result.cursor_item .. ':0', ':')[0 : 1]
         if enable_devicons
             buf = strcharpart(buf, devicon_char_width + 1)
         endif
         var bufnr = bufnr(buf)
-        if bufnr >= 0
+        if bufnr > 0
             # for special buffers that cannot be edited
             execute 'tabnew'
             execute 'buffer ' .. bufnr
         else
             execute 'tabnew ' .. buf
         endif
+        if str2nr(linenr) > 0
+            exe 'norm! ' .. linenr .. 'G'
+            exe 'norm! zz'
+        endif
     endif
 enddef
 
 def CloseVSplit(wid: number, result: dict<any>)
     if has_key(result, 'cursor_item')
-        var buf = result.cursor_item
+        var [buf, linenr] = split(result.cursor_item .. ':0', ':')[0 : 1]
         if enable_devicons
             buf = strcharpart(buf, devicon_char_width + 1)
         endif
         var bufnr = bufnr(buf)
-        if bufnr >= 0
+        if bufnr > 0
             # for special buffers that cannot be edited
             execute 'vert sb ' .. bufnr
         else
             execute 'vsp ' .. buf
+        endif
+        if str2nr(linenr) > 0
+            exe 'norm! ' .. linenr .. 'G'
+            exe 'norm! zz'
         endif
     endif
 enddef
 
 def CloseSplit(wid: number, result: dict<any>)
     if has_key(result, 'cursor_item')
-        var buf = result.cursor_item
+        var [buf, linenr] = split(result.cursor_item .. ':0', ':')[0 : 1]
         if enable_devicons
             buf = strcharpart(buf, devicon_char_width + 1)
         endif
         var bufnr = bufnr(buf)
-        if bufnr >= 0
+        if bufnr > 0
             # for special buffers that cannot be edited
             execute 'sb ' .. bufnr
         else
             execute 'sp ' .. buf
+        endif
+        if str2nr(linenr) > 0
+            exe 'norm! ' .. linenr .. 'G'
+            exe 'norm! zz'
         endif
     endif
 enddef

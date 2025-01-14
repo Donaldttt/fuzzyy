@@ -89,14 +89,13 @@ You can set `g:fuzzyy_keymaps` to change these defaults.
 ### Command Specific keymaps
 - FuzzyHighlights
     - `ctrl + k` toggle white preview background color
-    - `Enter` will copy selected highlight
 
-- FuzzyMru/FuzzyMruCwd
+- FuzzyMru, FuzzyMruCwd
     - `ctrl + k` toggle between all MRU files and cwd only
 
-- FuzzyBuffers, FuzzyMru, FuzzyFiles, FuzzyGitFiles
-    - `ctrl + s` open selected file in horizontal spliting
-    - `ctrl + v` open selected file in vertical spliting
+- FuzzyBuffers, FuzzyFiles, FuzzyGitFiles, FuzzyGrep, FuzzyMru, FuzzyMruCwd
+    - `ctrl + s` open selected file in horizontal split
+    - `ctrl + v` open selected file in vertical split
     - `ctrl + t` open selected file in new tab page
 
 ## Default mappings
