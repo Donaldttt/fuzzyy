@@ -4,11 +4,7 @@ import autoload './utils/selector.vim'
 import autoload './utils/popup.vim'
 import autoload './utils/devicons.vim'
 
-var devicon_char_width = devicons.GetDeviconCharWidth()
-
 # Options
-var enable_devicons = exists('g:fuzzyy_devicons') && exists('g:WebDevIconsGetFileTypeSymbol') ?
-    g:fuzzyy_devicons : exists('g:WebDevIconsGetFileTypeSymbol')
 var respect_gitignore = exists('g:fuzzyy_grep_respect_gitignore') ?
     g:fuzzyy_grep_respect_gitignore : g:fuzzyy_respect_gitignore
 var file_exclude = exists('g:fuzzyy_grep_exclude_file')
@@ -24,6 +20,8 @@ var follow_symlinks = exists('g:fuzzyy_grep_follow_symlinks') ?
 var ripgrep_options = exists('g:fuzzyy_grep_ripgrep_options')
     && type(g:fuzzyy_grep_ripgrep_options) == v:t_list ?
     g:fuzzyy_grep_ripgrep_options : g:fuzzyy_ripgrep_options
+
+var enable_devicons = devicons.enable_devicons
 
 var loading = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
 
@@ -280,7 +278,7 @@ enddef
 def Preview(wid: number, opts: dict<any>)
     var result = opts.cursor_item
     if enable_devicons
-        result = strcharpart(result, devicon_char_width + 1)
+        result = devicons.RemoveDevicon(result)
     endif
     var last_item = opts.last_cursor_item
     var [relative_path, linenr, colnr] = ParseResult(result)
@@ -327,7 +325,7 @@ def Select(wid: number, result: list<any>)
         return
     endif
     if enable_devicons
-        relative_path = strcharpart(relative_path, devicon_char_width + 1)
+        relative_path = devicons.RemoveDevicon(relative_path)
     endif
     var path = cwd .. '/' .. relative_path
     exe 'edit ' .. path
@@ -377,9 +375,7 @@ def UpdateMenu(...li: list<any>)
     endif
 
     if enable_devicons
-        map(strs, (_, val) => {
-            return g:WebDevIconsGetFileTypeSymbol(split(val, ':')[0]) .. ' ' .. val
-        })
+        devicons.AddDevicons(strs)
     endif
 
     selector.UpdateMenu(strs, hl_list)

@@ -16,10 +16,7 @@ var menu_wid: number
 var files_update_tid: number
 var cache: dict<any>
 var matched_hl_offset = 0
-var devicon_char_width = devicons.GetDeviconCharWidth()
-
-var enable_devicons = exists('g:fuzzyy_devicons') && exists('g:WebDevIconsGetFileTypeSymbol') ?
-    g:fuzzyy_devicons : exists('g:WebDevIconsGetFileTypeSymbol')
+var enable_devicons = devicons.enable_devicons
 if enable_devicons
     # devicons take 3/4(macvim) chars position plus 1 space
     matched_hl_offset = devicons.GetDeviconWidth() + 1
@@ -34,7 +31,7 @@ def ProcessResult(list_raw: list<string>, ...args: list<any>): list<string>
         li = list_raw
     endif
     if enable_devicons
-         map(li, 'g:WebDevIconsGetFileTypeSymbol(v:val) .. " " .. v:val')
+        devicons.AddDevicons(li)
     endif
     # Hack for Git-Bash / Mingw-w64, Cygwin, and possibly other friends
     # External commands like rg may return paths with Windows file separator,
@@ -46,7 +43,7 @@ enddef
 def Select(wid: number, result: list<any>)
     var path = result[0]
     if enable_devicons
-        path = strcharpart(path, devicon_char_width + 1)
+        path = devicons.RemoveDevicon(path)
     endif
     selector.MoveToUsableWindow()
     exe 'edit ' .. path
@@ -91,7 +88,7 @@ enddef
 def Preview(wid: number, opts: dict<any>)
     var result = opts.cursor_item
     if enable_devicons
-        result = strcharpart(result, devicon_char_width + 1)
+        result = devicons.RemoveDevicon(result)
     endif
     if !has_key(opts.win_opts.partids, 'preview')
         return
