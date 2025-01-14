@@ -1,6 +1,6 @@
 # Fuzzyy
 
-A fuzzy picker for files, strings, help documents and many other things.
+A fuzzy finder for files, strings, help documents and many other things.
 
 It utilizes Vim's native matchfuzzypos function and popup window feature.
 
@@ -91,7 +91,7 @@ You can set `g:fuzzyy_keymaps` to change these defaults.
     - `ctrl + k` toggle white preview background color
 
 - FuzzyMru, FuzzyMruCwd
-    - `ctrl + k` toggle between all MRU files and cwd only
+    - `ctrl + k` toggle between all MRU files and CWD only
 
 - FuzzyBuffers, FuzzyFiles, FuzzyGitFiles, FuzzyGrep, FuzzyMru, FuzzyMruCwd
     - `ctrl + s` open selected file in horizontal split
@@ -116,13 +116,13 @@ nnoremap <silent> <leader>fr :FuzzyMruCwd<CR>
 ## Options
 
 ```vim
-" Set to 0 to disable default keybindings
+" Set to 0 to disable default mappings
 " Default to 1
 let g:fuzzyy_enable_mappings = 1
 
-" Show devicons when using FuzzyFiles or FuzzyBuffers
-" Requires vim-devicons
-" Default to 1 if vim-devicons is installed, 0 otherwise
+" Show devicons when listing files (e.g. FuzzyFiles, FuzzyBuffers)
+" Requires vim-devicons, see https://github.com/ryanoasis/vim-devicons
+" Default to 1 (show devicons if installed), set to 0 to always disable
 let g:fuzzyy_devicons = 1
 
 " Enable dropdown theme (prompt at top rather than bottom)
@@ -186,7 +186,7 @@ let g:fuzzyy_ripgrep_options = [
 " g:fuzzyy_files_ripgrep_options and g:fuzzyy_grep_ripgrep_options
 
 " Change navigation keymaps
-" The following is the default
+" The following are the defaults
 let g:fuzzyy_keymaps = {
 \     'menu_up': ["\<c-p>", "\<Up>"],
 \     'menu_down': ["\<c-n>", "\<Down>"],
@@ -206,23 +206,18 @@ let g:fuzzyy_keymaps = {
 " FuzzyBuffers will exclude the buffers in this list. Buffers not included in
 " Vim's buffer list are excluded by default, so this is only necessary for
 " buffers included in Vim's buffer list, but you want hidden by FuzzyBuffers
-" default to []
+" Default to []
 let g:fuzzyy_buffers_exclude = []
 
 " FuzzyBuffer keymap for commands speicific to FuzzyBuffers
-" default to is the following
+" The following are the defaults
 let g:fuzzyy_buffers_keymap = {
 \    'delete_buffer': "",
 \    'close_buffer': "\<c-l>",
 \ }
 
-" window layout customization
-" you can override it by setting g:fuzzyy_window_layout
-" e.g. You can disable preview window for FuzzyFiles commands by doing this:
-" let g:fuzzyy_window_layout = { 'files': { 'preview': 0 } }
-" or you change the width of the preview window for FuzzyFiles by doing this:
-" let g:fuzzyy_window_layout = { 'files': { 'preview_ratio': 0.6 } }
-" Allowed options and their defaults are:
+" Window layout configuration, customize by setting g:fuzzyy_window_layout
+" The general defaults for window layout options are:
 "     'preview': 1,         " 1 means enable preview window, 0 means disable
 "     'preview_ratio': 0.5, " 0.5 means preview window will take 50% of the layout
 "     'width': 0.8,         " 0.8 means total width of the layout will take 80% of the screen
@@ -234,8 +229,8 @@ let g:fuzzyy_buffers_keymap = {
 " width, height, and x and y offsets > 0 and < 1 are resolved as percentages
 " width, height, and x and y offsets >= 1 are fixed numbers of lines and cols
 " invalid values for preview_ratio, width, height, and x and y offsets are ignored
-" Default window layout configuration is:
-let g:fuzzyy_window_layout = {
+" This configuration is also customised per selector, with the following defaults
+\ {
 \    'files': {},
 \    'grep': {},
 \    'buffers': {},
@@ -256,6 +251,11 @@ let g:fuzzyy_window_layout = {
 \    },
 \    'inbuffer': {},
 \ }
+" e.g. You can disable preview window for FuzzyFiles and friends with:
+let g:fuzzyy_window_layout = { 'files': { 'preview': 0 } }
+" or you change the width of the preview window for FuzzyColors with:
+let g:fuzzyy_window_layout = { 'colors': { 'width': 0.4 } }
+" Note: values set in g:fuzzyy_window_layout are merged with the defaults
 
 " async step processing configuration, normally you can leave this alone, but...
 " Fuzzyy mimics async processing to fuzzy match in batches, which avoids
