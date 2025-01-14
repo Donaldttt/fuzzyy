@@ -217,6 +217,23 @@ def MenuFilter(wid: number, key: string): number
         else
             win_execute(wid, 'norm k')
         endif
+    elseif key ==? "\<LeftMouse>"
+        var pos = getmousepos()
+        if pos.winid == wid
+            win_execute(wid, 'norm ' .. pos.line .. 'G')
+            moved = 1
+        endif
+    elseif key ==? "\<2-LeftMouse>"
+        var pos = getmousepos()
+        if pos.winid == wid
+            win_execute(wid, 'norm ' .. pos.line .. 'G')
+            var linetext = getbufline(bufnr, pos.line, pos.line)[0]
+            if linetext == ''
+                popup_close(wid)
+            else
+                popup_close(wid, [linetext])
+            endif
+        endif
     elseif index(keymaps['menu_select'], key) >= 0
         # if not passing second argument, popup_close will call user callback
         # with func(window-id, 0)
@@ -251,6 +268,16 @@ def PreviewFilter(wid: number, key: string): number
         win_execute(wid, "norm \<c-u>")
     elseif index(keymaps['preview_down_half_page'], key) >= 0
         win_execute(wid, "norm \<c-d>")
+    elseif key ==? "\<ScrollWheelUp>"
+        var pos = getmousepos()
+        if pos.winid == wid
+            win_execute(wid, "norm \<c-u>")
+        endif
+    elseif key ==? "\<ScrollWheelDown>"
+        var pos = getmousepos()
+        if pos.winid == wid
+            win_execute(wid, "norm \<c-d>")
+        endif
     else
         return 0
     endif

@@ -103,8 +103,9 @@ def Preview(wid: number, opts: dict<any>)
         return
     endif
     var preview_bufnr = winbufnr(preview_wid)
-    var fileraw = readfile(result, '', 70)
+    var fileraw = readfile(result, '', 1000)
     noautocmd call popup_settext(preview_wid, fileraw)
+    win_execute(preview_wid, 'norm gg')
     win_execute(preview_wid, 'silent! doautocmd filetypedetect BufNewFile ' .. result)
     noautocmd win_execute(preview_wid, 'silent! setlocal nospell nolist')
 enddef

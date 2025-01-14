@@ -86,6 +86,10 @@ Arrow keys or `ctrl + p`/ `ctrl + n` moves up/down the menu
 
 You can set `g:fuzzyy_keymaps` to change these defaults.
 
+Navigation with the mouse is also supported. A single mouse click in the menu
+window moves the cursor line, double click selects a line. The mouse wheel can
+be used to scroll the preview window, but not the menu window.
+
 ### Command Specific keymaps
 - FuzzyHighlights
     - `ctrl + k` toggle white preview background color
