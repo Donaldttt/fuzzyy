@@ -271,12 +271,12 @@ def PreviewFilter(wid: number, key: string): number
     elseif key ==? "\<ScrollWheelUp>"
         var pos = getmousepos()
         if pos.winid == wid
-            win_execute(wid, "norm \<c-u>")
+            win_execute(wid, "norm 3\<c-y>")
         endif
     elseif key ==? "\<ScrollWheelDown>"
         var pos = getmousepos()
         if pos.winid == wid
-            win_execute(wid, "norm \<c-d>")
+            win_execute(wid, "norm 3\<c-e>")
         endif
     else
         return 0
