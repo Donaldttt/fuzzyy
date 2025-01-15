@@ -7,8 +7,11 @@ var fzf_list: list<string>
 var cwd: string
 var menu_wid: number
 var prompt_str: string
+var matched_hl_offset = 0
 var menu_hl_list: list<any>
-var enable_devicons = 0
+var devicon_char_width = devicons.GetDeviconCharWidth()
+var enable_devicons = exists('g:fuzzyy_devicons') && exists('g:WebDevIconsGetFileTypeSymbol') ?
+    g:fuzzyy_devicons : exists('g:WebDevIconsGetFileTypeSymbol')
 var reuse_windows = exists('g:fuzzyy_reuse_windows')
     && type(g:fuzzyy_reuse_windows) == v:t_list ?
     g:fuzzyy_reuse_windows : ['netrw']
@@ -16,6 +19,9 @@ var async_step = exists('g:fuzzyy_async_step')
     && type(g:fuzzyy_async_step) == v:t_number ?
     g:fuzzyy_async_step : 10000
 
+if enable_devicons
+    matched_hl_offset = devicons.GetDeviconWidth() + 1
+endif
 export var windows: dict<any>
 
 var enable_dropdown = exists('g:fuzzyy_dropdown') ? g:fuzzyy_dropdown : 0
@@ -52,7 +58,7 @@ export def MenuGetCursorItem(stripped: bool): string
     var bufline = getbufline(bufnr, cursorlinepos, cursorlinepos)[0]
     if stripped
         if enable_devicons
-            bufline = devicons.RemoveDevicon(bufline)
+            bufline = strcharpart(bufline, devicon_char_width + 1)
         endif
     endif
     return bufline
@@ -252,12 +258,11 @@ def Input(wid: number, args: dict<any>, ...li: list<any>)
     [ret, menu_hl_list] = FuzzySearch(fzf_list, prompt_str)
 
     if enable_devicons
-        var matched_hl_offset = devicons.GetDeviconWidth() + 1
-        devicons.AddDevicons(ret)
-        menu_hl_list = reduce(menu_hl_list, (a, v) => {
+         map(ret, 'g:WebDevIconsGetFileTypeSymbol(v:val) .. " " .. v:val')
+         menu_hl_list = reduce(menu_hl_list, (a, v) => {
             v[1] += matched_hl_offset
             return add(a, v)
-        }, [])
+         }, [])
     endif
 
     popup.MenuSetText(ret)
@@ -280,7 +285,7 @@ def CloseTab(wid: number, result: dict<any>)
     if has_key(result, 'cursor_item')
         var [buf, linenr] = split(result.cursor_item .. ':0', ':')[0 : 1]
         if enable_devicons
-            buf = devicons.RemoveDevicon(buf)
+            buf = strcharpart(buf, devicon_char_width + 1)
         endif
         var bufnr = bufnr(buf)
         if bufnr > 0
@@ -301,7 +306,7 @@ def CloseVSplit(wid: number, result: dict<any>)
     if has_key(result, 'cursor_item')
         var [buf, linenr] = split(result.cursor_item .. ':0', ':')[0 : 1]
         if enable_devicons
-            buf = devicons.RemoveDevicon(buf)
+            buf = strcharpart(buf, devicon_char_width + 1)
         endif
         var bufnr = bufnr(buf)
         if bufnr > 0
@@ -321,7 +326,7 @@ def CloseSplit(wid: number, result: dict<any>)
     if has_key(result, 'cursor_item')
         var [buf, linenr] = split(result.cursor_item .. ':0', ':')[0 : 1]
         if enable_devicons
-            buf = devicons.RemoveDevicon(buf)
+            buf = strcharpart(buf, devicon_char_width + 1)
         endif
         var bufnr = bufnr(buf)
         if bufnr > 0

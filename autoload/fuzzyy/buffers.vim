@@ -5,12 +5,15 @@ import autoload './utils/devicons.vim'
 
 var buf_dict: dict<any>
 var key_callbacks: dict<any>
+var devicon_char_width = devicons.GetDeviconCharWidth()
 var _window_width: float
-var enable_devicons = devicons.enable_devicons
 
 # Options
+var enable_devicons = exists('g:fuzzyy_devicons') && exists('g:WebDevIconsGetFileTypeSymbol') ?
+    g:fuzzyy_devicons : exists('g:WebDevIconsGetFileTypeSymbol')
 var exclude_buffers = exists('g:fuzzyy_buffers_exclude') ?
     g:fuzzyy_buffers_exclude : []
+
 
 var keymaps = {
     'delete_buffer': "",
@@ -31,7 +34,7 @@ def Preview(wid: number, opts: dict<any>)
         return
     endif
     if enable_devicons
-        result = devicons.RemoveDevicon(result)
+        result = strcharpart(result, devicon_char_width + 1)
     endif
     var file: string
     var lnum: number
@@ -62,7 +65,7 @@ def Close(wid: number, result: dict<any>)
     if has_key(result, 'selected_item')
         var buf = result.selected_item
         if enable_devicons
-            buf = devicons.RemoveDevicon(buf)
+            buf = strcharpart(buf, devicon_char_width + 1)
         endif
         var bufnr = buf_dict[buf][1]
         if bufnr != bufnr('$')
