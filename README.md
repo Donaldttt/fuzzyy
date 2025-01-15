@@ -57,6 +57,8 @@ git clone https://github.com/Donaldttt/fuzzyy ~/.vim/pack/Donaldttt/start/fuzzyy
 | FuzzyInBuffer \<str>  | search for string in buffer, use \<str> if provided   | \<leader>fi     |
 | FuzzyHelp             | search subjects/tags in :help documents               | \<leader>fh     |
 | FuzzyCommands         | search commands                                       | \<leader>fc     |
+| FuzzyFilesRoot        | search files in the project/vcs root directory        | None    |
+| FuzzyGrepRoot \<str>  | search for string in the project/vcs root directory   | None    |
 | FuzzyColors           | search installed color schemes                        | None    |
 | FuzzyCmdHistory       | search command history                                | None    |
 | FuzzyHighlights       | search highlight groups                               | None    |
@@ -166,6 +168,14 @@ let g:fuzzyy_include_hidden = 1
 let g:fuzzyy_follow_symlinks = 0
 " This option can also be set specifically for FuzzyFiles and/or FuzzyGrep using
 " g:fuzzyy_files_follow_symlinks and g:fuzzyy_grep_follow_symlinks
+
+" Patterns to identify a root directory for FuzzyFilesRoot and FuzzyGrepRoot
+" These commands find a "root" directory to use as the working directory by
+" walking up the direcrory tree looking for any match of these glob patterns.
+" Default is intentionally conservative, using common VCS root markers only
+let g:fuzzyy_root_patterns = ['.git', '.hg', '.svn']
+" Example usage
+let g:fuzzyy_root_patterns = ['.git', 'package.json', 'pyproject.toml']
 
 " Make FuzzyFiles, FuzzyGrep, and FuzzyMru always exclude files/directories
 " This applies whether .gitignore is respected or not

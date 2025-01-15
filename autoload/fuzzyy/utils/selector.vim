@@ -18,6 +18,9 @@ var reuse_windows = exists('g:fuzzyy_reuse_windows')
 var async_step = exists('g:fuzzyy_async_step')
     && type(g:fuzzyy_async_step) == v:t_number ?
     g:fuzzyy_async_step : 10000
+var root_patterns = exists('g:fuzzyy_root_patterns')
+    && type(g:fuzzyy_root_patterns) == v:t_list ?
+    g:fuzzyy_root_patterns : ['.git', '.hg', '.svn']
 
 if enable_devicons
     matched_hl_offset = devicons.GetDeviconWidth() + 1
@@ -72,6 +75,21 @@ export def Split(str: string): list<string>
         sep = '\n'
     endif
     return split(str, sep)
+enddef
+
+export def GetRootDir(): string
+  var dir = getcwd()
+  var cur: string
+  while 1
+    for pattern in root_patterns
+      if !empty(globpath(dir, pattern, 1))
+        return dir
+      endif
+    endfor
+    [cur, dir] = [dir, fnamemodify(dir, ':h')]
+    if cur == dir | break | endif
+  endwhile
+  return getcwd()
 enddef
 
 # Search pattern @pattern in a list of strings @li
@@ -293,7 +311,8 @@ def CloseTab(wid: number, result: dict<any>)
             execute 'tabnew'
             execute 'buffer ' .. bufnr
         else
-            execute 'tabnew ' .. buf
+            var path = cwd .. '/' .. buf
+            execute 'tabnew ' .. path
         endif
         if str2nr(linenr) > 0
             exe 'norm! ' .. linenr .. 'G'
@@ -313,7 +332,8 @@ def CloseVSplit(wid: number, result: dict<any>)
             # for special buffers that cannot be edited
             execute 'vert sb ' .. bufnr
         else
-            execute 'vsp ' .. buf
+            var path = cwd .. '/' .. buf
+            execute 'vsp ' .. path
         endif
         if str2nr(linenr) > 0
             exe 'norm! ' .. linenr .. 'G'
@@ -333,7 +353,8 @@ def CloseSplit(wid: number, result: dict<any>)
             # for special buffers that cannot be edited
             execute 'sb ' .. bufnr
         else
-            execute 'sp ' .. buf
+            var path = cwd .. '/' .. buf
+            execute 'sp ' .. path
         endif
         if str2nr(linenr) > 0
             exe 'norm! ' .. linenr .. 'G'
@@ -403,7 +424,7 @@ export def Start(li_raw: list<string>, opts: dict<any>): dict<any>
     if popup.active
         return { 'menu': -1, 'prompt': -1, 'preview': -1 }
     endif
-    cwd = getcwd()
+    cwd = len(get(opts, 'cwd', '')) > 0 ? opts.cwd : getcwd()
     prompt_str = ''
 
     enable_devicons = has_key(opts, 'enable_devicons') ? opts.enable_devicons : 0
