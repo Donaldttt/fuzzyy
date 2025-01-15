@@ -42,8 +42,10 @@ def Restore()
     if &t_ve != t_ve
         &t_ve = t_ve
     endif
-    if get(hlget('Cursor')[0], 'cleared', v:false)
-        hlset([hlcursor])
+    if has('gui')
+        if get(hlget('Cursor')[0], 'cleared', v:false)
+            hlset([hlcursor])
+        endif
     endif
     active = false
 enddef
@@ -687,7 +689,9 @@ export def PopupSelection(opts: dict<any>): dict<any>
     t_ve = &t_ve
     setlocal t_ve=
     # hide cursor in macvim or other guivim
-    hlcursor = hlget('Cursor')[0]
-    hlset([{name: 'Cursor', cleared: v:true}])
+    if has('gui')
+        hlcursor = hlget('Cursor')[0]
+        hlset([{name: 'Cursor', cleared: v:true}])
+    endif
     return wins
 enddef
