@@ -163,7 +163,7 @@ let g:fuzzyy_include_hidden = 1
 " Make FuzzyFiles & FuzzyGrep follow symbolic links
 " Not applied when using git-ls-files, git-grep or FINDSTR
 " Default to 0
-let g:fuzzyy_files_follow_symlinks = 0
+let g:fuzzyy_follow_symlinks = 0
 " This option can also be set specifically for FuzzyFiles and/or FuzzyGrep using
 " g:fuzzyy_files_follow_symlinks and g:fuzzyy_grep_follow_symlinks
 
