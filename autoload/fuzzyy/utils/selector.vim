@@ -403,11 +403,6 @@ export def Start(li_raw: list<string>, opts: dict<any>): dict<any>
     if popup.active
         return { 'menu': -1, 'prompt': -1, 'preview': -1 }
     endif
-    if exists('g:__fuzzyy_warnings_found') && g:__fuzzyy_warnings_found
-        echohl WarningMsg
-        echow 'Fuzzyy started with warnings, use :FuzzyShowWarnings command to see details'
-        echohl None
-    endif
     cwd = getcwd()
     prompt_str = ''
 
@@ -428,6 +423,12 @@ export def Start(li_raw: list<string>, opts: dict<any>): dict<any>
     popup.MenuSetText(li)
     if enable_devicons
         devicons.AddColor(menu_wid)
+    endif
+
+    if exists('g:__fuzzyy_warnings_found') && g:__fuzzyy_warnings_found
+        echohl WarningMsg
+        echo 'Fuzzyy started with warnings, use :FuzzyShowWarnings command to see details'
+        echohl None
     endif
 
     autocmd User PopupClosed ++once Cleanup()
