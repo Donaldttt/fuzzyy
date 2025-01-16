@@ -115,8 +115,17 @@ command! -nargs=0 FuzzyMru mru.Start(windows.mru)
 command! -nargs=0 FuzzyMruCwd mru.Start(extend(windows.mru, { 'cwd': getcwd() }))
 
 # Deprecated/renamed commands
-command! -nargs=0 FuzzyHelps echow 'fuzzyy: FuzzyHelps command is deprecated, use FuzzyHelp instead' | FuzzyHelp
-command! -nargs=0 FuzzyMRUFiles echow 'fuzzyy: FuzzyMRUFiles command is deprecated, use FuzzyMru instead' | FuzzyMru
+def Warn(msg: string)
+    if has('patch-9.0.0321')
+        echow msg
+    else
+        timer_start(100, (_) => {
+            echohl WarningMsg | echo msg | echohl None
+        }, { 'repeat': 0 })
+    endif
+enddef
+command! -nargs=0 FuzzyHelps call Warn('fuzzyy: FuzzyHelps command is deprecated, use FuzzyHelp instead') | FuzzyHelp
+command! -nargs=0 FuzzyMRUFiles call Warn('fuzzyy: FuzzyMRUFiles command is deprecated, use FuzzyMru instead') | FuzzyMru
 
 # Hack to only show a single line warning when startng the selector
 # Avoids showing warnings on Vim startup and does not break selector
