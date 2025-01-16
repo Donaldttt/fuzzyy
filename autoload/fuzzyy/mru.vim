@@ -5,8 +5,8 @@ import autoload './utils/devicons.vim'
 
 var mru_origin_list: list<string>
 var devicon_char_width = devicons.GetDeviconCharWidth()
-var mru_cwd: string
-var mru_cwd_only: bool
+var cwd: string
+var cwd_only: bool
 var menu_wid: number
 
 var enable_devicons = exists('g:fuzzyy_devicons') && exists('g:WebDevIconsGetFileTypeSymbol') ?
@@ -29,9 +29,10 @@ def Preview(wid: number, opts: dict<any>)
         return
     endif
     var preview_wid = opts.win_opts.partids['preview']
-    result = result == '' ? result : fnamemodify(result, ':p')
-    if !filereadable(result)
-        if result == ''
+    var path = cwd_only ? cwd .. '/' .. result : result
+    path = path == '' ? path : fnamemodify(path, ':p')
+    if !filereadable(path)
+        if path == ''
             popup_settext(preview_wid, '')
         else
             popup_settext(preview_wid, result .. ' not found')
@@ -39,10 +40,10 @@ def Preview(wid: number, opts: dict<any>)
         return
     endif
     var preview_bufnr = winbufnr(preview_wid)
-    var fileraw = readfile(result)
+    var fileraw = readfile(path)
     noautocmd call popup_settext(preview_wid, fileraw)
     win_execute(preview_wid, 'norm gg')
-    win_execute(preview_wid, 'silent! doautocmd filetypedetect BufNewFile ' .. result)
+    win_execute(preview_wid, 'silent! doautocmd filetypedetect BufNewFile ' .. path)
     noautocmd win_execute(preview_wid, 'silent! setlocal nospell nolist')
 enddef
 
@@ -53,22 +54,31 @@ def Close(wid: number, result: dict<any>)
             path = strcharpart(path, devicon_char_width + 1)
         endif
         selector.MoveToUsableWindow()
-        exe 'edit ' .. path
+        if cwd_only
+            exe 'edit ' cwd .. '/' .. path
+        else
+            exe 'edit ' .. path
+        endif
     endif
 enddef
 
 def ToggleScope()
-    mru_cwd_only = mru_cwd_only ? 0 : 1
+    cwd_only = cwd_only ? 0 : 1
     var mru_list: list<string> = copy(mru_origin_list)
-    if mru_cwd_only
+    if cwd_only
         mru_list = filter(mru_list, (_, val) => {
-            return stridx(fnamemodify(val, ':p'), mru_cwd) >= 0
+            return stridx(fnamemodify(val, ':p'), cwd) >= 0
         })
-    endif
-    mru_list = reduce(mru_list, (acc, val) => {
+        mru_list = reduce(mru_list, (acc, val) => {
+            acc->add(strpart(fnamemodify(val, ':p'), len(cwd) + 1))
+            return acc
+        }, [])
+    else
+        mru_list = reduce(mru_list, (acc, val) => {
             acc->add(fnamemodify(val, ':~:.'))
-        return acc
-    }, [])
+            return acc
+        }, [])
+    endif
     selector.UpdateMenu(mru_list, [], 1)
     popup_setoptions(menu_wid, {'title': len(mru_list)})
 enddef
@@ -78,8 +88,8 @@ var key_callbacks = {
 }
 
 export def Start(opts: dict<any> = {})
-    mru_cwd = len(get(opts, 'cwd', '')) > 0 ? opts.cwd : getcwd()
-    mru_cwd_only = len(get(opts, 'cwd', '')) > 0
+    cwd = len(get(opts, 'cwd', '')) > 0 ? opts.cwd : getcwd()
+    cwd_only = len(get(opts, 'cwd', '')) > 0
     # sorted files from buffers opened during this session, including unlisted
     var mru_buffers = split(execute('buffers! t'), '\n')->map((_, val) => {
             var bufnumber = str2nr(matchstr(val, '\M\s\*\(\d\+\)'))
@@ -110,15 +120,20 @@ export def Start(opts: dict<any> = {})
         return true
     })
     var mru_list: list<string> = copy(mru_origin_list)
-    if mru_cwd_only
+    if cwd_only
         mru_list = filter(mru_list, (_, val) => {
-            return stridx(fnamemodify(val, ':p'), mru_cwd) >= 0
+            return stridx(fnamemodify(val, ':p'), cwd) >= 0
         })
-    endif
-    mru_list = reduce(mru_list, (acc, val) => {
+        mru_list = reduce(mru_list, (acc, val) => {
+            acc->add(strpart(fnamemodify(val, ':p'), len(cwd) + 1))
+            return acc
+        }, [])
+    else
+        mru_list = reduce(mru_list, (acc, val) => {
             acc->add(fnamemodify(val, ':~:.'))
-        return acc
-    }, [])
+            return acc
+        }, [])
+    endif
 
     var wids = selector.Start(mru_list, extend(opts, {
         close_cb: function('Close'),

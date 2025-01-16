@@ -310,6 +310,8 @@ def CloseTab(wid: number, result: dict<any>)
             # for special buffers that cannot be edited
             execute 'tabnew'
             execute 'buffer ' .. bufnr
+        elseif cwd ==# getcwd()
+            execute 'tabnew ' .. buf
         else
             var path = cwd .. '/' .. buf
             execute 'tabnew ' .. path
@@ -331,6 +333,8 @@ def CloseVSplit(wid: number, result: dict<any>)
         if bufnr > 0
             # for special buffers that cannot be edited
             execute 'vert sb ' .. bufnr
+        elseif cwd ==# getcwd()
+            execute 'vsp ' .. buf
         else
             var path = cwd .. '/' .. buf
             execute 'vsp ' .. path
@@ -352,6 +356,8 @@ def CloseSplit(wid: number, result: dict<any>)
         if bufnr > 0
             # for special buffers that cannot be edited
             execute 'sb ' .. bufnr
+        elseif cwd ==# getcwd()
+            execute 'sp ' .. buf
         else
             var path = cwd .. '/' .. buf
             execute 'sp ' .. path

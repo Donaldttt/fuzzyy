@@ -59,6 +59,7 @@ git clone https://github.com/Donaldttt/fuzzyy ~/.vim/pack/Donaldttt/start/fuzzyy
 | FuzzyCommands         | search commands                                       | \<leader>fc     |
 | FuzzyFilesRoot        | search files in the project/vcs root directory        | None    |
 | FuzzyGrepRoot \<str>  | search for string in the project/vcs root directory   | None    |
+| FuzzyMruRoot          | search most recent used files in project/vcs root     | None    |
 | FuzzyColors           | search installed color schemes                        | None    |
 | FuzzyCmdHistory       | search command history                                | None    |
 | FuzzyHighlights       | search highlight groups                               | None    |
@@ -169,7 +170,7 @@ let g:fuzzyy_follow_symlinks = 0
 " This option can also be set specifically for FuzzyFiles and/or FuzzyGrep using
 " g:fuzzyy_files_follow_symlinks and g:fuzzyy_grep_follow_symlinks
 
-" Patterns to identify a root directory for FuzzyFilesRoot and FuzzyGrepRoot
+" Patterns to find a project root in supported commands, e.g. FuzzyFilesRoot
 " These commands find a "root" directory to use as the working directory by
 " walking up the direcrory tree looking for any match of these glob patterns.
 " Default is intentionally conservative, using common VCS root markers only

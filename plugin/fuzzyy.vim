@@ -116,6 +116,7 @@ command! -nargs=0 FuzzyGitFiles files.Start(extendnew(windows.files, { 'command'
 command! -nargs=0 FuzzyCmdHistory cmdhistory.Start(windows.cmdhistory)
 command! -nargs=0 FuzzyMru mru.Start(windows.mru)
 command! -nargs=0 FuzzyMruCwd mru.Start(extendnew(windows.mru, { 'cwd': getcwd() }))
+command! -nargs=0 FuzzyMruRoot mru.Start(extendnew(windows.mru, { 'cwd': selector.GetRootDir() }))
 
 # Deprecated/renamed commands
 def Warn(msg: string)
