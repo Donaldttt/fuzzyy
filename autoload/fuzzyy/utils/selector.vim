@@ -405,7 +405,7 @@ export def Start(li_raw: list<string>, opts: dict<any>): dict<any>
     endif
     if exists('g:__fuzzyy_warnings_found') && g:__fuzzyy_warnings_found
         echohl WarningMsg
-        echo 'Fuzzyy started with warnings, use :FuzzyShowWarnings command to see details'
+        echow 'Fuzzyy started with warnings, use :FuzzyShowWarnings command to see details'
         echohl None
     endif
     cwd = getcwd()
