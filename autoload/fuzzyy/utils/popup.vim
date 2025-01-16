@@ -1,6 +1,6 @@
 vim9script
 var popup_wins: dict<any>
-var wins = { 'menu': -1, 'prompt': -1, 'preview': -1, 'info': -1 }
+var wins = { menu: -1, prompt: -1, preview: -1, info: -1 }
 var t_ve: string
 var hlcursor: dict<any>
 var exists_buffers = []
@@ -427,10 +427,10 @@ export def MenuSetText(text_list: list<string>)
         var noscrollbar_width = popup_wins[wins.menu].noscrollbar_width
         if len(text) > textrows && curwidth != noscrollbar_width - 1
             var width = noscrollbar_width - 1
-           popup_move(wins.menu, {'minwidth': width, 'maxwidth': width})
+           popup_move(wins.menu, {minwidth: width, maxwidth: width})
         elseif len(text) <= textrows && curwidth != noscrollbar_width
             var width = noscrollbar_width
-            popup_move(wins.menu, {'minwidth': width, 'maxwidth': width})
+            popup_move(wins.menu, {minwidth: width, maxwidth: width})
         endif
     endif
 
@@ -470,7 +470,7 @@ export def MenuSetHl(name: string, hl_list_raw: list<any>)
     # in MS-Windows, matchaddpos() has maximum limit of 8 position groups
     var idx = 0
     while idx < len(hl_list)
-        matchaddpos('fuzzyyMatching', hl_list[idx : idx + 7 ], 99, -1,  {'window': wins.menu})
+        matchaddpos('fuzzyyMatching', hl_list[idx : idx + 7 ], 99, -1,  {window: wins.menu})
         idx += 8
     endwhile
 enddef
@@ -509,7 +509,7 @@ def PopupPrompt(args: dict<any>): number
 
     # set cursor
     var mid = matchaddpos(cursor_args.highlight,
-    [[1, prompt_char_len + 1 + cursor_args.cur_pos]], 10, -1,  {'window': wid})
+    [[1, prompt_char_len + 1 + cursor_args.cur_pos]], 10, -1,  {window: wid})
     popup_wins[wid].cursor_args.mid = mid
     return wid
 enddef
@@ -562,7 +562,7 @@ enddef
 #    }
 export def PopupSelection(opts: dict<any>): dict<any>
     if active
-        return { 'menu': -1, 'prompt': -1, 'preview': -1 }
+        return { menu: -1, prompt: -1, preview: -1 }
     endif
     active = true
     key_callbacks = has_key(opts, 'key_callbacks') ? opts.key_callbacks : {}

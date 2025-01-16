@@ -76,7 +76,7 @@ def Close(wid: number, result: dict<any>)
 enddef
 
 def GetBufList(): list<string>
-    var buf_data = getbufinfo({'buflisted': 1, 'bufloaded': 0})
+    var buf_data = getbufinfo({buflisted: 1, bufloaded: 0})
     buf_dict = {}
 
     reduce(buf_data, (acc, buf) => {

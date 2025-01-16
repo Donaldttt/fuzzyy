@@ -253,7 +253,7 @@ def ResultHandle(lists: list<any>): list<any>
         return [[], [], {}]
     endif
     var result = reduce(lists, function('Reducer', [cur_pattern]),
-         { 'strs': [], 'cols': [], 'objs': [], 'dict': {} })
+         { strs: [], cols: [], objs: [], dict: {} })
     var strs = []
     var cols = []
     var idx = 1
@@ -279,7 +279,7 @@ def UpdatePreviewHl()
     var [path, linenr, colnr] = ParseResult(cur_menu_item)
     clearmatches(preview_wid)
     var hl_list = [cur_dict[cur_menu_item]]
-    matchaddpos('fuzzyyPreviewMatch', hl_list, 9999, -1,  {'window': preview_wid})
+    matchaddpos('fuzzyyPreviewMatch', hl_list, 9999, -1,  {window: preview_wid})
 enddef
 
 def Preview(wid: number, opts: dict<any>)
@@ -354,9 +354,9 @@ def UpdateMenu(...li: list<any>)
         var time = float2nr(str2float(reltime()->reltimestr()[4 : ]) * 1000)
         var speed = 100
         var loadidx = (time % speed) / len(loading)
-        popup_setoptions(menu_wid, {'title': string(len(cur_result)) .. loading[loadidx]})
+        popup_setoptions(menu_wid, {title: string(len(cur_result)) .. loading[loadidx]})
     else
-        popup_setoptions(menu_wid, {'title': string(len(cur_result))})
+        popup_setoptions(menu_wid, {title: string(len(cur_result))})
     endif
 
     if last_pattern == cur_pattern
@@ -444,7 +444,7 @@ export def Start(opts: dict<any> = {})
     endif
     preview_wid = wids.preview
     setwinvar(menu_wid, '&wrap', 0)
-    ag_update_tid = timer_start(100, function('UpdateMenu'), {'repeat': -1})
+    ag_update_tid = timer_start(100, function('UpdateMenu'), {repeat: -1})
     if len(get(opts, 'search', '')) > 0
         popup.SetPrompt(opts.search)
     endif

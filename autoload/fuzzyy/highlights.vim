@@ -87,7 +87,7 @@ export def Start(opts: dict<any> = {})
     var menu_wid = wids.menu
 
     setwinvar(preview_wid, '&number', 0)
-    popup_setoptions(menu_wid, {'title': len(hl_meta)})
+    popup_setoptions(menu_wid, {title: len(hl_meta)})
     # set preview buffer's content
     popup_settext(preview_wid, highlights)
     for [hl, parts] in items(hl_meta)

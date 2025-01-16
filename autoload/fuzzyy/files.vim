@@ -85,7 +85,7 @@ def Input(wid: number, val: dict<any>, ...li: list<any>)
         selector.FuzzySearchAsync(cur_result, cur_pattern, 200, function('AsyncCb'))
     else
         selector.UpdateMenu(ProcessResult(cur_result, 100), [])
-        popup_setoptions(menu_wid, {'title': len(cur_result)})
+        popup_setoptions(menu_wid, {title: len(cur_result)})
     endif
 enddef
 
@@ -157,7 +157,7 @@ def JobExitCb(id: job, status: number)
     if last_result_len <= 0
         selector.UpdateMenu(ProcessResult(cur_result, 100), [])
     endif
-    popup_setoptions(menu_wid, {'title': len(cur_result)})
+    popup_setoptions(menu_wid, {title: len(cur_result)})
 enddef
 
 def Profiling()
@@ -171,7 +171,7 @@ enddef
 
 def UpdateMenu(...li: list<any>)
     var cur_result_len = len(cur_result)
-    popup_setoptions(menu_wid, {'title': string(len(cur_result))})
+    popup_setoptions(menu_wid, {title: string(len(cur_result))})
     if cur_result_len == last_result_len
         return
     endif
@@ -221,7 +221,7 @@ export def Start(opts: dict<any> = {})
     endif
     JobStart(cwd, cmd)
     timer_start(50, function('UpdateMenu'))
-    files_update_tid = timer_start(400, function('UpdateMenu'), {'repeat': -1})
+    files_update_tid = timer_start(400, function('UpdateMenu'), {repeat: -1})
     # Profiling()
 enddef
 

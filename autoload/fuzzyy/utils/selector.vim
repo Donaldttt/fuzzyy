@@ -274,7 +274,7 @@ export def FuzzySearchAsync(li: list<string>, pattern: string, limit: number, Cb
     async_pattern = pattern
     async_results = []
     AsyncCb = Cb
-    async_tid = timer_start(50, function('Worker'), {'repeat': -1})
+    async_tid = timer_start(50, function('Worker'), {repeat: -1})
     Worker(async_tid)
     return async_tid
 enddef
@@ -313,7 +313,7 @@ def Input(wid: number, args: dict<any>, ...li: list<any>)
 enddef
 
 export def RefreshMenu()
-    Input(menu_wid, {'str': prompt_str})
+    Input(menu_wid, {str: prompt_str})
 enddef
 
 def Cleanup()
@@ -450,7 +450,7 @@ enddef
 #    }
 export def Start(li_raw: list<string>, opts: dict<any>): dict<any>
     if popup.active
-        return { 'menu': -1, 'prompt': -1, 'preview': -1 }
+        return { menu: -1, prompt: -1, preview: -1 }
     endif
     cwd = len(get(opts, 'cwd', '')) > 0 ? opts.cwd : getcwd()
     prompt_str = ''

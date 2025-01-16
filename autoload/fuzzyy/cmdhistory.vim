@@ -20,5 +20,5 @@ export def Start(opts: dict<any> = {})
         select_cb: function('Select'),
         preview: 0
     }))
-    popup_setoptions(wins.menu, {'title': string(len(cmds))})
+    popup_setoptions(wins.menu, {title: string(len(cmds))})
 enddef
