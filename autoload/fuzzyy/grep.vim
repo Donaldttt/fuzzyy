@@ -4,6 +4,7 @@ import autoload './utils/selector.vim'
 import autoload './utils/popup.vim'
 import autoload './utils/devicons.vim'
 
+var matched_hl_offset = 0
 var devicon_char_width = devicons.GetDeviconCharWidth()
 
 # Options
@@ -24,6 +25,10 @@ var follow_symlinks = exists('g:fuzzyy_grep_follow_symlinks') ?
 var ripgrep_options = exists('g:fuzzyy_grep_ripgrep_options')
     && type(g:fuzzyy_grep_ripgrep_options) == v:t_list ?
     g:fuzzyy_grep_ripgrep_options : g:fuzzyy_ripgrep_options
+
+if enable_devicons
+    matched_hl_offset = devicons.GetDeviconWidth() + 1
+endif
 
 var loading = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
 
@@ -380,6 +385,10 @@ def UpdateMenu(...li: list<any>)
         map(strs, (_, val) => {
             return g:WebDevIconsGetFileTypeSymbol(split(val, ':')[0]) .. ' ' .. val
         })
+        hl_list = reduce(hl_list, (a, v) => {
+            v[1] += matched_hl_offset
+            return add(a, v)
+        }, [])
     endif
 
     selector.UpdateMenu(strs, hl_list)
