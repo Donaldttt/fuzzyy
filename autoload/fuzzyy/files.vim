@@ -44,10 +44,11 @@ def ProcessResult(list_raw: list<string>, ...args: list<any>): list<string>
 enddef
 
 def Select(wid: number, result: list<any>)
-    var path = result[0]
+    var relative_path = result[0]
     if enable_devicons
-        path = strcharpart(path, devicon_char_width + 1)
+        relative_path = strcharpart(relative_path, devicon_char_width + 1)
     endif
+    var path = cwd .. '/' .. relative_path
     selector.MoveToUsableWindow()
     exe 'edit ' .. path
 enddef
@@ -97,7 +98,8 @@ def Preview(wid: number, opts: dict<any>)
         return
     endif
     var preview_wid = opts.win_opts.partids['preview']
-    if !filereadable(result)
+    var path = cwd .. '/' .. result
+    if !filereadable(path)
         if result == ''
             popup_settext(preview_wid, '')
         else
@@ -106,10 +108,10 @@ def Preview(wid: number, opts: dict<any>)
         return
     endif
     var preview_bufnr = winbufnr(preview_wid)
-    var fileraw = readfile(result, '', 1000)
+    var fileraw = readfile(path, '', 1000)
     noautocmd call popup_settext(preview_wid, fileraw)
     win_execute(preview_wid, 'norm gg')
-    win_execute(preview_wid, 'silent! doautocmd filetypedetect BufNewFile ' .. result)
+    win_execute(preview_wid, 'silent! doautocmd filetypedetect BufNewFile ' .. path)
     noautocmd win_execute(preview_wid, 'silent! setlocal nospell nolist')
 enddef
 
@@ -192,7 +194,7 @@ export def Start(opts: dict<any> = {})
     cur_result = []
     cur_pattern = ''
     last_pattern = '@!#-='
-    cwd = getcwd()
+    cwd = len(get(opts, 'cwd', '')) > 0 ? opts.cwd : getcwd()
     cwdlen = len(cwd)
     in_loading = 1
     var wids = selector.Start([], extend(opts, {
