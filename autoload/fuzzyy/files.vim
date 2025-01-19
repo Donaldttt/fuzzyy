@@ -98,6 +98,7 @@ def Preview(wid: number, opts: dict<any>)
         return
     endif
     var preview_wid = opts.win_opts.partids['preview']
+    win_execute(preview_wid, 'syntax clear')
     var path = cwd .. '/' .. result
     if !filereadable(path)
         if result == ''

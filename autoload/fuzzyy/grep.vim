@@ -302,6 +302,7 @@ def Preview(wid: number, opts: dict<any>)
     endif
     cur_menu_item = result
 
+    win_execute(preview_wid, 'syntax clear')
     var path = cwd .. '/' .. relative_path
     if !filereadable(path)
         if relative_path == v:null
