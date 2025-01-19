@@ -92,6 +92,17 @@ export def GetRootDir(): string
   return getcwd()
 enddef
 
+export def IsBinary(path: string): bool
+    # NUL byte check for binary files, used to avoid showing preview
+    # Assumes a file encoding that does not allow NUL bytes, so will
+    # generate false positives for UTF-16 and UTF-32, but the preview
+    # window doesn't work for these encodings anyway, even with a BOM
+    for byte in readblob(path, 0, 128)
+        if byte == 0 | return true | endif
+    endfor
+    return false
+enddef
+
 # Search pattern @pattern in a list of strings @li
 # if pattern is empty, return [li, []]
 # params:

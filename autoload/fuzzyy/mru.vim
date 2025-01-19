@@ -41,10 +41,13 @@ def Preview(wid: number, opts: dict<any>)
         return
     endif
     var preview_bufnr = winbufnr(preview_wid)
-    var fileraw = readfile(path)
-    noautocmd call popup_settext(preview_wid, fileraw)
+    if selector.IsBinary(path)
+        noautocmd call popup_settext(preview_wid, 'Cannot preview binary file')
+    else
+        noautocmd call popup_settext(preview_wid, readfile(path))
+        win_execute(preview_wid, 'silent! doautocmd filetypedetect BufNewFile ' .. path)
+    endif
     win_execute(preview_wid, 'norm gg')
-    win_execute(preview_wid, 'silent! doautocmd filetypedetect BufNewFile ' .. path)
     noautocmd win_execute(preview_wid, 'silent! setlocal nospell nolist')
 enddef
 
