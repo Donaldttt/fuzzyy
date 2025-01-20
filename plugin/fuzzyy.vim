@@ -139,12 +139,19 @@ if len(warnings) > 0
 endif
 
 if g:fuzzyy_enable_mappings
-    nnoremap <silent> <leader>fb :FuzzyBuffers<CR>
-    nnoremap <silent> <leader>fc :FuzzyCommands<CR>
-    nnoremap <silent> <leader>ff :FuzzyFiles<CR>
-    nnoremap <silent> <leader>fg :FuzzyGrep<CR>
-    nnoremap <silent> <leader>fh :FuzzyHelp<CR>
-    nnoremap <silent> <leader>fi :FuzzyInBuffer<CR>
-    nnoremap <silent> <leader>fm :FuzzyMru<CR>
-    nnoremap <silent> <leader>fr :FuzzyMruCwd<CR>
+    var mappings = {
+        '<leader>fb': ':FuzzyBuffers<CR>',
+        '<leader>fc': ':FuzzyCommands<CR>',
+        '<leader>ff': ':FuzzyFiles<CR>',
+        '<leader>fg': ':FuzzyGrep<CR>',
+        '<leader>fh': ':FuzzyHelp<CR>',
+        '<leader>fi': ':FuzzyInBuffer<CR>',
+        '<leader>fm': ':FuzzyMru<CR>',
+        '<leader>fr': ':FuzzyMruCwd<CR>'
+    }
+    for [lhs, rhs] in items(mappings)
+        if empty(maparg(lhs, 'n'))
+            exe 'nnoremap <silent> ' .. lhs .. ' ' .. rhs
+        endif
+    endfor
 endif

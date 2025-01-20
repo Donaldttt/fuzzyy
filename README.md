@@ -120,6 +120,9 @@ nnoremap <silent> <leader>fm :FuzzyMru<CR>
 nnoremap <silent> <leader>fr :FuzzyMruCwd<CR>
 ```
 
+Fuzzyy will not overwrite any existing mappings from your vimrc when adding
+default mappings
+
 ## Options
 
 ```vim
