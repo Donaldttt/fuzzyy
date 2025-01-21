@@ -63,9 +63,12 @@ git clone https://github.com/Donaldttt/fuzzyy ~/.vim/pack/Donaldttt/start/fuzzyy
 | FuzzyColors           | search installed color schemes                        | None    |
 | FuzzyCmdHistory       | search command history                                | None    |
 | FuzzyHighlights       | search highlight groups                               | None    |
+| FuzzyTags             | search tags, requires [ctags][], see `:h tags`        | None    |
 | FuzzyGitFiles         | search files in output from `git ls-files`            | None    |
 | FuzzyHelps            | deprecated alias for FuzzyHelp, will be removed       | None    |
 | FuzzyMRUFiles         | deprecated alias for FuzzyMru, will be removed        | None    |
+
+[ctags]: https://ctags.io/
 
 - For FuzzyGrep and FuzzyInBuffer, you can define a keymap like this to search the
 word under cursor.
@@ -97,10 +100,10 @@ be used to scroll the preview window, but not the menu window.
 - FuzzyHighlights
     - `ctrl + k` toggle white preview background color
 
-- FuzzyMru, FuzzyMruCwd
+- FuzzyMru
     - `ctrl + k` toggle between all MRU files and CWD only
 
-- FuzzyBuffers, FuzzyFiles, FuzzyGitFiles, FuzzyGrep, FuzzyMru, FuzzyMruCwd
+- FuzzyBuffers, FuzzyFiles, FuzzyGrep, FuzzyMru, FuzzyTags
     - `ctrl + s` open selected file in horizontal split
     - `ctrl + v` open selected file in vertical split
     - `ctrl + t` open selected file in new tab page
@@ -253,6 +256,7 @@ let g:fuzzyy_buffers_keymap = {
 \    'grep': {},
 \    'buffers': {},
 \    'mru': {},
+\    'tags': {},
 \    'highlights': {},
 \    'cmdhistory': {
 \        'width': 0.6,
