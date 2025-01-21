@@ -63,6 +63,7 @@ git clone https://github.com/Donaldttt/fuzzyy ~/.vim/pack/Donaldttt/start/fuzzyy
 | FuzzyColors           | search installed color schemes                        | None    |
 | FuzzyCmdHistory       | search command history                                | None    |
 | FuzzyHighlights       | search highlight groups                               | None    |
+| FuzzyTags             | search tags in `tagfiles()`, see `h: tags`            | None    |
 | FuzzyGitFiles         | search files in output from `git ls-files`            | None    |
 | FuzzyHelps            | deprecated alias for FuzzyHelp, will be removed       | None    |
 | FuzzyMRUFiles         | deprecated alias for FuzzyMru, will be removed        | None    |
