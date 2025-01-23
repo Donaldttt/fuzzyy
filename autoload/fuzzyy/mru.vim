@@ -48,7 +48,7 @@ def Preview(wid: number, opts: dict<any>)
         win_execute(preview_wid, 'silent! doautocmd filetypedetect BufNewFile ' .. path)
         noautocmd win_execute(preview_wid, 'silent! setlocal nospell nolist')
     endif
-    win_execute(preview_wid, 'norm gg')
+    win_execute(preview_wid, 'norm! gg')
 enddef
 
 def Close(wid: number, result: dict<any>)

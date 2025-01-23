@@ -320,7 +320,7 @@ def Preview(wid: number, opts: dict<any>)
         noautocmd win_execute(preview_wid, 'silent! setlocal nospell nolist')
     endif
     if path != last_path || linenr != last_linenr
-        win_execute(preview_wid, 'norm ' .. linenr .. 'G')
+        win_execute(preview_wid, 'norm! ' .. linenr .. 'G')
         win_execute(preview_wid, 'norm! zz')
     endif
     UpdatePreviewHl()

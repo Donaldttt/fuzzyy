@@ -203,7 +203,7 @@ def MenuFilter(wid: number, key: string): number
     var cursorlinepos = line('.', wid)
     var moved = 0
     if index(keymaps['menu_down'], key) >= 0
-        win_execute(wid, 'norm j')
+        win_execute(wid, 'norm! j')
         moved = 1
     elseif index(keymaps['menu_up'], key) >= 0
         moved = 1
@@ -212,21 +212,21 @@ def MenuFilter(wid: number, key: string): number
             var validrow = popup_wins[wid].validrow
             var minline = textrows - validrow + 1
             if cursorlinepos > minline
-                win_execute(wid, 'norm k')
+                win_execute(wid, 'norm! k')
             endif
         else
-            win_execute(wid, 'norm k')
+            win_execute(wid, 'norm! k')
         endif
     elseif key ==? "\<LeftMouse>"
         var pos = getmousepos()
         if pos.winid == wid
-            win_execute(wid, 'norm ' .. pos.line .. 'G')
+            win_execute(wid, 'norm! ' .. pos.line .. 'G')
             moved = 1
         endif
     elseif key ==? "\<2-LeftMouse>"
         var pos = getmousepos()
         if pos.winid == wid
-            win_execute(wid, 'norm ' .. pos.line .. 'G')
+            win_execute(wid, 'norm! ' .. pos.line .. 'G')
             var linetext = getbufline(bufnr, pos.line, pos.line)[0]
             if linetext == ''
                 popup_close(wid)
@@ -261,22 +261,22 @@ enddef
 
 def PreviewFilter(wid: number, key: string): number
     if index(keymaps['preview_up'], key) >= 0
-        win_execute(wid, 'norm k')
+        win_execute(wid, 'norm! k')
     elseif index(keymaps['preview_down'], key) >= 0
-        win_execute(wid, 'norm j')
+        win_execute(wid, 'norm! j')
     elseif index(keymaps['preview_up_half_page'], key) >= 0
-        win_execute(wid, "norm \<c-u>")
+        win_execute(wid, "norm! \<c-u>")
     elseif index(keymaps['preview_down_half_page'], key) >= 0
-        win_execute(wid, "norm \<c-d>")
+        win_execute(wid, "norm! \<c-d>")
     elseif key ==? "\<ScrollWheelUp>"
         var pos = getmousepos()
         if pos.winid == wid
-            win_execute(wid, "norm 3\<c-y>")
+            win_execute(wid, "norm! 3\<c-y>")
         endif
     elseif key ==? "\<ScrollWheelDown>"
         var pos = getmousepos()
         if pos.winid == wid
-            win_execute(wid, "norm 3\<c-e>")
+            win_execute(wid, "norm! 3\<c-e>")
         endif
     else
         return 0
