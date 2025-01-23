@@ -23,8 +23,7 @@ def Select(wid: number, result: list<any>)
     if filereadable(tagfile)
         selector.MoveToUsableWindow()
         exe 'edit ' .. tagfile
-        feedkeys(':' .. tagaddress .. "\<CR>", 'n')
-        exe 'norm! zz'
+        feedkeys(':' .. tagaddress .. "\<CR>:norm! zz\<CR>", 'n')
     endif
 enddef
 
@@ -33,8 +32,7 @@ def CloseTab(wid: number, result: dict<any>)
         var [tagname, tagfile, tagaddress] = ParseResult(result.cursor_item)
         if filereadable(tagfile)
             exe 'tabnew ' .. tagfile
-            feedkeys(':' .. tagaddress .. "\<CR>", 'n')
-            exe 'norm! zz'
+            feedkeys(':' .. tagaddress .. "\<CR>:norm! zz\<CR>", 'n')
         endif
     endif
 enddef
@@ -44,8 +42,7 @@ def CloseVSplit(wid: number, result: dict<any>)
         var [tagname, tagfile, tagaddress] = ParseResult(result.cursor_item)
         if filereadable(tagfile)
             exe 'vsplit ' .. tagfile
-            feedkeys(':' .. tagaddress .. "\<CR>", 'n')
-            exe 'norm! zz'
+            feedkeys(':' .. tagaddress .. "\<CR>:norm! zz\<CR>", 'n')
         endif
     endif
 enddef
@@ -55,8 +52,7 @@ def CloseSplit(wid: number, result: dict<any>)
         var [tagname, tagfile, tagaddress] = ParseResult(result.cursor_item)
         if filereadable(tagfile)
             exe 'split ' .. tagfile
-            feedkeys(':' .. tagaddress .. "\<CR>", 'n')
-            exe 'norm! zz'
+            feedkeys(':' .. tagaddress .. "\<CR>:norm! zz\<CR>", 'n')
         endif
     endif
 enddef
