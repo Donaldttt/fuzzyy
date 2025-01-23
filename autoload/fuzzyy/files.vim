@@ -110,9 +110,9 @@ def Preview(wid: number, opts: dict<any>)
     endif
     var preview_bufnr = winbufnr(preview_wid)
     if selector.IsBinary(path)
-        noautocmd call popup_settext(preview_wid, 'Cannot preview binary file')
+        noautocmd popup_settext(preview_wid, 'Cannot preview binary file')
     else
-        noautocmd call popup_settext(preview_wid, readfile(path, '', 1000))
+        noautocmd popup_settext(preview_wid, readfile(path, '', 1000))
         win_execute(preview_wid, 'silent! doautocmd filetypedetect BufNewFile ' .. path)
         noautocmd win_execute(preview_wid, 'silent! setlocal nospell nolist')
     endif

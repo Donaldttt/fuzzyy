@@ -5,8 +5,7 @@ import autoload './utils/popup.vim'
 
 def Select(wid: number, result: list<any>)
     var command = result[0]
-    call feedkeys(':' .. command .. ' ', 'n')
-    call feedkeys("\<CR>", 'n')
+    feedkeys(':' .. command .. "\<CR>", 'n')
 enddef
 
 export def Start(opts: dict<any> = {})

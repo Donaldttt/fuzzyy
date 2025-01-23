@@ -128,8 +128,8 @@ def Warn(msg: string)
         }, { repeat: 0 })
     endif
 enddef
-command! -nargs=0 FuzzyHelps call Warn('fuzzyy: FuzzyHelps command is deprecated, use FuzzyHelp instead') | FuzzyHelp
-command! -nargs=0 FuzzyMRUFiles call Warn('fuzzyy: FuzzyMRUFiles command is deprecated, use FuzzyMru instead') | FuzzyMru
+command! -nargs=0 FuzzyHelps Warn('fuzzyy: FuzzyHelps command is deprecated, use FuzzyHelp instead') | FuzzyHelp
+command! -nargs=0 FuzzyMRUFiles Warn('fuzzyy: FuzzyMRUFiles command is deprecated, use FuzzyMru instead') | FuzzyMru
 
 # Hack to only show a single line warning when startng the selector
 # Avoids showing warnings on Vim startup and does not break selector

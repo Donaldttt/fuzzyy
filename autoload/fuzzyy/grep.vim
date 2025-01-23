@@ -315,7 +315,7 @@ def Preview(wid: number, opts: dict<any>)
 
     if path != last_path
         var preview_bufnr = winbufnr(preview_wid)
-        noautocmd call popup_settext(preview_wid, readfile(path))
+        noautocmd popup_settext(preview_wid, readfile(path))
         win_execute(preview_wid, 'silent! doautocmd filetypedetect BufNewFile ' .. path)
         noautocmd win_execute(preview_wid, 'silent! setlocal nospell nolist')
     endif

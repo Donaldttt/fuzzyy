@@ -105,7 +105,7 @@ def MenuCursorContentChangeCb(): number
 
     if has_key(popup_wins[wins.menu], 'move_cb')
         if type(popup_wins[wins.menu].move_cb) == v:t_func
-            call popup_wins[wins.menu].move_cb(wins.menu, {
+            popup_wins[wins.menu].move_cb(wins.menu, {
                 cursor_item: linetext,
                 win_opts: popup_wins[wins.menu],
                 last_cursor_item: popup_wins[wins.menu].cursor_item
