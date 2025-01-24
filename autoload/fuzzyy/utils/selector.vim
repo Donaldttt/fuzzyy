@@ -457,8 +457,8 @@ export def Start(li_raw: list<string>, opts: dict<any>): dict<any>
 
     enable_devicons = has_key(opts, 'enable_devicons') ? opts.enable_devicons : 0
 
-    opts.move_cb = has_key(opts, 'preview_cb') ? opts.preview_cb : v:null
-    opts.select_cb = has_key(opts, 'select_cb') ? opts.select_cb : v:null
+    opts.move_cb = has_key(opts, 'preview_cb') ? opts.preview_cb : null
+    opts.select_cb = has_key(opts, 'select_cb') ? opts.select_cb : null
     opts.input_cb = has_key(opts, 'input_cb') ? opts.input_cb : function('Input')
     opts.dropdown = enable_dropdown
 

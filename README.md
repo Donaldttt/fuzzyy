@@ -240,8 +240,8 @@ let g:fuzzyy_buffers_keymap = {
 "     'preview_ratio': 0.5, " 0.5 means preview window will take 50% of the layout
 "     'width': 0.8,         " 0.8 means total width of the layout will take 80% of the screen
 "     'height': 0.8,        " 0.8 means total height of the layout will take 80% of the screen
-"     'xoffset': v:none     " x offset of the windows, 0.1 means 10% from left of the screen
-"     'yoffset': v:none     " x offset of the windows, 0.1 means 10% from top of the screen
+"     'xoffset': auto       " x offset of the windows, 0.1 means 10% from left of the screen
+"     'yoffset': auto       " x offset of the windows, 0.1 means 10% from top of the screen
 " preview is ignored by commands that do not support it, e.g. FuzzyCmdHistory
 " x and y offsets are by default calculated to center the windows on the screen
 " width, height, and x and y offsets > 0 and < 1 are resolved as percentages

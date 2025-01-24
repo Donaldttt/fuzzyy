@@ -154,7 +154,7 @@ var preview_wid = -1
 def ParseResult(str: string): list<any>
     var seq = matchstrpos(str, sep_pattern)
     if seq[1] == -1
-        return [v:null, -1, -1]
+        return [null, -1, -1]
     endif
     # var path = str[: seq[1] - 1]
     var path = strpart(str, 0, seq[1])
@@ -305,7 +305,7 @@ def Preview(wid: number, opts: dict<any>)
     win_execute(preview_wid, 'syntax clear')
     var path = cwd .. '/' .. relative_path
     if !filereadable(path)
-        if relative_path == v:null
+        if relative_path == null
             popup_settext(preview_wid, '')
         else
             popup_settext(preview_wid, path .. ' not found')
@@ -328,7 +328,7 @@ enddef
 
 def Select(wid: number, result: list<any>)
     var [relative_path, linenr, _] = ParseResult(result[0])
-    if relative_path == v:null
+    if relative_path == null
         return
     endif
     if enable_devicons

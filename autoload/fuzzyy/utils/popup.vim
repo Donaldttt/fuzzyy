@@ -42,7 +42,7 @@ def Restore()
     if &t_ve != t_ve
         &t_ve = t_ve
     endif
-    if len(hlget('Cursor')) > 0 && get(hlget('Cursor')[0], 'cleared', v:false)
+    if len(hlget('Cursor')) > 0 && get(hlget('Cursor')[0], 'cleared', false)
         hlset([hlcursor])
     endif
     active = false
@@ -66,9 +66,9 @@ def GeneralPopupCallback(wid: number, select: any)
 
     Restore()
     # only press enter select will be a list
-    var has_selection = v:false
+    var has_selection = false
     if type(select) == v:t_list
-        has_selection = v:true
+        has_selection = true
         for Func in popup_wins[wid].close_funcs
             if type(Func) == v:t_func
                 Func(wid, select)
@@ -292,7 +292,7 @@ def CreatePopup(args: dict<any>): number
        maxwidth: args.width,
        minheight: args.height,
        maxheight: args.height,
-       scrollbar: v:false,
+       scrollbar: false,
        padding: [0, 0, 0, 0],
        zindex: 1000,
        wrap: 0,
@@ -322,7 +322,7 @@ def CreatePopup(args: dict<any>): number
     endif
 
     if has_key(opts, 'filter')
-        opts.mapping = v:false
+        opts.mapping = false
     endif
     var wid = popup_create('', opts)
     if has_key(args, 'cursorline') && args.cursorline
@@ -337,13 +337,13 @@ def CreatePopup(args: dict<any>): number
          highlights: {},
          noscrollbar_width: noscrollbar_width,
          validrow: 0,
-         move_cb: v:null,
+         move_cb: null,
          line: args.line,
          col: args.col,
          width: args.width,
          height: args.height,
          reverse_menu: 0,
-         cursor_item: v:null,
+         cursor_item: null,
          wid: wid,
          update_delay_timer: -1,
          prompt_delay_timer: -1,
@@ -618,8 +618,8 @@ export def PopupSelection(opts: dict<any>): dict<any>
     reverse_menu = has_key(opts, 'reverse_menu') ? opts.reverse_menu : reverse_menu
 
     var menu_opts = {
-        callback: has_key(opts, 'select_cb') ? opts.select_cb : v:null,
-        close_cb: has_key(opts, 'close_cb') ? opts.close_cb : v:null,
+        callback: has_key(opts, 'select_cb') ? opts.select_cb : null,
+        close_cb: has_key(opts, 'close_cb') ? opts.close_cb : null,
         scrollbar: has_key(opts, 'scrollbar') ? opts.scrollbar : 0,
         reverse_menu: reverse_menu,
         yoffset: menu_yoffset,
@@ -641,7 +641,7 @@ export def PopupSelection(opts: dict<any>): dict<any>
         yoffset: prompt_yoffset,
         xoffset: xoffset,
         width: menu_width,
-        input_cb: has_key(opts, 'input_cb') ? opts.input_cb : v:null,
+        input_cb: has_key(opts, 'input_cb') ? opts.input_cb : null,
         prompt: has_key(opts, 'prompt') ? opts.prompt : '> ',
         zindex: 1010,
     }
@@ -689,7 +689,7 @@ export def PopupSelection(opts: dict<any>): dict<any>
     # hide cursor in macvim or other guivim
     if len(hlget('Cursor')) > 0
         hlcursor = hlget('Cursor')[0]
-        hlset([{name: 'Cursor', cleared: v:true}])
+        hlset([{name: 'Cursor', cleared: true}])
     endif
     return wins
 enddef
