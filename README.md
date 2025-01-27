@@ -59,11 +59,11 @@ git clone https://github.com/Donaldttt/fuzzyy ~/.vim/pack/Donaldttt/start/fuzzyy
 | FuzzyCommands         | search commands                                       | \<leader>fc     |
 | FuzzyFilesRoot        | search files in the project/vcs root directory        | None    |
 | FuzzyGrepRoot \<str>  | search for string in the project/vcs root directory   | None    |
-| FuzzyMruRoot          | search most recent used files in project/vcs root     | None    |
 | FuzzyColors           | search installed color schemes                        | None    |
 | FuzzyCmdHistory       | search command history                                | None    |
 | FuzzyHighlights       | search highlight groups                               | None    |
 | FuzzyTags             | search tags, requires [ctags][], see `:h tags`        | None    |
+| FuzzyTagsRoot         | search tags in the project/vcs root directory         | None    |
 | FuzzyGitFiles         | search files in output from `git ls-files`            | None    |
 | FuzzyHelps            | deprecated alias for FuzzyHelp, will be removed       | None    |
 | FuzzyMRUFiles         | deprecated alias for FuzzyMru, will be removed        | None    |

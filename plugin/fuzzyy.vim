@@ -120,6 +120,7 @@ command! -nargs=0 FuzzyMru mru.Start(windows.mru)
 command! -nargs=0 FuzzyMruCwd mru.Start(extendnew(windows.mru, { cwd: getcwd() }))
 command! -nargs=0 FuzzyMruRoot mru.Start(extendnew(windows.mru, { cwd: selector.GetRootDir() }))
 command! -nargs=0 FuzzyTags tags.Start(windows.tags)
+command! -nargs=0 FuzzyTagsRoot tags.Start(extendnew(windows.tags, { cwd: selector.GetRootDir() }))
 
 # Deprecated/renamed commands
 def Warn(msg: string)

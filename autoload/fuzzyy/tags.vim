@@ -3,6 +3,7 @@ vim9script
 import autoload './utils/selector.vim'
 
 var tag_list: list<string>
+var cwd: string
 
 def ParseResult(result: string): list<any>
     # Tags file format, see https://docs.ctags.io/en/latest/man/tags.5.html
@@ -20,9 +21,10 @@ enddef
 
 def Select(wid: number, result: list<any>)
     var [tagname, tagfile, tagaddress] = ParseResult(result[0])
-    if filereadable(tagfile)
+    var path = cwd .. '/' .. tagfile
+    if filereadable(path)
         selector.MoveToUsableWindow()
-        exe 'edit ' .. tagfile
+        exe 'edit ' .. path
         feedkeys(':' .. tagaddress .. "\<CR>:norm! zz\<CR>", 'n')
     endif
 enddef
@@ -30,8 +32,9 @@ enddef
 def CloseTab(wid: number, result: dict<any>)
     if has_key(result, 'cursor_item')
         var [tagname, tagfile, tagaddress] = ParseResult(result.cursor_item)
-        if filereadable(tagfile)
-            exe 'tabnew ' .. tagfile
+        var path = cwd .. '/' .. tagfile
+        if filereadable(path)
+            exe 'tabnew ' .. path
             feedkeys(':' .. tagaddress .. "\<CR>:norm! zz\<CR>", 'n')
         endif
     endif
@@ -40,8 +43,9 @@ enddef
 def CloseVSplit(wid: number, result: dict<any>)
     if has_key(result, 'cursor_item')
         var [tagname, tagfile, tagaddress] = ParseResult(result.cursor_item)
-        if filereadable(tagfile)
-            exe 'vsplit ' .. tagfile
+        var path = cwd .. '/' .. tagfile
+        if filereadable(path)
+            exe 'vsplit ' .. path
             feedkeys(':' .. tagaddress .. "\<CR>:norm! zz\<CR>", 'n')
         endif
     endif
@@ -50,8 +54,9 @@ enddef
 def CloseSplit(wid: number, result: dict<any>)
     if has_key(result, 'cursor_item')
         var [tagname, tagfile, tagaddress] = ParseResult(result.cursor_item)
-        if filereadable(tagfile)
-            exe 'split ' .. tagfile
+        var path = cwd .. '/' .. tagfile
+        if filereadable(path)
+            exe 'split ' .. path
             feedkeys(':' .. tagaddress .. "\<CR>:norm! zz\<CR>", 'n')
         endif
     endif
@@ -90,17 +95,18 @@ def Preview(wid: number, opts: dict<any>)
     endif
     win_execute(preview_wid, 'syntax clear')
     var [tagname, tagfile, tagaddress] = ParseResult(result)
-    if !filereadable(tagfile)
+    var path = cwd .. '/' .. tagfile
+    if !filereadable(path)
         if result == ''
             popup_settext(preview_wid, '')
         else
-            popup_settext(preview_wid, tagfile .. ' not found')
+            popup_settext(preview_wid, path .. ' not found')
         endif
         return
     endif
     var preview_bufnr = winbufnr(preview_wid)
-    noautocmd call popup_settext(preview_wid, readfile(tagfile))
-    win_execute(preview_wid, 'silent! doautocmd filetypedetect BufNewFile ' .. tagfile)
+    noautocmd call popup_settext(preview_wid, readfile(path))
+    win_execute(preview_wid, 'silent! doautocmd filetypedetect BufNewFile ' .. path)
     noautocmd win_execute(preview_wid, 'silent! setlocal nospell nolist')
     for excmd in tagaddress->split(";")
         if trim(excmd) =~ '^\d\+$'
@@ -136,45 +142,53 @@ def Input(wid: number, args: dict<any>, ...li: list<any>)
 enddef
 
 export def Start(opts: dict<any> = {})
-    if empty(tagfiles())
-        # copied from fzf.vim, thanks @junegunn
-        inputsave()
-        echohl WarningMsg
-        var gen = input('No tags file in ' .. fnamemodify(getcwd(), ':~') .. ', generate? (y/N) ')
-        echohl None
-        inputrestore()
-        redraw
-        if gen =~? '^y'
-            if ! executable('ctags')
-                echoerr "Missing executable ctags, please install Universal Ctags"
-                return
-            else
-                var ver = system('ctags --version')
-                if ver !~? "Universal"
-                    echoerr "Incompatible ctags version, please install Universal Ctags"
-                    return
+    cwd = len(get(opts, 'cwd', '')) > 0 ? opts.cwd : getcwd()
+    var original_cwd = getcwd()
+    exe 'silent lcd ' .. cwd
+    try
+        if empty(tagfiles())
+            # copied from fzf.vim, thanks @junegunn
+            inputsave()
+            echohl WarningMsg
+            var gen = input('No tags file in ' .. fnamemodify(cwd, ':~') .. ', generate? (y/N) ')
+            echohl None
+            inputrestore()
+            redraw
+            if gen =~? '^y'
+                if ! executable('ctags')
+                    throw "Missing executable ctags, please install Universal Ctags"
+                else
+                    var ver = system('ctags --version')
+                    if ver !~? "Universal"
+                        throw "Incompatible ctags version, please install Universal Ctags"
+                    endif
+                endif
+                var out = system('ctags -R')
+                if empty(tagfiles())
+                    throw 'Failed to create tags file: ' .. out
+                else
+                    echo 'Created tags file'
                 endif
             endif
-            var out = system('ctags -R')
-            if empty(tagfiles())
-                echoerr 'Failed to create tags file: ' .. out
-                return
-            else
-                echo 'Created tags file'
-            endif
-        else
-            echo ''
-            return
         endif
-    endif
 
-    tag_list = []
-    # Possible TODO: use readtags program here, would remove additional info
-    # and could also be used to format the lines nicely (fzf.vim does this)
-    for path in tagfiles()
-        var lines = readfile(path)
-        tag_list += lines[match(lines, '^[^!]') : -1]
-    endfor
+        tag_list = []
+        # Possible TODO: use readtags program here, would remove additional info
+        # and could also be used to format the lines nicely (fzf.vim does this)
+        for path in tagfiles()
+            var lines = readfile(path)
+            tag_list += lines[match(lines, '^[^!]') : -1]
+        endfor
+    catch
+        echoerr v:exception
+    finally
+        exe 'silent lcd ' .. original_cwd
+    endtry
+
+    if empty(tag_list)
+        echo "No tags found"
+        return
+    endif
 
     var wids = selector.Start(tag_list, extend(opts, {
         select_cb: function('Select'),
