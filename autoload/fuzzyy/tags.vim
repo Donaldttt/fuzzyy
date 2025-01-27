@@ -140,18 +140,31 @@ export def Start(opts: dict<any> = {})
         # copied from fzf.vim, thanks @junegunn
         inputsave()
         echohl WarningMsg
-        var gen = input('No tags file found. Generate? (y/N) ')
+        var gen = input('No tags file in ' .. fnamemodify(getcwd(), ':~') .. ', generate? (y/N) ')
         echohl None
         inputrestore()
         redraw
         if gen =~? '^y'
-            var is_win = has('win32') || has('win64')
-            system('ctags -R' .. (is_win ? ' --output-format=e-ctags' : ''))
+            if ! executable('ctags')
+                echoerr "Missing executable ctags, please install Universal Ctags"
+                return
+            else
+                var ver = system('ctags --version')
+                if ver !~? "Universal"
+                    echoerr "Incompatible ctags version, please install Universal Ctags"
+                    return
+                endif
+            endif
+            var out = system('ctags -R')
             if empty(tagfiles())
-                echoerr 'Failed to create tags file'
+                echoerr 'Failed to create tags file: ' .. out
+                return
             else
                 echo 'Created tags file'
             endif
+        else
+            echo ''
+            return
         endif
     endif
 
