@@ -3,7 +3,10 @@ vim9script
 import autoload './utils/selector.vim'
 
 var tag_list: list<string>
+var tag_files = []
+var tag_dirs = []
 var cwd: string
+var fs = has('win32') || has('win64') ? '\' : '/'
 
 def ParseResult(result: string): list<any>
     # Tags file format, see https://docs.ctags.io/en/latest/man/tags.5.html
@@ -19,9 +22,20 @@ def EscQuotes(str: string): string
     return substitute(str, "'", "''", 'g')
 enddef
 
+# Find the first readable path relative to tagfiles locations. Can potentially
+# expand to the wrong path if there is more than one match, but should be rare.
+def ExpandPath(path: string): string
+    for tag_dir in tag_dirs
+        if filereadable(tag_dir .. fs .. path)
+            return tag_dir .. fs .. path
+        endif
+    endfor
+    return path
+enddef
+
 def Select(wid: number, result: list<any>)
     var [tagname, tagfile, tagaddress] = ParseResult(result[0])
-    var path = cwd .. '/' .. tagfile
+    var path = ExpandPath(tagfile)
     if filereadable(path)
         selector.MoveToUsableWindow()
         exe 'edit ' .. path
@@ -32,7 +46,7 @@ enddef
 def CloseTab(wid: number, result: dict<any>)
     if has_key(result, 'cursor_item')
         var [tagname, tagfile, tagaddress] = ParseResult(result.cursor_item)
-        var path = cwd .. '/' .. tagfile
+        var path = ExpandPath(tagfile)
         if filereadable(path)
             exe 'tabnew ' .. path
             feedkeys(':' .. tagaddress .. "\<CR>:norm! zz\<CR>", 'n')
@@ -43,7 +57,7 @@ enddef
 def CloseVSplit(wid: number, result: dict<any>)
     if has_key(result, 'cursor_item')
         var [tagname, tagfile, tagaddress] = ParseResult(result.cursor_item)
-        var path = cwd .. '/' .. tagfile
+        var path = ExpandPath(tagfile)
         if filereadable(path)
             exe 'vsplit ' .. path
             feedkeys(':' .. tagaddress .. "\<CR>:norm! zz\<CR>", 'n')
@@ -54,7 +68,7 @@ enddef
 def CloseSplit(wid: number, result: dict<any>)
     if has_key(result, 'cursor_item')
         var [tagname, tagfile, tagaddress] = ParseResult(result.cursor_item)
-        var path = cwd .. '/' .. tagfile
+        var path = ExpandPath(tagfile)
         if filereadable(path)
             exe 'split ' .. path
             feedkeys(':' .. tagaddress .. "\<CR>:norm! zz\<CR>", 'n')
@@ -95,7 +109,7 @@ def Preview(wid: number, opts: dict<any>)
     endif
     win_execute(preview_wid, 'syntax clear')
     var [tagname, tagfile, tagaddress] = ParseResult(result)
-    var path = cwd .. '/' .. tagfile
+    var path = ExpandPath(tagfile)
     if !filereadable(path)
         if result == ''
             popup_settext(preview_wid, '')
@@ -146,7 +160,9 @@ export def Start(opts: dict<any> = {})
     var original_cwd = getcwd()
     exe 'silent lcd ' .. cwd
     try
-        if empty(tagfiles())
+        tag_files = tagfiles()
+        echom tag_files
+        if empty(tag_files)
             # copied from fzf.vim, thanks @junegunn
             inputsave()
             echohl WarningMsg
@@ -164,7 +180,8 @@ export def Start(opts: dict<any> = {})
                     endif
                 endif
                 var out = system('ctags -R')
-                if empty(tagfiles())
+                tag_files = tagfiles()
+                if empty(tag_files)
                     throw 'Failed to create tags file: ' .. out
                 else
                     echo 'Created tags file'
@@ -175,10 +192,14 @@ export def Start(opts: dict<any> = {})
         tag_list = []
         # Possible TODO: use readtags program here, would remove additional info
         # and could also be used to format the lines nicely (fzf.vim does this)
-        for path in tagfiles()
+        for path in tag_files
             var lines = readfile(path)
             tag_list += lines[match(lines, '^[^!]') : -1]
         endfor
+
+        tag_dirs = tag_files->map((_, val) => {
+            return fnamemodify(stridx(val, fs) == 0 ? val : cwd .. fs .. val, ':h')
+        })
     catch
         echoerr v:exception
     finally
