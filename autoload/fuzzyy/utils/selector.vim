@@ -322,7 +322,7 @@ enddef
 
 # For split callbacks
 def CloseTab(wid: number, result: dict<any>)
-    if has_key(result, 'cursor_item')
+    if !empty(get(result, 'cursor_item', ''))
         var [buf, linenr] = split(result.cursor_item .. ':0', ':')[0 : 1]
         if enable_devicons
             buf = strcharpart(buf, devicon_char_width + 1)
@@ -346,7 +346,7 @@ def CloseTab(wid: number, result: dict<any>)
 enddef
 
 def CloseVSplit(wid: number, result: dict<any>)
-    if has_key(result, 'cursor_item')
+    if !empty(get(result, 'cursor_item', ''))
         var [buf, linenr] = split(result.cursor_item .. ':0', ':')[0 : 1]
         if enable_devicons
             buf = strcharpart(buf, devicon_char_width + 1)
@@ -369,7 +369,7 @@ def CloseVSplit(wid: number, result: dict<any>)
 enddef
 
 def CloseSplit(wid: number, result: dict<any>)
-    if has_key(result, 'cursor_item')
+    if !empty(get(result, 'cursor_item', ''))
         var [buf, linenr] = split(result.cursor_item .. ':0', ':')[0 : 1]
         if enable_devicons
             buf = strcharpart(buf, devicon_char_width + 1)

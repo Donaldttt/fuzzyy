@@ -44,7 +44,7 @@ def Select(wid: number, result: list<any>)
 enddef
 
 def CloseTab(wid: number, result: dict<any>)
-    if has_key(result, 'cursor_item')
+    if !empty(get(result, 'cursor_item', ''))
         var [tagname, tagfile, tagaddress] = ParseResult(result.cursor_item)
         var path = ExpandPath(tagfile)
         if filereadable(path)
@@ -55,7 +55,7 @@ def CloseTab(wid: number, result: dict<any>)
 enddef
 
 def CloseVSplit(wid: number, result: dict<any>)
-    if has_key(result, 'cursor_item')
+    if !empty(get(result, 'cursor_item', ''))
         var [tagname, tagfile, tagaddress] = ParseResult(result.cursor_item)
         var path = ExpandPath(tagfile)
         if filereadable(path)
@@ -66,7 +66,7 @@ def CloseVSplit(wid: number, result: dict<any>)
 enddef
 
 def CloseSplit(wid: number, result: dict<any>)
-    if has_key(result, 'cursor_item')
+    if !empty(get(result, 'cursor_item', ''))
         var [tagname, tagfile, tagaddress] = ParseResult(result.cursor_item)
         var path = ExpandPath(tagfile)
         if filereadable(path)
