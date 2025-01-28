@@ -279,11 +279,11 @@ export def FuzzySearchAsync(li: list<string>, pattern: string, limit: number, Cb
     return async_tid
 enddef
 
-def ReplaceCloseCb(Close_cb: func)
+export def ReplaceCloseCb(Close_cb: func)
     popup.SetPopupWinProp(menu_wid, 'close_cb', Close_cb)
 enddef
 
-def Close()
+export def Close()
     popup_close(menu_wid)
 enddef
 

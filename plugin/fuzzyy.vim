@@ -58,6 +58,7 @@ var windows: dict<any> = {
     grep: {},
     buffers: {},
     mru: {},
+    tags: {},
     highlights: {
         preview_ratio: 0.7,
     },
@@ -100,6 +101,7 @@ import autoload '../autoload/fuzzyy/buffers.vim'
 import autoload '../autoload/fuzzyy/highlights.vim'
 import autoload '../autoload/fuzzyy/cmdhistory.vim'
 import autoload '../autoload/fuzzyy/mru.vim'
+import autoload '../autoload/fuzzyy/tags.vim'
 import autoload '../autoload/fuzzyy/utils/selector.vim'
 
 command! -nargs=? FuzzyGrep grep.Start(extendnew(windows.grep, { search: <q-args> }))
@@ -117,6 +119,8 @@ command! -nargs=0 FuzzyCmdHistory cmdhistory.Start(windows.cmdhistory)
 command! -nargs=0 FuzzyMru mru.Start(windows.mru)
 command! -nargs=0 FuzzyMruCwd mru.Start(extendnew(windows.mru, { cwd: getcwd() }))
 command! -nargs=0 FuzzyMruRoot mru.Start(extendnew(windows.mru, { cwd: selector.GetRootDir() }))
+command! -nargs=0 FuzzyTags tags.Start(windows.tags)
+command! -nargs=0 FuzzyTagsRoot tags.Start(extendnew(windows.tags, { cwd: selector.GetRootDir() }))
 
 # Deprecated/renamed commands
 def Warn(msg: string)
