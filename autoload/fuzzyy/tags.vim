@@ -161,7 +161,6 @@ export def Start(opts: dict<any> = {})
     exe 'silent lcd ' .. cwd
     try
         tag_files = tagfiles()
-        echom tag_files
         if empty(tag_files)
             # copied from fzf.vim, thanks @junegunn
             inputsave()
