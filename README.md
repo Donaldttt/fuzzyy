@@ -52,27 +52,27 @@ git clone https://github.com/Donaldttt/fuzzyy ~/.vim/pack/Donaldttt/start/fuzzyy
 
 ## Commands
 
-| Command               | Description                                         | Default mapping
-| ---                   | ---                                                 | ---
-| FuzzyFiles            | search files in current working directory (CWD)     | \<leader>ff
-| FuzzyBuffers          | search opened buffers                               | \<leader>fb
-| FuzzyGrep [str]       | search for string in CWD, use [str] if provided     | \<leader>fg
-| FuzzyMru              | search most recent used files                       | \<leader>fm
-| FuzzyMruCwd           | search most recent used files in CWD                | \<leader>fr
-| FuzzyInBuffer [str]   | search for string in buffer, use [str] if provided  | \<leader>fi
-| FuzzyHelp             | search subjects/tags in :help documents             | \<leader>fh
-| FuzzyCommands         | search commands                                     | \<leader>fc
-| FuzzyFilesRoot        | search files in the project/vcs root directory      | None
-| FuzzyGrepRoot [str]   | search for string in the project/vcs root directory | None
-| FuzzyMruRoot          | search most recent used files in project/vcs root   | None
-| FuzzyColors           | search installed color schemes                      | None
-| FuzzyCmdHistory       | search command history                              | None
-| FuzzyHighlights       | search highlight groups                             | None
-| FuzzyTags             | search tags in tagfiles(), see `:h tags`            | None
-| FuzzyTagsRoot         | search tags in the project/vcs root directory       | None
-| FuzzyGitFiles         | search files in output from `git ls-files`          | None
-| FuzzyHelps            | deprecated alias for FuzzyHelp, will be removed     | None
-| FuzzyMRUFiles         | deprecated alias for FuzzyMru, will be removed      | None
+| Command               | Description
+| ---                   | ---
+| FuzzyFiles            | search files in current working directory (CWD)
+| FuzzyBuffers          | search opened buffers
+| FuzzyGrep [str]       | search for string in CWD, use [str] if provided
+| FuzzyMru              | search most recent used files
+| FuzzyMruCwd           | search most recent used files in CWD
+| FuzzyInBuffer [str]   | search for string in buffer, use [str] if provided
+| FuzzyHelp             | search subjects/tags in :help documents
+| FuzzyCommands         | search commands
+| FuzzyFilesRoot        | search files in the project/vcs root directory
+| FuzzyGrepRoot [str]   | search for string in the project/vcs root directory
+| FuzzyMruRoot          | search most recent used files in project/vcs root
+| FuzzyColors           | search installed color schemes
+| FuzzyCmdHistory       | search command history
+| FuzzyHighlights       | search highlight groups
+| FuzzyTags             | search tags in tagfiles(), see `:h tags`
+| FuzzyTagsRoot         | search tags in the project/vcs root directory
+| FuzzyGitFiles         | search files in output from `git ls-files`
+| FuzzyHelps            | deprecated alias for FuzzyHelp, will be removed
+| FuzzyMRUFiles         | deprecated alias for FuzzyMru, will be removed
 
 - For FuzzyGrep and FuzzyInBuffer, you can define a keymap like this to search
   the word under cursor.
@@ -85,6 +85,23 @@ git clone https://github.com/Donaldttt/fuzzyy ~/.vim/pack/Donaldttt/start/fuzzyy
   neither `rg` or `fd` are installed it will also use `git-ls-files` when in a
   git repo.
 - FuzzyTags requires `ctags` (Universal Ctags) to generate a tags file.
+
+## Mappings
+
+```vim
+nnoremap <silent> <leader>fb :FuzzyBuffers<CR>
+nnoremap <silent> <leader>fc :FuzzyCommands<CR>
+nnoremap <silent> <leader>ff :FuzzyFiles<CR>
+nnoremap <silent> <leader>fg :FuzzyGrep<CR>
+nnoremap <silent> <leader>fh :FuzzyHelp<CR>
+nnoremap <silent> <leader>fi :FuzzyInBuffer<CR>
+nnoremap <silent> <leader>fm :FuzzyMru<CR>
+nnoremap <silent> <leader>fr :FuzzyMruCwd<CR>
+```
+
+You can set `g:fuzzyy_enable_mappings = 0` to disable these default mappings.
+
+Fuzzyy will not overwrite mappings from your vimrc when adding default mappings.
 
 ## Navigation
 
@@ -114,24 +131,6 @@ be used to scroll the preview window, but not the menu window.
     - \<CTRL-S> open selected file in horizontal split
     - \<CTRL-V> open selected file in vertical split
     - \<CTRL-T> open selected file in new tab page
-
-## Default mappings
-
-You can set `g:fuzzyy_enable_mappings = 0` to disable default mappings
-
-```vim
-nnoremap <silent> <leader>fb :FuzzyBuffers<CR>
-nnoremap <silent> <leader>fc :FuzzyCommands<CR>
-nnoremap <silent> <leader>ff :FuzzyFiles<CR>
-nnoremap <silent> <leader>fg :FuzzyGrep<CR>
-nnoremap <silent> <leader>fh :FuzzyHelp<CR>
-nnoremap <silent> <leader>fi :FuzzyInBuffer<CR>
-nnoremap <silent> <leader>fm :FuzzyMru<CR>
-nnoremap <silent> <leader>fr :FuzzyMruCwd<CR>
-```
-
-Fuzzyy will not overwrite any existing mappings from your vimrc when adding
-default mappings
 
 ## Options
 
