@@ -1,0 +1,431 @@
+fuzzyy.txt
+
+==============================================================================
+CONTENTS                                                       *fuzzyy-contents*
+
+1. Fuzzyy........................................................|fuzzyy-fuzzyy|
+  1.1. Screenshots..........................................|fuzzyy-screenshots|
+  1.2. Requirements........................................|fuzzyy-requirements|
+    1.2.1. Suggested dependencies................|fuzzyy-suggested_dependencies|
+    1.2.2. Optional dependencies..................|fuzzyy-optional_dependencies|
+  1.3. Install..................................................|fuzzyy-install|
+  1.4. Commands................................................|fuzzyy-commands|
+  1.5. Navigation............................................|fuzzyy-navigation|
+  1.6. Default mappings................................|fuzzyy-default_mappings|
+  1.7. Options..................................................|fuzzyy-options|
+    1.7.1. g:fuzzyy_enable_mappings............|fuzzyy-g:fuzzyy_enable_mappings|
+    1.7.2. g:fuzzyy_devicons..........................|fuzzyy-g:fuzzyy_devicons|
+    1.7.3. g:fuzzyy_dropdown..........................|fuzzyy-g:fuzzyy_dropdown|
+    1.7.4. g:fuzzyy_reuse_windows................|fuzzyy-g:fuzzyy_reuse_windows|
+    1.7.5. g:fuzzyy_respect_gitignore........|fuzzyy-g:fuzzyy_respect_gitignore|
+    1.7.6. g:fuzzyy_include_hidden..............|fuzzyy-g:fuzzyy_include_hidden|
+    1.7.7. g:fuzzyy_follow_symlinks............|fuzzyy-g:fuzzyy_follow_symlinks|
+    1.7.8. g:fuzzyy_root_patterns................|fuzzyy-g:fuzzyy_root_patterns|
+    1.7.9. g:fuzzyy_exclude_file..................|fuzzyy-g:fuzzyy_exclude_file|
+    1.7.10. g:fuzzyy_exclude_dir...................|fuzzyy-g:fuzzyy_exclude_dir|
+    1.7.11. g:fuzzyy_ripgrep_options...........|fuzzyy-g:fuzzyy_ripgrep_options|
+    1.7.12. g:fuzzyy_keymaps...........................|fuzzyy-g:fuzzyy_keymaps|
+    1.7.13. g:fuzzyy_buffers_exclude...........|fuzzyy-g:fuzzyy_buffers_exclude|
+    1.7.14. g:fuzzyy_buffers_keymap.............|fuzzyy-g:fuzzyy_buffers_keymap|
+    1.7.15. g:fuzzyy_window_layout...............|fuzzyy-g:fuzzyy_window_layout|
+    1.7.16. g:fuzzyy_async_step.....................|fuzzyy-g:fuzzyy_async_step|
+  1.8. Syntax highlighting..........................|fuzzyy-syntax_highlighting|
+
+==============================================================================
+FUZZYY                                                           *fuzzyy-fuzzyy*
+
+A fuzzy finder for files, strings, help documents and many other things.
+
+It utilizes Vim's native matchfuzzypos function and popup window feature.
+
+Fuzzyy strives to provide an out-of-box experience by using pre-installed
+programs to handle complex tasks.
+
+------------------------------------------------------------------------------
+SCREENSHOTS                                                 *fuzzyy-screenshots*
+
+
+
+[](https://github.com/Donaldttt/resources/blob/main/fuzzyy/demo.png)
+
+------------------------------------------------------------------------------
+REQUIREMENTS                                               *fuzzyy-requirements*
+
+* Vim >= 9.0 (plugin is written in vim9scipt, Vim 9+ required, NeoVim not
+  supported)
+
+SUGGESTED DEPENDENCIES                           *fuzzyy-suggested_dependencies*
+
+* ripgrep (https://github.com/BurntSushi/ripgrep) - used for FuzzyGrep and
+  FuzzyFiles if installed, faster than the defaults and respects gitignore
+* vim-devicons (https://github.com/ryanoasis/vim-devicons) - used to show
+  devicons (https://devicon.dev/) when listing files if installed
+
+OPTIONAL DEPENDENCIES                             *fuzzyy-optional_dependencies*
+
+* ag (https://github.com/ggreer/the_silver_searcher) - used for FuzzyGrep if
+  ripgrep not installed
+* fd (https://github.com/sharkdp/fd) - used for FuzzyFiles if ripgrep not
+  installed
+* git (https://git-scm.com/) - used for FuzzyGrep and FuzzyFiles when inside git
+  repo and no alternative dependency installed
+* ctags (https://ctags.io) - used to generate tags for FuzzyTags (Universal
+  Ctags implementation is required)
+
+------------------------------------------------------------------------------
+INSTALL                                                         *fuzzyy-install*
+
+Any plugin manager will work, or you can use Vim's built-in package support:
+
+For vim-plug
+>
+  Plug 'Donaldttt/fuzzyy'
+<
+
+As Vim package
+>
+  git clone https://github.com/Donaldttt/fuzzyy ~/.vim/pack/Donaldttt/start/fuzzyy
+<
+
+------------------------------------------------------------------------------
+COMMANDS                                                       *fuzzyy-commands*
+
+| Command               | Description                                         | Default mapping
+| ---                   | ---                                                 | ---
+| FuzzyFiles            | search files in current working directory (CWD)     |
+| FuzzyBuffers          | search opened buffers                               | <leader>fb
+| FuzzyGrep [str]       | search for string in CWD, use [str] if provided     | <leader>fg
+| FuzzyMru              | search most recent used files                       | <leader>fm
+| FuzzyMruCwd           | search most recent used files in CWD                | <leader>fr
+| FuzzyInBuffer [str]   | search for string in buffer, use [str] if provided  | <leader>fi
+| FuzzyHelp             | search subjects/tags in :help documents             | <leader>fh
+| FuzzyCommands         | search commands                                     | <leader>fc
+| FuzzyFilesRoot        | search files in the project/vcs root directory      | None
+| FuzzyGrepRoot [str]   | search for string in the project/vcs root directory | None
+| FuzzyMruRoot          | search most recent used files in project/vcs root   | None
+| FuzzyColors           | search installed color schemes                      | None
+| FuzzyCmdHistory       | search command history                              | None
+| FuzzyHighlights       | search highlight groups                             | None
+| FuzzyTags             | search tags in tagfiles(), see `:h tags`            | None
+| FuzzyTagsRoot         | search tags in the project/vcs root directory       | None
+| FuzzyGitFiles         | search files in output from `git ls-files`          | None
+| FuzzyHelps            | deprecated alias for FuzzyHelp, will be removed     | None
+| FuzzyMRUFiles         | deprecated alias for FuzzyMru, will be removed      | None
+
+* For FuzzyGrep and FuzzyInBuffer, you can define a keymap like this to search
+  the word under cursor.
+>
+    nnoremap <leader>fw :FuzzyGrep <C-R><C-W><CR>
+<
+* FuzzyGrep requires one of `rg`, `ag`, `grep` or `FINDSTR` commands. If neither
+  `rg` or `ag` are installed it will also use `git-grep` when in a git repo.
+* FuzzyFiles requires one of `rg`, `fd`, `find` or `powershell` commands. If
+  neither `rg` or `fd` are installed it will also use `git-ls-files` when in a
+  git repo.
+* FuzzyTags requires `ctags` (Universal Ctags) to generate a tags file.
+
+------------------------------------------------------------------------------
+NAVIGATION                                                   *fuzzyy-navigation*
+
+* <CTRL-P> or <Up> moves up by one line in the menu window
+* <CTRL-N> or <Down> moves down by one line in the menu window
+* <CTRL-U> moves up by half a page in the preview window
+* <CTRL-D> moves down by half a page in the preview window
+* <CTRL-I> moves up by one line in the preview window
+* <CTRL-F> moves down by one line in the preview window
+* <CTRL-C> or <ESC> exits Fuzzy, closing all the windows
+
+You can use `g:fuzzyy_keymaps` to change these defaults.
+
+Navigation with the mouse is also supported. A single mouse click in the menu
+window moves the cursor line, double click selects a line. The mouse wheel can
+be used to scroll the preview window, but not the menu window.
+
+Command specific keymaps
+
+* FuzzyHighlights
+  * <CTRL-K> toggle white preview background color
+* FuzzyMru
+  * <CTRL-K> toggle between all MRU files and CWD only
+* FuzzyBuffers, FuzzyFiles, FuzzyGrep, FuzzyMru, FuzzyTags
+  * <CTRL-S> open selected file in horizontal split
+  * <CTRL-V> open selected file in vertical split
+  * <CTRL-T> open selected file in new tab page
+
+------------------------------------------------------------------------------
+DEFAULT MAPPINGS                                       *fuzzyy-default_mappings*
+
+You can set `g:fuzzyy_enable_mappings = 0` to disable default mappings
+>
+  nnoremap <silent> <leader>fb :FuzzyBuffers<CR>
+  nnoremap <silent> <leader>fc :FuzzyCommands<CR>
+  nnoremap <silent> <leader>ff :FuzzyFiles<CR>
+  nnoremap <silent> <leader>fg :FuzzyGrep<CR>
+  nnoremap <silent> <leader>fh :FuzzyHelp<CR>
+  nnoremap <silent> <leader>fi :FuzzyInBuffer<CR>
+  nnoremap <silent> <leader>fm :FuzzyMru<CR>
+  nnoremap <silent> <leader>fr :FuzzyMruCwd<CR>
+<
+
+Fuzzyy will not overwrite any existing mappings from your vimrc when adding
+default mappings
+
+------------------------------------------------------------------------------
+OPTIONS                                                         *fuzzyy-options*
+
+G:FUZZYY_ENABLE_MAPPINGS                       *fuzzyy-g:fuzzyy_enable_mappings*
+
+Set to 0 to disable default mappings. Default to 1
+>
+  let g:fuzzyy_enable_mappings = 1
+<
+
+G:FUZZYY_DEVICONS                                     *fuzzyy-g:fuzzyy_devicons*
+
+Show devicons when listing files (e.g. FuzzyFiles, FuzzyBuffers). Requires
+vim-devicons (https://github.com/ryanoasis/vim-devicons). Default 1 (show
+devicons if installed), set to 0 to always disable
+>
+  let g:fuzzyy_devicons = 1
+<
+
+G:FUZZYY_DROPDOWN                                     *fuzzyy-g:fuzzyy_dropdown*
+
+Enable dropdown theme (prompt at top rather than bottom). Default 0
+>
+  let g:fuzzyy_dropdown = 0
+<
+
+G:FUZZYY_REUSE_WINDOWS                           *fuzzyy-g:fuzzyy_reuse_windows*
+
+Fuzzyy avoids opening files in windows containing special buffers, like buffers
+created by file explorer plugins or help and quickfix buffers. Use this to add
+exceptions, the match is on either buftype or filetype. Default `['netrw']`
+(Netrw is Vim's built-in file explorer plugin)
+>
+  let g:fuzzyy_reuse_windows = ['netrw']
+<
+
+Example usage
+>
+  let g:fuzzyy_reuse_windows = ['netrw', 'bufexplorer', 'mru', 'terminal']
+<
+
+G:FUZZYY_RESPECT_GITIGNORE                   *fuzzyy-g:fuzzyy_respect_gitignore*
+
+Make FuzzyFiles & FuzzyGrep respect `.gitignore`. Default 1. Only work when
+1. inside a git repository and git is installed
+2. or either rg or fd is installed for FuzzyFiles
+3. or either rg or ag is installed for FuzzyGrep
+>
+  let g:fuzzyy_respect_gitignore = 1
+<
+
+This option can also be set specifically for FuzzyFiles and/or FuzzyGrep using
+`g:fuzzyy_files_respect_gitignore` and `g:fuzzyy_grep_respect_gitignore`
+
+G:FUZZYY_INCLUDE_HIDDEN                         *fuzzyy-g:fuzzyy_include_hidden*
+
+Make FuzzyFiles & FuzzyGrep include hidden files. Default 1. Only applied when
+1. rg, fd or PowerShell Get-ChildItem used with FuzzyFiles
+2. rg or ag used with FuzzyGrep
+>
+  let g:fuzzyy_include_hidden = 1
+<
+
+This option can also be set specifically for FuzzyFiles and/or FuzzyGrep using
+`g:fuzzyy_files_include_hidden` and `g:fuzzyy_grep_include_hidden`
+
+G:FUZZYY_FOLLOW_SYMLINKS                       *fuzzyy-g:fuzzyy_follow_symlinks*
+
+Make FuzzyFiles & FuzzyGrep follow symbolic links. Not applied when using
+git-ls-files, git-grep or FINDSTR. Default 0
+>
+  let g:fuzzyy_follow_symlinks = 0
+<
+
+This option can also be set specifically for FuzzyFiles and/or FuzzyGrep using
+`g:fuzzyy_files_follow_symlinks` and `g:fuzzyy_grep_follow_symlinks`
+
+G:FUZZYY_ROOT_PATTERNS                           *fuzzyy-g:fuzzyy_root_patterns*
+
+Patterns to find a project root in supported commands, e.g. FuzzyFilesRoot.
+These commands find a "root" directory to use as the working directory by
+walking up the direcrory tree looking for any match of these glob patterns.
+Default is intentionally conservative, using common VCS root markers only.
+>
+  let g:fuzzyy_root_patterns = ['.git', '.hg', '.svn']
+<
+
+Example usage
+>
+  let g:fuzzyy_root_patterns = ['.git', 'package.json', 'pyproject.toml']
+<
+
+G:FUZZYY_EXCLUDE_FILE                             *fuzzyy-g:fuzzyy_exclude_file*
+
+Make FuzzyFiles, FuzzyGrep, and FuzzyMru always exclude files matching these
+glob patterns. Applies whether `.gitignore` is respected or not. Default
+`['*.swp', 'tags']`
+>
+  let g:fuzzyy_exclude_file = ['*.swp', 'tags']
+<
+
+This option can also be set specifically for FuzzyFiles, FuzzyGrep, and FuzzyMru
+using `g:fuzzyy_files_exclude_file` and `g:fuzzyy_grep_exclude_file` etc.
+
+G:FUZZYY_EXCLUDE_DIR                               *fuzzyy-g:fuzzyy_exclude_dir*
+
+Make FuzzyFiles, FuzzyGrep, and FuzzyMru always exclude these directories.
+Applies whether `.gitignore` is respected or not. Default
+`['.git', '.hg', '.svn']`
+>
+  let g:fuzzyy_exclude_dir = ['.git', '.hg', '.svn']
+<
+
+This option can also be set specifically for FuzzyFiles, FuzzyGrep, and FuzzyMru
+using `g:fuzzyy_files_exclude_dir` and `g:fuzzyy_grep_exclude_dir` etc.
+
+G:FUZZYY_RIPGREP_OPTIONS                       *fuzzyy-g:fuzzyy_ripgrep_options*
+
+Add custom ripgrep options for FuzzyFiles & FuzzyGrep. Appended to the generated
+options. Default `[]`
+>
+  let g:fuzzyy_ripgrep_options = []
+<
+
+Example usage
+>
+  let g:fuzzyy_ripgrep_options = [
+    \ "--no-config",
+    \ "--max-filesize=1M",
+    \ "--no-ignore-parent",
+    \ "--ignore-file " . expand('~/.ignore')
+    \ ]
+<
+
+This option can also be set specifically for FuzzyFiles and/or FuzzyGrep using
+`g:fuzzyy_files_ripgrep_options` and `g:fuzzyy_grep_ripgrep_options`
+
+G:FUZZYY_KEYMAPS                                       *fuzzyy-g:fuzzyy_keymaps*
+
+Change navigation keymaps. The following are the defaults
+>
+  let g:fuzzyy_keymaps = {
+  \     'menu_up': ["\<c-p>", "\<Up>"],
+  \     'menu_down': ["\<c-n>", "\<Down>"],
+  \     'menu_select': ["\<CR>"],
+  \     'preview_up': ["\<c-i>"],
+  \     'preview_down': ["\<c-f>"],
+  \     'preview_up_half_page': ["\<c-u>"],
+  \     'preview_down_half_page': ["\<c-d>"],
+  \     'cursor_begining': ["\<c-a>"],          " move cursor to the begining of the line in the prompt
+  \     'cursor_end': ["\<c-e>"],               " move cursor to the end of the line in the prompt
+  \     'backspace': ["\<bs>"],
+  \     'delete_all': ["\<c-k>"],               " delete whole line of the prompt
+  \     'delete_prefix': [],                    " delete to the start of the line
+  \     'exit': ["\<Esc>", "\<c-c>", "\<c-[>"], " exit fuzzyy
+  \ }
+<
+
+G:FUZZYY_BUFFERS_EXCLUDE                       *fuzzyy-g:fuzzyy_buffers_exclude*
+
+FuzzyBuffers will exclude the buffers in this list. Buffers not included in
+Vim's buffer list are excluded by default, so this is only necessary for buffers
+included in Vim's buffer list, but you want hidden by FuzzyBuffers. Default `[]`
+>
+  let g:fuzzyy_buffers_exclude = []
+<
+
+G:FUZZYY_BUFFERS_KEYMAP                         *fuzzyy-g:fuzzyy_buffers_keymap*
+
+FuzzyBuffer keymap for commands specific to FuzzyBuffers. The following are the
+defaults
+>
+  let g:fuzzyy_buffers_keymap = {
+  \    'delete_buffer': "",
+  \    'close_buffer': "\<c-l>",
+  \ }
+<
+
+G:FUZZYY_WINDOW_LAYOUT                           *fuzzyy-g:fuzzyy_window_layout*
+
+Window layout configuration. The general defaults for window layout options are:
+>
+  'preview': 1,         " 1 means enable preview window, 0 means disable
+  'preview_ratio': 0.5, " 0.5 means preview window will take 50% of the layout
+  'width': 0.8,         " 0.8 means total width of the layout will take 80% of the screen
+  'height': 0.8,        " 0.8 means total height of the layout will take 80% of the screen
+  'xoffset': auto       " x offset of the windows, 0.1 means 10% from left of the screen
+  'yoffset': auto       " x offset of the windows, 0.1 means 10% from top of the screen
+<
+
+This configuration is also customised per selector, with the following defaults:
+>
+  \ {
+  \    'files': {},
+  \    'grep': {},
+  \    'buffers': {},
+  \    'mru': {},
+  \    'tags': {},
+  \    'highlights': {},
+  \    'cmdhistory': {
+  \        'width': 0.6,
+  \    },
+  \    'colors': {
+  \        'width': 0.25,
+  \        'xoffset': 0.7,
+  \    },
+  \    'commands': {
+  \        'width': 0.4,
+  \    },
+  \    help: {
+  \        'preview_ratio': 0.6
+  \    },
+  \    'inbuffer': {},
+  \ }
+<
+
+Values set in `g:fuzzyy_window_layout` are merged with the defaults above.
+For example, you can disable preview window for FuzzyFiles and friends with:
+>
+  let g:fuzzyy_window_layout = { 'files': { 'preview': 0 } }
+<
+
+or you change the width of the preview window for FuzzyColors with:
+>
+  let g:fuzzyy_window_layout = { 'colors': { 'width': 0.4 } }
+<
+
+preview is ignored by commands that do not support it, e.g. FuzzyCmdHistory\
+x and y offsets are by default calculated to center the windows on the screen\
+width, height, and x and y offsets > 0 and < 1 are resolved as percentages\
+width, height, and x and y offsets >= 1 are fixed numbers of lines and cols\
+invalid values for preview_ratio, width, height, and x and y offsets are ignored
+
+G:FUZZYY_ASYNC_STEP                                 *fuzzyy-g:fuzzyy_async_step*
+
+Fuzzyy mimics async processing to fuzzy match in batches, which avoids problems
+running Vim's built in fuzzy matching on massive lists at once. The size of
+these batches is the async step value, which defaults to 10,000. This default
+should work well for most developer workstations, but you might want to reduce
+if you notice a lack of responsiveness on low spec machines
+>
+  let g:fuzzyy_async_step = 10000
+<
+
+------------------------------------------------------------------------------
+SYNTAX HIGHLIGHTING                                 *fuzzyy-syntax_highlighting*
+
+It is also possible to modify the colors used for highlighting. The defaults are
+shown below, you can change them in your vimrc. See :help :highlight if you are
+unfamiliar with Vim highlighting
+>
+  highlight default link fuzzyyCursor Search
+  highlight default link fuzzyyNormal Normal
+  highlight default link fuzzyyBorder Normal
+  highlight default link fuzzyyMatching Special
+  highlight default link fuzzyyPreviewMatch CurSearch
+<
+
+vim:tw=78:ts=2:ft=help:
