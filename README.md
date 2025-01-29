@@ -94,7 +94,7 @@ git clone https://github.com/Donaldttt/fuzzyy ~/.vim/pack/Donaldttt/start/fuzzyy
 - \<CTRL-D> moves down by half a page in the preview window
 - \<CTRL-I> moves up by one line in the preview window
 - \<CTRL-F> moves down by one line in the preview window
-- \<CTRL-C> or \<ESC> exits Fuzzy, closing all the windows
+- \<CTRL-C> or \<ESC> exits Fuzzyy, closing all the windows
 
 You can use `g:fuzzyy_keymaps` to change these defaults.
 
