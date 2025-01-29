@@ -54,7 +54,7 @@ git clone https://github.com/Donaldttt/fuzzyy ~/.vim/pack/Donaldttt/start/fuzzyy
 
 | Command               | Description                                         | Default mapping
 | ---                   | ---                                                 | ---
-| FuzzyFiles            | search files in current working directory (CWD)     |
+| FuzzyFiles            | search files in current working directory (CWD)     | \<leader>ff
 | FuzzyBuffers          | search opened buffers                               | \<leader>fb
 | FuzzyGrep [str]       | search for string in CWD, use [str] if provided     | \<leader>fg
 | FuzzyMru              | search most recent used files                       | \<leader>fm
