@@ -328,7 +328,7 @@ def CloseTab(wid: number, result: dict<any>)
             buf = strcharpart(buf, devicon_char_width + 1)
         endif
         var bufnr = bufnr(buf)
-        if bufnr > 0
+        if bufnr > 0 && !filereadable(buf)
             # for special buffers that cannot be edited
             execute 'tabnew'
             execute 'buffer ' .. bufnr
@@ -352,9 +352,11 @@ def CloseVSplit(wid: number, result: dict<any>)
             buf = strcharpart(buf, devicon_char_width + 1)
         endif
         var bufnr = bufnr(buf)
-        if bufnr > 0
+        if bufnr > 0 && !filereadable(buf)
             # for special buffers that cannot be edited
-            execute 'vert sb ' .. bufnr
+            # avoid :sbuffer to bypass 'switchbuf=useopen'
+            execute 'vnew'
+            execute 'buffer ' .. bufnr
         elseif cwd ==# getcwd()
             execute 'vsp ' .. buf
         else
@@ -375,9 +377,11 @@ def CloseSplit(wid: number, result: dict<any>)
             buf = strcharpart(buf, devicon_char_width + 1)
         endif
         var bufnr = bufnr(buf)
-        if bufnr > 0
+        if bufnr > 0 && !filereadable(buf)
             # for special buffers that cannot be edited
-            execute 'sb ' .. bufnr
+            # avoid :sbuffer to bypass 'switchbuf=useopen'
+            execute 'new'
+            execute 'buffer ' .. bufnr
         elseif cwd ==# getcwd()
             execute 'sp ' .. buf
         else
