@@ -20,6 +20,10 @@ def Preview(wid: number, opts: dict<any>)
         return
     endif
     var preview_wid = opts.win_opts.partids['preview']
+    if result == ''
+        popup_settext(preview_wid, '')
+        return
+    endif
     var preview_bufnr = winbufnr(preview_wid)
     var lnum = split(trim(result[0 : 10]), ' ')[0]
     if popup_getpos(preview_wid).lastline == 1
