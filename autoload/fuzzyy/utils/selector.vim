@@ -416,11 +416,15 @@ export var split_edit_callbacks = {
     "\<c-t>": function('SetTabClose'),
 }
 
-export def MoveToUsableWindow()
+export def MoveToUsableWindow(buf: any = null)
     var c = 0
     var wincount = winnr('$')
-    while ( !empty(&buftype) && index(reuse_windows, &buftype) == -1 &&
-            index(reuse_windows, &filetype) == -1 && c < wincount )
+    var buftype = !empty(buf) && !getbufvar(buf, '&buftype') ?
+        getbufvar(buf, '&buftype') : null
+    var filetype = !empty(buf) && !getbufvar(buf, '&filetype') ?
+        getbufvar(buf, '&filetype') : null
+    while ( !empty(&buftype) && index(reuse_windows + [buftype], &buftype) == -1 &&
+            index(reuse_windows + [filetype], &filetype) == -1 && c < wincount )
         wincmd w
         c = c + 1
     endwhile
