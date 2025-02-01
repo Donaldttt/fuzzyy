@@ -76,7 +76,10 @@ enddef
 def Build_grep(): string
     var result = 'grep -n -r -I --max-count=' .. max_count .. ' -F'
     if follow_symlinks
-        result ..= ' -S'
+        result = substitute(result, ' -r ', ' -R ', '')
+        if system('grep --version | head -1') =~# 'BSD'
+            result ..= ' -S'
+        endif
     endif
     var dir_list_parsed = reduce(dir_exclude,
         (acc, dir) => acc .. "--exclude-dir " .. dir .. " ", "")
