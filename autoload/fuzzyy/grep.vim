@@ -88,8 +88,17 @@ def Build_grep(): string
     return result .. ' ' .. dir_list_parsed .. file_list_parsed .. ' %s "%s" "%s"'
 enddef
 
-# Neither git-grep nor findstr support custom excludes
-var git_cmd = 'git grep -n -I --column --untracked --exclude-standard  --max-count=' .. max_count .. ' -F %s "%s" "%s"'
+def Build_git(): string
+    var result = 'git grep -n -I --column --untracked --exclude-standard -F'
+    var version = system('git version')->split('\M\s\+')[-1]->trim()
+    var [major, minor] = split(version, '\M.')[0 : 1]
+    # -m/--max-count option added in git version 2.38.0
+    if str2nr(major) > 2 || ( str2nr(major) == 2 && str2nr(minor) >= 38 )
+        result ..= ' --max-count=' .. max_count
+    endif
+    return result ..  ' %s "%s" "%s"'
+enddef
+
 var findstr_cmd = 'FINDSTR /S /N /O /P /L %s "%s" "%s/*"'
 
 # Script scoped vars reset for each invocation of Start(). Allows directory
@@ -118,7 +127,7 @@ def Build()
         sep_pattern = '\:\d\+:\d\+:'
         highlight = true
     elseif respect_gitignore && executable('git') && InsideGitRepo()
-        cmd = git_cmd
+        cmd = Build_git()
         ignore_case = '-i'
         sep_pattern = '\:\d\+:\d\+:'
         highlight = true
