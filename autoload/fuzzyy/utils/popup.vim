@@ -1,4 +1,7 @@
 vim9script
+
+scriptencoding utf-8
+
 var popup_wins: dict<any>
 var wins = { menu: -1, prompt: -1, preview: -1, info: -1 }
 var t_ve: string
