@@ -11,6 +11,9 @@ g:loaded_fuzzyy = 1
 
 # Deprecated or removed options
 var warnings = []
+if &encoding != 'utf-8'
+    warnings += ['fuzzyy: Vim encoding is ' .. &encoding .. ', utf-8 is required for popup borders etc.']
+endif
 if exists('g:enable_fuzzyy_keymaps')
     warnings += ['fuzzyy: g:enable_fuzzyy_keymaps is deprecated, use g:fuzzyy_enable_mappings instead']
     g:fuzzyy_enable_mappings = g:enable_fuzzyy_keymaps
