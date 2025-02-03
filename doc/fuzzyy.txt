@@ -4,7 +4,7 @@ fuzzyy.txt
 CONTENTS                                                       *fuzzyy-contents*
 
 1. Fuzzyy........................................................|fuzzyy-fuzzyy|
-  1.1. Screenshots..........................................|fuzzyy-screenshots|
+  1.1. Screenshot............................................|fuzzyy-screenshot|
   1.2. Requirements........................................|fuzzyy-requirements|
     1.2.1. Suggested dependencies................|fuzzyy-suggested_dependencies|
     1.2.2. Optional dependencies..................|fuzzyy-optional_dependencies|
@@ -42,11 +42,11 @@ Fuzzyy strives to provide an out-of-box experience by using pre-installed
 programs to handle complex tasks.
 
 ------------------------------------------------------------------------------
-SCREENSHOTS                                                 *fuzzyy-screenshots*
+SCREENSHOT                                                   *fuzzyy-screenshot*
 
 
 
-[](https://github.com/Donaldttt/resources/blob/main/fuzzyy/demo.png)
+[](https://i.imgur.com/3gkz8Hp.png)
 
 ------------------------------------------------------------------------------
 REQUIREMENTS                                               *fuzzyy-requirements*

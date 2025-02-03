@@ -7,11 +7,11 @@ It utilizes Vim's native matchfuzzypos function and popup window feature.
 Fuzzyy strives to provide an out-of-box experience by using pre-installed
 programs to handle complex tasks.
 
-## Screenshots
+## Screenshot
 
-![screenshot](https://github.com/Donaldttt/resources/blob/main/fuzzyy/demo.png)
+![screenshot](https://i.imgur.com/3gkz8Hp.png)
 
-[](https://github.com/Donaldttt/resources/blob/main/fuzzyy/demo.png)
+[](https://i.imgur.com/3gkz8Hp.png)
 
 ## Requirements
 
