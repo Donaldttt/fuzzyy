@@ -1,0 +1,39 @@
+#!/bin/bash
+
+set -e
+
+# Mount .inputrc as read-only if exists on host so bash shell
+# inside container works, more or less, like bash shell on host
+if test -f ~/.inputrc; then
+  inputrc="-v ${HOME}/.inputrc:/root/.inputrc:ro"
+fi
+
+# Mount an included gitconfig at system gitconfig location
+# Mimicks having an include.path set in user/global gitconfig
+if git config --global --get include.path >/dev/null; then
+  src=$(git config --global --get include.path)
+  src="${src/#\~/$HOME}" # tilde expansion, mount requires absolute path
+  dst="/etc/gitconfig" # system gitconfig location on Debian
+  gitinclude="-v $src:$dst:ro"
+fi
+
+if test -f ~/.gitignore; then
+  gitignore="-v ${HOME}/.gitignore:/root/.gitignore:ro"
+fi
+
+repo_root=$(git rev-parse --show-toplevel)
+
+set -x
+
+cd $repo_root
+
+docker build -t fuzzyy .
+
+# Note: cannot use xargs --no-run-if-empty on MacOS, GNU extension
+for image in $(docker images -q --filter "dangling=true" --filter "label=name=fuzzyy"); do
+  docker rmi $image
+done
+
+docker run -it --rm --cap-add=NET_ADMIN --device /dev/net/tun $inputrc $gitinclude $gitignore \
+  -v ${HOME}/.gitconfig:/root/.gitconfig:ro \
+  -v "${PWD}":/root/.vim/pack/plugins/start/fuzzyy $@ fuzzyy
