@@ -33,13 +33,25 @@ def ExpandPath(path: string): string
     return path
 enddef
 
+def JumpToAddress(tagaddress: string)
+    for excmd in tagaddress->split(";")
+        if trim(excmd) =~ '^\d\+$'
+            execute("silent! cursor(" .. excmd .. ", 1)")
+        else
+            var pattern = excmd->substitute('^\/', '', '')->substitute('\M\/;\?"\?$', '', '')
+            execute("silent! search('\\M" .. EscQuotes(pattern) .. "', 'cw')")
+        endif
+    endfor
+    execute('norm! zz')
+enddef
+
 def Select(wid: number, result: list<any>)
     var [tagname, tagfile, tagaddress] = ParseResult(result[0])
     var path = ExpandPath(tagfile)
     if filereadable(path)
         selector.MoveToUsableWindow()
         exe 'edit ' .. path
-        feedkeys(':' .. tagaddress .. "\<CR>:norm! zz\<CR>", 'n')
+        JumpToAddress(tagaddress)
     endif
 enddef
 
@@ -49,7 +61,7 @@ def CloseTab(wid: number, result: dict<any>)
         var path = ExpandPath(tagfile)
         if filereadable(path)
             exe 'tabnew ' .. path
-            feedkeys(':' .. tagaddress .. "\<CR>:norm! zz\<CR>", 'n')
+            JumpToAddress(tagaddress)
         endif
     endif
 enddef
@@ -60,7 +72,7 @@ def CloseVSplit(wid: number, result: dict<any>)
         var path = ExpandPath(tagfile)
         if filereadable(path)
             exe 'vsplit ' .. path
-            feedkeys(':' .. tagaddress .. "\<CR>:norm! zz\<CR>", 'n')
+            JumpToAddress(tagaddress)
         endif
     endif
 enddef
@@ -71,7 +83,7 @@ def CloseSplit(wid: number, result: dict<any>)
         var path = ExpandPath(tagfile)
         if filereadable(path)
             exe 'split ' .. path
-            feedkeys(':' .. tagaddress .. "\<CR>:norm! zz\<CR>", 'n')
+            JumpToAddress(tagaddress)
         endif
     endif
 enddef
