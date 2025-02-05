@@ -114,6 +114,31 @@ function IsBinaryBlob(path)
     return v:false
 endfunction
 
+# Get filetype from modelines, use when not detected via filetypedetect autocmd
+export def FTDetectModelines(content: list<string>): string
+    if ( !&modeline && !exists('g:loaded_securemodelines') ) || empty(content)
+        return ''
+    endif
+    try
+        var modelines = len(content) >= &modelines ? &modelines : len(content)
+        var pattern = '\M\C\s\?\(Vim\|vim\|vi\|ex\):\.\*\(ft\|filetype\)=\w\+'
+        var matched = content[0 : modelines - 1]->matchstr(pattern)
+        if empty(matched)
+            matched = content[len(content) - modelines : -1]->matchstr(pattern)
+        endif
+        if !empty(matched)
+            return matched->trim()->split('\M\(\s\+\|:\)')->filter((_, val) => {
+                    return val =~# '^\M\C\(ft\|filetype\)=\w\+$'
+                })[-1]->split('=')[-1]
+        endif
+    catch
+        echohl ErrorMsg
+        echom 'fuzzyy:' v:exception .. ' ' .. v:throwpoint
+        echohl None
+    endtry
+    return ''
+enddef
+
 # Search pattern @pattern in a list of strings @li
 # if pattern is empty, return [li, []]
 # params:
