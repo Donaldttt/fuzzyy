@@ -122,15 +122,15 @@ be used to scroll the preview window, but not the menu window.
 **Command specific keymaps**
 
 - FuzzyHighlights
-    - \<CTRL-K> toggle white preview background color
+  - \<CTRL-K> toggle white preview background color
 
 - FuzzyMru
-    - \<CTRL-K> toggle between all MRU files and CWD only
+  - \<CTRL-K> toggle between all MRU files and CWD only
 
 - FuzzyBuffers, FuzzyFiles, FuzzyGrep, FuzzyMru, FuzzyTags
-    - \<CTRL-S> open selected file in horizontal split
-    - \<CTRL-V> open selected file in vertical split
-    - \<CTRL-T> open selected file in new tab page
+  - \<CTRL-S> open selected file in horizontal split
+  - \<CTRL-V> open selected file in vertical split
+  - \<CTRL-T> open selected file in new tab page
 
 ## Options
 
@@ -174,7 +174,6 @@ Make FuzzyFiles & FuzzyGrep respect `.gitignore`. Default 1. Only work when
 3. or either rg or ag is installed for FuzzyGrep
 ```vim
 let g:fuzzyy_respect_gitignore = 1
-
 ```
 This option can also be set specifically for FuzzyFiles and/or FuzzyGrep using
 `g:fuzzyy_files_respect_gitignore` and `g:fuzzyy_grep_respect_gitignore`
@@ -253,20 +252,20 @@ This option can also be set specifically for FuzzyFiles and/or FuzzyGrep using
 Change navigation keymaps. The following are the defaults
 ```vim
 let g:fuzzyy_keymaps = {
-\     'menu_up': ["\<c-p>", "\<Up>"],
-\     'menu_down': ["\<c-n>", "\<Down>"],
-\     'menu_select': ["\<CR>"],
-\     'preview_up': ["\<c-i>"],
-\     'preview_down': ["\<c-f>"],
-\     'preview_up_half_page': ["\<c-u>"],
-\     'preview_down_half_page': ["\<c-d>"],
-\     'cursor_begining': ["\<c-a>"],          " move cursor to the begining of the line in the prompt
-\     'cursor_end': ["\<c-e>"],               " move cursor to the end of the line in the prompt
-\     'backspace': ["\<bs>"],
-\     'delete_all': ["\<c-k>"],               " delete whole line of the prompt
-\     'delete_prefix': [],                    " delete to the start of the line
-\     'exit': ["\<Esc>", "\<c-c>", "\<c-[>"], " exit fuzzyy
-\ }
+  \ 'menu_up': ["\<c-p>", "\<Up>"],
+  \ 'menu_down': ["\<c-n>", "\<Down>"],
+  \ 'menu_select': ["\<CR>"],
+  \ 'preview_up': ["\<c-i>"],
+  \ 'preview_down': ["\<c-f>"],
+  \ 'preview_up_half_page': ["\<c-u>"],
+  \ 'preview_down_half_page': ["\<c-d>"],
+  \ 'cursor_begining': ["\<c-a>"],          " move cursor to the begining of the line in the prompt
+  \ 'cursor_end': ["\<c-e>"],               " move cursor to the end of the line in the prompt
+  \ 'backspace': ["\<bs>"],
+  \ 'delete_all': ["\<c-k>"],               " delete whole line of the prompt
+  \ 'delete_prefix': [],                    " delete to the start of the line
+  \ 'exit': ["\<Esc>", "\<c-c>", "\<c-[>"], " exit fuzzyy
+  \ }
 ```
 
 ### g:fuzzyy_buffers_exclude
@@ -282,9 +281,9 @@ FuzzyBuffer keymap for commands specific to FuzzyBuffers. The following are the
 defaults
 ```vim
 let g:fuzzyy_buffers_keymap = {
-\    'delete_buffer': "",
-\    'close_buffer': "\<c-l>",
-\ }
+  \ 'delete_buffer': "",
+  \ 'close_buffer': "\<c-l>",
+  \ }
 ```
 
 ### g:fuzzyy_window_layout
@@ -300,26 +299,26 @@ Window layout configuration. The general defaults for window layout options are:
 This configuration is also customised per selector, with the following defaults:
 ```vim
 \ {
-\    'files': {},
-\    'grep': {},
-\    'buffers': {},
-\    'mru': {},
-\    'tags': {},
-\    'highlights': {},
-\    'cmdhistory': {
-\        'width': 0.6,
-\    },
-\    'colors': {
-\        'width': 0.25,
-\        'xoffset': 0.7,
-\    },
-\    'commands': {
-\        'width': 0.4,
-\    },
-\    help: {
-\        'preview_ratio': 0.6
-\    },
-\    'inbuffer': {},
+\   'files': {},
+\   'grep': {},
+\   'buffers': {},
+\   'mru': {},
+\   'tags': {},
+\   'highlights': {},
+\   'cmdhistory': {
+\     'width': 0.6,
+\   },
+\   'colors': {
+\     'width': 0.25,
+\     'xoffset': 0.7,
+\   },
+\     'commands': {
+\     'width': 0.4,
+\   },
+\   help: {
+\     preview_ratio': 0.6
+\   },
+\   'inbuffer': {},
 \ }
 ```
 

@@ -311,20 +311,20 @@ G:FUZZYY_KEYMAPS                                       *fuzzyy-g:fuzzyy_keymaps*
 Change navigation keymaps. The following are the defaults
 >
   let g:fuzzyy_keymaps = {
-  \     'menu_up': ["\<c-p>", "\<Up>"],
-  \     'menu_down': ["\<c-n>", "\<Down>"],
-  \     'menu_select': ["\<CR>"],
-  \     'preview_up': ["\<c-i>"],
-  \     'preview_down': ["\<c-f>"],
-  \     'preview_up_half_page': ["\<c-u>"],
-  \     'preview_down_half_page': ["\<c-d>"],
-  \     'cursor_begining': ["\<c-a>"],          " move cursor to the begining of the line in the prompt
-  \     'cursor_end': ["\<c-e>"],               " move cursor to the end of the line in the prompt
-  \     'backspace': ["\<bs>"],
-  \     'delete_all': ["\<c-k>"],               " delete whole line of the prompt
-  \     'delete_prefix': [],                    " delete to the start of the line
-  \     'exit': ["\<Esc>", "\<c-c>", "\<c-[>"], " exit fuzzyy
-  \ }
+    \ 'menu_up': ["\<c-p>", "\<Up>"],
+    \ 'menu_down': ["\<c-n>", "\<Down>"],
+    \ 'menu_select': ["\<CR>"],
+    \ 'preview_up': ["\<c-i>"],
+    \ 'preview_down': ["\<c-f>"],
+    \ 'preview_up_half_page': ["\<c-u>"],
+    \ 'preview_down_half_page': ["\<c-d>"],
+    \ 'cursor_begining': ["\<c-a>"],          " move cursor to the begining of the line in the prompt
+    \ 'cursor_end': ["\<c-e>"],               " move cursor to the end of the line in the prompt
+    \ 'backspace': ["\<bs>"],
+    \ 'delete_all': ["\<c-k>"],               " delete whole line of the prompt
+    \ 'delete_prefix': [],                    " delete to the start of the line
+    \ 'exit': ["\<Esc>", "\<c-c>", "\<c-[>"], " exit fuzzyy
+    \ }
 <
 
 G:FUZZYY_BUFFERS_EXCLUDE                       *fuzzyy-g:fuzzyy_buffers_exclude*
@@ -342,9 +342,9 @@ FuzzyBuffer keymap for commands specific to FuzzyBuffers. The following are the
 defaults
 >
   let g:fuzzyy_buffers_keymap = {
-  \    'delete_buffer': "",
-  \    'close_buffer': "\<c-l>",
-  \ }
+    \ 'delete_buffer': "",
+    \ 'close_buffer': "\<c-l>",
+    \ }
 <
 
 G:FUZZYY_WINDOW_LAYOUT                           *fuzzyy-g:fuzzyy_window_layout*
@@ -362,26 +362,26 @@ Window layout configuration. The general defaults for window layout options are:
 This configuration is also customised per selector, with the following defaults:
 >
   \ {
-  \    'files': {},
-  \    'grep': {},
-  \    'buffers': {},
-  \    'mru': {},
-  \    'tags': {},
-  \    'highlights': {},
-  \    'cmdhistory': {
-  \        'width': 0.6,
-  \    },
-  \    'colors': {
-  \        'width': 0.25,
-  \        'xoffset': 0.7,
-  \    },
-  \    'commands': {
-  \        'width': 0.4,
-  \    },
-  \    help: {
-  \        'preview_ratio': 0.6
-  \    },
-  \    'inbuffer': {},
+  \   'files': {},
+  \   'grep': {},
+  \   'buffers': {},
+  \   'mru': {},
+  \   'tags': {},
+  \   'highlights': {},
+  \   'cmdhistory': {
+  \     'width': 0.6,
+  \   },
+  \   'colors': {
+  \     'width': 0.25,
+  \     'xoffset': 0.7,
+  \   },
+  \     'commands': {
+  \     'width': 0.4,
+  \   },
+  \   help: {
+  \     preview_ratio': 0.6
+  \   },
+  \   'inbuffer': {},
   \ }
 <
 
