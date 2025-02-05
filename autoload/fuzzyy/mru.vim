@@ -44,9 +44,17 @@ def Preview(wid: number, opts: dict<any>)
     if selector.IsBinary(path)
         noautocmd popup_settext(preview_wid, 'Cannot preview binary file')
     else
-        noautocmd popup_settext(preview_wid, readfile(path))
+        var content = readfile(path)
+        noautocmd popup_settext(preview_wid, content)
+        setwinvar(preview_wid, '&filetype', '')
         win_execute(preview_wid, 'silent! doautocmd filetypedetect BufNewFile ' .. path)
         noautocmd win_execute(preview_wid, 'silent! setlocal nospell nolist')
+        if empty(getwinvar(preview_wid, '&filetype')) || getwinvar(preview_wid, '&filetype') == 'conf'
+            var modelineft = selector.FTDetectModelines(content)
+            if !empty(modelineft)
+                win_execute(preview_wid, 'set filetype=' .. modelineft)
+            endif
+        endif
     endif
     win_execute(preview_wid, 'norm! gg')
 enddef
