@@ -427,4 +427,4 @@ unfamiliar with Vim highlighting
   highlight default link fuzzyyPreviewMatch CurSearch
 <
 
-vim:tw=78:ts=2:ft=help:
+ vim:tw=78:ts=2:ft=help:
