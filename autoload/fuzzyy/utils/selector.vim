@@ -116,7 +116,10 @@ endfunction
 
 # Get filetype from modelines, use when not detected via filetypedetect autocmd
 export def FTDetectModelines(content: list<string>): string
-    if ( !&modeline && !exists('g:loaded_securemodelines') ) || empty(content)
+    if ( !&modeline || &modelines == 0 ) && !exists('g:loaded_securemodelines')
+        return ''
+    endif
+    if empty(content)
         return ''
     endif
     try
