@@ -67,9 +67,9 @@ def Close(wid: number, result: dict<any>)
         endif
         selector.MoveToUsableWindow()
         if cwd_only
-            exe 'edit ' cwd .. '/' .. path
+            exe 'edit ' cwd .. '/' .. fnameescape(path)
         else
-            exe 'edit ' .. path
+            exe 'edit ' .. fnameescape(path)
         endif
     endif
 enddef

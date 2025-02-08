@@ -50,7 +50,7 @@ def Select(wid: number, result: list<any>)
     endif
     var path = cwd .. '/' .. relative_path
     selector.MoveToUsableWindow()
-    exe 'edit ' .. path
+    exe 'edit ' .. fnameescape(path)
 enddef
 
 def AsyncCb(result: list<any>)

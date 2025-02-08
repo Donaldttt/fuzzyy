@@ -355,7 +355,7 @@ def Select(wid: number, result: list<any>)
         relative_path = strcharpart(relative_path, devicon_char_width + 1)
     endif
     var path = cwd .. '/' .. relative_path
-    exe 'edit ' .. path
+    exe 'edit ' .. fnameescape(path)
     exe 'norm! ' .. linenr .. 'G'
     exe 'norm! zz'
 enddef

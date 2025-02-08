@@ -361,10 +361,10 @@ def CloseTab(wid: number, result: dict<any>)
             execute 'tabnew'
             execute 'buffer ' .. bufnr
         elseif cwd ==# getcwd()
-            execute 'tabnew ' .. buf
+            execute 'tabnew ' .. fnameescape(buf)
         else
             var path = cwd .. '/' .. buf
-            execute 'tabnew ' .. path
+            execute 'tabnew ' .. fnameescape(path)
         endif
         if str2nr(linenr) > 0
             exe 'norm! ' .. linenr .. 'G'
@@ -386,10 +386,10 @@ def CloseVSplit(wid: number, result: dict<any>)
             execute 'vnew'
             execute 'buffer ' .. bufnr
         elseif cwd ==# getcwd()
-            execute 'vsp ' .. buf
+            execute 'vsp ' .. fnameescape(buf)
         else
             var path = cwd .. '/' .. buf
-            execute 'vsp ' .. path
+            execute 'vsp ' .. fnameescape(path)
         endif
         if str2nr(linenr) > 0
             exe 'norm! ' .. linenr .. 'G'
@@ -411,10 +411,10 @@ def CloseSplit(wid: number, result: dict<any>)
             execute 'new'
             execute 'buffer ' .. bufnr
         elseif cwd ==# getcwd()
-            execute 'sp ' .. buf
+            execute 'sp ' .. fnameescape(buf)
         else
             var path = cwd .. '/' .. buf
-            execute 'sp ' .. path
+            execute 'sp ' .. fnameescape(path)
         endif
         if str2nr(linenr) > 0
             exe 'norm! ' .. linenr .. 'G'

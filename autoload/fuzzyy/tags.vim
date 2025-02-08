@@ -50,7 +50,7 @@ def Select(wid: number, result: list<any>)
     var path = ExpandPath(tagfile)
     if filereadable(path)
         selector.MoveToUsableWindow()
-        exe 'edit ' .. path
+        exe 'edit ' .. fnameescape(path)
         JumpToAddress(tagaddress)
     endif
 enddef
@@ -60,7 +60,7 @@ def CloseTab(wid: number, result: dict<any>)
         var [tagname, tagfile, tagaddress] = ParseResult(result.cursor_item)
         var path = ExpandPath(tagfile)
         if filereadable(path)
-            exe 'tabnew ' .. path
+            exe 'tabnew ' .. fnameescape(path)
             JumpToAddress(tagaddress)
         endif
     endif
@@ -71,7 +71,7 @@ def CloseVSplit(wid: number, result: dict<any>)
         var [tagname, tagfile, tagaddress] = ParseResult(result.cursor_item)
         var path = ExpandPath(tagfile)
         if filereadable(path)
-            exe 'vsplit ' .. path
+            exe 'vsplit ' .. fnameescape(path)
             JumpToAddress(tagaddress)
         endif
     endif
@@ -82,7 +82,7 @@ def CloseSplit(wid: number, result: dict<any>)
         var [tagname, tagfile, tagaddress] = ParseResult(result.cursor_item)
         var path = ExpandPath(tagfile)
         if filereadable(path)
-            exe 'split ' .. path
+            exe 'split ' .. fnameescape(path)
             JumpToAddress(tagaddress)
         endif
     endif
