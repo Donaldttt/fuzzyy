@@ -312,7 +312,7 @@ def CreatePopup(args: dict<any>): number
     endif
 
     # we will put user callback in close_funcs, and call it in GeneralPopupCallback
-    for key in ['filter', 'border', 'borderhighlight', 'highlight', 'borderchars', 
+    for key in ['filter', 'border', 'borderhighlight', 'highlight', 'borderchars',
     'scrollbar', 'padding', 'wrap', 'zindex', 'title']
         if has_key(args, key)
             opts[key] = args[key]

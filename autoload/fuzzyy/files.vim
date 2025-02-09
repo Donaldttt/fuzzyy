@@ -232,4 +232,3 @@ export def Start(opts: dict<any> = {})
     files_update_tid = timer_start(400, function('UpdateMenu'), {repeat: -1})
     # Profiling()
 enddef
-
