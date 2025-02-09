@@ -7,6 +7,7 @@ var mru_origin_list: list<string>
 var devicon_char_width = devicons.GetDeviconCharWidth()
 var cwd: string
 var cwd_only: bool
+var cwdlen: number
 var menu_wid: number
 
 var enable_devicons = exists('g:fuzzyy_devicons') && exists('g:WebDevIconsGetFileTypeSymbol') ?
@@ -102,6 +103,7 @@ var key_callbacks = {
 export def Start(opts: dict<any> = {})
     cwd = len(get(opts, 'cwd', '')) > 0 ? opts.cwd : getcwd()
     cwd_only = len(get(opts, 'cwd', '')) > 0
+    cwdlen = len(cwd)
     # sorted files from buffers opened during this session, including unlisted
     var mru_buffers = split(execute('buffers! t'), '\n')->map((_, val) => {
             var bufnumber = str2nr(matchstr(val, '\M\s\*\(\d\+\)'))
@@ -137,7 +139,7 @@ export def Start(opts: dict<any> = {})
             return stridx(fnamemodify(val, ':p'), cwd) >= 0
         })
         mru_list = reduce(mru_list, (acc, val) => {
-            acc->add(strpart(fnamemodify(val, ':p'), len(cwd) + 1))
+            acc->add(strpart(fnamemodify(val, ':p'), cwdlen + 1))
             return acc
         }, [])
     else

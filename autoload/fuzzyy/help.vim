@@ -78,7 +78,7 @@ enddef
 
 var last_pattern: string
 def UpdateMenu(...args: list<any>)
-    const STEP = 1000 
+    const STEP = 1000
     if len(tag_files) == 0
         timer_stop(update_tid)
         return

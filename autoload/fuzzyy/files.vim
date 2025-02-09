@@ -9,11 +9,10 @@ var cur_pattern: string
 var last_pattern: string
 var in_loading: number
 var cwd: string
-var cwdlen: number
 var cur_result: list<string>
 var jid: job
 var menu_wid: number
-var files_update_tid: number
+var update_tid: number
 var cache: dict<any>
 var matched_hl_offset = 0
 var devicon_char_width = devicons.GetDeviconCharWidth()
@@ -161,7 +160,7 @@ enddef
 
 def JobExitCb(id: job, status: number)
     in_loading = 0
-    timer_stop(files_update_tid)
+    timer_stop(update_tid)
     if last_result_len <= 0
         selector.UpdateMenu(ProcessResult(cur_result, 100), [])
     endif
@@ -198,7 +197,7 @@ def Close(wid: number, opts: dict<any>)
     if type(jid) == v:t_job && job_status(jid) == 'run'
         job_stop(jid)
     endif
-    timer_stop(files_update_tid)
+    timer_stop(update_tid)
 enddef
 
 export def Start(opts: dict<any> = {})
@@ -207,7 +206,6 @@ export def Start(opts: dict<any> = {})
     cur_pattern = ''
     last_pattern = '@!#-='
     cwd = len(get(opts, 'cwd', '')) > 0 ? opts.cwd : getcwd()
-    cwdlen = len(cwd)
     in_loading = 1
     var wids = selector.Start([], extend(opts, {
         select_cb: function('Select'),
@@ -229,7 +227,6 @@ export def Start(opts: dict<any> = {})
     endif
     JobStart(cwd, cmd)
     timer_start(50, function('UpdateMenu'))
-    files_update_tid = timer_start(400, function('UpdateMenu'), {repeat: -1})
+    update_tid = timer_start(400, function('UpdateMenu'), {repeat: -1})
     # Profiling()
 enddef
-

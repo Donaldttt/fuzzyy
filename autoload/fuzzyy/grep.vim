@@ -147,13 +147,13 @@ def Build()
 enddef
 
 var cwd: string
-var cwdlen = -1
+var cwdlen: number
 var cur_pattern = ''
 var cur_result = []
 var menu_wid = -1
 var cur_menu_item = ''
 var job_running = 0
-var ag_update_tid = 0
+var update_tid = 0
 var last_pattern = ''
 var last_result_len = -1
 var last_result = []
@@ -201,7 +201,7 @@ def Reducer(pattern: string, acc: dict<any>, val: string): dict<any>
     var absolute_path = fnamemodify(path, ':p')
     var str = strpart(val, seq[2])
     var centerd_str = str
-    var relative_path = strpart(absolute_path, len(cwd) + 1)
+    var relative_path = strpart(absolute_path, cwdlen + 1)
 
     var prefix = relative_path .. seq[0]
     var col_list = [col + len(prefix), len(pattern)]
@@ -418,7 +418,7 @@ def UpdateMenu(...li: list<any>)
 enddef
 
 def CloseCb(...li: list<any>)
-    timer_stop(ag_update_tid)
+    timer_stop(update_tid)
     if type(jid) == v:t_job && job_status(jid) == 'run'
         job_stop(jid)
     endif
@@ -444,7 +444,7 @@ export def Start(opts: dict<any> = {})
     cur_menu_item = ''
     job_running = 0
 
-    ag_update_tid = 0
+    update_tid = 0
     last_pattern = ''
     last_result_len = -1
     last_result = []
@@ -464,7 +464,7 @@ export def Start(opts: dict<any> = {})
     endif
     preview_wid = wids.preview
     setwinvar(menu_wid, '&wrap', 0)
-    ag_update_tid = timer_start(100, function('UpdateMenu'), {repeat: -1})
+    update_tid = timer_start(100, function('UpdateMenu'), {repeat: -1})
     if len(get(opts, 'search', '')) > 0
         popup.SetPrompt(opts.search)
     endif

@@ -6,7 +6,6 @@ var popup_wins: dict<any>
 var wins = { menu: -1, prompt: -1, preview: -1, info: -1 }
 var t_ve: string
 var hlcursor: dict<any>
-var exists_buffers = []
 export var active = false
 
 # user can register callback for any key
@@ -312,7 +311,7 @@ def CreatePopup(args: dict<any>): number
     endif
 
     # we will put user callback in close_funcs, and call it in GeneralPopupCallback
-    for key in ['filter', 'border', 'borderhighlight', 'highlight', 'borderchars', 
+    for key in ['filter', 'border', 'borderhighlight', 'highlight', 'borderchars',
     'scrollbar', 'padding', 'wrap', 'zindex', 'title']
         if has_key(args, key)
             opts[key] = args[key]
@@ -401,7 +400,6 @@ def NewPopup(args: dict<any>): list<number>
     setbufvar(bufnr, '&modifiable', 1)
 
     popup_wins[wid].bufnr = bufnr
-    add(exists_buffers, bufnr)
 
     return [wid, bufnr]
 enddef
