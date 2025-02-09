@@ -9,7 +9,6 @@ var cur_pattern: string
 var last_pattern: string
 var in_loading: number
 var cwd: string
-var cwdlen: number
 var cur_result: list<string>
 var jid: job
 var menu_wid: number
@@ -207,7 +206,6 @@ export def Start(opts: dict<any> = {})
     cur_pattern = ''
     last_pattern = '@!#-='
     cwd = len(get(opts, 'cwd', '')) > 0 ? opts.cwd : getcwd()
-    cwdlen = len(cwd)
     in_loading = 1
     var wids = selector.Start([], extend(opts, {
         select_cb: function('Select'),

@@ -147,7 +147,7 @@ def Build()
 enddef
 
 var cwd: string
-var cwdlen = -1
+var cwdlen: number
 var cur_pattern = ''
 var cur_result = []
 var menu_wid = -1
@@ -201,7 +201,7 @@ def Reducer(pattern: string, acc: dict<any>, val: string): dict<any>
     var absolute_path = fnamemodify(path, ':p')
     var str = strpart(val, seq[2])
     var centerd_str = str
-    var relative_path = strpart(absolute_path, len(cwd) + 1)
+    var relative_path = strpart(absolute_path, cwdlen + 1)
 
     var prefix = relative_path .. seq[0]
     var col_list = [col + len(prefix), len(pattern)]
