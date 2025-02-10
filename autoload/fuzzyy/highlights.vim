@@ -36,29 +36,6 @@ var key_callbacks = {
     "\<c-k>": function('TogglePreviewBg'),
 }
 
-def AddHighlight(preview_wid: number)
-    var hl_meta_copy = copy(hl_meta)
-    var hls = keys(hl_meta_copy)
-    var parts = values(hl_meta_copy)
-    var tid: number
-    tid = timer_start(5, (timer) => {
-        var hls_slice = hls[: 400]
-        var parts_slice = parts[: 400]
-        for i in range(len(hls_slice))
-            var hl = hls_slice[i]
-            var p = parts_slice[i]
-            var line = p[0]
-            var xxxidx = p[1]
-            var mid = matchaddpos(hl, [[line, xxxidx + 1, 3]], 99, -1,  {window: preview_wid})
-        endfor
-        hls = hls[401 :]
-        parts = parts[401 :]
-        if len(hls) == 0
-            timer_stop(tid)
-        endif
-    }, {repeat: -1})
-enddef
-
 export def Start(opts: dict<any> = {})
     var highlights_raw = substitute(execute('hi'), "\n", " ", "g") .. ' fuzzyy_dummyy xxx'
     var highlights: list<any> = []
@@ -90,15 +67,11 @@ export def Start(opts: dict<any> = {})
     popup_setoptions(menu_wid, {title: len(hl_meta)})
     # set preview buffer's content
     popup_settext(preview_wid, highlights)
+
+    # add highlight to preview buffer
     for [hl, parts] in items(hl_meta)
-        # add highlight to preview buffer
         var line = parts[0]
         var xxxidx = parts[1]
         var mid = matchaddpos(hl, [[line, xxxidx + 1, 3]], 99, -1,  {window: preview_wid})
     endfor
-    timer_start(1, (timer) => {
-        var line = hl_meta[selector.MenuGetCursorItem(false)][0]
-        win_execute(preview_wid, 'normal! ' .. line .. 'G')
-        win_execute(preview_wid, 'normal! zz')
-    })
 enddef
