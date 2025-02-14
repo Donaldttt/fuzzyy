@@ -351,7 +351,7 @@ enddef
 # For split callbacks
 def CloseTab(wid: number, result: dict<any>)
     if !empty(get(result, 'cursor_item', ''))
-        var [buf, linenr] = split(result.cursor_item .. ':0', ':')[0 : 1]
+        var [buf, line, col] = split(result.cursor_item .. ':0:0', ':')[0 : 2]
         if enable_devicons
             buf = strcharpart(buf, devicon_char_width + 1)
         endif
@@ -366,8 +366,9 @@ def CloseTab(wid: number, result: dict<any>)
             var path = cwd .. '/' .. buf
             execute 'tabnew ' .. fnameescape(path)
         endif
-        if str2nr(linenr) > 0
-            exe 'norm! ' .. linenr .. 'G'
+        if str2nr(line) > 0
+            cursor(str2nr(line), str2nr(col))
+            exe 'norm! ^'
             exe 'norm! zz'
         endif
     endif
@@ -375,7 +376,7 @@ enddef
 
 def CloseVSplit(wid: number, result: dict<any>)
     if !empty(get(result, 'cursor_item', ''))
-        var [buf, linenr] = split(result.cursor_item .. ':0', ':')[0 : 1]
+        var [buf, line, col] = split(result.cursor_item .. ':0:0', ':')[0 : 2]
         if enable_devicons
             buf = strcharpart(buf, devicon_char_width + 1)
         endif
@@ -391,8 +392,9 @@ def CloseVSplit(wid: number, result: dict<any>)
             var path = cwd .. '/' .. buf
             execute 'vsp ' .. fnameescape(path)
         endif
-        if str2nr(linenr) > 0
-            exe 'norm! ' .. linenr .. 'G'
+        if str2nr(line) > 0
+            cursor(str2nr(line), str2nr(col))
+            exe 'norm! ^'
             exe 'norm! zz'
         endif
     endif
@@ -400,7 +402,7 @@ enddef
 
 def CloseSplit(wid: number, result: dict<any>)
     if !empty(get(result, 'cursor_item', ''))
-        var [buf, linenr] = split(result.cursor_item .. ':0', ':')[0 : 1]
+        var [buf, line, col] = split(result.cursor_item .. ':0:0', ':')[0 : 2]
         if enable_devicons
             buf = strcharpart(buf, devicon_char_width + 1)
         endif
@@ -416,8 +418,9 @@ def CloseSplit(wid: number, result: dict<any>)
             var path = cwd .. '/' .. buf
             execute 'sp ' .. fnameescape(path)
         endif
-        if str2nr(linenr) > 0
-            exe 'norm! ' .. linenr .. 'G'
+        if str2nr(line) > 0
+            cursor(str2nr(line), str2nr(col))
+            exe 'norm! ^'
             exe 'norm! zz'
         endif
     endif
