@@ -423,6 +423,26 @@ def CloseSplit(wid: number, result: dict<any>)
     endif
 enddef
 
+def CloseQuickFix(wid: number, result: dict<any>)
+    var bufnr = winbufnr(wid)
+    var lines: list<any>
+    lines = reverse(getbufline(bufnr, 1, "$"))
+    filter(lines, (_, val) => !empty(val))
+    map(lines, (_, val) => {
+        var line = val
+        if enable_devicons
+            line = strcharpart(val, devicon_char_width + 1)
+        endif
+        var dict = {
+            filename: line,
+            lnum: 1,
+            col: 1 }
+        return dict
+    })
+    setqflist(lines)
+    exe 'copen'
+enddef
+
 def SetVSplitClose()
     ReplaceCloseCb(function('CloseVSplit'))
     Close()
@@ -438,10 +458,16 @@ def SetTabClose()
     Close()
 enddef
 
+def SetQuickFixClose()
+    ReplaceCloseCb(function('CloseQuickFix'))
+    Close()
+enddef
+
 export var split_edit_callbacks = {
     "\<c-v>": function('SetVSplitClose'),
     "\<c-s>": function('SetSplitClose'),
     "\<c-t>": function('SetTabClose'),
+    "\<c-q>": function('SetQuickFixClose'),
 }
 
 export def MoveToUsableWindow(buf: any = null)
