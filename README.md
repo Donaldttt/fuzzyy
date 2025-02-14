@@ -132,6 +132,13 @@ be used to scroll the preview window, but not the menu window.
   - \<CTRL-V> open selected file in vertical split
   - \<CTRL-T> open selected file in new tab page
 
+- FuzzyBuffers, FuzzyFiles, FuzzyGrep, FuzzyInBuffer, FuzzyMru
+  - \<CTRL-Q> send results to quickfix list
+
+Send results to quickfix list only includes results currently in the menu buffer,
+which effectively limits the results to a few hundred at most (this is probably
+what you want, sending thousands of results to the quickfix list is slow).
+
 ## Options
 
 ### g:fuzzyy_enable_mappings
