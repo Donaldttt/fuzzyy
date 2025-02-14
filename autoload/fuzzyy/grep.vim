@@ -347,7 +347,7 @@ def Preview(wid: number, opts: dict<any>)
 enddef
 
 def Select(wid: number, result: list<any>)
-    var [relative_path, linenr, _] = ParseResult(result[0])
+    var [relative_path, line, col] = ParseResult(result[0])
     if relative_path == null
         return
     endif
@@ -357,7 +357,11 @@ def Select(wid: number, result: list<any>)
     var path = cwd .. '/' .. relative_path
     selector.MoveToUsableWindow()
     exe 'edit ' .. fnameescape(path)
-    exe 'norm! ' .. linenr .. 'G'
+    if col > 0
+        cursor(line, col)
+    else
+        exe 'norm! ' .. line .. 'G'
+    endif
     exe 'norm! zz'
 enddef
 
