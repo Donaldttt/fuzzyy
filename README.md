@@ -55,16 +55,16 @@ git clone https://github.com/Donaldttt/fuzzyy ~/.vim/pack/Donaldttt/start/fuzzyy
 | Command               | Description
 | ---                   | ---
 | FuzzyFiles            | search files in current working directory (CWD)
-| FuzzyBuffers          | search opened buffers
+| FuzzyFilesRoot        | search files in the project/vcs root directory
 | FuzzyGrep [str]       | search for string in CWD, use [str] if provided
+| FuzzyGrepRoot [str]   | search for string in the project/vcs root directory
+| FuzzyBuffers          | search opened buffers
 | FuzzyMru              | search most recent used files
 | FuzzyMruCwd           | search most recent used files in CWD
+| FuzzyMruRoot          | search most recent used files in project/vcs root
 | FuzzyInBuffer [str]   | search for string in buffer, use [str] if provided
 | FuzzyHelp             | search subjects/tags in :help documents
 | FuzzyCommands         | search commands
-| FuzzyFilesRoot        | search files in the project/vcs root directory
-| FuzzyGrepRoot [str]   | search for string in the project/vcs root directory
-| FuzzyMruRoot          | search most recent used files in project/vcs root
 | FuzzyColors           | search installed color schemes
 | FuzzyCmdHistory       | search command history
 | FuzzyHighlights       | search highlight groups
