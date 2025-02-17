@@ -1,4 +1,5 @@
-fuzzyy.txt
+fuzzyy.txt                                A vim9 fuzzy finder with a modern UI
+
 
 ==============================================================================
 CONTENTS                                                       *fuzzyy-contents*
@@ -93,16 +94,16 @@ COMMANDS                                                       *fuzzyy-commands*
 | Command               | Description
 | ---                   | ---
 | FuzzyFiles            | search files in current working directory (CWD)
-| FuzzyBuffers          | search opened buffers
+| FuzzyFilesRoot        | search files in the project/vcs root directory
 | FuzzyGrep [str]       | search for string in CWD, use [str] if provided
+| FuzzyGrepRoot [str]   | search for string in the project/vcs root directory
+| FuzzyBuffers          | search opened buffers
 | FuzzyMru              | search most recent used files
 | FuzzyMruCwd           | search most recent used files in CWD
+| FuzzyMruRoot          | search most recent used files in project/vcs root
 | FuzzyInBuffer [str]   | search for string in buffer, use [str] if provided
 | FuzzyHelp             | search subjects/tags in :help documents
 | FuzzyCommands         | search commands
-| FuzzyFilesRoot        | search files in the project/vcs root directory
-| FuzzyGrepRoot [str]   | search for string in the project/vcs root directory
-| FuzzyMruRoot          | search most recent used files in project/vcs root
 | FuzzyColors           | search installed color schemes
 | FuzzyCmdHistory       | search command history
 | FuzzyHighlights       | search highlight groups
@@ -164,10 +165,16 @@ Command specific keymaps
   * <CTRL-K> toggle white preview background color
 * FuzzyMru
   * <CTRL-K> toggle between all MRU files and CWD only
-* FuzzyBuffers, FuzzyFiles, FuzzyGrep, FuzzyMru, FuzzyTags
+* FuzzyBuffers, FuzzyFiles, FuzzyGrep, FuzzyInBuffer, FuzzyMru, FuzzyTags
   * <CTRL-S> open selected file in horizontal split
   * <CTRL-V> open selected file in vertical split
   * <CTRL-T> open selected file in new tab page
+* FuzzyBuffers, FuzzyFiles, FuzzyGrep, FuzzyInBuffer, FuzzyMru
+  * <CTRL-Q> send results to quickfix list
+
+Send results to quickfix list only includes results currently in the menu buffer,
+which effectively limits the results to a few hundred at most (this is probably
+what you want, sending thousands of results to the quickfix list is slow).
 
 ------------------------------------------------------------------------------
 OPTIONS                                                         *fuzzyy-options*
