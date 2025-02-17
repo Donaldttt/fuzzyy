@@ -127,7 +127,7 @@ be used to scroll the preview window, but not the menu window.
 - FuzzyMru
   - \<CTRL-K> toggle between all MRU files and CWD only
 
-- FuzzyBuffers, FuzzyFiles, FuzzyGrep, FuzzyMru, FuzzyTags
+- FuzzyBuffers, FuzzyFiles, FuzzyGrep, FuzzyInBuffer, FuzzyMru, FuzzyTags
   - \<CTRL-S> open selected file in horizontal split
   - \<CTRL-V> open selected file in vertical split
   - \<CTRL-T> open selected file in new tab page

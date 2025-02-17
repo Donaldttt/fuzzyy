@@ -35,6 +35,33 @@ def Preview(wid: number, opts: dict<any>)
     win_execute(preview_wid, 'norm! zz')
 enddef
 
+def CloseTab(wid: number, result: dict<any>)
+    if !empty(get(result, 'cursor_item', ''))
+        var line = str2nr(split(result.cursor_item, '│')[0])
+        exe 'tabnew ' .. fnameescape(file_name)
+        exe 'norm! ' .. line .. 'G'
+        exe 'norm! zz'
+    endif
+enddef
+
+def CloseVSplit(wid: number, result: dict<any>)
+    if !empty(get(result, 'cursor_item', ''))
+        var line = str2nr(split(result.cursor_item, '│')[0])
+        exe 'vsplit ' .. fnameescape(file_name)
+        exe 'norm! ' .. line .. 'G'
+        exe 'norm! zz'
+    endif
+enddef
+
+def CloseSplit(wid: number, result: dict<any>)
+    if !empty(get(result, 'cursor_item', ''))
+        var line = str2nr(split(result.cursor_item, '│')[0])
+        exe 'split ' .. fnameescape(file_name)
+        exe 'norm! ' .. line .. 'G'
+        exe 'norm! zz'
+    endif
+enddef
+
 def CloseQuickFix(wid: number, result: dict<any>)
     var bufnr = winbufnr(wid)
     var lines: list<any>
@@ -53,12 +80,30 @@ def CloseQuickFix(wid: number, result: dict<any>)
     exe 'copen'
 enddef
 
+def SetVSplitClose()
+    selector.ReplaceCloseCb(function('CloseVSplit'))
+    selector.Close()
+enddef
+
+def SetSplitClose()
+    selector.ReplaceCloseCb(function('CloseSplit'))
+    selector.Close()
+enddef
+
+def SetTabClose()
+    selector.ReplaceCloseCb(function('CloseTab'))
+    selector.Close()
+enddef
+
 def SetQuickFixClose()
     selector.ReplaceCloseCb(function('CloseQuickFix'))
     selector.Close()
 enddef
 
 var split_edit_callbacks = {
+    "\<c-v>": function('SetVSplitClose'),
+    "\<c-s>": function('SetSplitClose'),
+    "\<c-t>": function('SetTabClose'),
     "\<c-q>": function('SetQuickFixClose'),
 }
 
