@@ -1,0 +1,29 @@
+#!/bin/bash
+# vim:ft=bash:
+
+# Script to generate vim docs from README.md
+# Uses md2vim, see https://github.com/FooSoft/md2vim
+#
+# Install md2vim with `go install git.foosoft.net/alex/md2vim@latest`
+# Or download a binary from https://github.com/FooSoft/md2vim/releases
+
+if which md2vim &>/dev/null; then
+  BIN_PATH=$(which md2vim)
+elif test -f $GOPATH/bin/md2vim; then
+  BIN_PATH=$GOPATH/bin/md2vim
+elif test -f $HOME/go/bin/md2vim; then
+  BIN_PATH=$HOME/go/bin/md2vim
+else
+  echo "Error: Required binary md2vim not found" >&2
+  echo "Install md2vim with 'go install git.foosoft.net/alex/md2vim@latest'" >&2
+  echo "Or download a binary from https://github.com/FooSoft/md2vim/releases" >&2
+fi
+
+cmd="$BIN_PATH -cols 78 -tabs 2 -desc 'A vim9 fuzzy finder with a modern UI' README.md doc/fuzzyy.txt"
+echo Executing $cmd
+eval $cmd
+
+# Note: leading space required!
+modeline=" vim:tw=78:ts=2:ft=help:"
+echo Appending modeline $modeline
+echo "$modeline" >> doc/fuzzyy.txt
