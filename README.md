@@ -255,6 +255,20 @@ let g:fuzzyy_ripgrep_options = [
 This option can also be set specifically for FuzzyFiles and/or FuzzyGrep using
 `g:fuzzyy_files_ripgrep_options` and `g:fuzzyy_grep_ripgrep_options`
 
+### g:fuzzyy_devicons_glyph_func
+Specify a custom function for obtaining devicon glyphs from file names or paths.
+By default Fuzzyy integrates with vim-devicons to obtain glyphs and measure byte
+widths. You can use this option to obtain devicon glyphs from another nerdfont
+compatible plugin, or your own custom function. Default ''
+```vim
+let g:fuzzyy_devicons_glyph_func = ''
+```
+Example usage
+```vim
+let g:fuzzyy_devicons_glyph_func = 'nerdfont#find'
+```
+The function should take a single string argument and return a single glyph.
+
 ### g:fuzzyy_keymaps
 Change navigation keymaps. The following are the defaults
 ```vim
