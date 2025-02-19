@@ -6,7 +6,6 @@ import autoload './utils/devicons.vim'
 var buf_dict: dict<any>
 var key_callbacks: dict<any>
 var enable_devicons = devicons.enabled
-var devicon_char_width = devicons.GetDeviconCharWidth()
 var _window_width: float
 
 # Options
@@ -32,7 +31,7 @@ def Preview(wid: number, opts: dict<any>)
         return
     endif
     if enable_devicons
-        result = strcharpart(result, devicon_char_width + 1)
+        result = devicons.RemoveDevicon(result)
     endif
     var file: string
     var lnum: number
@@ -63,7 +62,7 @@ def Close(wid: number, result: dict<any>)
     if has_key(result, 'selected_item')
         var buf = result.selected_item
         if enable_devicons
-            buf = strcharpart(buf, devicon_char_width + 1)
+            buf = devicons.RemoveDevicon(buf)
         endif
         var bufnr = buf_dict[buf][1]
         if bufnr != bufnr('$')

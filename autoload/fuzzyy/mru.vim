@@ -5,7 +5,6 @@ import autoload './utils/devicons.vim'
 
 var mru_origin_list: list<string>
 var enable_devicons = devicons.enabled
-var devicon_char_width = devicons.GetDeviconCharWidth()
 var cwd: string
 var cwd_only: bool
 var cwdlen: number
@@ -22,7 +21,7 @@ var dir_exclude = exists('g:fuzzyy_mru_exclude_dir')
 def Preview(wid: number, opts: dict<any>)
     var result = opts.cursor_item
     if enable_devicons
-        result = strcharpart(result, devicon_char_width + 1)
+        result = devicons.RemoveDevicon(result)
     endif
     if !has_key(opts.win_opts.partids, 'preview')
         return
@@ -62,7 +61,7 @@ def Close(wid: number, result: dict<any>)
     if has_key(result, 'selected_item')
         var path = result['selected_item']
         if enable_devicons
-            path = strcharpart(path, devicon_char_width + 1)
+            path = devicons.RemoveDevicon(path)
         endif
         selector.MoveToUsableWindow()
         if cwd_only

@@ -5,8 +5,6 @@ import autoload './utils/popup.vim'
 import autoload './utils/devicons.vim'
 
 var enable_devicons = devicons.enabled
-var devicon_char_width = devicons.GetDeviconCharWidth()
-var devicon_byte_width = devicons.GetDeviconByteWidth()
 
 # Options
 var respect_gitignore = exists('g:fuzzyy_grep_respect_gitignore') ?
@@ -292,7 +290,7 @@ enddef
 def Preview(wid: number, opts: dict<any>)
     var result = opts.cursor_item
     if enable_devicons
-        result = strcharpart(result, devicon_char_width + 1)
+        result = devicons.RemoveDevicon(result)
     endif
     var last_item = opts.last_cursor_item
     var [relative_path, linenr, colnr] = ParseResult(result)
@@ -347,7 +345,7 @@ def Select(wid: number, result: list<any>)
         return
     endif
     if enable_devicons
-        relative_path = strcharpart(relative_path, devicon_char_width + 1)
+        relative_path = devicons.RemoveDevicon(relative_path)
     endif
     var path = cwd .. '/' .. relative_path
     selector.MoveToUsableWindow()
@@ -403,8 +401,9 @@ def UpdateMenu(...li: list<any>)
 
     if enable_devicons
         devicons.AddDevicons(strs)
+        var hl_offset = devicons.GetDeviconOffset()
         hl_list = reduce(hl_list, (a, v) => {
-            v[1] += devicon_byte_width + 1
+            v[1] += hl_offset
             return add(a, v)
         }, [])
     endif

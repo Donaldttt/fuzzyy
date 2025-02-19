@@ -76,12 +76,12 @@ export def AddColor(wid: number)
     endfor
 enddef
 
-export def GetDeviconCharWidth(): number
-    return devicon_char_width
+export def GetDeviconOffset(): number
+    return devicon_byte_width + 1
 enddef
 
-export def GetDeviconByteWidth(): number
-    return devicon_byte_width
+export def RemoveDevicon(str: string): string
+    return strcharpart(str, devicon_char_width + 1)
 enddef
 
 export def AddDevicons(li: list<string>): list<string>

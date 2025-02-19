@@ -15,8 +15,6 @@ var menu_wid: number
 var update_tid: number
 var cache: dict<any>
 var enable_devicons = devicons.enabled
-var devicon_char_width = devicons.GetDeviconCharWidth()
-var devicon_byte_width = devicons.GetDeviconByteWidth()
 
 def ProcessResult(list_raw: list<string>, ...args: list<any>): list<string>
     var limit = -1
@@ -39,7 +37,7 @@ enddef
 def Select(wid: number, result: list<any>)
     var relative_path = result[0]
     if enable_devicons
-        relative_path = strcharpart(relative_path, devicon_char_width + 1)
+        relative_path = devicons.RemoveDevicon(relative_path)
     endif
     var path = cwd .. '/' .. relative_path
     selector.MoveToUsableWindow()
@@ -49,7 +47,7 @@ enddef
 def AsyncCb(result: list<any>)
     var strs = []
     var hl_list = []
-    var hl_offset = enable_devicons ? devicon_byte_width + 1 : 0
+    var hl_offset = enable_devicons ? devicons.GetDeviconOffset() : 0
     var idx = 1
     for item in result
         add(strs, item[0])
@@ -86,7 +84,7 @@ enddef
 def Preview(wid: number, opts: dict<any>)
     var result = opts.cursor_item
     if enable_devicons
-        result = strcharpart(result, devicon_char_width + 1)
+        result = devicons.RemoveDevicon(result)
     endif
     if !has_key(opts.win_opts.partids, 'preview')
         return
