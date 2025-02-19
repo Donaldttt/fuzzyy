@@ -2,15 +2,24 @@ vim9script
 
 var devicon_char_width = 0
 var devicon_byte_width = 0
-if exists('g:WebDevIconsGetFileTypeSymbol')
-    var test_devicon = g:WebDevIconsGetFileTypeSymbol('a.lua')
+
+# Options
+var glyph_func = exists('g:fuzzyy_devicons_glyph_func') ? g:fuzzyy_devicons_glyph_func : (
+    exists('g:WebDevIconsGetFileTypeSymbol') ? 'g:WebDevIconsGetFileTypeSymbol' : ''
+)
+export var enabled = exists('g:fuzzyy_devicons') && !empty(glyph_func) ?
+    g:fuzzyy_devicons : !empty(glyph_func)
+
+export var GetDevicon: func
+if !empty(glyph_func)
+    GetDevicon = function(glyph_func)
+endif
+
+if enabled
+    var test_devicon = GetDevicon('a.lua')
     devicon_char_width = strcharlen(test_devicon)
     devicon_byte_width = strlen(test_devicon)
 endif
-
-export var enabled = exists('g:fuzzyy_devicons')
-    && exists('g:WebDevIconsGetFileTypeSymbol') ?
-    g:fuzzyy_devicons : exists('g:WebDevIconsGetFileTypeSymbol')
 
 def SetHl()
     hi fuzzyy_yellow ctermfg=215 guifg=#f5c06f
@@ -67,7 +76,7 @@ var others_color = 'fuzzyy_yellow'
 
 export def AddColor(wid: number)
     for ft in keys(devicons_color_table)
-        var icon = g:WebDevIconsGetFileTypeSymbol(ft)
+        var icon = GetDevicon(ft)
         var charnr = char2nr(icon)
         var charhex = printf('%x', charnr)
         try
@@ -87,10 +96,10 @@ enddef
 export def AddDevicons(li: list<string>): list<string>
     if !empty(li) && stridx(li[0], ':') != -1
         map(li, (_, val) => {
-            return g:WebDevIconsGetFileTypeSymbol(split(val, ':')[0]) .. ' ' .. val
+            return GetDevicon(split(val, ':')[0]) .. ' ' .. val
         })
     else
-        map(li, 'g:WebDevIconsGetFileTypeSymbol(v:val) .. " " .. v:val')
+        map(li, 'GetDevicon(v:val) .. " " .. v:val')
     endif
     return li
 enddef
