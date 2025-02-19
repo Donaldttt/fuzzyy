@@ -4,14 +4,12 @@ import autoload './utils/selector.vim'
 import autoload './utils/devicons.vim'
 
 var mru_origin_list: list<string>
+var enable_devicons = devicons.enabled
 var devicon_char_width = devicons.GetDeviconCharWidth()
 var cwd: string
 var cwd_only: bool
 var cwdlen: number
 var menu_wid: number
-
-var enable_devicons = exists('g:fuzzyy_devicons') && exists('g:WebDevIconsGetFileTypeSymbol') ?
-    g:fuzzyy_devicons : exists('g:WebDevIconsGetFileTypeSymbol')
 
 # Options
 var file_exclude = exists('g:fuzzyy_mru_exclude_file')

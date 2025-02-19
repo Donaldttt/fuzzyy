@@ -7,11 +7,10 @@ var fzf_list: list<string>
 var cwd: string
 var menu_wid: number
 var prompt_str: string
-var matched_hl_offset = 0
 var menu_hl_list: list<any>
+var enable_devicons: bool
 var devicon_char_width = devicons.GetDeviconCharWidth()
-var enable_devicons = exists('g:fuzzyy_devicons') && exists('g:WebDevIconsGetFileTypeSymbol') ?
-    g:fuzzyy_devicons : exists('g:WebDevIconsGetFileTypeSymbol')
+var devicon_byte_width = devicons.GetDeviconByteWidth()
 var reuse_windows = exists('g:fuzzyy_reuse_windows')
     && type(g:fuzzyy_reuse_windows) == v:t_list ?
     g:fuzzyy_reuse_windows : ['netrw']
@@ -22,9 +21,6 @@ var root_patterns = exists('g:fuzzyy_root_patterns')
     && type(g:fuzzyy_root_patterns) == v:t_list ?
     g:fuzzyy_root_patterns : ['.git', '.hg', '.svn']
 
-if enable_devicons
-    matched_hl_offset = devicons.GetDeviconWidth() + 1
-endif
 export var windows: dict<any>
 
 var enable_dropdown = exists('g:fuzzyy_dropdown') ? g:fuzzyy_dropdown : 0
@@ -326,9 +322,9 @@ def Input(wid: number, args: dict<any>, ...li: list<any>)
     [ret, menu_hl_list] = FuzzySearch(fzf_list, prompt_str)
 
     if enable_devicons
-         map(ret, 'g:WebDevIconsGetFileTypeSymbol(v:val) .. " " .. v:val')
+        devicons.AddDevicons(ret)
          menu_hl_list = reduce(menu_hl_list, (a, v) => {
-            v[1] += matched_hl_offset
+            v[1] += devicon_byte_width + 1
             return add(a, v)
          }, [])
     endif

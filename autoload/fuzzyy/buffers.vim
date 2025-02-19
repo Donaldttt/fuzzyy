@@ -5,15 +5,13 @@ import autoload './utils/devicons.vim'
 
 var buf_dict: dict<any>
 var key_callbacks: dict<any>
+var enable_devicons = devicons.enabled
 var devicon_char_width = devicons.GetDeviconCharWidth()
 var _window_width: float
 
 # Options
-var enable_devicons = exists('g:fuzzyy_devicons') && exists('g:WebDevIconsGetFileTypeSymbol') ?
-    g:fuzzyy_devicons : exists('g:WebDevIconsGetFileTypeSymbol')
 var exclude_buffers = exists('g:fuzzyy_buffers_exclude') ?
     g:fuzzyy_buffers_exclude : []
-
 
 var keymaps = {
     'delete_buffer': "",

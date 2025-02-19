@@ -14,15 +14,9 @@ var jid: job
 var menu_wid: number
 var update_tid: number
 var cache: dict<any>
-var matched_hl_offset = 0
+var enable_devicons = devicons.enabled
 var devicon_char_width = devicons.GetDeviconCharWidth()
-
-var enable_devicons = exists('g:fuzzyy_devicons') && exists('g:WebDevIconsGetFileTypeSymbol') ?
-    g:fuzzyy_devicons : exists('g:WebDevIconsGetFileTypeSymbol')
-if enable_devicons
-    # devicons take 3/4(macvim) chars position plus 1 space
-    matched_hl_offset = devicons.GetDeviconWidth() + 1
-endif
+var devicon_byte_width = devicons.GetDeviconByteWidth()
 
 def ProcessResult(list_raw: list<string>, ...args: list<any>): list<string>
     var limit = -1
@@ -33,7 +27,7 @@ def ProcessResult(list_raw: list<string>, ...args: list<any>): list<string>
         li = list_raw
     endif
     if enable_devicons
-         map(li, 'g:WebDevIconsGetFileTypeSymbol(v:val) .. " " .. v:val')
+        devicons.AddDevicons(li)
     endif
     # Hack for Git-Bash / Mingw-w64, Cygwin, and possibly other friends
     # External commands like rg may return paths with Windows file separator,
@@ -55,12 +49,13 @@ enddef
 def AsyncCb(result: list<any>)
     var strs = []
     var hl_list = []
+    var hl_offset = enable_devicons ? devicon_byte_width + 1 : 0
     var idx = 1
     for item in result
         add(strs, item[0])
         hl_list += reduce(item[1], (acc, val) => {
             var pos = copy(val)
-            pos[0] += matched_hl_offset
+            pos[0] += hl_offset
             add(acc, [idx] + pos)
             return acc
         }, [])
