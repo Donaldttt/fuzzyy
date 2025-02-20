@@ -25,11 +25,13 @@ CONTENTS                                                       *fuzzyy-contents*
     1.7.9. g:fuzzyy_exclude_file..................|fuzzyy-g:fuzzyy_exclude_file|
     1.7.10. g:fuzzyy_exclude_dir...................|fuzzyy-g:fuzzyy_exclude_dir|
     1.7.11. g:fuzzyy_ripgrep_options...........|fuzzyy-g:fuzzyy_ripgrep_options|
-    1.7.12. g:fuzzyy_keymaps...........................|fuzzyy-g:fuzzyy_keymaps|
-    1.7.13. g:fuzzyy_buffers_exclude...........|fuzzyy-g:fuzzyy_buffers_exclude|
-    1.7.14. g:fuzzyy_buffers_keymap.............|fuzzyy-g:fuzzyy_buffers_keymap|
-    1.7.15. g:fuzzyy_window_layout...............|fuzzyy-g:fuzzyy_window_layout|
-    1.7.16. g:fuzzyy_async_step.....................|fuzzyy-g:fuzzyy_async_step|
+    1.7.12. g:fuzzyy_devicons_glyph_func...|fuzzyy-g:fuzzyy_devicons_glyph_func|
+    1.7.13. g:fuzzyy_devicons_color_func...|fuzzyy-g:fuzzyy_devicons_color_func|
+    1.7.14. g:fuzzyy_keymaps...........................|fuzzyy-g:fuzzyy_keymaps|
+    1.7.15. g:fuzzyy_buffers_exclude...........|fuzzyy-g:fuzzyy_buffers_exclude|
+    1.7.16. g:fuzzyy_buffers_keymap.............|fuzzyy-g:fuzzyy_buffers_keymap|
+    1.7.17. g:fuzzyy_window_layout...............|fuzzyy-g:fuzzyy_window_layout|
+    1.7.18. g:fuzzyy_async_step.....................|fuzzyy-g:fuzzyy_async_step|
   1.8. Syntax highlighting..........................|fuzzyy-syntax_highlighting|
 
 ==============================================================================
@@ -312,6 +314,41 @@ Example usage
 
 This option can also be set specifically for FuzzyFiles and/or FuzzyGrep using
 `g:fuzzyy_files_ripgrep_options` and `g:fuzzyy_grep_ripgrep_options`
+
+G:FUZZYY_DEVICONS_GLYPH_FUNC               *fuzzyy-g:fuzzyy_devicons_glyph_func*
+
+Specify a custom function for obtaining devicon glyphs from file names or paths.
+By default Fuzzyy integrates with vim-devicons to obtain glyphs and measure byte
+widths. You can use this option to obtain devicon glyphs from another nerdfont
+compatible plugin, or your own custom function. Default ''
+>
+  let g:fuzzyy_devicons_glyph_func = ''
+<
+
+Example usage
+>
+  let g:fuzzyy_devicons_glyph_func = 'nerdfont#find'
+<
+
+The function should take a single string argument and return a single glyph.
+
+G:FUZZYY_DEVICONS_COLOR_FUNC               *fuzzyy-g:fuzzyy_devicons_color_func*
+
+Specify a custom function for colorizing devicon glyphs. By default Fuzzyy does
+this with an internal function using a small set of common file name patterns
+and colors, but you may want more extensive support for file name patterns not
+recognised by Fuzzyy and to apply the same colors to Fuzzyy as other plugins.
+Default ''
+>
+  let g: fuzzyy_devicons_color_func = ''
+<
+
+Example usage
+>
+  let g: fuzzyy_devicons_color_func = 'glyph_palette#apply'
+<
+
+The function should take no arguments and use matchadd() to add highlighting.
 
 G:FUZZYY_KEYMAPS                                       *fuzzyy-g:fuzzyy_keymaps*
 
