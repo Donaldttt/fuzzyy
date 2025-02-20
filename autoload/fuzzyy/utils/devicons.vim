@@ -7,6 +7,8 @@ var devicon_byte_width = 0
 var glyph_func = exists('g:fuzzyy_devicons_glyph_func') ? g:fuzzyy_devicons_glyph_func : (
     exists('g:WebDevIconsGetFileTypeSymbol') ? 'g:WebDevIconsGetFileTypeSymbol' : ''
 )
+var color_func = exists('g:fuzzyy_devicons_color_func') ? g:fuzzyy_devicons_color_func : ''
+
 export var enabled = exists('g:fuzzyy_devicons') && !empty(glyph_func) ?
     g:fuzzyy_devicons : !empty(glyph_func)
 
@@ -75,6 +77,10 @@ var devicons_color_table = {
 var others_color = 'fuzzyy_yellow'
 
 export def AddColor(wid: number)
+    if !empty(color_func)
+        win_execute(wid, color_func .. '()')
+        return
+    endif
     for ft in keys(devicons_color_table)
         var icon = GetDevicon(ft)
         var charnr = char2nr(icon)
