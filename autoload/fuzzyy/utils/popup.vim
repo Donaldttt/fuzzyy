@@ -470,6 +470,8 @@ export def MenuSetHl(name: string, hl_list_raw: list<any>)
         return
     endif
     clearmatches(wins.menu)
+    # reset filetype to refresh any lost syntax highlighting
+    win_execute(wins.menu, 'set filetype=fuzzyy')
     # pass empty list to matchaddpos will cause error
     if len(hl_list_raw) == 0
         return
@@ -652,6 +654,8 @@ export def PopupSelection(opts: dict<any>): dict<any>
     endfor
 
     wins.menu = PopupMenu(menu_opts)
+    # Set filetype to allow custom syntax highlighting (e.g. for devicons)
+    win_execute(wins.menu, 'set filetype=fuzzyy')
 
     var prompt_opts = {
         yoffset: prompt_yoffset,
