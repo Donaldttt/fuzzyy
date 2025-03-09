@@ -40,13 +40,13 @@ def Preview(wid: number, opts: dict<any>)
     endif
     var preview_bufnr = winbufnr(preview_wid)
     if selector.IsBinary(path)
-        noautocmd popup_settext(preview_wid, 'Cannot preview binary file')
+        popup_settext(preview_wid, 'Cannot preview binary file')
     else
         var content = readfile(path)
-        noautocmd popup_settext(preview_wid, content)
+        popup_settext(preview_wid, content)
         setwinvar(preview_wid, '&filetype', '')
         win_execute(preview_wid, 'silent! doautocmd filetypedetect BufNewFile ' .. path)
-        noautocmd win_execute(preview_wid, 'silent! setlocal nospell nolist')
+        win_execute(preview_wid, 'silent! setlocal nospell nolist')
         if empty(getwinvar(preview_wid, '&filetype')) || getwinvar(preview_wid, '&filetype') == 'conf'
             var modelineft = selector.FTDetectModelines(content)
             if !empty(modelineft)
