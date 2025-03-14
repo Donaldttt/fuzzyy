@@ -152,6 +152,7 @@ var last_result_len = -1
 var last_result = []
 var cur_dict = {}
 var jid: job
+var pid: number
 var preview_wid = -1
 
 # return:
@@ -236,11 +237,14 @@ def JobStart(pattern: string)
         exit_cb: function('JobExitCb'),
         err_cb: function('JobErrCb'),
     })
+    pid = job_info(jid).process
 enddef
 
 def JobOutCb(channel: channel, msg: string)
-    var lists = selector.Split(msg)
-    cur_result += lists
+    if job_info(ch_getjob(channel)).process == pid
+        var lists = selector.Split(msg)
+        cur_result += lists
+    endif
 enddef
 
 def JobErrCb(channel: channel, msg: string)
