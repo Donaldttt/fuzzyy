@@ -194,7 +194,12 @@ def PromptFilter(wid: number, key: string): number
         popup_wins[wid].prompt.displayed_line = displayed_line
         popup_wins[wid].prompt.line = line
         # after a keystroke, we need to update the menu popup to display
-        # appropriate content
+        # appropriate content and reset the cursor position
+        if popup_wins[wid].dropdown
+            win_execute(wins.menu, "silent! cursor(1, 1)")
+        else
+            win_execute(wins.menu, "silent! cursor('$', 1)")
+        endif
         popup_wins[wid].prompt.input_cb(wid, {
                 str: line_str,
                 win_opts: popup_wins[wid]})
@@ -360,13 +365,14 @@ def CreatePopup(args: dict<any>): number
          width: args.width,
          height: args.height,
          reverse_menu: 0,
+         dropdown: 0,
          cursor_item: null,
          wid: wid,
          update_delay_timer: -1,
          prompt_delay_timer: -1,
          }
 
-    for key in ['reverse_menu', 'move_cb', 'close_cb']
+    for key in ['dropdown', 'reverse_menu', 'move_cb', 'close_cb']
         if has_key(args, key)
             popup_wins[wid][key] = args[key]
         endif
@@ -657,6 +663,7 @@ export def PopupSelection(opts: dict<any>): dict<any>
         yoffset: prompt_yoffset,
         xoffset: xoffset,
         width: menu_width,
+        dropdown: dropdown,
         input_cb: has_key(opts, 'input_cb') ? opts.input_cb : null,
         prompt: has_key(opts, 'prompt') ? opts.prompt : '> ',
         zindex: 1010,
