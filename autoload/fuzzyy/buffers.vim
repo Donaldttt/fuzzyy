@@ -105,7 +105,7 @@ def DeleteSelectedBuffer()
     execute(':bw ' .. buf)
     var li = GetBufList()
     selector.UpdateMenu(li, [], 1)
-    selector.UpdateFzfList(li)
+    selector.UpdateList(li)
     selector.RefreshMenu()
 enddef
 
@@ -117,7 +117,7 @@ def CloseSelectedBuffer()
     execute(':bw ' .. buf)
     var li = GetBufList()
     selector.UpdateMenu(li, [], 1)
-    selector.UpdateFzfList(li)
+    selector.UpdateList(li)
     selector.RefreshMenu()
 enddef
 

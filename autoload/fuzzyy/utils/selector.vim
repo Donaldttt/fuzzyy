@@ -3,7 +3,7 @@ vim9script
 import autoload './popup.vim'
 import './devicons.vim'
 
-var fzf_list: list<string>
+var raw_list: list<string>
 var cwd: string
 var menu_wid: number
 var prompt_str: string
@@ -309,15 +309,15 @@ export def Close()
     popup_close(menu_wid)
 enddef
 
-export def UpdateFzfList(li: list<string>)
-    fzf_list = li
+export def UpdateList(li: list<string>)
+    raw_list = li
 enddef
 
 def Input(wid: number, args: dict<any>, ...li: list<any>)
     prompt_str = args.str
     menu_hl_list = []
     var ret: list<string>
-    [ret, menu_hl_list] = FuzzySearch(fzf_list, prompt_str)
+    [ret, menu_hl_list] = FuzzySearch(raw_list, prompt_str)
 
     if enable_devicons
         devicons.AddDevicons(ret)
@@ -538,7 +538,7 @@ export def Start(li_raw: list<string>, opts: dict<any>): dict<any>
 
     windows = popup.PopupSelection(opts)
     menu_wid = windows.menu
-    fzf_list = li_raw
+    raw_list = li_raw
     var li = copy(li_raw)
     if enable_devicons
          devicons.AddDevicons(li)
