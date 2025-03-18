@@ -123,12 +123,6 @@ def JobStart(path: string, cmd: string)
     if path == ''
         return
     endif
-    if cmd == ''
-        in_loading = 0
-        cur_result += glob(cwd .. '/**', 1, 1, 1)
-        selector.UpdateMenu(ProcessResult(cur_result), [])
-        return
-    endif
     jid = job_start(cmd, {
         out_cb: function('JobOutCb'),
         out_mode: 'raw',
