@@ -5,12 +5,15 @@ import autoload './utils/selector.vim'
 
 var hl_meta: dict<any>
 
-def Preview(wid: number, result: dict<any>)
-    if !has_key(hl_meta, result.cursor_item)
+def Preview(wid: number, opts: dict<any>)
+    if !has_key(hl_meta, opts.cursor_item)
         return
     endif
-    var line = hl_meta[result.cursor_item][0]
-    var preview_wid = selector.windows.preview
+    if !has_key(opts.win_opts.partids, 'preview')
+        return
+    endif
+    var line = hl_meta[opts.cursor_item][0]
+    var preview_wid = opts.win_opts.partids['preview']
     win_execute(preview_wid, 'normal! ' .. line .. 'G')
     win_execute(preview_wid, 'normal! zz')
 enddef

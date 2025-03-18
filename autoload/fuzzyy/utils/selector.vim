@@ -19,7 +19,7 @@ var root_patterns = exists('g:fuzzyy_root_patterns')
     && type(g:fuzzyy_root_patterns) == v:t_list ?
     g:fuzzyy_root_patterns : ['.git', '.hg', '.svn']
 
-export var windows: dict<any>
+var wins: dict<any>
 
 var enable_dropdown = exists('g:fuzzyy_dropdown') ? g:fuzzyy_dropdown : 0
 
@@ -50,8 +50,8 @@ enddef
 # return:
 # - the line under the cursor
 export def MenuGetCursorItem(stripped: bool): string
-    var bufnr = winbufnr(windows.menu)
-    var cursorlinepos = line('.', windows.menu)
+    var bufnr = winbufnr(wins.menu)
+    var cursorlinepos = line('.', wins.menu)
     var bufline = getbufline(bufnr, cursorlinepos, cursorlinepos)[0]
     if stripped
         if enable_devicons
@@ -536,8 +536,8 @@ export def Start(li_raw: list<string>, opts: dict<any>): dict<any>
     opts.input_cb = has_key(opts, 'input_cb') ? opts.input_cb : function('Input')
     opts.dropdown = enable_dropdown
 
-    windows = popup.PopupSelection(opts)
-    menu_wid = windows.menu
+    wins = popup.PopupSelection(opts)
+    menu_wid = wins.menu
     raw_list = li_raw
     var li = copy(li_raw)
     if enable_devicons
@@ -555,5 +555,5 @@ export def Start(li_raw: list<string>, opts: dict<any>): dict<any>
     endif
 
     autocmd User PopupClosed ++once Cleanup()
-    return windows
+    return wins
 enddef
