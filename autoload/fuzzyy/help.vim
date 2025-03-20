@@ -7,6 +7,7 @@ var tag_table: dict<any>
 var tag_files: list<string>
 var menu_wid: number
 var file_lines: list<string>
+var total_count: number
 var cur_pattern: string
 
 def Tags(): dict<any>
@@ -20,6 +21,7 @@ def Tags(): dict<any>
         endfor
         file_index += 1
     endfor
+    total_count = len(file_lines)
     reduce(file_lines[: 1000], (acc, val) => {
         var li = split(val)
         acc[li[0]] = [li[1], li[2], li[3]]
@@ -68,34 +70,17 @@ def AsyncCb(result: list<any>)
         idx += 1
     endfor
     selector.UpdateMenu(strs, hl_list)
+    popup_setoptions(menu_wid, {title: selector.total_results})
 enddef
 
 def Input(wid: number, args: dict<any>, ...li: list<any>)
     var pattern = args.str
-    cur_pattern = pattern
-    selector.FuzzySearchAsync(keys(tag_table), pattern, 200, function('AsyncCb'))
-enddef
-
-var last_pattern: string
-def UpdateMenu(...args: list<any>)
-    const STEP = 1000
-    if len(tag_files) == 0
-        timer_stop(update_tid)
-        return
+    if pattern != ''
+        selector.FuzzySearchAsync(keys(tag_table), pattern, 200, function('AsyncCb'))
+    else
+        selector.UpdateMenu(keys(tag_table), [])
+        popup_setoptions(menu_wid, {title: total_count})
     endif
-    reduce(file_lines[: STEP], (acc, val) => {
-        var li = split(val)
-        acc[li[0]] = [li[1], li[2], li[3]]
-        return acc
-    }, tag_table)
-    file_lines = file_lines[STEP + 1 :]
-
-    if cur_pattern != last_pattern
-        var [ret, hl_list] = selector.FuzzySearch(keys(tag_table), cur_pattern, 1000)
-        selector.UpdateMenu(ret, hl_list)
-        last_pattern = cur_pattern
-    endif
-    # popup_setoptions(menu_wid, {title: string(len(tag_table))})
 enddef
 
 def CloseCb(wid: number, args: dict<any>)
@@ -119,15 +104,12 @@ enddef
 export def Start(opts: dict<any> = {})
     tag_files = []
     file_lines = []
-    cur_pattern = ''
     tag_table = Tags()
-    last_pattern = ''
     var wids = selector.Start(keys(tag_table), extend(opts, {
         preview_cb: function('Preview'),
         close_cb: function('CloseCb'),
         input_cb: function('Input'),
     }))
     menu_wid = wids.menu
-    # popup_setoptions(menu_wid, {title: string(len(tag_table))})
-    update_tid = timer_start(20, function('UpdateMenu'), {repeat: -1})
+    popup_setoptions(menu_wid, {title: total_count})
 enddef

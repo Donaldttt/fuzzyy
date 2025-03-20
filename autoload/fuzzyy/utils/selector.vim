@@ -161,6 +161,8 @@ export def FuzzySearch(li: list<string>, pattern: string, ...args: list<any>): l
     var poss = results[1]
     var scores = results[2]
 
+    total_results = len(strs)
+
     var str_list = []
     var hl_list = []
     for idx in range(0, len(strs) - 1)
@@ -188,6 +190,7 @@ var async_limit: number
 var async_pattern: string
 var async_results: list<any>
 var async_tid: number
+export var total_results: number
 var AsyncCb: func
 
 # merge continus numbers and convert them from string index to vim column
@@ -233,6 +236,8 @@ def Worker(tid: number)
     var poss = results[1]
     var scores = results[2]
 
+    total_results += len(strs)
+
     for idx in range(len(strs))
         # merge continus number
         var poss_result = MergeContinusNumber(poss[idx])
@@ -267,7 +272,7 @@ def Worker(tid: number)
     AsyncCb(async_results)
 
     async_list = async_list[async_step + 1 :]
-    if len(async_results) >= async_limit || len(async_list) == 0
+    if len(async_list) == 0
         timer_stop(tid)
         return
     endif
@@ -295,6 +300,7 @@ export def FuzzySearchAsync(li: list<string>, pattern: string, limit: number, Cb
     async_limit = limit
     async_pattern = pattern
     async_results = []
+    total_results = 0
     AsyncCb = Cb
     async_tid = timer_start(50, function('Worker'), {repeat: -1})
     Worker(async_tid)
