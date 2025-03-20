@@ -4,7 +4,9 @@ import autoload './utils/selector.vim'
 import autoload './utils/devicons.vim'
 import autoload './utils/cmdbuilder.vim'
 
+var last_result_len: number
 var cur_pattern: string
+var last_pattern: string
 var in_loading: number
 var cwd: string
 var cur_result: list<string>
@@ -68,6 +70,8 @@ def Input(wid: number, val: dict<any>, ...li: list<any>)
     if in_loading
         return
     endif
+
+    var file_list = cur_result
 
     if pattern != ''
         selector.FuzzySearchAsync(cur_result, cur_pattern, 200, function('AsyncCb'))
@@ -144,7 +148,9 @@ enddef
 def JobExitCb(id: job, status: number)
     in_loading = 0
     timer_stop(update_tid)
-    selector.UpdateMenu(ProcessResult(cur_result, 100), [])
+    if last_result_len <= 0
+        selector.UpdateMenu(ProcessResult(cur_result, 100), [])
+    endif
     popup_setoptions(menu_wid, {title: len(cur_result)})
 enddef
 
@@ -157,6 +163,23 @@ def Profiling()
     profile func UpdateMenu
 enddef
 
+def UpdateMenu(...li: list<any>)
+    var cur_result_len = len(cur_result)
+    popup_setoptions(menu_wid, {title: string(len(cur_result))})
+    if cur_result_len == last_result_len
+        return
+    endif
+    last_result_len = cur_result_len
+
+    if cur_pattern != last_pattern
+        selector.FuzzySearchAsync(cur_result, cur_pattern, 200, function('AsyncCb'))
+        if cur_pattern == ''
+            selector.UpdateMenu(ProcessResult(cur_result, 100), [])
+        endif
+        last_pattern = cur_pattern
+    endif
+enddef
+
 def Close(wid: number, opts: dict<any>)
     if type(jid) == v:t_job && job_status(jid) == 'run'
         job_stop(jid)
@@ -165,8 +188,10 @@ def Close(wid: number, opts: dict<any>)
 enddef
 
 export def Start(opts: dict<any> = {})
+    last_result_len = -1
     cur_result = []
     cur_pattern = ''
+    last_pattern = '@!#-='
     cwd = len(get(opts, 'cwd', '')) > 0 ? opts.cwd : getcwd()
     in_loading = 1
     var wids = selector.Start([], extend(opts, {
@@ -188,5 +213,7 @@ export def Start(opts: dict<any> = {})
         cmd = cmdbuilder.Build()
     endif
     JobStart(cwd, cmd)
+    timer_start(50, function('UpdateMenu'))
+    update_tid = timer_start(400, function('UpdateMenu'), {repeat: -1})
     # Profiling()
 enddef
