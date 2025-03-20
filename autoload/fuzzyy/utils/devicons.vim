@@ -9,13 +9,15 @@ var glyph_func = exists('g:fuzzyy_devicons_glyph_func') ? g:fuzzyy_devicons_glyp
 )
 var color_func = exists('g:fuzzyy_devicons_color_func') ? g:fuzzyy_devicons_color_func : ''
 
-export var enabled = exists('g:fuzzyy_devicons') && !empty(glyph_func) ?
-    g:fuzzyy_devicons : !empty(glyph_func)
+var enabled = exists('g:fuzzyy_devicons') && !empty(glyph_func) ? g:fuzzyy_devicons : !empty(glyph_func)
 
-export var GetDevicon: func
-if !empty(glyph_func)
-    GetDevicon = function(glyph_func)
-endif
+export def Enabled(): bool
+    return enabled
+enddef
+
+export def GetDevicon(str: string): string
+    return function(glyph_func)(str)
+enddef
 
 if enabled
     var test_devicon = GetDevicon('a.lua')

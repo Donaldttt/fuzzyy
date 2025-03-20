@@ -14,7 +14,7 @@ var jid: job
 var menu_wid: number
 var update_tid: number
 var cache: dict<any>
-var enable_devicons = devicons.enabled
+var enable_devicons = devicons.Enabled()
 
 def ProcessResult(list_raw: list<string>, ...args: list<any>): list<string>
     var limit = -1

@@ -4,7 +4,7 @@ import autoload './utils/selector.vim'
 import autoload './utils/popup.vim'
 import autoload './utils/devicons.vim'
 
-var enable_devicons = devicons.enabled
+var enable_devicons = devicons.Enabled()
 
 # Options
 var respect_gitignore = exists('g:fuzzyy_grep_respect_gitignore') ?

@@ -4,7 +4,7 @@ import autoload './utils/selector.vim'
 import autoload './utils/devicons.vim'
 
 var mru_origin_list: list<string>
-var enable_devicons = devicons.enabled
+var enable_devicons = devicons.Enabled()
 var cwd: string
 var cwd_only: bool
 var cwdlen: number

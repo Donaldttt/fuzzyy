@@ -5,7 +5,7 @@ import autoload './utils/devicons.vim'
 
 var buf_dict: dict<any>
 var key_callbacks: dict<any>
-var enable_devicons = devicons.enabled
+var enable_devicons = devicons.Enabled()
 var _window_width: float
 
 # Options
