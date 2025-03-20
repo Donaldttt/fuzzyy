@@ -95,7 +95,6 @@ def UpdateMenu(...args: list<any>)
         selector.UpdateMenu(ret, hl_list)
         last_pattern = cur_pattern
     endif
-    # popup_setoptions(menu_wid, {title: string(len(tag_table))})
 enddef
 
 def CloseCb(wid: number, args: dict<any>)
@@ -128,6 +127,5 @@ export def Start(opts: dict<any> = {})
         input_cb: function('Input'),
     }))
     menu_wid = wids.menu
-    # popup_setoptions(menu_wid, {title: string(len(tag_table))})
     update_tid = timer_start(20, function('UpdateMenu'), {repeat: -1})
 enddef

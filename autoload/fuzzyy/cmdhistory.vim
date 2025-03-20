@@ -15,9 +15,8 @@ export def Start(opts: dict<any> = {})
     cmds = reduce(cmds,
         (a, v) => add(a, substitute(v, '\m^.*\d\+\s\+', '', '')), [])
 
-    var wins = selector.Start(reverse(cmds), extend(opts, {
+    selector.Start(reverse(cmds), extend(opts, {
         select_cb: function('Select'),
         preview: 0
     }))
-    popup_setoptions(wins.menu, {title: string(len(cmds))})
 enddef

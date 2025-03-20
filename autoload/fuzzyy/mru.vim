@@ -90,7 +90,6 @@ def ToggleScope()
         }, [])
     endif
     selector.UpdateMenu(mru_list, [], 1)
-    popup_setoptions(menu_wid, {title: len(mru_list)})
 enddef
 
 var key_callbacks = {
@@ -153,5 +152,4 @@ export def Start(opts: dict<any> = {})
         key_callbacks: extend(key_callbacks, selector.split_edit_callbacks),
     }))
     menu_wid = wids.menu
-    popup_setoptions(menu_wid, {title: len(mru_list)})
 enddef

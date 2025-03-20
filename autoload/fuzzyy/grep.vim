@@ -368,7 +368,7 @@ def UpdateMenu(...li: list<any>)
         selector.UpdateMenu([], [])
         last_pattern = cur_pattern
         last_result_len = cur_result_len
-        popup_setoptions(menu_wid, {title: 0})
+        popup_setoptions(menu_wid, {title: ''})
         return
     endif
 
