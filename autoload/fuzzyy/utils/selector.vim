@@ -23,6 +23,10 @@ var wins: dict<any>
 
 var enable_dropdown = exists('g:fuzzyy_dropdown') ? g:fuzzyy_dropdown : 0
 
+# Experimental: export total number of results/matches for the current search
+# Can be used to update the menu title on input to show the number of matches
+export var total_results: number
+
 # This function is used to render the menu window.
 # params:
 # - str_list: list of string to be displayed in the menu window
@@ -161,6 +165,8 @@ export def FuzzySearch(li: list<string>, pattern: string, ...args: list<any>): l
     var poss = results[1]
     var scores = results[2]
 
+    total_results = len(strs)
+
     var str_list = []
     var hl_list = []
     for idx in range(0, len(strs) - 1)
@@ -233,6 +239,8 @@ def Worker(tid: number)
     var poss = results[1]
     var scores = results[2]
 
+    total_results += len(strs)
+
     for idx in range(len(strs))
         # merge continus number
         var poss_result = MergeContinusNumber(poss[idx])
@@ -267,7 +275,7 @@ def Worker(tid: number)
     AsyncCb(async_results)
 
     async_list = async_list[async_step + 1 :]
-    if len(async_results) >= async_limit || len(async_list) == 0
+    if len(async_list) == 0
         timer_stop(tid)
         return
     endif
@@ -295,6 +303,7 @@ export def FuzzySearchAsync(li: list<string>, pattern: string, limit: number, Cb
     async_limit = limit
     async_pattern = pattern
     async_results = []
+    total_results = 0
     AsyncCb = Cb
     async_tid = timer_start(50, function('Worker'), {repeat: -1})
     Worker(async_tid)

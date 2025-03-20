@@ -60,6 +60,7 @@ def AsyncCb(result: list<any>)
         idx += 1
     endfor
     selector.UpdateMenu(ProcessResult(strs), hl_list)
+    popup_setoptions(menu_wid, {title: selector.total_results})
 enddef
 
 def Input(wid: number, val: dict<any>, ...li: list<any>)
