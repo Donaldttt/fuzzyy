@@ -4,6 +4,7 @@ vim9script
 import autoload './utils/selector.vim'
 
 var hl_meta: dict<any>
+var preview_wid: number
 
 def Preview(wid: number, opts: dict<any>)
     if !has_key(hl_meta, opts.cursor_item)
@@ -13,7 +14,6 @@ def Preview(wid: number, opts: dict<any>)
         return
     endif
     var line = hl_meta[opts.cursor_item][0]
-    var preview_wid = opts.win_opts.partids['preview']
     win_execute(preview_wid, 'normal! ' .. line .. 'G')
     win_execute(preview_wid, 'normal! zz')
 enddef
@@ -25,7 +25,6 @@ def Close(wid: number, result: dict<any>)
 enddef
 
 def TogglePreviewBg()
-    var preview_wid = selector.windows.preview
     var old = getwinvar(preview_wid, '&wincolor')
     if old == 'fuzzyywhite'
         setwinvar(preview_wid, '&wincolor', 'Normal')
@@ -63,7 +62,7 @@ export def Start(opts: dict<any> = {})
         key_callbacks: key_callbacks,
     }))
 
-    var preview_wid = wids.preview
+    preview_wid = wids.preview
     var menu_wid = wids.menu
 
     setwinvar(preview_wid, '&number', 0)
