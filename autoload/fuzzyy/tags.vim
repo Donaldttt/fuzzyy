@@ -7,6 +7,7 @@ var tag_files = []
 var tag_dirs = []
 var cwd: string
 var fs = has('win32') || has('win64') ? '\' : '/'
+var menu_wid: number
 
 def ParseResult(result: string): list<any>
     # Tags file format, see https://docs.ctags.io/en/latest/man/tags.5.html
@@ -168,11 +169,19 @@ def AsyncCb(result: list<any>)
         idx += 1
     endfor
     selector.UpdateMenu(strs, hl_list)
+    popup_setoptions(menu_wid, {title: selector.total_results})
 enddef
 
+var async_tid: number
 def Input(wid: number, args: dict<any>, ...li: list<any>)
     var pattern = args.str
-    selector.FuzzySearchAsync(tag_list, pattern, 200, function('AsyncCb'))
+    if pattern != ''
+        async_tid = selector.FuzzySearchAsync(tag_list, pattern, 200, function('AsyncCb'))
+    else
+        timer_stop(async_tid)
+        selector.UpdateMenu(tag_list, [])
+        popup_setoptions(menu_wid, {title: len(tag_list)})
+    endif
 enddef
 
 export def Start(opts: dict<any> = {})
@@ -236,4 +245,6 @@ export def Start(opts: dict<any> = {})
         input_cb: function('Input'),
         key_callbacks: split_edit_callbacks,
     }))
+    menu_wid = wids.menu
+    popup_setoptions(menu_wid, {title: string(len(tag_list))})
 enddef
