@@ -71,6 +71,7 @@ var devicons_color_table = {
     'a.kotlin': 'fuzzyy_yellow',
     'a.dart': 'fuzzyy_blue',
     'a.elm': 'fuzzyy_blue',
+    'a.vala': 'fuzzyy_magenta',
     'a.vim': 'fuzzyy_green',
     'a.png': 'fuzzyy_dark_blue',
     'a.py': 'fuzzyy_orange',
