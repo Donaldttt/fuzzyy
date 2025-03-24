@@ -47,34 +47,34 @@ augroup END
 
 var devicons_color_table = {
     '__default__': 'blue',
-    'a.lua': 'blue',
-    'a.js': 'yellow',
-    'a.ts': 'yellow',
-    'a.go': 'blue',
-    'a.c': 'blue',
-    'a.cpp': 'dark_blue',
-    'a.java': 'red',
-    'a.php': 'magenta',
-    'a.rb': 'red',
-    'a.sh': 'dark_blue',
-    'a.html': 'yellow',
-    'a.css': 'blue',
-    'a.scss': 'blue',
-    'a.less': 'blue',
-    'a.json': 'pink',
-    'a.toml': 'grey',
-    'a.sql': 'dark_blue',
-    'a.md': 'yellow',
-    'a.tex': 'blue',
-    'a.vue': 'green',
-    'a.swift': 'red',
-    'a.kotlin': 'yellow',
-    'a.dart': 'blue',
-    'a.elm': 'blue',
-    'a.vala': 'magenta',
-    'a.vim': 'green',
-    'a.png': 'dark_blue',
-    'a.py': 'orange',
+    '*.lua': 'blue',
+    '*.js': 'yellow',
+    '*.ts': 'yellow',
+    '*.go': 'blue',
+    '*.c': 'blue',
+    '*.cpp': 'dark_blue',
+    '*.java': 'red',
+    '*.php': 'magenta',
+    '*.rb': 'red',
+    '*.sh': 'dark_blue',
+    '*.html': 'yellow',
+    '*.css': 'blue',
+    '*.scss': 'blue',
+    '*.less': 'blue',
+    '*.json': 'pink',
+    '*.toml': 'grey',
+    '*.sql': 'dark_blue',
+    '*.md': 'yellow',
+    '*.tex': 'blue',
+    '*.vue': 'green',
+    '*.swift': 'red',
+    '*.kotlin': 'yellow',
+    '*.dart': 'blue',
+    '*.elm': 'blue',
+    '*.vala': 'magenta',
+    '*.vim': 'green',
+    '*.png': 'dark_blue',
+    '*.py': 'orange',
     'LICENSE': 'magenta',
 }
 map(devicons_color_table, (_, val) => {
@@ -86,12 +86,17 @@ export def AddColor(wid: number)
         win_execute(wid, color_func .. '()')
         return
     endif
-    for ft in keys(devicons_color_table)
+    var added: list<string>
+    for ft in reverse(sort(keys(devicons_color_table)))
         var icon = GetDevicon(ft)
+        if index(added, icon) != -1
+            continue
+        endif
         var charnr = char2nr(icon)
         var charhex = printf('%x', charnr)
         try
         matchadd(devicons_color_table[ft], '\v%u' .. charhex, 99, -1, { window: wid })
+        add(added, icon)
         catch | endtry
     endfor
 enddef
