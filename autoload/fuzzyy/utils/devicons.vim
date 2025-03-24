@@ -77,6 +77,9 @@ var devicons_color_table = {
     '*.py': 'orange',
     'LICENSE': 'magenta',
 }
+if exists('g:fuzzyy_devicon_colors') && type(g:fuzzyy_devicon_colors) == v:t_dict
+    extend(devicons_color_table, g:fuzzyy_devicon_colors)
+endif
 map(devicons_color_table, (_, val) => {
     return 'fuzzyyDevicon_' .. val
 })
