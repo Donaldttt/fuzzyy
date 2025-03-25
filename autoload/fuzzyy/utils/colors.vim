@@ -1,9 +1,49 @@
 vim9script
 
-# Exports one function, to get a terminal color number from a color name
+# Color table stored outside of devicons script to allow it to be modified
+# before loading devicons, which creates highlight groups using these colors
+export var devicons_color_table = {
+    '__default__': 'lightblue4',
+    '*.lua': 'lightblue3',
+    '*.js': 'sandybrown',
+    '*.ts': 'sandybrown',
+    '*.go': 'lightblue3',
+    '*.c': 'lightblue3',
+    '*.cpp': 'teal',
+    '*.java': 'darksalmon',
+    '*.php': 'mediumorchid',
+    '*.rb': 'darksalmon',
+    '*.sh': 'teal',
+    '*.html': 'sandybrown',
+    '*.css': 'lightblue3',
+    '*.scss': 'lightblue3',
+    '*.less': 'lightblue3',
+    '*.json': 'indianred',
+    '*.toml': 'grey',
+    '*.sql': 'teal',
+    '*.md': 'sandybrown',
+    '*.tex': 'lightblue3',
+    '*.vue': 'darkseagreen',
+    '*.swift': 'darksalmon',
+    '*.dart': 'lightblue3',
+    '*.elm': 'lightblue3',
+    '*.vim': 'darkseagreen',
+    '*.png': 'teal',
+    '*.py': 'goldenrod',
+    'LICENSE': 'mediumorchid',
+}
+if exists('g:fuzzyy_devicons_color_table') && type(g:fuzzyy_devicons_color_table) == v:t_dict
+    extend(devicons_color_table, g:fuzzyy_devicons_color_table)
+endif
 
+
+# Code to get a 256 color number from a color name or hex value in the
+# color table, used by devicons script when creating hightlight groups
+#
 # Copied from https://github.com/tiagofumo/vim-nerdtree-syntax-highlight,
 # which copied from https://github.com/chriskempson/vim-tomorrow-theme.
+# Exports one function, to get a terminal color number from a color name
+#
 # Removed support for fewer than 256 colors, and updated for vim9script
 # Also updated to use American rather than British English (I personally
 # write in British English, but Fuzzyy generally uses American English)

@@ -162,3 +162,9 @@ if g:fuzzyy_enable_mappings
         endif
     endfor
 endif
+
+# Load compatibility hacks on VimEnter, after other plugins are loaded
+augroup fuzzyyCompat
+  au!
+  autocmd VimEnter * runtime! compat/fuzzyy.vim
+augroup END
