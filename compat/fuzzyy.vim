@@ -6,7 +6,12 @@ if exists("g:loaded_fuzzyy_compat")
 endif
 g:loaded_fuzzyy_compat = 1
 
-if exists('g:loaded_nerd_tree') && findfile('after/syntax/nerdtree.vim', &rtp) =~ 'nerdtree-syntax-highlight'
+if exists('g:loaded_glyph_palette') && !exists('g:fuzzyy_devicons_color_func')
+    g:fuzzyy_devicons_color_func = 'glyph_palette#apply'
+endif
+
+if exists('g:loaded_nerd_tree') && !exists('g:fuzzyy_devicons_color_func') &&
+        findfile('after/syntax/nerdtree.vim', &rtp) =~ 'nerdtree-syntax-highlight'
     import '../autoload/fuzzyy/utils/colors.vim'
     runtime! after/syntax/nerdtree.vim
     map(colors.devicons_color_table, (key, val) => {
