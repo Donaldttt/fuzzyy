@@ -45,7 +45,7 @@ export def Start(opts: dict<any> = {})
         highlights->add(s)
         return 1
     enddef
-    substitute(highlights_raw, '\zs\w\+\s\+xxx[[:alnum:][:blank:]=#,]\{-}\ze\s\+\w\+\s*xxx',
+    substitute(highlights_raw, '\zs[a-zA-Z0-9_.-]\+\s\+xxx[[:alnum:][:blank:]=#,]\{-}\ze\s\+\w\+\s*xxx',
         '\=Helper(submatch(0))', 'g')
 
     hl_meta = {}
