@@ -255,6 +255,18 @@ let g:fuzzyy_ripgrep_options = [
 This option can also be set specifically for FuzzyFiles and/or FuzzyGrep using
 `g:fuzzyy_files_ripgrep_options` and `g:fuzzyy_grep_ripgrep_options`
 
+### g:fuzzyy_devicon_colors
+Add custom mappings for colorizing devicon glyphs. A dictionary of filename
+patterns and color names. Color names must exist in Vim's v:colornames dict, 
+see `:h v:colornames` and `:echo v:colornames`. Default {}
+```vim
+let g:fuzzyy_devicon_colors = {}
+```
+Example usage
+```vim
+let g:fuzzyy_devicon_colors = { '*.vala': 'mediumpurple' }
+```
+
 ### g:fuzzyy_devicons_glyph_func
 Specify a custom function for obtaining devicon glyphs from file names or paths.
 By default Fuzzyy integrates with vim-devicons to obtain glyphs and measure byte

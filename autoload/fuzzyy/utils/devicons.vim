@@ -1,5 +1,7 @@
 vim9script
 
+import autoload './colors.vim'
+
 var devicon_char_width = 0
 var devicon_byte_width = 0
 
@@ -25,18 +27,44 @@ if enabled
     devicon_byte_width = strlen(test_devicon)
 endif
 
+var devicons_color_table = {
+    '__default__': 'lightblue4',
+    '*.lua': 'lightblue3',
+    '*.js': 'sandybrown',
+    '*.ts': 'sandybrown',
+    '*.go': 'lightblue3',
+    '*.c': 'lightblue3',
+    '*.cpp': 'teal',
+    '*.java': 'darksalmon',
+    '*.php': 'mediumorchid',
+    '*.rb': 'darksalmon',
+    '*.sh': 'teal',
+    '*.html': 'sandybrown',
+    '*.css': 'lightblue3',
+    '*.scss': 'lightblue3',
+    '*.less': 'lightblue3',
+    '*.json': 'indianred',
+    '*.toml': 'grey',
+    '*.sql': 'teal',
+    '*.md': 'sandybrown',
+    '*.tex': 'lightblue3',
+    '*.vue': 'darkseagreen',
+    '*.swift': 'darksalmon',
+    '*.dart': 'lightblue3',
+    '*.elm': 'lightblue3',
+    '*.vim': 'darkseagreen',
+    '*.png': 'teal',
+    '*.py': 'goldenrod',
+    'LICENSE': 'mediumorchid',
+}
+if exists('g:fuzzyy_devicon_colors') && type(g:fuzzyy_devicon_colors) == v:t_dict
+    extend(devicons_color_table, g:fuzzyy_devicon_colors)
+endif
+
 def SetHl()
-    hi fuzzyyDevicon_yellow ctermfg=215 guifg=#f5c06f
-    hi fuzzyyDevicon_blue ctermfg=109 guifg=#89b8c2
-    hi fuzzyyDevicon_red ctermfg=9 guifg=#e27878
-    hi fuzzyyDevicon_green ctermfg=107 guifg=#8faa54
-    hi fuzzyyDevicon_magenta ctermfg=13 guifg=#a093c7
-    hi fuzzyyDevicon_cyan ctermfg=14 guifg=#89b8c2
-    hi fuzzyyDevicon_orange ctermfg=214 guifg=#f09f17
-    hi fuzzyyDevicon_pink ctermfg=204 guifg=#ee6e73
-    hi fuzzyyDevicon_dark_blue ctermfg=30 guifg=#44788e
-    hi fuzzyyDevicon_light_blue ctermfg=109 guifg=#89b8c2
-    hi fuzzyyDevicon_grey ctermfg=248 guifg=#6b7089
+    for name in uniq(values(devicons_color_table))
+        exe 'hi fuzzyyDevicon_' .. name .. ' ctermfg=' .. colors.TermColor(name) .. ' guifg=' .. name
+    endfor
 enddef
 SetHl()
 
@@ -44,42 +72,6 @@ augroup FuzzyyDevicons
     autocmd!
     autocmd ColorScheme * SetHl()
 augroup END
-
-var devicons_color_table = {
-    '__default__': 'blue',
-    '*.lua': 'blue',
-    '*.js': 'yellow',
-    '*.ts': 'yellow',
-    '*.go': 'blue',
-    '*.c': 'blue',
-    '*.cpp': 'dark_blue',
-    '*.java': 'red',
-    '*.php': 'magenta',
-    '*.rb': 'red',
-    '*.sh': 'dark_blue',
-    '*.html': 'yellow',
-    '*.css': 'blue',
-    '*.scss': 'blue',
-    '*.less': 'blue',
-    '*.json': 'pink',
-    '*.toml': 'grey',
-    '*.sql': 'dark_blue',
-    '*.md': 'yellow',
-    '*.tex': 'blue',
-    '*.vue': 'green',
-    '*.swift': 'red',
-    '*.kotlin': 'yellow',
-    '*.dart': 'blue',
-    '*.elm': 'blue',
-    '*.vala': 'magenta',
-    '*.vim': 'green',
-    '*.png': 'dark_blue',
-    '*.py': 'orange',
-    'LICENSE': 'magenta',
-}
-map(devicons_color_table, (_, val) => {
-    return 'fuzzyyDevicon_' .. val
-})
 
 export def AddColor(wid: number)
     if !empty(color_func)
@@ -95,7 +87,7 @@ export def AddColor(wid: number)
         var charnr = char2nr(icon)
         var charhex = printf('%x', charnr)
         try
-        matchadd(devicons_color_table[ft], '\v%u' .. charhex, 99, -1, { window: wid })
+        matchadd('fuzzyyDevicon_' .. devicons_color_table[ft], '\v%u' .. charhex, 99, -1, { window: wid })
         add(added, icon)
         catch | endtry
     endfor
