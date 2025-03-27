@@ -57,8 +57,8 @@ var devicons_color_table = {
     '*.py': 'goldenrod',
     'LICENSE': 'mediumorchid',
 }
-if exists('g:fuzzyy_devicon_colors') && type(g:fuzzyy_devicon_colors) == v:t_dict
-    extend(devicons_color_table, g:fuzzyy_devicon_colors)
+if exists('g:fuzzyy_devicons_colors') && type(g:fuzzyy_devicons_colors) == v:t_dict
+    extend(devicons_color_table, g:fuzzyy_devicons_colors)
 endif
 
 def SetHl()
