@@ -62,8 +62,8 @@ if exists('g:fuzzyy_devicon_colors') && type(g:fuzzyy_devicon_colors) == v:t_dic
 endif
 
 def SetHl()
-    for name in uniq(values(devicons_color_table))
-        exe 'hi fuzzyyDevicon_' .. name .. ' ctermfg=' .. colors.TermColor(name) .. ' guifg=' .. name
+    for val in uniq(values(devicons_color_table))
+        exe 'hi fuzzyyDevicon_' .. substitute(val, '#', '', '') .. ' ctermfg=' .. colors.TermColor(val) .. ' guifg=' .. val
     endfor
 enddef
 SetHl()
@@ -86,8 +86,9 @@ export def AddColor(wid: number)
         endif
         var charnr = char2nr(icon)
         var charhex = printf('%x', charnr)
+        var color = devicons_color_table[ft]
         try
-        matchadd('fuzzyyDevicon_' .. devicons_color_table[ft], '\v%u' .. charhex, 99, -1, { window: wid })
+        matchadd('fuzzyyDevicon_' .. substitute(color, '#', '', ''), '\v%u' .. charhex, 99, -1, { window: wid })
         add(added, icon)
         catch | endtry
     endfor

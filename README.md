@@ -257,14 +257,14 @@ This option can also be set specifically for FuzzyFiles and/or FuzzyGrep using
 
 ### g:fuzzyy_devicon_colors
 Add custom mappings for colorizing devicon glyphs. A dictionary of filename
-patterns and color names. Color names must exist in Vim's v:colornames dict, 
-see `:h v:colornames` and `:echo v:colornames`. Default {}
+patterns and colors. Colors must be either color names in Vim's `v:colornames`
+dict or hex colors in `#rrggbb` format. Default {}
 ```vim
 let g:fuzzyy_devicon_colors = {}
 ```
 Example usage
 ```vim
-let g:fuzzyy_devicon_colors = { '*.vala': 'mediumpurple' }
+let g:fuzzyy_devicon_colors = { '*.vala': 'mediumpurple', '*.jl': '#9558B2' }
 ```
 
 ### g:fuzzyy_devicons_glyph_func

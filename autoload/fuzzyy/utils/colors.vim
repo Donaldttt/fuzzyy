@@ -107,20 +107,23 @@ def Rgb(r: number, g: number, b: number): number
   endif
 enddef
 
-# Returns the palette index to approximate the 'rrggbb' hex string
+# Returns the palette index to approximate the '#rrggbb' hex string
 export def Hex(hex: string): number
-    var r = str2nr(strpart(hex, 0, 2), 16)
-    var g = str2nr(strpart(hex, 2, 2), 16)
-    var b = str2nr(strpart(hex, 4, 2), 16)
+    var r = str2nr(strpart(hex, 1, 2), 16)
+    var g = str2nr(strpart(hex, 3, 2), 16)
+    var b = str2nr(strpart(hex, 5, 2), 16)
     return Rgb(r, g, b)
 enddef
 
-# Returns approximate cterm color number for known color names
-export def TermColor(name: string): number
-    if !has_key(v:colornames, name)
-        echoerr "color name '" .. name .. "' not found"
+# Returns approximate cterm color number from color name or hex color
+export def TermColor(val: string): number
+    if stridx(val, '#') == 0
+        return Hex(val)
     endif
-    return Hex(get(v:colornames, name)->slice(1, ))
+    if !has_key(v:colornames, val)
+        echoerr "color name '" .. val .. "' not found"
+    endif
+    return Hex(get(v:colornames, val))
 enddef
 
 # for name in uniq(keys(v:colornames))
