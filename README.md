@@ -161,6 +161,12 @@ Enable dropdown theme (prompt at top rather than bottom). Default 0
 let g:fuzzyy_dropdown = 0
 ```
 
+### g:fuzzyy_borderchars
+Set the borderchars of popup windows. Must be a list of 8 characters.
+```vim
+let g:fuzzyy_borderchars = ['─', '│', '─', '│', '╭', '╮', '╯', '╰']
+```
+
 ### g:fuzzyy_reuse_windows
 Fuzzyy avoids opening files in windows containing special buffers, like buffers
 created by file explorer plugins or help and quickfix buffers. Use this to add

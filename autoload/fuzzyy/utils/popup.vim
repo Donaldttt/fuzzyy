@@ -26,9 +26,14 @@ var keymaps: dict<any> = {
     'delete_prefix': [],
     'exit': ["\<Esc>", "\<c-c>", "\<c-[>"],
 }
-
 keymaps = exists('g:fuzzyy_keymaps') && type(g:fuzzyy_keymaps) == v:t_dict ?
     extend(keymaps, g:fuzzyy_keymaps) : keymaps
+
+var borderchars = exists('g:fuzzyy_borderchars') &&
+    type(g:fuzzyy_borderchars) == v:t_list &&
+    len(g:fuzzyy_borderchars) == 8 ?
+    g:fuzzyy_borderchars :
+    ['─', '│', '─', '│', '╭', '╮', '╯', '╰']
 
 export def SetPopupWinProp(wid: number, key: string, val: any)
     if has_key(popup_wins, wid) && has_key(popup_wins[wid], key)
@@ -322,7 +327,7 @@ def CreatePopup(args: dict<any>): number
        cursorline: 0,
        callback: function('GeneralPopupCallback'),
        border: [1],
-       borderchars: ['─', '│', '─', '│', '╭', '╮', '╯', '╰'],
+       borderchars: borderchars,
        borderhighlight: ['fuzzyyBorder'],
        highlight: 'fuzzyyNormal', }
 
