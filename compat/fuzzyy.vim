@@ -6,6 +6,10 @@ if exists("g:loaded_fuzzyy_compat")
 endif
 g:loaded_fuzzyy_compat = 1
 
+if exists('g:loaded_nerdfont') && !exists('g:loaded_webdevicons') && !exists('g:fuzzyy_devicons_glyph_func')
+    g:fuzzyy_devicons_glyph_func = 'nerdfont#find'
+endif
+
 if exists('g:loaded_glyph_palette') && !exists('g:fuzzyy_devicons_color_func')
     g:fuzzyy_devicons_color_func = 'glyph_palette#apply'
 endif
