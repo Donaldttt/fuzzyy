@@ -13,6 +13,10 @@ var color_func = exists('g:fuzzyy_devicons_color_func') ? g:fuzzyy_devicons_colo
 
 var enabled = exists('g:fuzzyy_devicons') && !empty(glyph_func) ? g:fuzzyy_devicons : !empty(glyph_func)
 
+if &encoding != 'utf-8'
+    enabled = false
+endif
+
 export def Enabled(): bool
     return enabled
 enddef

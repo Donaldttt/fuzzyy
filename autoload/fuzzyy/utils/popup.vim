@@ -331,6 +331,10 @@ def CreatePopup(args: dict<any>): number
        borderhighlight: ['fuzzyyBorder'],
        highlight: 'fuzzyyNormal', }
 
+    if &encoding != 'utf-8'
+        remove(opts, 'borderchars')
+    endif
+
     if has_key(args, 'enable_border') && !args.enable_border
         remove(opts, 'border')
     endif
