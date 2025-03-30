@@ -17,21 +17,23 @@ CONTENTS                                                       *fuzzyy-contents*
     1.7.1. g:fuzzyy_enable_mappings............|fuzzyy-g:fuzzyy_enable_mappings|
     1.7.2. g:fuzzyy_devicons..........................|fuzzyy-g:fuzzyy_devicons|
     1.7.3. g:fuzzyy_dropdown..........................|fuzzyy-g:fuzzyy_dropdown|
-    1.7.4. g:fuzzyy_reuse_windows................|fuzzyy-g:fuzzyy_reuse_windows|
-    1.7.5. g:fuzzyy_respect_gitignore........|fuzzyy-g:fuzzyy_respect_gitignore|
-    1.7.6. g:fuzzyy_include_hidden..............|fuzzyy-g:fuzzyy_include_hidden|
-    1.7.7. g:fuzzyy_follow_symlinks............|fuzzyy-g:fuzzyy_follow_symlinks|
-    1.7.8. g:fuzzyy_root_patterns................|fuzzyy-g:fuzzyy_root_patterns|
-    1.7.9. g:fuzzyy_exclude_file..................|fuzzyy-g:fuzzyy_exclude_file|
-    1.7.10. g:fuzzyy_exclude_dir...................|fuzzyy-g:fuzzyy_exclude_dir|
-    1.7.11. g:fuzzyy_ripgrep_options...........|fuzzyy-g:fuzzyy_ripgrep_options|
-    1.7.12. g:fuzzyy_devicons_glyph_func...|fuzzyy-g:fuzzyy_devicons_glyph_func|
-    1.7.13. g:fuzzyy_devicons_color_func...|fuzzyy-g:fuzzyy_devicons_color_func|
-    1.7.14. g:fuzzyy_keymaps...........................|fuzzyy-g:fuzzyy_keymaps|
-    1.7.15. g:fuzzyy_buffers_exclude...........|fuzzyy-g:fuzzyy_buffers_exclude|
-    1.7.16. g:fuzzyy_buffers_keymap.............|fuzzyy-g:fuzzyy_buffers_keymap|
-    1.7.17. g:fuzzyy_window_layout...............|fuzzyy-g:fuzzyy_window_layout|
-    1.7.18. g:fuzzyy_async_step.....................|fuzzyy-g:fuzzyy_async_step|
+    1.7.4. g:fuzzyy_borderchars....................|fuzzyy-g:fuzzyy_borderchars|
+    1.7.5. g:fuzzyy_reuse_windows................|fuzzyy-g:fuzzyy_reuse_windows|
+    1.7.6. g:fuzzyy_respect_gitignore........|fuzzyy-g:fuzzyy_respect_gitignore|
+    1.7.7. g:fuzzyy_include_hidden..............|fuzzyy-g:fuzzyy_include_hidden|
+    1.7.8. g:fuzzyy_follow_symlinks............|fuzzyy-g:fuzzyy_follow_symlinks|
+    1.7.9. g:fuzzyy_root_patterns................|fuzzyy-g:fuzzyy_root_patterns|
+    1.7.10. g:fuzzyy_exclude_file.................|fuzzyy-g:fuzzyy_exclude_file|
+    1.7.11. g:fuzzyy_exclude_dir...................|fuzzyy-g:fuzzyy_exclude_dir|
+    1.7.12. g:fuzzyy_ripgrep_options...........|fuzzyy-g:fuzzyy_ripgrep_options|
+    1.7.13. g:fuzzyy_devicons_color_table.|fuzzyy-g:fuzzyy_devicons_color_table|
+    1.7.14. g:fuzzyy_devicons_glyph_func...|fuzzyy-g:fuzzyy_devicons_glyph_func|
+    1.7.15. g:fuzzyy_devicons_color_func...|fuzzyy-g:fuzzyy_devicons_color_func|
+    1.7.16. g:fuzzyy_keymaps...........................|fuzzyy-g:fuzzyy_keymaps|
+    1.7.17. g:fuzzyy_buffers_exclude...........|fuzzyy-g:fuzzyy_buffers_exclude|
+    1.7.18. g:fuzzyy_buffers_keymap.............|fuzzyy-g:fuzzyy_buffers_keymap|
+    1.7.19. g:fuzzyy_window_layout...............|fuzzyy-g:fuzzyy_window_layout|
+    1.7.20. g:fuzzyy_async_step.....................|fuzzyy-g:fuzzyy_async_step|
   1.8. Syntax highlighting..........................|fuzzyy-syntax_highlighting|
 
 ==============================================================================
@@ -204,6 +206,13 @@ Enable dropdown theme (prompt at top rather than bottom). Default 0
   let g:fuzzyy_dropdown = 0
 <
 
+G:FUZZYY_BORDERCHARS                               *fuzzyy-g:fuzzyy_borderchars*
+
+Set the borderchars of popup windows. Must be a list of 8 characters.
+>
+  let g:fuzzyy_borderchars = ['─', '│', '─', '│', '╭', '╮', '╯', '╰']
+<
+
 G:FUZZYY_REUSE_WINDOWS                           *fuzzyy-g:fuzzyy_reuse_windows*
 
 Fuzzyy avoids opening files in windows containing special buffers, like buffers
@@ -314,6 +323,20 @@ Example usage
 
 This option can also be set specifically for FuzzyFiles and/or FuzzyGrep using
 `g:fuzzyy_files_ripgrep_options` and `g:fuzzyy_grep_ripgrep_options`
+
+G:FUZZYY_DEVICONS_COLOR_TABLE             *fuzzyy-g:fuzzyy_devicons_color_table*
+
+Add custom mappings for colorizing devicon glyphs. A dictionary of filename
+patterns and colors. Colors must be either color names in Vim's `v:colornames`
+dict or hex colors in `#rrggbb` format. Default {}
+>
+  let g:fuzzyy_devicons_color_table = {}
+<
+
+Example usage
+>
+  let g:fuzzyy_devicons_color_table = { '*.vala': 'mediumpurple', '*.jl': '#9558B2' }
+<
 
 G:FUZZYY_DEVICONS_GLYPH_FUNC               *fuzzyy-g:fuzzyy_devicons_glyph_func*
 
