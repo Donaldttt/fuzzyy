@@ -6,9 +6,8 @@ var devicon_char_width = 0
 var devicon_byte_width = 0
 
 # Options
-var glyph_func = exists('g:fuzzyy_devicons_glyph_func') ? g:fuzzyy_devicons_glyph_func : (
-    exists('g:WebDevIconsGetFileTypeSymbol') ? 'g:WebDevIconsGetFileTypeSymbol' : ''
-)
+var glyph_func = exists('g:fuzzyy_devicons_glyph_func') ? g:fuzzyy_devicons_glyph_func : ''
+
 var color_func = exists('g:fuzzyy_devicons_color_func') ? g:fuzzyy_devicons_color_func : ''
 
 var enabled = exists('g:fuzzyy_devicons') && !empty(glyph_func) ? g:fuzzyy_devicons : !empty(glyph_func)

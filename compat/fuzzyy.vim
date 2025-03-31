@@ -6,7 +6,11 @@ if exists("g:loaded_fuzzyy_compat")
 endif
 g:loaded_fuzzyy_compat = 1
 
-if exists('g:loaded_nerdfont') && !exists('g:loaded_webdevicons') && !exists('g:fuzzyy_devicons_glyph_func')
+if exists('g:loaded_webdevicons') && !exists('g:fuzzyy_devicons_glyph_func')
+    g:fuzzyy_devicons_glyph_func = 'g:WebDevIconsGetFileTypeSymbol'
+endif
+
+if exists('g:loaded_nerdfont') && !exists('g:fuzzyy_devicons_glyph_func')
     g:fuzzyy_devicons_glyph_func = 'nerdfont#find'
 endif
 
