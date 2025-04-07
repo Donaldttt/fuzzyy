@@ -2,43 +2,50 @@ vim9script
 
 # Color table stored outside of devicons script to allow it to be modified
 # before loading devicons, which creates highlight groups using these colors
+# These are just the default devicon colors, a small subset of all available
+# devicons chosen based on the Stack Overflow Developer Survey and TIOBE Index
+# over time, and a very biased view on which are most relevant for Vim users
+# You can modify this for your preferences using g:fuzzyy_devicons_color_table
+# Please open a PR if you think something is missing or could be improved (all
+# defaults should have an icon in vim-devicons, and a published nerdfont glyph)
 export var devicons_color_table = {
     '__default__': 'lightblue4',
-    '*.lua': 'lightblue3',
-    '*.js': 'sandybrown',
-    '*.ts': 'sandybrown',
-    '*.go': 'lightblue3',
     '*.c': 'lightblue3',
-    '*.cpp': 'teal',
-    '*.java': 'darksalmon',
-    '*.php': 'mediumorchid',
-    '*.rb': 'darksalmon',
-    '*.sh': 'teal',
-    '*.html': 'sandybrown',
+    '*.conf': 'grey', # generic settings devicon, also used for toml, yaml etc.
+    '*.cpp': 'lightblue4',
+    '*.cs': 'slateblue2',
     '*.css': 'lightblue3',
-    '*.scss': 'lightblue3',
-    '*.less': 'lightblue3',
+    '*.dart': 'lightblue4',
+    '*.go': 'lightblue3',
+    '*.html': 'sandybrown',
+    '*.java': 'chocolate2', # similar to nvim-web-devicons, kinda coffee colored
+    '*.js': 'goldenrod',
     '*.json': 'indianred',
-    '*.toml': 'grey',
-    '*.sql': 'teal',
+    '*.jsx': 'teal',
+    '*.lua': 'slateblue',
     '*.md': 'sandybrown',
-    '*.tex': 'lightblue3',
-    '*.vue': 'darkseagreen',
-    '*.swift': 'darksalmon',
-    '*.dart': 'lightblue3',
-    '*.elm': 'lightblue3',
-    '*.vim': 'darkseagreen',
-    '*.png': 'teal',
+    '*.php': 'mediumpurple',
+    '*.png': 'mediumpurple', # generic image devicon, also used for gif, jpg etc.
     '*.py': 'goldenrod',
+    '*.r': 'lightblue3',
+    '*.rb': 'red4',
+    '*.rs': 'chocolate3',
+    '*.scss': 'lightblue3',
+    '*.sh': 'darkorchid', # blame O'Reilly books, and UNIX sysadmin 'purple book'
+    '*.sql': 'teal',
+    '*.swift': 'darkorange2',
+    '*.tex': 'teal',
+    '*.ts': 'lightblue2',
+    '*.vim': 'darkseagreen',
+    'Dockerfile': 'steelblue',
     'LICENSE': 'mediumorchid',
 }
 if exists('g:fuzzyy_devicons_color_table') && type(g:fuzzyy_devicons_color_table) == v:t_dict
     extend(devicons_color_table, g:fuzzyy_devicons_color_table)
 endif
 
-
 # Code to get a 256 color number from a color name or hex value in the
-# color table, used by devicons script when creating hightlight groups
+# color table, used by devicons script when creating highlight groups
 #
 # Copied from https://github.com/tiagofumo/vim-nerdtree-syntax-highlight,
 # which copied from https://github.com/chriskempson/vim-tomorrow-theme.
