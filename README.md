@@ -22,8 +22,6 @@ programs to handle complex tasks.
 
 - [ripgrep](https://github.com/BurntSushi/ripgrep) - used for FuzzyGrep and
   FuzzyFiles if installed, faster than the defaults and respects gitignore
-- [vim-devicons](https://github.com/ryanoasis/vim-devicons) - used to show
-  [devicons](https://devicon.dev/) when listing files if installed
 
 ### Optional dependencies
 
@@ -35,6 +33,17 @@ programs to handle complex tasks.
   repo and no alternative dependency installed
 - [ctags](https://ctags.io) - used to generate tags for FuzzyTags (Universal
   Ctags implementation is required)
+  
+### Compatibile plugins
+- [vim-devicons](https://github.com/ryanoasis/vim-devicons) - used to show
+  [devicons](https://devicon.dev/) when listing files if installed
+- [vim-nerdfont](https://github.com/lambdalisue/vim-nerdfont) - alternative
+  plugin to show devicons, used if installed and vim-devicons not installed
+- [vim-glyph-palette](https://github.com/lambdalisue/vim-glyph-palette) - used
+  to colorize devicons if installed, instead of Fuzzyy's own color mappings
+- [vim-nerdtree-syntax-highlight](https://github.com/tiagofumo/vim-nerdtree-syntax-highlight) - 
+  used to colorize devicons if installed, and [vim-nerdtree](https://github.com/preservim/nerdtree)
+  installed
 
 ## Install
 

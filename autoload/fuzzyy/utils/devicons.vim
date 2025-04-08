@@ -6,9 +6,8 @@ var devicon_char_width = 0
 var devicon_byte_width = 0
 
 # Options
-var glyph_func = exists('g:fuzzyy_devicons_glyph_func') ? g:fuzzyy_devicons_glyph_func : (
-    exists('g:WebDevIconsGetFileTypeSymbol') ? 'g:WebDevIconsGetFileTypeSymbol' : ''
-)
+var glyph_func = exists('g:fuzzyy_devicons_glyph_func') ? g:fuzzyy_devicons_glyph_func : ''
+
 var color_func = exists('g:fuzzyy_devicons_color_func') ? g:fuzzyy_devicons_color_func : ''
 
 var enabled = exists('g:fuzzyy_devicons') && !empty(glyph_func) ? g:fuzzyy_devicons : !empty(glyph_func)
@@ -31,39 +30,8 @@ if enabled
     devicon_byte_width = strlen(test_devicon)
 endif
 
-var devicons_color_table = {
-    '__default__': 'lightblue4',
-    '*.lua': 'lightblue3',
-    '*.js': 'sandybrown',
-    '*.ts': 'sandybrown',
-    '*.go': 'lightblue3',
-    '*.c': 'lightblue3',
-    '*.cpp': 'teal',
-    '*.java': 'darksalmon',
-    '*.php': 'mediumorchid',
-    '*.rb': 'darksalmon',
-    '*.sh': 'teal',
-    '*.html': 'sandybrown',
-    '*.css': 'lightblue3',
-    '*.scss': 'lightblue3',
-    '*.less': 'lightblue3',
-    '*.json': 'indianred',
-    '*.toml': 'grey',
-    '*.sql': 'teal',
-    '*.md': 'sandybrown',
-    '*.tex': 'lightblue3',
-    '*.vue': 'darkseagreen',
-    '*.swift': 'darksalmon',
-    '*.dart': 'lightblue3',
-    '*.elm': 'lightblue3',
-    '*.vim': 'darkseagreen',
-    '*.png': 'teal',
-    '*.py': 'goldenrod',
-    'LICENSE': 'mediumorchid',
-}
-if exists('g:fuzzyy_devicons_color_table') && type(g:fuzzyy_devicons_color_table) == v:t_dict
-    extend(devicons_color_table, g:fuzzyy_devicons_color_table)
-endif
+# Allows the colors to be changed before loading devicons, see compat/fuzzyy.vim
+var devicons_color_table = colors.devicons_color_table
 
 def SetHl()
     for val in uniq(values(devicons_color_table))
