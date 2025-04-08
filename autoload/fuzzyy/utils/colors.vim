@@ -35,7 +35,7 @@ export var devicons_color_table = {
     '*.sql': 'teal',
     '*.swift': 'darkorange2',
     '*.tex': 'teal',
-    '*.ts': 'lightblue2',
+    '*.ts': 'lightblue4',
     '*.vim': 'darkseagreen',
     'Dockerfile': 'steelblue',
     'LICENSE': 'mediumorchid',
