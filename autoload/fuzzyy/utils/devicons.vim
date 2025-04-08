@@ -60,7 +60,7 @@ export def AddColor(wid: number)
         var charhex = printf('%x', charnr)
         var color = devicons_color_table[ft]
         try
-        matchadd('fuzzyyDevicon_' .. substitute(color, '#', '', ''), '\v%u' .. charhex, 99, -1, { window: wid })
+        matchadd('fuzzyyDevicon_' .. substitute(color, '#', '', ''), '\v%U' .. charhex, 99, -1, { window: wid })
         add(added, icon)
         catch | endtry
     endfor
