@@ -2,6 +2,8 @@ vim9script
 
 scriptencoding utf-8
 
+import autoload './colors.vim'
+
 var popup_wins: dict<any>
 var wins = { menu: -1, prompt: -1, preview: -1, info: -1 }
 var t_ve: string
@@ -41,6 +43,50 @@ export def SetPopupWinProp(wid: number, key: string, val: any)
     else
         echoerr 'SetPopupWinProp: key not exist'
     endif
+enddef
+
+def Warn(msg: string)
+    if has('patch-9.0.0321')
+        echow msg
+    else
+        timer_start(100, (_) => {
+            echohl WarningMsg | echo msg | echohl None
+        }, { repeat: 0 })
+    endif
+enddef
+
+def ResolveCursor()
+    hlset([{name: 'fuzzyyCursor', cleared: true}])
+    var fallback = {
+        name: 'fuzzyyCursor',
+        term: { 'reverse': true },
+        cterm: { 'reverse': true },
+        gui: { 'reverse': true },
+    }
+    var attrs = hlget('Cursor', true)->get(0, {})
+    if !attrs->get('guifg') || !attrs->get('guibg')
+        hlset([fallback])
+        return
+    endif
+    var special = ['NONE', 'bg', 'fg', 'background', 'foreground']
+    var guifg = attrs->get('guifg')
+    var guibg = attrs->get('guibg')
+    if index(special, guifg) != -1 || index(special, guibg) != -1
+        hlset([fallback])
+        return
+    endif
+    try
+        hlset([{
+            name: 'fuzzyyCursor',
+            guifg: guifg,
+            guibg: guibg,
+            ctermfg: string(colors.TermColor(guifg)),
+            ctermbg: string(colors.TermColor(guibg))
+        }])
+    catch
+        Warn('Fuzzyy: failed to resolve cursor highlight: ' .. v:exception)
+        hlset([fallback])
+    endtry
 enddef
 
 # Use to hide the cursor while popups active
@@ -507,6 +553,10 @@ export def MenuSetHl(name: string, hl_list_raw: list<any>)
 enddef
 
 def PopupPrompt(args: dict<any>): number
+    if hlget('fuzzyyCursor')->get(0, {})->get('linksto', '') ==? 'Cursor'
+        ResolveCursor()
+    endif
+
     var opts = {
      width: 0.4,
      height: 1,
