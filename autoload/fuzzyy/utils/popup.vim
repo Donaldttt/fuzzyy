@@ -48,11 +48,28 @@ def HideCursor()
     # terminal cursor
     t_ve = &t_ve
     setlocal t_ve=
-    # gui cursor
-    if len(hlget('Cursor')) > 0
-        hlcursor = hlget('Cursor')[0]
-        hlset([{name: 'Cursor', cleared: true}])
+
+    var fallback_cursor = {
+        name: 'fuzzyyPopup_cursor',
+        term: { 'reverse': true },
+        cterm: { 'reverse': true },
+    }
+    hlcursor = hlget('Cursor')->get(0)
+    if !hlcursor || hlcursor->get('cleared')
+        hlset([fallback_cursor])
+        return
     endif
+
+    var hlcursor_resolved = hlget('Cursor', true)->get(0)
+    if hlcursor_resolved->has_key('term')
+            || hlcursor_resolved->has_key('cterm')
+            || hlcursor_resolved->has_key('ctermbg')
+            || hlcursor_resolved->has_key('ctermfg')
+        hlset([extend(hlcursor_resolved, {name: 'fuzzyyPopup_cursor'})])
+    else
+        hlset([fallback_cursor])
+    endif
+    hlset([{name: 'Cursor', cleared: true}])
 enddef
 
 # Use to restore cursor when closing popups
@@ -61,10 +78,10 @@ def ShowCursor()
     if &t_ve != t_ve
         &t_ve = t_ve
     endif
-    # gui cursor
-    if len(hlget('Cursor')) > 0 && get(hlget('Cursor')[0], 'cleared', false)
+    if !!hlcursor && hlget('Cursor')->get(0, {cleared: false})->get('cleared')
         hlset([hlcursor])
     endif
+    hlset([{name: 'fuzzyyPopup_cursor', cleared: true, linksto: 'NONE'}])
 enddef
 
 # Called usually when popup window is closed
@@ -522,12 +539,13 @@ def PopupPrompt(args: dict<any>): number
      displayed_line: prompt_char .. " ",
      }
 
+    var hlcursor_linksto = hlget('fuzzyyCursor')->get(0, {linksto: ''})->get('linksto', '')
     var cursor_args = {
      min_pos: 0,
      max_pos: 0,
      promptchar_len: prompt_char_len,
      cur_pos: 0,
-     highlight: 'fuzzyyCursor',
+     highlight: hlcursor_linksto == 'Cursor' ? 'fuzzyyPopup_cursor' : 'fuzzyyCursor',
      mid: -1,
      }
 
@@ -668,6 +686,8 @@ export def PopupSelection(opts: dict<any>): dict<any>
 
     wins.menu = PopupMenu(menu_opts)
 
+    HideCursor()
+
     var prompt_opts = {
         yoffset: prompt_yoffset,
         xoffset: xoffset,
@@ -715,8 +735,6 @@ export def PopupSelection(opts: dict<any>): dict<any>
 
     popup_wins[wins.menu].partids = wins
     popup_wins[wins.prompt].partids = wins
-
-    HideCursor()
 
     return wins
 enddef

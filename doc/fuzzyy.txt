@@ -498,11 +498,17 @@ It is also possible to modify the colors used for highlighting. The defaults are
 shown below, you can change them in your vimrc. See :help :highlight if you are
 unfamiliar with Vim highlighting
 >
-  highlight default link fuzzyyCursor Search
+  highlight default link fuzzyyCursor Cursor
   highlight default link fuzzyyNormal Normal
   highlight default link fuzzyyBorder Normal
   highlight default link fuzzyyMatching Special
   highlight default link fuzzyyPreviewMatch CurSearch
 <
+
+Note: when the popup is open, fuzzyy will technically hide the terminal cursor
+and clear the Cursor highlight group. This is to work around limitations in how
+|popupwin| operates. Therefore, to work around this, when the popup is open the
+Cursor highlight group's resolved properties are copied to an internal
+highlight group and used only if fuzzyyCursor is linked to Cursor.
 
  vim:tw=78:ts=2:ft=help:
