@@ -40,6 +40,19 @@ export var devicons_color_table = {
     'Dockerfile': 'steelblue',
     'LICENSE': 'mediumorchid',
 }
+# Additional color table for nerdfonts not supported by default in vim-devicons
+# These are added to the default color table if supported by the glyph function
+var additional_color_table = {
+    '*.kt': 'mediumpurple'
+}
+if exists('g:fuzzyy_devicons_glyph_func')
+    var glyph_func = g:fuzzyy_devicons_glyph_func
+    var default_glyph = function(glyph_func)('__default__')
+    filter(additional_color_table, (key, val) => {
+        return function(glyph_func)(key) != default_glyph
+    })
+    extend(devicons_color_table, additional_color_table)
+endif
 if exists('g:fuzzyy_devicons_color_table') && type(g:fuzzyy_devicons_color_table) == v:t_dict
     extend(devicons_color_table, g:fuzzyy_devicons_color_table)
 endif
