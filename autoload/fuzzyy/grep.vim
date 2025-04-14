@@ -83,7 +83,7 @@ enddef
 
 def Build_git(): string
     var result = 'git grep -n -I --column --untracked --exclude-standard -F'
-    var version = system('git version')->split('\M\s\+')[-1]->trim()
+    var version = system('git version')->matchstr('\M\(\d\+\.\)\{2}\d\+')
     var [major, minor] = split(version, '\M.')[0 : 1]
     # -m/--max-count option added in git version 2.38.0
     if str2nr(major) > 2 || ( str2nr(major) == 2 && str2nr(minor) >= 38 )
