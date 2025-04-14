@@ -39,6 +39,7 @@ export var devicons_color_table = {
     '*.vim': 'darkseagreen',
     'Dockerfile': 'steelblue',
     'LICENSE': 'mediumorchid',
+    'vimrc': 'darkseagreen', # vim-nerdfont uses different glyphs for *.vim and vimrc
 }
 # Additional color table for nerdfonts not supported by default in vim-devicons
 # These are added to the default color table if supported by the glyph function
