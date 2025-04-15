@@ -67,7 +67,7 @@ def HideCursor()
             || hlcursor_resolved->has_key('ctermfg')
         hlset([extend(hlcursor_resolved, {name: 'fuzzyyPopup_cursor'})])
     else
-        hlset([fallback_cursor])
+        hlset([extend(hlcursor_resolved, fallback_cursor)])
     endif
     hlset([{name: 'Cursor', cleared: true}])
 enddef
