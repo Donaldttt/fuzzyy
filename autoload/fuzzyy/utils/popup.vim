@@ -2,6 +2,8 @@ vim9script
 
 scriptencoding utf-8
 
+import autoload './colors.vim'
+
 var popup_wins: dict<any>
 var wins = { menu: -1, prompt: -1, preview: -1, info: -1 }
 var t_ve: string
@@ -29,6 +31,8 @@ var keymaps: dict<any> = {
 keymaps = exists('g:fuzzyy_keymaps') && type(g:fuzzyy_keymaps) == v:t_dict ?
     extend(keymaps, g:fuzzyy_keymaps) : keymaps
 
+var resolve_cursor = exists('g:fuzzyy_resolve_cursor') && g:fuzzyy_resolve_cursor
+
 var borderchars = exists('g:fuzzyy_borderchars') &&
     type(g:fuzzyy_borderchars) == v:t_list &&
     len(g:fuzzyy_borderchars) == 8 ?
@@ -41,6 +45,31 @@ export def SetPopupWinProp(wid: number, key: string, val: any)
     else
         echoerr 'SetPopupWinProp: key not exist'
     endif
+enddef
+
+def ResolveCursor()
+    if len(hlget('Cursor')) == 0
+        return
+    endif
+    var attrs = hlget('Cursor', true)->get(0)
+    if !attrs->get('guifg') || !attrs->get('guibg')
+        return
+    endif
+    var special = ['NONE', 'bg', 'fg', 'background', 'foreground']
+    var guifg = attrs->get('guifg')
+    var guibg = attrs->get('guibg')
+    if index(special, guifg) != -1 || index(special, guibg) != -1
+        return
+    endif
+    var ctermfg = colors.TermColor(guifg)
+    var ctermbg = colors.TermColor(guibg)
+    hlset([{
+        name: 'fuzzyyCursor',
+        guifg: guifg,
+        guibg: guibg,
+        ctermfg: string(ctermfg),
+        ctermbg: string(ctermbg)
+    }])
 enddef
 
 # Use to hide the cursor while popups active
@@ -509,6 +538,10 @@ export def MenuSetHl(name: string, hl_list_raw: list<any>)
 enddef
 
 def PopupPrompt(args: dict<any>): number
+    if resolve_cursor
+        ResolveCursor()
+    endif
+
     var opts = {
      width: 0.4,
      height: 1,
