@@ -22,7 +22,7 @@ if exists('g:loaded_nerd_tree') && !exists('g:fuzzyy_devicons_color_func') &&
         findfile('after/syntax/nerdtree.vim', &rtp) =~ 'nerdtree-syntax-highlight'
     import '../autoload/fuzzyy/utils/colors.vim'
     runtime! after/syntax/nerdtree.vim
-    map(colors.devicons_color_table, (key, val) => {
+    map(colors.DeviconsColorTable(), (key, val) => {
         var ext = fnamemodify(key, ':e')
         if !empty(ext) && hlexists('nerdtreeFileExtensionIcon_' .. tolower(ext))
             return hlget('nerdtreeFileExtensionIcon_' .. tolower(ext))[0]['guifg']

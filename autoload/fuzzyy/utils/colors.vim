@@ -8,7 +8,7 @@ vim9script
 # You can modify this for your preferences using g:fuzzyy_devicons_color_table
 # Please open a PR if you think something is missing or could be improved (all
 # defaults should have an icon in vim-devicons, and a published nerdfont glyph)
-export var devicons_color_table = {
+var devicons_color_table = {
     '__default__': 'lightblue4',
     '*.c': 'lightblue3',
     '*.conf': 'grey', # generic settings devicon, also used for toml, yaml etc.
@@ -57,6 +57,11 @@ endif
 if exists('g:fuzzyy_devicons_color_table') && type(g:fuzzyy_devicons_color_table) == v:t_dict
     extend(devicons_color_table, g:fuzzyy_devicons_color_table)
 endif
+
+# Necessary for some versions of Vim 9.0
+export def DeviconsColorTable(): dict<any>
+    return devicons_color_table
+enddef
 
 # Code to get a 256 color number from a color name or hex value in the
 # color table, used by devicons script when creating highlight groups

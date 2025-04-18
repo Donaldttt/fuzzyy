@@ -31,7 +31,7 @@ if enabled
 endif
 
 # Allows the colors to be changed before loading devicons, see compat/fuzzyy.vim
-var devicons_color_table = colors.devicons_color_table
+var devicons_color_table = colors.DeviconsColorTable()
 
 def SetHl()
     for val in uniq(values(devicons_color_table))
