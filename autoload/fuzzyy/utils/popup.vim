@@ -31,8 +31,6 @@ var keymaps: dict<any> = {
 keymaps = exists('g:fuzzyy_keymaps') && type(g:fuzzyy_keymaps) == v:t_dict ?
     extend(keymaps, g:fuzzyy_keymaps) : keymaps
 
-var resolve_cursor = exists('g:fuzzyy_resolve_cursor') && g:fuzzyy_resolve_cursor
-
 var borderchars = exists('g:fuzzyy_borderchars') &&
     type(g:fuzzyy_borderchars) == v:t_list &&
     len(g:fuzzyy_borderchars) == 8 ?
@@ -47,29 +45,48 @@ export def SetPopupWinProp(wid: number, key: string, val: any)
     endif
 enddef
 
-def ResolveCursor()
-    if len(hlget('Cursor')) == 0
-        return
+def Warn(msg: string)
+    if has('patch-9.0.0321')
+        echow msg
+    else
+        timer_start(100, (_) => {
+            echohl WarningMsg | echo msg | echohl None
+        }, { repeat: 0 })
     endif
-    var attrs = hlget('Cursor', true)->get(0)
+enddef
+
+def ResolveCursor()
+    hlset([{name: 'fuzzyyCursor', cleared: true}])
+    var fallback = {
+        name: 'fuzzyyCursor',
+        term: { 'reverse': true },
+        cterm: { 'reverse': true },
+        gui: { 'reverse': true },
+    }
+    var attrs = hlget('Cursor', true)->get(0, {})
     if !attrs->get('guifg') || !attrs->get('guibg')
+        hlset([fallback])
         return
     endif
     var special = ['NONE', 'bg', 'fg', 'background', 'foreground']
     var guifg = attrs->get('guifg')
     var guibg = attrs->get('guibg')
     if index(special, guifg) != -1 || index(special, guibg) != -1
+        hlset([fallback])
         return
     endif
-    var ctermfg = colors.TermColor(guifg)
-    var ctermbg = colors.TermColor(guibg)
-    hlset([{
-        name: 'fuzzyyCursor',
-        guifg: guifg,
-        guibg: guibg,
-        ctermfg: string(ctermfg),
-        ctermbg: string(ctermbg)
-    }])
+    try
+        hlset([{
+            name: 'fuzzyyCursor',
+            guifg: guifg,
+            guibg: guibg,
+            ctermfg: string(colors.TermColor(guifg)),
+            ctermbg: string(colors.TermColor(guibg))
+        }])
+    catch
+        Warn('Fuzzyy: failed to resolve cursor highlight: ' .. v:exception)
+        hlset([fallback])
+    endtry
 enddef
 
 # Use to hide the cursor while popups active
@@ -538,7 +555,7 @@ export def MenuSetHl(name: string, hl_list_raw: list<any>)
 enddef
 
 def PopupPrompt(args: dict<any>): number
-    if resolve_cursor
+    if hlget('fuzzyyCursor')->get(0, {})->get('linksto', '') ==? 'Cursor'
         ResolveCursor()
     endif
 
