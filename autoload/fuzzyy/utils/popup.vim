@@ -75,13 +75,15 @@ def ResolveCursor()
         hlset([fallback])
         return
     endif
+    var ctermfg = attrs->get('ctermfg', string(colors.TermColor(guifg)))
+    var ctermbg = attrs->get('ctermbg', string(colors.TermColor(guibg)))
     try
         hlset([{
             name: 'fuzzyyCursor',
             guifg: guifg,
             guibg: guibg,
-            ctermfg: string(colors.TermColor(guifg)),
-            ctermbg: string(colors.TermColor(guibg))
+            ctermfg: ctermfg,
+            ctermbg: ctermbg
         }])
     catch
         Warn('Fuzzyy: failed to resolve cursor highlight: ' .. v:exception)
