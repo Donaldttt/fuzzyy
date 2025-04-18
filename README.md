@@ -417,9 +417,14 @@ shown below, you can change them in your vimrc. See :help :highlight if you are
 unfamiliar with Vim highlighting
 
 ```vim
-highlight default link fuzzyyCursor Search
+highlight default link fuzzyyCursor Cursor
 highlight default link fuzzyyNormal Normal
 highlight default link fuzzyyBorder Normal
 highlight default link fuzzyyMatching Special
 highlight default link fuzzyyPreviewMatch CurSearch
 ```
+
+Note: when the popup is open, Fuzzyy will technically hide the terminal cursor
+and clear the Cursor highlight group. This is to work around limitations in how
+|popupwin| operates. To allow fuzzyyCursor to be linked to Cursor (the default),
+the resolved properties of Cursor are copied to fuzzyyCursor where possible.
