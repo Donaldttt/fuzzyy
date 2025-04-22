@@ -64,19 +64,23 @@ def ResolveCursor()
         gui: { 'reverse': true },
     }
     var attrs = hlget('Cursor', true)->get(0, {})
-    if !attrs->get('guifg') || !attrs->get('guibg')
+    if !attrs->get('guifg') && !attrs->get('guibg')
         hlset([fallback])
         return
     endif
     var special = ['NONE', 'bg', 'fg', 'background', 'foreground']
-    var guifg = attrs->get('guifg')
-    var guibg = attrs->get('guibg')
-    if index(special, guifg) != -1 || index(special, guibg) != -1
-        hlset([fallback])
+    var guifg = attrs->get('guifg', 'NONE')
+    var guibg = attrs->get('guibg', 'NONE')
+    if has('gui')
+        hlset([{name: 'fuzzyyCursor', guifg: guifg, guibg: guibg}])
         return
     endif
-    var ctermfg = attrs->get('ctermfg', string(colors.TermColor(guifg)))
-    var ctermbg = attrs->get('ctermbg', string(colors.TermColor(guibg)))
+    var ctermfg = attrs->get('ctermfg',
+        index(special, guifg) != -1 ? guifg : string(colors.TermColor(guifg))
+    )
+    var ctermbg = attrs->get('ctermbg',
+        index(special, guibg) != -1 ? guibg : string(colors.TermColor(guibg))
+    )
     try
         hlset([{
             name: 'fuzzyyCursor',
@@ -85,6 +89,9 @@ def ResolveCursor()
             ctermfg: ctermfg,
             ctermbg: ctermbg
         }])
+    catch /\v:(E419|E420|E453):/
+        # foreground and/or background not known and used as ctermfg or ctermbg
+        hlset([fallback])
     catch
         Warn('Fuzzyy: failed to resolve cursor highlight: ' .. v:exception)
         hlset([fallback])
