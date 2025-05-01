@@ -38,12 +38,14 @@ def SetHl()
         exe 'hi fuzzyyDevicon_' .. substitute(val, '#', '', '') .. ' ctermfg=' .. colors.TermColor(val) .. ' guifg=' .. val
     endfor
 enddef
-SetHl()
 
-augroup FuzzyyDevicons
-    autocmd!
-    autocmd ColorScheme * SetHl()
-augroup END
+if enabled
+    SetHl()
+    augroup FuzzyyDevicons
+        autocmd!
+        autocmd ColorScheme * SetHl()
+    augroup END
+endif
 
 export def AddColor(wid: number)
     if !empty(color_func)
