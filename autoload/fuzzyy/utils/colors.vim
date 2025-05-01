@@ -1,5 +1,11 @@
 vim9script
 
+# v:colornames populated by using the :colorscheme or :highlight commands,
+# so can be empty if vim loaded from a session without setting a colorscheme
+if empty(v:colornames) && filereadable($VIMRUNTIME .. '/colors/lists/default.vim')
+    exe "source " .. $VIMRUNTIME .. '/colors/lists/default.vim'
+endif
+
 # Color table stored outside of devicons script to allow it to be modified
 # before loading devicons, which creates highlight groups using these colors
 # These are just the default devicon colors, a small subset of all available
