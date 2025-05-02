@@ -9,7 +9,7 @@ CONTENTS                                                       *fuzzyy-contents*
   1.2. Requirements........................................|fuzzyy-requirements|
     1.2.1. Suggested dependencies................|fuzzyy-suggested_dependencies|
     1.2.2. Optional dependencies..................|fuzzyy-optional_dependencies|
-    1.2.3. Compatibile plugins......................|fuzzyy-compatibile_plugins|
+    1.2.3. Compatible plugins........................|fuzzyy-compatible_plugins|
   1.3. Install..................................................|fuzzyy-install|
   1.4. Commands................................................|fuzzyy-commands|
   1.5. Mappings................................................|fuzzyy-mappings|
@@ -76,7 +76,7 @@ OPTIONAL DEPENDENCIES                             *fuzzyy-optional_dependencies*
 * ctags (https://ctags.io) - used to generate tags for FuzzyTags (Universal
   Ctags implementation is required)
 
-COMPATIBILE PLUGINS                                 *fuzzyy-compatibile_plugins*
+COMPATIBLE PLUGINS                                   *fuzzyy-compatible_plugins*
 
 * vim-devicons (https://github.com/ryanoasis/vim-devicons) - used to show
   devicons (https://devicon.dev/) when listing files if installed
@@ -279,7 +279,7 @@ G:FUZZYY_ROOT_PATTERNS                           *fuzzyy-g:fuzzyy_root_patterns*
 
 Patterns to find a project root in supported commands, e.g. FuzzyFilesRoot.
 These commands find a "root" directory to use as the working directory by
-walking up the direcrory tree looking for any match of these glob patterns.
+walking up the directory tree looking for any match of these glob patterns.
 Default is intentionally conservative, using common VCS root markers only.
 >
   let g:fuzzyy_root_patterns = ['.git', '.hg', '.svn']
