@@ -34,7 +34,7 @@ programs to handle complex tasks.
 - [ctags](https://ctags.io) - used to generate tags for FuzzyTags (Universal
   Ctags implementation is required)
   
-### Compatibile plugins
+### Compatible plugins
 - [vim-devicons](https://github.com/ryanoasis/vim-devicons) - used to show
   [devicons](https://devicon.dev/) when listing files if installed
 - [vim-nerdfont](https://github.com/lambdalisue/vim-nerdfont) - alternative
@@ -222,7 +222,7 @@ This option can also be set specifically for FuzzyFiles and/or FuzzyGrep using
 ### g:fuzzyy_root_patterns
 Patterns to find a project root in supported commands, e.g. FuzzyFilesRoot.
 These commands find a "root" directory to use as the working directory by
-walking up the direcrory tree looking for any match of these glob patterns.
+walking up the directory tree looking for any match of these glob patterns.
 Default is intentionally conservative, using common VCS root markers only.
 ```vim
 let g:fuzzyy_root_patterns = ['.git', '.hg', '.svn']
