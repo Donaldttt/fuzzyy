@@ -35,7 +35,8 @@ CONTENTS                                                       *fuzzyy-contents*
     1.7.18. g:fuzzyy_buffers_keymap.............|fuzzyy-g:fuzzyy_buffers_keymap|
     1.7.19. g:fuzzyy_window_layout...............|fuzzyy-g:fuzzyy_window_layout|
     1.7.20. g:fuzzyy_async_step.....................|fuzzyy-g:fuzzyy_async_step|
-  1.8. Syntax highlighting..........................|fuzzyy-syntax_highlighting|
+  1.8. User autocommands..............................|fuzzyy-user_autocommands|
+  1.9. Syntax highlighting..........................|fuzzyy-syntax_highlighting|
 
 ==============================================================================
 FUZZYY                                                           *fuzzyy-fuzzyy*
@@ -489,6 +490,24 @@ should work well for most developer workstations, but you might want to reduce
 if you notice a lack of responsiveness on low spec machines
 >
   let g:fuzzyy_async_step = 10000
+<
+
+------------------------------------------------------------------------------
+USER AUTOCOMMANDS                                     *fuzzyy-user_autocommands*
+
+Fuzzyy adds two `User` autocommands which you can use to run custom commands
+when Fuzzyy is opened and closed. This can be helpful to aid compatibility with
+other plugins, e.g. vim-lsp (https://github.com/prabirshrestha/vim-lsp)
+
+By default vim-lsp will automatically start configured language servers when the
+filetype of a buffer changes. To avoid starting language servers unnecessarily
+when you preview a file in Fuzzyy you can disable vim-lsp while Fuzzyy is open:
+>
+  augroup LspFuzzyy
+    autocmd!
+    autocmd User FuzzyyOpened call lsp#disable()
+    autocmd User FuzzyyClosed call lsp#enable()
+  augroup END
 <
 
 ------------------------------------------------------------------------------
