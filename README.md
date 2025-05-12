@@ -15,7 +15,7 @@ programs to handle complex tasks.
 
 ## Requirements
 
-- Vim >= 9.0 (plugin is written in vim9scipt, Vim 9+ required, NeoVim not
+- Vim >= 9.0 (plugin is written in vim9scipt, Vim 9+ required, Neovim not
   supported)
 
 ### Suggested dependencies

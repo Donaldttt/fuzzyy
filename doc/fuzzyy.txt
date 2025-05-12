@@ -57,7 +57,7 @@ SCREENSHOT                                                   *fuzzyy-screenshot*
 ------------------------------------------------------------------------------
 REQUIREMENTS                                               *fuzzyy-requirements*
 
-* Vim >= 9.0 (plugin is written in vim9scipt, Vim 9+ required, NeoVim not
+* Vim >= 9.0 (plugin is written in vim9scipt, Vim 9+ required, Neovim not
   supported)
 
 SUGGESTED DEPENDENCIES                           *fuzzyy-suggested_dependencies*
