@@ -162,11 +162,10 @@ def GeneralPopupCallback(wid: number, select: any)
         opt.cursor_item = popup_wins[wid].cursor_item
         popup_wins[wid].close_cb(wid, opt)
     endif
-    if exists('#User#PopupClosed')
-        doautocmd User PopupClosed
-    endif
 
     popup_wins = {}
+
+    silent doautocmd <nomodeline> User FuzzyyClosed
 enddef
 
 # Handle situation when Text under cursor in menu window is changed
@@ -776,6 +775,8 @@ export def PopupSelection(opts: dict<any>): dict<any>
     popup_wins[wins.prompt].partids = wins
 
     HideCursor()
+
+    silent doautocmd <nomodeline> User FuzzyyOpened
 
     return wins
 enddef
