@@ -8,22 +8,44 @@
 # Or download a binary from https://github.com/FooSoft/md2vim/releases
 
 if which md2vim &>/dev/null; then
-  BIN_PATH=$(which md2vim)
+  MD2VIM=$(which md2vim)
 elif test -f $GOPATH/bin/md2vim; then
-  BIN_PATH=$GOPATH/bin/md2vim
+  MD2VIM=$GOPATH/bin/md2vim
 elif test -f $HOME/go/bin/md2vim; then
-  BIN_PATH=$HOME/go/bin/md2vim
+  MD2VIM=$HOME/go/bin/md2vim
 else
   echo "Error: Required binary md2vim not found" >&2
   echo "Install md2vim with 'go install git.foosoft.net/alex/md2vim@latest'" >&2
   echo "Or download a binary from https://github.com/FooSoft/md2vim/releases" >&2
+  exit 1
 fi
 
-cmd="$BIN_PATH -cols 78 -tabs 2 -desc 'A vim9 fuzzy finder with a modern UI' README.md doc/fuzzyy.txt"
+if sed --version 2>/dev/null | head -n1 | grep GNU &>/dev/null; then
+  GSED="sed"
+elif gsed --version 2>/dev/null | head -n1 | grep GNU &>/dev/null; then
+  GSED="gsed"
+else
+  echo "Error: GNU sed is required but was not found" >&2
+  exit 1
+fi
+
+echo Generating documentation
+cmd="$MD2VIM -cols 78 -tabs 2 -desc 'A vim9 fuzzy finder with a modern UI' README.md doc/fuzzyy.txt"
 echo Executing $cmd
 eval $cmd
 
-# Note: leading space required!
-modeline=" vim:tw=78:ts=2:ft=help:"
-echo Appending modeline $modeline
-echo "$modeline" >> doc/fuzzyy.txt
+if ! tail -n1 doc/fuzzyy.txt | fgrep "vim:" &>/dev/null; then
+  # Note: leading space required!
+  modeline=" vim:tw=78:ts=2:ft=help:"
+  echo Adding missing modeline
+  cmd="echo \"$modeline\" >> doc/fuzzyy.txt"
+  echo Executing $cmd
+  eval $cmd
+fi
+
+if ! head -n1 doc/fuzzyy.txt | fgrep "*fuzzyy.txt*" &>/dev/null; then
+  echo Adding missing help tag
+  cmd="$GSED -i '1s/fuzzyy.txt\ \ /*fuzzyy.txt*/' doc/fuzzyy.txt"
+  echo Executing $cmd
+  eval $cmd
+fi
