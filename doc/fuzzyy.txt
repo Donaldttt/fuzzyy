@@ -1,4 +1,4 @@
-*fuzzyy.txt*                              A vim9 fuzzy finder with a modern UI
+*fuzzyy.txt*                                A vim9 fuzzy finder with a modern UI
 
 
 ==============================================================================

@@ -45,7 +45,7 @@ fi
 
 if ! head -n1 doc/fuzzyy.txt | fgrep "*fuzzyy.txt*" &>/dev/null; then
   echo Adding missing help tag
-  cmd="$GSED -i '1s/fuzzyy.txt\ \ /*fuzzyy.txt*/' doc/fuzzyy.txt"
+  cmd="$GSED -i '1s/fuzzyy.txt/*fuzzyy.txt*/' doc/fuzzyy.txt"
   echo Executing $cmd
   eval $cmd
 fi
