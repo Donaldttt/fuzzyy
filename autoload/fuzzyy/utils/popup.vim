@@ -317,6 +317,18 @@ def MenuFilter(wid: number, key: string): number
         else
             popup_close(wid, [linetext])
         endif
+    elseif key ==? "\<ScrollWheelUp>"
+        var pos = getmousepos()
+        if pos.winid != wid
+            return 0
+        endif
+        win_execute(wid, "norm! 3\<c-y>")
+    elseif key ==? "\<ScrollWheelDown>"
+        var pos = getmousepos()
+        if pos.winid != wid
+            return 0
+        endif
+        win_execute(wid, "norm! 3\<c-e>")
     elseif index(keymaps['menu_select'], key) >= 0
         # if not passing second argument, popup_close will call user callback
         # with func(window-id, 0)
