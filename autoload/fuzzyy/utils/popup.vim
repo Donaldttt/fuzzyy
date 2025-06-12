@@ -300,20 +300,22 @@ def MenuFilter(wid: number, key: string): number
         endif
     elseif key ==? "\<LeftMouse>"
         var pos = getmousepos()
-        if pos.winid == wid
-            win_execute(wid, 'norm! ' .. pos.line .. 'G')
-            moved = 1
+        if pos.winid != wid
+            return 0
         endif
+        win_execute(wid, 'norm! ' .. pos.line .. 'G')
+        moved = 1
     elseif key ==? "\<2-LeftMouse>"
         var pos = getmousepos()
-        if pos.winid == wid
-            win_execute(wid, 'norm! ' .. pos.line .. 'G')
-            var linetext = getbufline(bufnr, pos.line, pos.line)[0]
-            if linetext == ''
-                popup_close(wid)
-            else
-                popup_close(wid, [linetext])
-            endif
+        if pos.winid != wid
+            return 0
+        endif
+        win_execute(wid, 'norm! ' .. pos.line .. 'G')
+        var linetext = getbufline(bufnr, pos.line, pos.line)[0]
+        if linetext == ''
+            popup_close(wid)
+        else
+            popup_close(wid, [linetext])
         endif
     elseif index(keymaps['menu_select'], key) >= 0
         # if not passing second argument, popup_close will call user callback
@@ -351,14 +353,16 @@ def PreviewFilter(wid: number, key: string): number
         win_execute(wid, "norm! \<c-d>")
     elseif key ==? "\<ScrollWheelUp>"
         var pos = getmousepos()
-        if pos.winid == wid
-            win_execute(wid, "norm! 3\<c-y>")
+        if pos.winid != wid
+            return 0
         endif
+        win_execute(wid, "norm! 3\<c-y>")
     elseif key ==? "\<ScrollWheelDown>"
         var pos = getmousepos()
-        if pos.winid == wid
-            win_execute(wid, "norm! 3\<c-e>")
+        if pos.winid != wid
+            return 0
         endif
+        win_execute(wid, "norm! 3\<c-e>")
     else
         return 0
     endif
