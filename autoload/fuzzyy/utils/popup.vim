@@ -251,6 +251,17 @@ def PromptFilter(wid: number, key: string): number
 				cur_pos = 0
 			endif
 		endif
+	elseif key ==? "\<del>"
+		if cur_pos == max_pos
+			return 1
+		endif
+		if cur_pos == 0
+			line = line[1 : ]
+		else
+			var before = cur_pos - 1 >= 0 ? line[: cur_pos - 1] : []
+			line = before + line[cur_pos + 1 :]
+		endif
+		max_pos -= 1
     else
         # catch all unhandled keys
         return 1
