@@ -229,6 +229,17 @@ def PromptFilter(wid: number, key: string): number
         cur_pos = max([ 0, cur_pos - 1 ])
     elseif key == "\<Right>" || key == "\<c-f>"
         cur_pos = min([ max_pos, cur_pos + 1 ])
+    elseif key ==? "\<del>"
+        if cur_pos == max_pos
+            return 1
+        endif
+        if cur_pos == 0
+            line = line[1 : ]
+        else
+            var before = cur_pos - 1 >= 0 ? line[: cur_pos - 1] : []
+            line = before + line[cur_pos + 1 :]
+        endif
+        max_pos -= 1
     elseif index(keymaps['cursor_begining'], key) >= 0
         cur_pos = 0
     elseif index(keymaps['cursor_end'], key) >= 0
@@ -239,6 +250,19 @@ def PromptFilter(wid: number, key: string): number
     elseif index(keymaps['delete_prefix'], key) >= 0
         line = line[cur_pos :]
         cur_pos = 0
+    elseif key ==? "\<LeftMouse>" || key ==? "\<2-LeftMouse>"
+        var pos = getmousepos()
+        if pos.winid != wid
+            return 0
+        endif
+        var promptchar_len = popup_wins[wid].cursor_args.promptchar_len
+        cur_pos = pos.wincol - promptchar_len - 2
+        if cur_pos > max_pos
+            cur_pos = max_pos
+        endif
+        if cur_pos < 0
+            cur_pos = 0
+        endif
     else
         # catch all unhandled keys
         return 1
