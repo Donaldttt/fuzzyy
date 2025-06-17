@@ -229,7 +229,7 @@ def PromptFilter(wid: number, key: string): number
         cur_pos = max([ 0, cur_pos - 1 ])
     elseif key == "\<Right>" || key == "\<c-f>"
         cur_pos = min([ max_pos, cur_pos + 1 ])
-    elseif key ==? "\<del>"
+    elseif key ==? "\<Del>"
         if cur_pos == max_pos
             return 1
         endif
