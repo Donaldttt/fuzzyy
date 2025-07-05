@@ -3,6 +3,7 @@ vim9script
 scriptencoding utf-8
 
 import autoload './colors.vim'
+import autoload './launcher.vim'
 
 var popup_wins: dict<any>
 var wins = { menu: -1, prompt: -1, preview: -1, info: -1 }
@@ -131,6 +132,7 @@ def GeneralPopupCallback(wid: number, select: any)
     if wid != wins.menu
         return
     endif
+    launcher.Save(wins)
     for key in keys(wins)
         if len(getwininfo(wins[key])) > 0 && wins[key] != wid
             popup_close(wins[key])
