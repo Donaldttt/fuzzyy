@@ -3,6 +3,7 @@ vim9script
 scriptencoding utf-8
 
 import autoload './colors.vim'
+import autoload './launcher.vim'
 
 var popup_wins: dict<any>
 var wins = { menu: -1, prompt: -1, preview: -1, info: -1 }
@@ -131,6 +132,7 @@ def GeneralPopupCallback(wid: number, select: any)
     if wid != wins.menu
         return
     endif
+    launcher.Save(wins)
     for key in keys(wins)
         if len(getwininfo(wins[key])) > 0 && wins[key] != wid
             popup_close(wins[key])
@@ -196,9 +198,21 @@ enddef
 # params
 #   - content: string to be set as prompt
 export def SetPrompt(content: string)
+    popup_wins[wins.prompt].prompt.line = []
     for i in range(strchars(content))
         PromptFilter(wins.prompt, strcharpart(content, i, 1, 1))
     endfor
+    if has_key(popup_wins[wins.prompt].prompt, 'input_cb')
+        && type(popup_wins[wins.prompt].prompt.input_cb) == v:t_func
+        popup_wins[wins.prompt].prompt.input_cb(wins.prompt, {
+            str: content,
+            win_opts: popup_wins[wins.prompt]
+        })
+    endif
+enddef
+
+export def GetPrompt(): string
+    return popup_wins[wins.prompt].prompt.line->join('')
 enddef
 
 def PromptFilter(wid: number, key: string): number
