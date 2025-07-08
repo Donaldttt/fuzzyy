@@ -636,6 +636,13 @@ def PopupPrompt(args: dict<any>): number
     endif
     popup_settext(wid, prompt_opt.displayed_line)
 
+    if has_key(args, 'title') && !empty(args.title)
+        # var title = substitute(prompt_char, '\m.', borderchars[0], 'g') .. args.title
+        var padding = ( popup_getoptions(wid).maxwidth / 2 ) - ( len(args.title) / 2 )
+        var title = repeat([borderchars[0]], padding)->join('') .. args.title
+        popup_setoptions(wid, {title: title})
+    endif
+
     # set cursor
     var mid = matchaddpos(cursor_args.highlight,
     [[1, prompt_char_len + 1 + cursor_args.cur_pos]], 10, -1,  {window: wid})
@@ -773,6 +780,7 @@ export def PopupSelection(opts: dict<any>): dict<any>
         dropdown: dropdown,
         input_cb: has_key(opts, 'input_cb') ? opts.input_cb : null,
         prompt: has_key(opts, 'prompt') ? opts.prompt : '> ',
+        title: has_key(opts, 'prompt_title') ? opts.prompt_title : null,
         zindex: 1010,
     }
     wins.prompt = PopupPrompt(prompt_opts)
