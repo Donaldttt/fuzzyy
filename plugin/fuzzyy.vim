@@ -57,28 +57,45 @@ g:fuzzyy_ripgrep_options = exists('g:fuzzyy_ripgrep_options')
 # you can override it by setting g:fuzzyy_window_layout
 # e.g. let g:fuzzyy_window_layout = { 'files': { 'preview': 0 } }
 var windows: dict<any> = {
-    files: {},
-    grep: {},
-    buffers: {},
-    mru: {},
-    tags: {},
+    files: {
+        prompt_title: 'Find Files'
+    },
+    grep: {
+        prompt_title: 'Live Grep'
+    },
+    buffers: {
+        prompt_title: 'Buffers'
+    },
+    mru: {
+        prompt_title: 'Recent Files'
+    },
+    tags: {
+        prompt_title: 'Tags'
+    },
     highlights: {
+        prompt_title: 'Highlights',
         preview_ratio: 0.7,
     },
     cmdhistory: {
+        prompt_title: 'Command History',
         width: 0.6,
     },
     colors: {
+        prompt_title: 'Colors',
         width: 0.25,
         xoffset: 0.7,
     },
     commands: {
+        prompt_title: 'Commands',
         width: 0.4,
     },
     help: {
+        prompt_title: 'Help',
         preview_ratio: 0.6,
     },
-    inbuffer: {},
+    inbuffer: {
+        prompt_title: 'Lines in Buffer',
+    },
 }
 if exists('g:fuzzyy_window_layout') && type(g:fuzzyy_window_layout) == v:t_dict
     for [key, value] in items(windows)
