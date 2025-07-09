@@ -1,6 +1,7 @@
 vim9script
 
 import autoload './utils/selector.vim'
+import autoload './utils/previewer.vim'
 import autoload './utils/devicons.vim'
 
 var mru_origin_list: list<string>
@@ -27,33 +28,9 @@ def Preview(wid: number, opts: dict<any>)
         return
     endif
     var preview_wid = opts.win_opts.partids['preview']
-    win_execute(preview_wid, 'syntax clear')
     var path = cwd_only ? cwd .. '/' .. result : result
     path = path == '' ? path : fnamemodify(path, ':p')
-    if !filereadable(path)
-        if path == ''
-            popup_settext(preview_wid, '')
-        else
-            popup_settext(preview_wid, result .. ' not found')
-        endif
-        return
-    endif
-    var preview_bufnr = winbufnr(preview_wid)
-    if selector.IsBinary(path)
-        popup_settext(preview_wid, 'Cannot preview binary file')
-    else
-        var content = readfile(path)
-        popup_settext(preview_wid, content)
-        setwinvar(preview_wid, '&filetype', '')
-        win_execute(preview_wid, 'silent! doautocmd filetypedetect BufNewFile ' .. path)
-        win_execute(preview_wid, 'silent! setlocal nospell nolist')
-        if empty(getwinvar(preview_wid, '&filetype')) || getwinvar(preview_wid, '&filetype') == 'conf'
-            var modelineft = selector.FTDetectModelines(content)
-            if !empty(modelineft)
-                win_execute(preview_wid, 'set filetype=' .. modelineft)
-            endif
-        endif
-    endif
+    previewer.PreviewFile(preview_wid, path)
     win_execute(preview_wid, 'norm! gg')
 enddef
 

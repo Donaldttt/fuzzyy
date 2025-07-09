@@ -1,6 +1,7 @@
 vim9script
 
 import autoload './utils/selector.vim'
+import autoload './utils/previewer.vim'
 import autoload './utils/popup.vim'
 import autoload './utils/devicons.vim'
 
@@ -311,30 +312,14 @@ def Preview(wid: number, opts: dict<any>)
     endif
     cur_menu_item = result
 
-    win_execute(preview_wid, 'syntax clear')
-    var path = cwd .. '/' .. relative_path
-    if !filereadable(path)
-        if relative_path == null
-            popup_settext(preview_wid, '')
-        else
-            popup_settext(preview_wid, path .. ' not found')
-        endif
+    if relative_path == null
+        previewer.PreviewText(preview_wid, '')
         return
     endif
 
+    var path = cwd .. '/' .. relative_path
     if path != last_path
-        var preview_bufnr = winbufnr(preview_wid)
-        var content = readfile(path)
-        popup_settext(preview_wid, content)
-        setwinvar(preview_wid, '&filetype', '')
-        win_execute(preview_wid, 'silent! doautocmd filetypedetect BufNewFile ' .. path)
-        win_execute(preview_wid, 'silent! setlocal nospell nolist')
-        if empty(getwinvar(preview_wid, '&filetype')) || getwinvar(preview_wid, '&filetype') == 'conf'
-            var modelineft = selector.FTDetectModelines(content)
-            if !empty(modelineft)
-                win_execute(preview_wid, 'set filetype=' .. modelineft)
-            endif
-        endif
+        previewer.PreviewFile(preview_wid, path)
     endif
     if path != last_path || linenr != last_linenr
         win_execute(preview_wid, 'norm! ' .. linenr .. 'G')

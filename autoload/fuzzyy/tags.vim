@@ -1,6 +1,7 @@
 vim9script
 
 import autoload './utils/selector.vim'
+import autoload './utils/previewer.vim'
 
 var tag_list: list<string>
 var tag_files = []
@@ -117,32 +118,12 @@ def Preview(wid: number, opts: dict<any>)
     endif
     var preview_wid = opts.win_opts.partids['preview']
     if result == ''
-        popup_settext(preview_wid, '')
+        previewer.PreviewText(preview_wid, '')
         return
     endif
-    win_execute(preview_wid, 'syntax clear')
     var [tagname, tagfile, tagaddress] = ParseResult(result)
     var path = ExpandPath(tagfile)
-    if !filereadable(path)
-        if result == ''
-            popup_settext(preview_wid, '')
-        else
-            popup_settext(preview_wid, path .. ' not found')
-        endif
-        return
-    endif
-    var preview_bufnr = winbufnr(preview_wid)
-    var content = readfile(path)
-    popup_settext(preview_wid, content)
-    setwinvar(preview_wid, '&filetype', '')
-    win_execute(preview_wid, 'silent! doautocmd filetypedetect BufNewFile ' .. path)
-    win_execute(preview_wid, 'silent! setlocal nospell nolist')
-    if empty(getwinvar(preview_wid, '&filetype')) || getwinvar(preview_wid, '&filetype') == 'conf'
-        var modelineft = selector.FTDetectModelines(content)
-        if !empty(modelineft)
-            win_execute(preview_wid, 'set filetype=' .. modelineft)
-        endif
-    endif
+    previewer.PreviewFile(preview_wid, path)
     for excmd in tagaddress->split(";")
         if trim(excmd) =~ '^\d\+$'
             win_execute(preview_wid, "silent! cursor(" .. excmd .. ", 1)")
