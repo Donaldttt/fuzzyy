@@ -28,6 +28,7 @@ def Preview(wid: number, opts: dict<any>)
     var preview_bufnr = winbufnr(preview_wid)
     var lnum = split(trim(result[0 : 10]), ' ')[0]
     if popup_getpos(preview_wid).lastline == 1
+        popup_setoptions(preview_wid, {title: fnamemodify(file_name, ':t')})
         popup_settext(preview_wid, raw_lines)
         setbufvar(preview_bufnr, '&syntax', file_type)
     endif
@@ -115,7 +116,7 @@ export def Start(opts: dict<any> = {})
     var lines = reduce(raw_lines,
        (a, v) => add(a, printf(' %' .. max_line_len .. 'd │ %s', len(a) + 1,  v)), [])
 
-    var winds = selector.Start(lines, extend(opts, {
+    var wids = selector.Start(lines, extend(opts, {
         select_cb: function('Select'),
         preview_cb: function('Preview'),
         key_callbacks: split_edit_callbacks,

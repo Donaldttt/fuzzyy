@@ -50,6 +50,7 @@ def Preview(wid: number, opts: dict<any>)
     # Note: forward slash path separator tested on Windows, works fine
     var doc_file = fnamemodify(tag_file, ':h') .. '/' .. tag_table[result][0]
     popup_settext(preview_wid, readfile(doc_file))
+    popup_setoptions(preview_wid, {title: fnamemodify(doc_file, ':t')})
     var tag_name = substitute(tag_table[result][1], '\v^(\/\*)(.*)(\*)$', '\2', '')
     win_execute(preview_wid, "exec 'norm! ' .. search('\\m\\*" .. EscQuotes(tag_name) .. "\\*', 'w')")
     win_execute(preview_wid, 'norm! zz')

@@ -52,11 +52,13 @@ enddef
 
 export def PreviewText(wid: number, text: string)
     win_execute(wid, 'syntax clear')
+    popup_setoptions(wid, {title: ''})
     popup_settext(wid, text)
 enddef
 
 export def PreviewFile(wid: number, path: string, opts: dict<any> = {})
     win_execute(wid, 'syntax clear')
+    popup_setoptions(wid, {title: fnamemodify(path, ':t')})
     if !filereadable(path)
         popup_settext(wid, 'File not found: ' .. path)
         return

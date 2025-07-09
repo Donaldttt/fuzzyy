@@ -45,9 +45,10 @@ def Preview(wid: number, opts: dict<any>)
         endif
         return
     endif
+    popup_setoptions(preview_wid, {title: fnamemodify(file, ':t')})
     var bufnr = buf_dict[result][1]
     var ft = getbufvar(bufnr, '&filetype')
-    var fileraw = readfile(file, '')
+    var fileraw = readfile(file)
     var preview_bufnr = winbufnr(preview_wid)
     popup_settext(preview_wid, fileraw)
     try
