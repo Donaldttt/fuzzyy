@@ -80,6 +80,7 @@ git clone https://github.com/Donaldttt/fuzzyy ~/.vim/pack/Donaldttt/start/fuzzyy
 | FuzzyTags             | search tags in tagfiles(), see `:h tags`
 | FuzzyTagsRoot         | search tags in the project/vcs root directory
 | FuzzyGitFiles         | search files in output from `git ls-files`
+| FuzzyPrevious         | reloads the previous selector and search string
 | FuzzyHelps            | deprecated alias for FuzzyHelp, will be removed
 | FuzzyMRUFiles         | deprecated alias for FuzzyMru, will be removed
 
@@ -105,6 +106,7 @@ nnoremap <silent> <leader>fg :FuzzyGrep<CR>
 nnoremap <silent> <leader>fh :FuzzyHelp<CR>
 nnoremap <silent> <leader>fi :FuzzyInBuffer<CR>
 nnoremap <silent> <leader>fm :FuzzyMru<CR>
+nnoremap <silent> <leader>fp :FuzzyPrevious<CR>
 nnoremap <silent> <leader>fr :FuzzyMruCwd<CR>
 ```
 

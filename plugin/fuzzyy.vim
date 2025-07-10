@@ -111,36 +111,27 @@ highlight default link fuzzyyBorder Normal
 highlight default link fuzzyyMatching Special
 highlight default link fuzzyyPreviewMatch CurSearch
 
-import autoload '../autoload/fuzzyy/commands.vim'
-import autoload '../autoload/fuzzyy/grep.vim'
-import autoload '../autoload/fuzzyy/files.vim'
-import autoload '../autoload/fuzzyy/help.vim'
-import autoload '../autoload/fuzzyy/colors.vim'
-import autoload '../autoload/fuzzyy/inbuffer.vim'
-import autoload '../autoload/fuzzyy/buffers.vim'
-import autoload '../autoload/fuzzyy/highlights.vim'
-import autoload '../autoload/fuzzyy/cmdhistory.vim'
-import autoload '../autoload/fuzzyy/mru.vim'
-import autoload '../autoload/fuzzyy/tags.vim'
 import autoload '../autoload/fuzzyy/utils/selector.vim'
+import autoload '../autoload/fuzzyy/utils/launcher.vim'
 
-command! -nargs=? FuzzyGrep grep.Start(extendnew(windows.grep, { search: <q-args> }))
-command! -nargs=? FuzzyGrepRoot grep.Start(extendnew(windows.grep, { cwd: selector.GetRootDir(), 'search': <q-args> }))
-command! -nargs=0 FuzzyFiles files.Start(windows.files)
-command! -nargs=? FuzzyFilesRoot files.Start(extendnew(windows.files, { cwd: selector.GetRootDir() }))
-command! -nargs=0 FuzzyHelp help.Start(windows.help)
-command! -nargs=0 FuzzyColors colors.Start(windows.colors)
-command! -nargs=? FuzzyInBuffer inbuffer.Start(extendnew(windows.inbuffer, { search: <q-args> }))
-command! -nargs=0 FuzzyCommands commands.Start(windows.commands)
-command! -nargs=0 FuzzyBuffers buffers.Start(windows.buffers)
-command! -nargs=0 FuzzyHighlights highlights.Start(windows.highlights)
-command! -nargs=0 FuzzyGitFiles files.Start(extendnew(windows.files, { command: 'git ls-files' }))
-command! -nargs=0 FuzzyCmdHistory cmdhistory.Start(windows.cmdhistory)
-command! -nargs=0 FuzzyMru mru.Start(windows.mru)
-command! -nargs=0 FuzzyMruCwd mru.Start(extendnew(windows.mru, { cwd: getcwd() }))
-command! -nargs=0 FuzzyMruRoot mru.Start(extendnew(windows.mru, { cwd: selector.GetRootDir() }))
-command! -nargs=0 FuzzyTags tags.Start(windows.tags)
-command! -nargs=0 FuzzyTagsRoot tags.Start(extendnew(windows.tags, { cwd: selector.GetRootDir() }))
+command! -nargs=? FuzzyGrep launcher.Start('grep', extendnew(windows.grep, { search: <q-args> }))
+command! -nargs=? FuzzyGrepRoot launcher.Start('grep', extendnew(windows.grep, { cwd: selector.GetRootDir(), 'search': <q-args> }))
+command! -nargs=0 FuzzyFiles launcher.Start('files', windows.files)
+command! -nargs=? FuzzyFilesRoot launcher.Start('files', extendnew(windows.files, { cwd: selector.GetRootDir() }))
+command! -nargs=0 FuzzyHelp launcher.Start('help', windows.help)
+command! -nargs=0 FuzzyColors launcher.Start('colors', windows.colors)
+command! -nargs=? FuzzyInBuffer launcher.Start('inbuffer', extendnew(windows.inbuffer, { search: <q-args> }))
+command! -nargs=0 FuzzyCommands launcher.Start('commands', windows.commands)
+command! -nargs=0 FuzzyBuffers launcher.Start('buffers', windows.buffers)
+command! -nargs=0 FuzzyHighlights launcher.Start('highlights', windows.highlights)
+command! -nargs=0 FuzzyGitFiles launcher.Start('files', extendnew(windows.files, { command: 'git ls-files' }))
+command! -nargs=0 FuzzyCmdHistory launcher.Start('cmdhistory', windows.cmdhistory)
+command! -nargs=0 FuzzyMru launcher.Start('mru', windows.mru)
+command! -nargs=0 FuzzyMruCwd launcher.Start('mru', extendnew(windows.mru, { cwd: getcwd() }))
+command! -nargs=0 FuzzyMruRoot launcher.Start('mru', extendnew(windows.mru, { cwd: selector.GetRootDir() }))
+command! -nargs=0 FuzzyTags launcher.Start('tags', windows.tags)
+command! -nargs=0 FuzzyTagsRoot launcher.Start('tags', extendnew(windows.tags, { cwd: selector.GetRootDir() }))
+command! -nargs=0 FuzzyPrevious launcher.Resume()
 
 # Deprecated/renamed commands
 def Warn(msg: string)
@@ -171,6 +162,7 @@ if g:fuzzyy_enable_mappings
         '<leader>fh': ':FuzzyHelp<CR>',
         '<leader>fi': ':FuzzyInBuffer<CR>',
         '<leader>fm': ':FuzzyMru<CR>',
+        '<leader>fp': ':FuzzyPrevious<CR>',
         '<leader>fr': ':FuzzyMruCwd<CR>'
     }
     for [lhs, rhs] in items(mappings)
