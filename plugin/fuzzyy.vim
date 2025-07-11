@@ -73,7 +73,7 @@ var windows: dict<any> = {
         prompt_title: 'Tags'
     },
     highlights: {
-        prompt_title: 'Highlights',
+        prompt_title: 'Highlight Groups',
         preview_ratio: 0.7,
     },
     cmdhistory: {
@@ -81,7 +81,7 @@ var windows: dict<any> = {
         width: 0.6,
     },
     colors: {
-        prompt_title: 'Colors',
+        prompt_title: 'Color Schemes',
         width: 0.25,
         xoffset: 0.7,
     },
