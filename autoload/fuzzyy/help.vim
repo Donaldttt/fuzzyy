@@ -97,11 +97,12 @@ export def Start(opts: dict<any> = {})
         endfor
         file_index += 1
     endfor
-    
+
     var wids = selector.Start(keys(tag_table), extend(opts, {
         preview_cb: function('Preview'),
         close_cb: function('CloseCb'),
         input_cb: function('Input'),
     }))
     menu_wid = wids.menu
+    popup_setoptions(menu_wid, {title: len(tag_table)})
 enddef
