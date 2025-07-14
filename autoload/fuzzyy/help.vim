@@ -32,34 +32,6 @@ def Preview(wid: number, opts: dict<any>)
     win_execute(preview_wid, 'norm! zz')
 enddef
 
-def AsyncCb(result: list<any>)
-    var strs = []
-    var hl_list = []
-    var idx = 1
-    for item in result
-        add(strs, item[0])
-        hl_list += reduce(item[1], (acc, val) => {
-            add(acc, [idx] + val)
-            return acc
-        }, [])
-        idx += 1
-    endfor
-    selector.UpdateMenu(strs, hl_list)
-    popup_setoptions(menu_wid, {title: selector.total_results})
-enddef
-
-var async_tid: number
-def Input(wid: number, args: dict<any>, ...li: list<any>)
-    var pattern = args.str
-    if pattern != ''
-        async_tid = selector.FuzzySearchAsync(keys(tag_table), pattern, 200, function('AsyncCb'))
-    else
-        timer_stop(async_tid)
-        selector.UpdateMenu(keys(tag_table), [])
-        popup_setoptions(menu_wid, {title: len(keys(tag_table))})
-    endif
-enddef
-
 def CloseCb(wid: number, args: dict<any>)
     if has_key(args, 'selected_item')
         var tag = args.selected_item
@@ -89,10 +61,9 @@ export def Start(opts: dict<any> = {})
     endfor
 
     var wids = selector.Start(keys(tag_table), extend(opts, {
+        async: true,
         preview_cb: function('Preview'),
         close_cb: function('CloseCb'),
-        input_cb: function('Input'),
     }))
     menu_wid = wids.menu
-    popup_setoptions(menu_wid, {title: len(tag_table)})
 enddef

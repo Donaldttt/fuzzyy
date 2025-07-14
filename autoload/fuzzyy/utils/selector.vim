@@ -146,6 +146,43 @@ var async_results: list<any>
 var async_tid: number
 var AsyncCb: func
 
+def InputAsyncCb(result: list<any>)
+    var strs = []
+    var hl_list = []
+    var hl_offset = enable_devicons ? devicons.GetDeviconOffset() : 0
+    var idx = 1
+    for item in result
+        add(strs, item[0])
+        hl_list += reduce(item[1], (acc, val) => {
+            var pos = copy(val)
+            pos[0] += hl_offset
+            add(acc, [idx] + pos)
+            return acc
+        }, [])
+        idx += 1
+    endfor
+    if enable_devicons
+        devicons.AddDevicons(strs)
+    endif
+    UpdateMenu(strs, hl_list)
+    popup_setoptions(menu_wid, {title: total_results})
+enddef
+
+def InputAsync(wid: number, args: dict<any>, ...li: list<any>)
+    var pattern = args.str
+    if pattern != ''
+        async_tid = FuzzySearchAsync(raw_list, pattern, 200, function('InputAsyncCb'))
+    else
+        timer_stop(async_tid)
+        var strs = raw_list[: 100]
+        if enable_devicons
+            devicons.AddDevicons(strs)
+        endif
+        UpdateMenu(strs, [])
+        popup_setoptions(menu_wid, {title: len(raw_list)})
+    endif
+enddef
+
 # merge continus numbers and convert them from string index to vim column
 # [1,3] means [start index, length
 # eg. [1,2,3,4,5,7,9] -> [[1,5], [7], [9]]
@@ -492,13 +529,18 @@ export def Start(li_raw: list<string>, opts: dict<any>): dict<any>
 
     opts.move_cb = has_key(opts, 'preview_cb') ? opts.preview_cb : null
     opts.select_cb = has_key(opts, 'select_cb') ? opts.select_cb : null
-    opts.input_cb = has_key(opts, 'input_cb') ? opts.input_cb : function('Input')
+    opts.input_cb = has_key(opts, 'input_cb') ? opts.input_cb : (
+        has_key(opts, 'async') && opts.async ? function('InputAsync') : function('Input')
+    )
     opts.dropdown = enable_dropdown
 
     wins = popup.PopupSelection(opts)
     menu_wid = wins.menu
     raw_list = li_raw
     var li = copy(li_raw)
+    if opts.input_cb == function('InputAsync')
+        li = li[: 100]
+    endif
     if enable_devicons
          devicons.AddDevicons(li)
     endif
@@ -511,6 +553,10 @@ export def Start(li_raw: list<string>, opts: dict<any>): dict<any>
         echohl WarningMsg
         echo 'Fuzzyy started with warnings, use :FuzzyShowWarnings command to see details'
         echohl None
+    endif
+
+    if opts.input_cb == function('InputAsync')
+        popup_setoptions(menu_wid, {title: len(raw_list)})
     endif
 
     autocmd User PopupClosed ++once Cleanup()
