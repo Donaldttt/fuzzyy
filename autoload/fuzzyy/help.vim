@@ -73,16 +73,6 @@ def CloseCb(wid: number, args: dict<any>)
         catch
             exe ':help ' .. tag
         endtry
-    else
-        var tabnr = tabpagenr()
-        var wins = gettabinfo(tabnr)[0].windows
-        for win in wins
-            var bufnr = winbufnr(win)
-            if getbufvar(bufnr, '&buftype') == 'help'
-                win_execute(win, ':q')
-                break
-            endif
-        endfor
     endif
 enddef
 
