@@ -123,6 +123,7 @@ export def Start(opts: dict<any> = {})
     endif
 
     var wids = selector.Start(mru_list, extend(opts, {
+        async: true,
         close_cb: function('Close'),
         preview_cb: function('Preview'),
         enable_devicons: enable_devicons,
