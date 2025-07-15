@@ -104,6 +104,7 @@ enddef
 #       - [[line1, col1], [line1, col2], [line2, col1], ...]
 export def FuzzySearch(li: list<string>, pattern: string, ...args: list<any>): list<any>
     if pattern == ''
+        total_results = len(raw_list)
         return [copy(li), []]
     endif
     var opts = {}
@@ -329,6 +330,7 @@ def Input(wid: number, args: dict<any>, ...li: list<any>)
     if enable_devicons
         devicons.AddColor(menu_wid)
     endif
+    popup_setoptions(menu_wid, {title: total_results})
 enddef
 
 export def RefreshMenu()
@@ -555,7 +557,7 @@ export def Start(li_raw: list<string>, opts: dict<any>): dict<any>
         echohl None
     endif
 
-    if opts.input_cb == function('InputAsync')
+    if opts.input_cb == function('Input') || opts.input_cb == function('InputAsync')
         popup_setoptions(menu_wid, {title: len(raw_list)})
     endif
 
