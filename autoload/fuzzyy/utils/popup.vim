@@ -794,9 +794,11 @@ export def PopupSelection(opts: dict<any>): dict<any>
         dropdown: dropdown,
         input_cb: has_key(opts, 'input_cb') ? opts.input_cb : null,
         prompt: has_key(opts, 'prompt') ? opts.prompt : '> ',
-        title: has_key(opts, 'prompt_title') ? opts.prompt_title : null,
         zindex: 1010,
     }
+    if has_key(opts, 'prompt_title')
+        prompt_opts['title'] = opts.prompt_title
+    endif
     wins.prompt = PopupPrompt(prompt_opts)
 
     if has_preview
