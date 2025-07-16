@@ -520,7 +520,7 @@ enddef
 #        prompt: prompt_wid,
 #        preview: preview_wid,
 #    }
-export def Start(li_raw: list<string>, opts: dict<any>): dict<any>
+export def Start(li_raw: list<string>, opts: dict<any> = {}): dict<any>
     if popup.active
         return { menu: -1, prompt: -1, preview: -1 }
     endif
