@@ -534,7 +534,7 @@ export def Start(li_raw: list<string>, opts: dict<any> = {}): dict<any>
     opts.input_cb = has_key(opts, 'input_cb') ? opts.input_cb : (
         has_key(opts, 'async') && opts.async ? function('InputAsync') : function('Input')
     )
-    opts.dropdown = enable_dropdown
+    opts.dropdown = has_key(opts, 'dropdown') ? opts.dropdown : enable_dropdown
 
     wins = popup.PopupSelection(opts)
     menu_wid = wins.menu
