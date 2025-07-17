@@ -126,7 +126,7 @@ export def Start(opts: dict<any> = {})
         async: true,
         close_cb: function('Close'),
         preview_cb: function('Preview'),
-        enable_devicons: enable_devicons,
+        devicons: enable_devicons,
         key_callbacks: extend(key_callbacks, selector.split_edit_callbacks),
     }))
     menu_wid = wids.menu

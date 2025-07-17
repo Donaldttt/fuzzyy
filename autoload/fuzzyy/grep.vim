@@ -441,7 +441,7 @@ export def Start(opts: dict<any> = {})
         input_cb: function('Input'),
         preview_cb: function('Preview'),
         close_cb: function('CloseCb'),
-        enable_devicons: enable_devicons,
+        devicons: enable_devicons,
         key_callbacks: selector.split_edit_callbacks
      }))
     menu_wid = wids.menu

@@ -527,7 +527,7 @@ export def Start(li_raw: list<string>, opts: dict<any> = {}): dict<any>
     cwd = len(get(opts, 'cwd', '')) > 0 ? opts.cwd : getcwd()
     prompt_str = ''
 
-    enable_devicons = has_key(opts, 'enable_devicons') ? opts.enable_devicons : 0
+    enable_devicons = has_key(opts, 'devicons') ? opts.devicons : 0
 
     opts.move_cb = has_key(opts, 'preview_cb') ? opts.preview_cb : null
     opts.select_cb = has_key(opts, 'select_cb') ? opts.select_cb : null

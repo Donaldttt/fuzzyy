@@ -133,7 +133,7 @@ export def Start(opts: dict<any> = {})
     var wids = selector.Start(GetBufList(), extend(opts, {
         preview_cb: function('Preview'),
         close_cb: function('Close'),
-        enable_devicons: enable_devicons,
+        devicons: enable_devicons,
         key_callbacks: extend(selector.split_edit_callbacks, key_callbacks),
     }))
 enddef
