@@ -159,12 +159,14 @@ let g:fuzzyy_enable_mappings = 1
 ```
 
 ### g:fuzzyy_devicons
-Show devicons when listing files (e.g. FuzzyFiles, FuzzyBuffers). Requires
-[vim-devicons](https://github.com/ryanoasis/vim-devicons). Default 1 (show
-devicons if installed), set to 0 to always disable
+Show devicons when listing files (e.g. FuzzyFiles, FuzzyGrep). Default 1
 ```vim
 let g:fuzzyy_devicons = 1
 ```
+This option requires
+[vim-devicons](https://github.com/ryanoasis/vim-devicons),
+[vim-nerdfont](https://github.com/lambdalisue/vim-nerdfont), or use of
+`g:fuzzyy_devicons_glyph_func`
 
 ### g:fuzzyy_dropdown
 Enable dropdown theme (prompt at top rather than bottom). Default 0

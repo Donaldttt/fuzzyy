@@ -206,12 +206,15 @@ Set to 0 to disable default mappings. Default to 1
 
 G:FUZZYY_DEVICONS                                     *fuzzyy-g:fuzzyy_devicons*
 
-Show devicons when listing files (e.g. FuzzyFiles, FuzzyBuffers). Requires
-vim-devicons (https://github.com/ryanoasis/vim-devicons). Default 1 (show
-devicons if installed), set to 0 to always disable
+Show devicons when listing files (e.g. FuzzyFiles, FuzzyGrep). Default 1
 >
   let g:fuzzyy_devicons = 1
 <
+
+This option requires
+vim-devicons (https://github.com/ryanoasis/vim-devicons),
+vim-nerdfont (https://github.com/lambdalisue/vim-nerdfont), or use of
+`g:fuzzyy_devicons_glyph_func`
 
 G:FUZZYY_DROPDOWN                                     *fuzzyy-g:fuzzyy_dropdown*
 
