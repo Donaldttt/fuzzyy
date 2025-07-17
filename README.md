@@ -174,6 +174,14 @@ Enable dropdown theme (prompt at top rather than bottom). Default 0
 let g:fuzzyy_dropdown = 0
 ```
 
+### g:fuzzyy_counter
+Show count of matches. Default 1, set to 0 if you don't want a counter to be
+shown for most selectors.
+```vim
+let g:fuzzyy_counter = 1
+```
+This option is ignored by some selectors/commands, e.g. FuzzyFiles, FuzzyGrep
+
 ### g:fuzzyy_borderchars
 Set the borderchars of popup windows. Must be a list of 8 characters.
 ```vim

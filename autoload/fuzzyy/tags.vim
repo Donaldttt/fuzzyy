@@ -194,10 +194,10 @@ export def Start(opts: dict<any> = {})
 
     var wids = selector.Start(tag_list, extend(opts, {
         async: true,
+        counter: true,
         select_cb: function('Select'),
         preview_cb: function('Preview'),
         key_callbacks: split_edit_callbacks,
     }))
     menu_wid = wids.menu
-    popup_setoptions(menu_wid, {title: string(len(tag_list))})
 enddef

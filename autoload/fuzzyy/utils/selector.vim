@@ -21,7 +21,8 @@ var root_patterns = exists('g:fuzzyy_root_patterns')
 
 var wins: dict<any>
 
-var enable_dropdown = exists('g:fuzzyy_dropdown') ? g:fuzzyy_dropdown : 0
+var enable_dropdown = exists('g:fuzzyy_dropdown') ? g:fuzzyy_dropdown : false
+var enable_counter = exists('g:fuzzyy_counter') ? g:fuzzyy_counter : true
 
 # Experimental: export total number of results/matches for the current search
 # Can be used to update the menu title on input to show the number of matches
@@ -166,7 +167,9 @@ def InputAsyncCb(result: list<any>)
         devicons.AddDevicons(strs)
     endif
     UpdateMenu(strs, hl_list)
-    popup_setoptions(menu_wid, {title: total_results})
+    if enable_counter
+        popup_setoptions(menu_wid, {title: total_results})
+    endif
 enddef
 
 def InputAsync(wid: number, args: dict<any>, ...li: list<any>)
@@ -180,7 +183,9 @@ def InputAsync(wid: number, args: dict<any>, ...li: list<any>)
             devicons.AddDevicons(strs)
         endif
         UpdateMenu(strs, [])
-        popup_setoptions(menu_wid, {title: len(raw_list)})
+        if enable_counter
+            popup_setoptions(menu_wid, {title: len(raw_list)})
+        endif
     endif
 enddef
 
@@ -330,7 +335,9 @@ def Input(wid: number, args: dict<any>, ...li: list<any>)
     if enable_devicons
         devicons.AddColor(menu_wid)
     endif
-    popup_setoptions(menu_wid, {title: total_results})
+    if enable_counter
+        popup_setoptions(menu_wid, {title: total_results})
+    endif
 enddef
 
 export def RefreshMenu()
@@ -528,6 +535,9 @@ export def Start(li_raw: list<string>, opts: dict<any> = {}): dict<any>
     prompt_str = ''
 
     enable_devicons = has_key(opts, 'devicons') ? opts.devicons : 0
+    if has_key(opts, 'counter')
+        enable_counter = opts.counter
+    endif
 
     opts.move_cb = has_key(opts, 'preview_cb') ? opts.preview_cb : null
     opts.select_cb = has_key(opts, 'select_cb') ? opts.select_cb : null
@@ -557,7 +567,7 @@ export def Start(li_raw: list<string>, opts: dict<any> = {}): dict<any>
         echohl None
     endif
 
-    if opts.input_cb == function('Input') || opts.input_cb == function('InputAsync')
+    if enable_counter
         popup_setoptions(menu_wid, {title: len(raw_list)})
     endif
 
