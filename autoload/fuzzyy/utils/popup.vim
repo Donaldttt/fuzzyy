@@ -3,12 +3,14 @@ vim9script
 scriptencoding utf-8
 
 import autoload './colors.vim'
+import autoload './devicons.vim'
 import autoload './launcher.vim'
 
 var popup_wins: dict<any>
 var wins = { menu: -1, prompt: -1, preview: -1, info: -1 }
 var t_ve: string
 var hlcursor: dict<any>
+var enable_devicons: bool
 export var active = false
 
 # user can register callback for any key
@@ -177,6 +179,9 @@ def MenuCursorContentChangeCb(): number
     var bufnr = popup_wins[wins.menu].bufnr
     var cursorlinepos = line('.', wins.menu)
     var linetext = getbufline(bufnr, cursorlinepos, cursorlinepos)[0]
+    if enable_devicons
+        linetext = devicons.RemoveDevicon(linetext)
+    endif
     if popup_wins[wins.menu].cursor_item == linetext
         return 0
     endif
@@ -352,6 +357,8 @@ def MenuFilter(wid: number, key: string): number
         var linetext = getbufline(bufnr, pos.line, pos.line)[0]
         if linetext == ''
             popup_close(wid)
+        elseif enable_devicons
+            popup_close(wid, [devicons.RemoveDevicon(linetext)])
         else
             popup_close(wid, [linetext])
         endif
@@ -375,6 +382,8 @@ def MenuFilter(wid: number, key: string): number
         var linetext = getbufline(bufnr, cursorlinepos, cursorlinepos)[0]
         if linetext == ''
             popup_close(wid)
+        elseif enable_devicons
+            popup_close(wid, [devicons.RemoveDevicon(linetext)])
         else
             popup_close(wid, [linetext])
         endif
@@ -716,6 +725,7 @@ export def PopupSelection(opts: dict<any>): dict<any>
     endif
     active = true
     key_callbacks = has_key(opts, 'key_callbacks') ? opts.key_callbacks : {}
+    enable_devicons = has_key(opts, 'devicons') ? opts.devicons && devicons.Enabled() : 0
     var has_preview = has_key(opts, 'preview') ? opts.preview : 1
 
     var width: any = 0.8

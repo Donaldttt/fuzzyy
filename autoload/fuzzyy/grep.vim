@@ -294,9 +294,6 @@ enddef
 
 def Preview(wid: number, opts: dict<any>)
     var result = opts.cursor_item
-    if enable_devicons
-        result = devicons.RemoveDevicon(result)
-    endif
     var last_item = opts.last_cursor_item
     var [relative_path, linenr, colnr] = ParseResult(result)
     var last_path: string
@@ -332,9 +329,6 @@ def Select(wid: number, result: list<any>)
     var [relative_path, line, col] = ParseResult(result[0])
     if relative_path == null
         return
-    endif
-    if enable_devicons
-        relative_path = devicons.RemoveDevicon(relative_path)
     endif
     var path = cwd .. '/' .. relative_path
     selector.MoveToUsableWindow()
@@ -389,7 +383,6 @@ def UpdateMenu(...li: list<any>)
     endif
 
     if enable_devicons
-        devicons.AddDevicons(strs)
         var hl_offset = devicons.GetDeviconOffset()
         hl_list = reduce(hl_list, (a, v) => {
             v[1] += hl_offset

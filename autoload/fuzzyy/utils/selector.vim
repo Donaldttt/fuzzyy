@@ -32,14 +32,10 @@ export var total_results: number
 # params:
 # - str_list: list of string to be displayed in the menu window
 # - hl_list: list of highlight positions
-# - opts: dict of options
-#       - add devicons: add devicons to every entry
-export def UpdateMenu(str_list: list<string>, hl_list: list<list<any>>, ...opts: list<any>)
+export def UpdateMenu(str_list: list<string>, hl_list: list<list<any>>)
     var new_list = copy(str_list)
     if enable_devicons
-        if len(opts) > 0 && opts[0] == 1
-            devicons.AddDevicons(new_list)
-        endif
+        devicons.AddDevicons(new_list)
         popup.MenuSetText(new_list)
         popup.MenuSetHl('select', hl_list)
         devicons.AddColor(menu_wid)
@@ -54,14 +50,12 @@ enddef
 # - stripped: get the line after striping the devicon or any other prefix
 # return:
 # - the line under the cursor
-export def MenuGetCursorItem(stripped: bool): string
+export def MenuGetCursorItem(): string
     var bufnr = winbufnr(wins.menu)
     var cursorlinepos = line('.', wins.menu)
     var bufline = getbufline(bufnr, cursorlinepos, cursorlinepos)[0]
-    if stripped
-        if enable_devicons
-            bufline = devicons.RemoveDevicon(bufline)
-        endif
+    if enable_devicons
+        bufline = devicons.RemoveDevicon(bufline)
     endif
     return bufline
 enddef
@@ -352,9 +346,6 @@ enddef
 def CloseTab(wid: number, result: dict<any>)
     if !empty(get(result, 'cursor_item', ''))
         var [buf, line, col] = split(result.cursor_item .. ':0:0', ':')[0 : 2]
-        if enable_devicons
-            buf = devicons.RemoveDevicon(buf)
-        endif
         var bufnr = bufnr(buf)
         if bufnr > 0 && !filereadable(buf)
             # for special buffers that cannot be edited
@@ -380,9 +371,6 @@ enddef
 def CloseVSplit(wid: number, result: dict<any>)
     if !empty(get(result, 'cursor_item', ''))
         var [buf, line, col] = split(result.cursor_item .. ':0:0', ':')[0 : 2]
-        if enable_devicons
-            buf = devicons.RemoveDevicon(buf)
-        endif
         var bufnr = bufnr(buf)
         if bufnr > 0 && !filereadable(buf)
             # for special buffers that cannot be edited
@@ -409,9 +397,6 @@ enddef
 def CloseSplit(wid: number, result: dict<any>)
     if !empty(get(result, 'cursor_item', ''))
         var [buf, line, col] = split(result.cursor_item .. ':0:0', ':')[0 : 2]
-        if enable_devicons
-            buf = devicons.RemoveDevicon(buf)
-        endif
         var bufnr = bufnr(buf)
         if bufnr > 0 && !filereadable(buf)
             # for special buffers that cannot be edited

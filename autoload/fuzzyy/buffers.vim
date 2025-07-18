@@ -5,7 +5,6 @@ import autoload './utils/devicons.vim'
 
 var buf_dict: dict<any>
 var key_callbacks: dict<any>
-var enable_devicons = devicons.Enabled()
 var _window_width: float
 
 # Options
@@ -29,9 +28,6 @@ def Preview(wid: number, opts: dict<any>)
     if result == ''
         popup_settext(preview_wid, '')
         return
-    endif
-    if enable_devicons
-        result = devicons.RemoveDevicon(result)
     endif
     var file: string
     var lnum: number
@@ -62,9 +58,6 @@ enddef
 def Close(wid: number, result: dict<any>)
     if has_key(result, 'selected_item')
         var buf = result.selected_item
-        if enable_devicons
-            buf = devicons.RemoveDevicon(buf)
-        endif
         var bufnr = buf_dict[buf][1]
         if bufnr != bufnr('$')
             selector.MoveToUsableWindow(bufnr)
@@ -98,26 +91,26 @@ def GetBufList(): list<string>
 enddef
 
 def DeleteSelectedBuffer()
-    var buf = selector.MenuGetCursorItem(true)
+    var buf = selector.MenuGetCursorItem()
     delete(buf)
     if buf == ''
         return
     endif
     execute(':bw ' .. buf)
     var li = GetBufList()
-    selector.UpdateMenu(li, [], 1)
+    selector.UpdateMenu(li, [])
     selector.UpdateList(li)
     selector.RefreshMenu()
 enddef
 
 def CloseSelectedBuffer()
-    var buf = selector.MenuGetCursorItem(true)
+    var buf = selector.MenuGetCursorItem()
     if buf == ''
         return
     endif
     execute(':bw ' .. buf)
     var li = GetBufList()
-    selector.UpdateMenu(li, [], 1)
+    selector.UpdateMenu(li, [])
     selector.UpdateList(li)
     selector.RefreshMenu()
 enddef
@@ -131,9 +124,9 @@ export def Start(opts: dict<any> = {})
     _window_width = get(opts, 'width', 0.8)
 
     var wids = selector.Start(GetBufList(), extend(opts, {
+        devicons: true,
         preview_cb: function('Preview'),
         close_cb: function('Close'),
-        devicons: enable_devicons,
         key_callbacks: extend(selector.split_edit_callbacks, key_callbacks),
     }))
 enddef
