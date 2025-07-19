@@ -186,9 +186,9 @@ def MenuCursorContentChangeCb(): number
         return 0
     endif
 
-    if has_key(popup_wins[wins.menu], 'move_cb')
-        if type(popup_wins[wins.menu].move_cb) == v:t_func
-            popup_wins[wins.menu].move_cb(wins.menu, {
+    if has_key(popup_wins[wins.menu], 'preview_cb')
+        if type(popup_wins[wins.menu].preview_cb) == v:t_func
+            popup_wins[wins.menu].preview_cb(wins.menu, {
                 cursor_item: linetext,
                 win_opts: popup_wins[wins.menu],
                 last_cursor_item: popup_wins[wins.menu].cursor_item
@@ -485,7 +485,7 @@ def CreatePopup(args: dict<any>): number
          highlights: {},
          noscrollbar_width: noscrollbar_width,
          validrow: 0,
-         move_cb: null,
+         preview_cb: null,
          line: args.line,
          col: args.col,
          width: args.width,
@@ -498,7 +498,7 @@ def CreatePopup(args: dict<any>): number
          prompt_delay_timer: -1,
          }
 
-    for key in ['dropdown', 'reverse_menu', 'move_cb', 'close_cb']
+    for key in ['dropdown', 'reverse_menu', 'preview_cb', 'close_cb']
         if has_key(args, key)
             popup_wins[wid][key] = args[key]
         endif
@@ -710,7 +710,7 @@ enddef
 # params:
 #   - opts: options: dictonary contains following keys:
 #       - select_cb: callback function when a value is selected(press enter)
-#       - move_cb: callback function when cursor moves to a new value
+#       - preview_cb: callback function when cursor moves to a new value
 #       - input_cb: callback function when user input something
 # return:
 #   A dictionary:
@@ -780,7 +780,7 @@ export def PopupSelection(opts: dict<any>): dict<any>
     var menu_opts = {
         callback: has_key(opts, 'select_cb') ? opts.select_cb : null,
         close_cb: has_key(opts, 'close_cb') ? opts.close_cb : null,
-        move_cb: has_key(opts, 'move_cb') ? opts.move_cb : null,
+        preview_cb: has_key(opts, 'preview_cb') ? opts.preview_cb : null,
         scrollbar: has_key(opts, 'scrollbar') ? opts.scrollbar : 0,
         reverse_menu: reverse_menu,
         yoffset: menu_yoffset,
