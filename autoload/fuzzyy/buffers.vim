@@ -12,11 +12,17 @@ var exclude_buffers = exists('g:fuzzyy_buffers_exclude') ?
     g:fuzzyy_buffers_exclude : []
 
 var keymaps = {
-    'delete_buffer': "",
+    'delete_file': "",
+    'wipe_buffer': "",
     'close_buffer': "\<c-l>",
 }
 if exists('g:fuzzyy_buffers_keymap')
     keymaps->extend(g:fuzzyy_buffers_keymap, 'force')
+endif
+
+# deprecated delete_buffer keymap, renamed to delete_file, that's what is does
+if has_key(keymaps, "delete_buffer") && !empty(keymaps.delete_buffer) && empty(keymaps.delete_file)
+    keymaps.delete_file = keymaps.delete_buffer
 endif
 
 def Preview(wid: number, opts: dict<any>)
@@ -90,32 +96,42 @@ def GetBufList(): list<string>
     return bufs
 enddef
 
-def DeleteSelectedBuffer()
+def DeleteSelectedFile()
     var buf = selector.MenuGetCursorItem()
+    var choice = confirm('Delete file ' .. buf .. '. Are you sure?', "&Yes\n&No")
+    if choice != 1
+        return
+    endif
     delete(buf)
+    WipeSelectedBuffer()
+enddef
+
+def DeleteSelectedBuffer(wipe: bool)
+    var buf = selector.MenuGetCursorItem()
     if buf == ''
         return
     endif
-    execute(':bw ' .. buf)
+    if wipe
+        execute(':bwipeout ' .. buf)
+    else
+        execute(':bdelete ' .. buf)
+    endif
     var li = GetBufList()
     selector.UpdateMenu(li, [])
     selector.UpdateList(li)
     selector.RefreshMenu()
+enddef
+
+def WipeSelectedBuffer()
+    DeleteSelectedBuffer(true)
 enddef
 
 def CloseSelectedBuffer()
-    var buf = selector.MenuGetCursorItem()
-    if buf == ''
-        return
-    endif
-    execute(':bw ' .. buf)
-    var li = GetBufList()
-    selector.UpdateMenu(li, [])
-    selector.UpdateList(li)
-    selector.RefreshMenu()
+    DeleteSelectedBuffer(false)
 enddef
 
-key_callbacks[keymaps.delete_buffer] = function("DeleteSelectedBuffer")
+key_callbacks[keymaps.delete_file] = function("DeleteSelectedFile")
+key_callbacks[keymaps.wipe_buffer] = function("WipeSelectedBuffer")
 key_callbacks[keymaps.close_buffer] = function("CloseSelectedBuffer")
 
 export def Start(opts: dict<any> = {})

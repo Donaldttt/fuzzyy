@@ -356,7 +356,8 @@ FuzzyBuffer keymap for commands specific to FuzzyBuffers. The following are the
 defaults
 ```vim
 let g:fuzzyy_buffers_keymap = {
-  \ 'delete_buffer': "",
+  \ 'delete_file': "",
+  \ 'wipe_buffer': "",
   \ 'close_buffer': "\<c-l>",
   \ }
 ```
