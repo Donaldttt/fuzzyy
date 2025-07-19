@@ -25,9 +25,6 @@ def ProcessResult(list_raw: list<string>, ...args: list<any>): list<string>
     else
         li = list_raw
     endif
-    if enable_devicons
-        devicons.AddDevicons(li)
-    endif
     # Hack for Git-Bash / Mingw-w64, Cygwin, and possibly other friends
     # External commands like rg may return paths with Windows file separator,
     # but Vim thinks it has a UNIX environment, so needs UNIX file separator
@@ -37,9 +34,6 @@ enddef
 
 def Select(wid: number, result: list<any>)
     var relative_path = result[0]
-    if enable_devicons
-        relative_path = devicons.RemoveDevicon(relative_path)
-    endif
     var path = cwd .. '/' .. relative_path
     selector.MoveToUsableWindow()
     exe 'edit ' .. fnameescape(path)
@@ -85,9 +79,6 @@ enddef
 
 def Preview(wid: number, opts: dict<any>)
     var result = opts.cursor_item
-    if enable_devicons
-        result = devicons.RemoveDevicon(result)
-    endif
     if !has_key(opts.win_opts.partids, 'preview')
         return
     endif

@@ -5,7 +5,6 @@ import autoload './utils/previewer.vim'
 import autoload './utils/devicons.vim'
 
 var mru_origin_list: list<string>
-var enable_devicons = devicons.Enabled()
 var cwd: string
 var cwd_only: bool
 var cwdlen: number
@@ -21,9 +20,6 @@ var dir_exclude = exists('g:fuzzyy_mru_exclude_dir')
 
 def Preview(wid: number, opts: dict<any>)
     var result = opts.cursor_item
-    if enable_devicons
-        result = devicons.RemoveDevicon(result)
-    endif
     if !has_key(opts.win_opts.partids, 'preview')
         return
     endif
@@ -37,9 +33,6 @@ enddef
 def Close(wid: number, result: dict<any>)
     if has_key(result, 'selected_item')
         var path = result['selected_item']
-        if enable_devicons
-            path = devicons.RemoveDevicon(path)
-        endif
         selector.MoveToUsableWindow()
         if cwd_only
             exe 'edit ' cwd .. '/' .. fnameescape(path)
@@ -66,7 +59,7 @@ def ToggleScope()
             return acc
         }, [])
     endif
-    selector.UpdateMenu(mru_list, [], 1)
+    selector.UpdateMenu(mru_list, [])
 enddef
 
 var key_callbacks = {
@@ -124,9 +117,9 @@ export def Start(opts: dict<any> = {})
 
     var wids = selector.Start(mru_list, extend(opts, {
         async: true,
+        devicons: true,
         close_cb: function('Close'),
         preview_cb: function('Preview'),
-        devicons: enable_devicons,
         key_callbacks: extend(key_callbacks, selector.split_edit_callbacks),
     }))
     menu_wid = wids.menu
