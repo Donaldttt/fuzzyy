@@ -11,25 +11,24 @@ def EscQuotes(str: string): string
 enddef
 
 def Preview(wid: number, opts: dict<any>)
+    if wid == -1
+        return
+    endif
     var result = opts.cursor_item
-    if !has_key(opts.win_opts.partids, 'preview')
-        return
-    endif
-    var preview_wid = opts.win_opts.partids['preview']
     if result == ''
-        popup_settext(preview_wid, '')
+        popup_settext(wid, '')
         return
     endif
-    var preview_bufnr = winbufnr(preview_wid)
-    setbufvar(preview_bufnr, '&syntax', 'help')
+    var bufnr = winbufnr(wid)
+    setbufvar(bufnr, '&syntax', 'help')
     var tag_file = tag_files[tag_table[result][2]]
     # Note: forward slash path separator tested on Windows, works fine
     var doc_file = fnamemodify(tag_file, ':h') .. '/' .. tag_table[result][0]
-    popup_settext(preview_wid, readfile(doc_file))
-    popup_setoptions(preview_wid, {title: fnamemodify(doc_file, ':t')})
+    popup_settext(wid, readfile(doc_file))
+    popup_setoptions(wid, {title: fnamemodify(doc_file, ':t')})
     var tag_name = substitute(tag_table[result][1], '\v^(\/\*)(.*)(\*)$', '\2', '')
-    win_execute(preview_wid, "exec 'norm! ' .. search('\\m\\*" .. EscQuotes(tag_name) .. "\\*\\C', 'w')")
-    win_execute(preview_wid, 'norm! zz')
+    win_execute(wid, "exec 'norm! ' .. search('\\m\\*" .. EscQuotes(tag_name) .. "\\*\\C', 'w')")
+    win_execute(wid, 'norm! zz')
 enddef
 
 def CloseCb(wid: number, args: dict<any>)

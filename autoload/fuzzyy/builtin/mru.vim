@@ -19,15 +19,14 @@ var dir_exclude = exists('g:fuzzyy_mru_exclude_dir')
     g:fuzzyy_mru_exclude_dir : g:fuzzyy_exclude_dir
 
 def Preview(wid: number, opts: dict<any>)
-    var result = opts.cursor_item
-    if !has_key(opts.win_opts.partids, 'preview')
+    if wid == -1
         return
     endif
-    var preview_wid = opts.win_opts.partids['preview']
+    var result = opts.cursor_item
     var path = cwd_only ? cwd .. '/' .. result : result
     path = path == '' ? path : fnamemodify(path, ':p')
-    previewer.PreviewFile(preview_wid, path)
-    win_execute(preview_wid, 'norm! gg')
+    previewer.PreviewFile(wid, path)
+    win_execute(wid, 'norm! gg')
 enddef
 
 def Close(wid: number, result: dict<any>)

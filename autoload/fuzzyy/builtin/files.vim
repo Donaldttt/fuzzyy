@@ -78,18 +78,17 @@ def Input(wid: number, opts: dict<any>)
 enddef
 
 def Preview(wid: number, opts: dict<any>)
-    var result = opts.cursor_item
-    if !has_key(opts.win_opts.partids, 'preview')
+    if wid == -1
         return
     endif
-    var preview_wid = opts.win_opts.partids['preview']
+    var result = opts.cursor_item
     if result == ''
-        previewer.PreviewText(preview_wid, '')
+        previewer.PreviewText(wid, '')
         return
     endif
     var path = cwd .. '/' .. result
-    previewer.PreviewFile(preview_wid, path, { max: 1000 })
-    win_execute(preview_wid, 'norm! gg')
+    previewer.PreviewFile(wid, path, { max: 1000 })
+    win_execute(wid, 'norm! gg')
 enddef
 
 def JobStart(path: string, cmd: string)

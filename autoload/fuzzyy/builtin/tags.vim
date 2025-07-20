@@ -112,29 +112,28 @@ var split_edit_callbacks = {
 }
 
 def Preview(wid: number, opts: dict<any>)
-    var result = opts.cursor_item
-    if !has_key(opts.win_opts.partids, 'preview')
+    if wid == -1
         return
     endif
-    var preview_wid = opts.win_opts.partids['preview']
+    var result = opts.cursor_item
     if result == ''
-        previewer.PreviewText(preview_wid, '')
+        previewer.PreviewText(wid, '')
         return
     endif
     var [tagname, tagfile, tagaddress] = ParseResult(result)
     var path = ExpandPath(tagfile)
-    previewer.PreviewFile(preview_wid, path)
+    previewer.PreviewFile(wid, path)
     for excmd in tagaddress->split(";")
         if trim(excmd) =~ '^\d\+$'
-            win_execute(preview_wid, "silent! cursor(" .. excmd .. ", 1)")
+            win_execute(wid, "silent! cursor(" .. excmd .. ", 1)")
         else
             var pattern = excmd->substitute('^\/', '', '')->substitute('\M\/;\?"\?$', '', '')
-            win_execute(preview_wid, "silent! search('\\M" .. EscQuotes(pattern) .. "', 'cw')")
-            clearmatches(preview_wid)
-            win_execute(preview_wid, "silent! matchadd('fuzzyyPreviewMatch', '\\M" .. EscQuotes(pattern) .. "')")
+            win_execute(wid, "silent! search('\\M" .. EscQuotes(pattern) .. "', 'cw')")
+            clearmatches(wid)
+            win_execute(wid, "silent! matchadd('fuzzyyPreviewMatch', '\\M" .. EscQuotes(pattern) .. "')")
         endif
     endfor
-    win_execute(preview_wid, 'norm! zz')
+    win_execute(wid, 'norm! zz')
 enddef
 
 export def Start(opts: dict<any> = {})

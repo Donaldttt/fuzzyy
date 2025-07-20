@@ -7,15 +7,15 @@ var hl_meta: dict<any>
 var preview_wid: number
 
 def Preview(wid: number, opts: dict<any>)
+    if wid == -1
+        return
+    endif
     if !has_key(hl_meta, opts.cursor_item)
         return
     endif
-    if !has_key(opts.win_opts.partids, 'preview')
-        return
-    endif
     var line = hl_meta[opts.cursor_item][0]
-    win_execute(preview_wid, 'normal! ' .. line .. 'G')
-    win_execute(preview_wid, 'normal! zz')
+    win_execute(wid, 'normal! ' .. line .. 'G')
+    win_execute(wid, 'normal! zz')
 enddef
 
 def Close(wid: number, result: dict<any>)

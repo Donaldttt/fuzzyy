@@ -188,9 +188,9 @@ def MenuCursorContentChangeCb(): number
 
     if has_key(popup_wins[wins.menu], 'preview_cb')
         if type(popup_wins[wins.menu].preview_cb) == v:t_func
-            popup_wins[wins.menu].preview_cb(wins.menu, {
+            popup_wins[wins.menu].preview_cb(wins.preview, {
                 cursor_item: linetext,
-                win_opts: popup_wins[wins.menu],
+                win_opts: has_key(popup_wins, wins.preview) ? popup_wins[wins.preview] : {},
                 last_cursor_item: popup_wins[wins.menu].cursor_item
                 })
         endif

@@ -293,6 +293,9 @@ def UpdatePreviewHl()
 enddef
 
 def Preview(wid: number, opts: dict<any>)
+    if wid == -1
+        return
+    endif
     var result = opts.cursor_item
     var last_item = opts.last_cursor_item
     var [relative_path, linenr, colnr] = ParseResult(result)

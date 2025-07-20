@@ -16,24 +16,23 @@ def Select(wid: number, result: list<any>)
 enddef
 
 def Preview(wid: number, opts: dict<any>)
+    if wid == -1
+        return
+    endif
     var result = opts.cursor_item
-    if !has_key(opts.win_opts.partids, 'preview')
-        return
-    endif
-    var preview_wid = opts.win_opts.partids['preview']
     if result == ''
-        popup_settext(preview_wid, '')
+        popup_settext(wid, '')
         return
     endif
-    var preview_bufnr = winbufnr(preview_wid)
+    var preview_bufnr = winbufnr(wid)
     var lnum = split(trim(result[0 : 10]), ' ')[0]
-    if popup_getpos(preview_wid).lastline == 1
-        popup_setoptions(preview_wid, {title: fnamemodify(file_name, ':t')})
-        popup_settext(preview_wid, raw_lines)
+    if popup_getpos(wid).lastline == 1
+        popup_setoptions(wid, {title: fnamemodify(file_name, ':t')})
+        popup_settext(wid, raw_lines)
         setbufvar(preview_bufnr, '&syntax', file_type)
     endif
-    win_execute(preview_wid, 'norm! ' .. lnum .. 'G')
-    win_execute(preview_wid, 'norm! zz')
+    win_execute(wid, 'norm! ' .. lnum .. 'G')
+    win_execute(wid, 'norm! zz')
 enddef
 
 def CloseTab(wid: number, result: dict<any>)

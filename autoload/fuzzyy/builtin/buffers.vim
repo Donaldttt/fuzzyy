@@ -26,13 +26,12 @@ if has_key(keymaps, "delete_buffer") && !empty(keymaps.delete_buffer) && empty(k
 endif
 
 def Preview(wid: number, opts: dict<any>)
-    var result = opts.cursor_item
-    if !has_key(opts.win_opts.partids, 'preview')
+    if wid == -1
         return
     endif
-    var preview_wid = opts.win_opts.partids['preview']
+    var result = opts.cursor_item
     if result == ''
-        popup_settext(preview_wid, '')
+        popup_settext(wid, '')
         return
     endif
     var file: string
@@ -41,24 +40,24 @@ def Preview(wid: number, opts: dict<any>)
     lnum = buf_dict[result][2]
     if !filereadable(file)
         if file == ''
-            popup_settext(preview_wid, '')
+            popup_settext(wid, '')
         else
-            popup_settext(preview_wid, file .. ' not found')
+            popup_settext(wid, file .. ' not found')
         endif
         return
     endif
-    popup_setoptions(preview_wid, {title: fnamemodify(file, ':t')})
+    popup_setoptions(wid, {title: fnamemodify(file, ':t')})
     var bufnr = buf_dict[result][1]
     var ft = getbufvar(bufnr, '&filetype')
     var fileraw = readfile(file)
-    var preview_bufnr = winbufnr(preview_wid)
-    popup_settext(preview_wid, fileraw)
+    var preview_bufnr = winbufnr(wid)
+    popup_settext(wid, fileraw)
     try
         setbufvar(preview_bufnr, '&syntax', ft)
     catch
     endtry
-    win_execute(preview_wid, 'norm! ' .. lnum .. 'G')
-    win_execute(preview_wid, 'norm! zz')
+    win_execute(wid, 'norm! ' .. lnum .. 'G')
+    win_execute(wid, 'norm! zz')
 enddef
 
 def Close(wid: number, result: dict<any>)
