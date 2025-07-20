@@ -58,8 +58,8 @@ def AsyncCb(result: list<any>)
     popup_setoptions(menu_wid, {title: selector.total_results})
 enddef
 
-def Input(wid: number, val: dict<any>, ...li: list<any>)
-    var pattern = val.str
+def Input(wid: number, opts: dict<any>)
+    var pattern = opts.str
     cur_pattern = pattern
 
     # when in loading state, files_update_menu will handle the input

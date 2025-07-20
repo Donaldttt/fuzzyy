@@ -276,8 +276,8 @@ def ResultHandle(lists: list<any>): list<any>
 enddef
 
 # async version
-def Input(wid: number, args: dict<any>, ...li: list<any>)
-    var pattern = args.str
+def Input(wid: number, opts: dict<any>)
+    var pattern = opts.str
     cur_pattern = pattern
     JobStart(pattern)
 enddef

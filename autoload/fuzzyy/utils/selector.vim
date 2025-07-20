@@ -166,8 +166,8 @@ def InputAsyncCb(result: list<any>)
     endif
 enddef
 
-def InputAsync(wid: number, args: dict<any>, ...li: list<any>)
-    var pattern = args.str
+def InputAsync(wid: number, opts: dict<any>)
+    var pattern = opts.str
     if pattern != ''
         async_tid = FuzzySearchAsync(raw_list, pattern, 200, function('InputAsyncCb'))
     else
@@ -309,8 +309,8 @@ export def UpdateList(li: list<string>)
     raw_list = li
 enddef
 
-def Input(wid: number, args: dict<any>, ...li: list<any>)
-    prompt_str = args.str
+def Input(wid: number, opts: dict<any>)
+    prompt_str = opts.str
     menu_hl_list = []
     var ret: list<string>
     [ret, menu_hl_list] = FuzzySearch(raw_list, prompt_str)
