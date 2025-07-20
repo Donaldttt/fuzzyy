@@ -8,6 +8,12 @@ export def Start(selector: string, opts: dict<any>)
     endif
     insert(g:__fuzzyy_launcher_cache, { selector: selector, opts: opts, prompt: '' })
     function('fuzzyy#' .. selector .. '#Start')(opts)
+
+    if exists('g:__fuzzyy_warnings_found') && g:__fuzzyy_warnings_found
+        echohl WarningMsg
+        echo 'Fuzzyy started with warnings, use :FuzzyShowWarnings command to see details'
+        echohl None
+    endif
 enddef
 
 export def Resume()
