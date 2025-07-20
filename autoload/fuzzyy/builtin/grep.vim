@@ -151,6 +151,7 @@ var update_tid = 0
 var last_pattern = ''
 var last_result_len = -1
 var last_result = []
+var last_path: string
 var cur_dict = {}
 var jid: job
 var pid: number
@@ -296,19 +297,7 @@ def Preview(wid: number, result: string, opts: dict<any>)
     if wid == -1
         return
     endif
-    var last_item = opts.last_cursor_item
     var [relative_path, linenr, colnr] = ParseResult(result)
-    var last_path: string
-    var last_linenr: number
-    if type(last_item) == v:t_string  && type(last_item) == v:t_string && last_item != ''
-        try
-        [last_path, last_linenr, _] = ParseResult(last_item)
-        catch
-            return
-        endtry
-    else
-        [last_path, last_linenr] = ['', -1]
-    endif
     cur_menu_item = result
 
     if relative_path == null
@@ -320,10 +309,9 @@ def Preview(wid: number, result: string, opts: dict<any>)
     if path != last_path
         previewer.PreviewFile(preview_wid, path)
     endif
-    if path != last_path || linenr != last_linenr
-        win_execute(preview_wid, 'norm! ' .. linenr .. 'G')
-        win_execute(preview_wid, 'norm! zz')
-    endif
+    last_path = path
+    win_execute(preview_wid, 'norm! ' .. linenr .. 'G')
+    win_execute(preview_wid, 'norm! zz')
     UpdatePreviewHl()
 enddef
 
@@ -429,6 +417,7 @@ export def Start(opts: dict<any> = {})
     last_pattern = ''
     last_result_len = -1
     last_result = []
+    last_path = ''
     cur_dict = {}
 
     var wids = selector.Start([], extend(opts, {
