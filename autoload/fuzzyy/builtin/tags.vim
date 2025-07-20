@@ -111,11 +111,10 @@ var split_edit_callbacks = {
     "\<c-t>": function('SetTabClose'),
 }
 
-def Preview(wid: number, opts: dict<any>)
+def Preview(wid: number, result: string, opts: dict<any>)
     if wid == -1
         return
     endif
-    var result = opts.cursor_item
     if result == ''
         previewer.PreviewText(wid, '')
         return

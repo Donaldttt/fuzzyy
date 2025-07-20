@@ -15,11 +15,10 @@ def Select(wid: number, result: list<any>)
     norm! zz
 enddef
 
-def Preview(wid: number, opts: dict<any>)
+def Preview(wid: number, result: string, opts: dict<any>)
     if wid == -1
         return
     endif
-    var result = opts.cursor_item
     if result == ''
         popup_settext(wid, '')
         return

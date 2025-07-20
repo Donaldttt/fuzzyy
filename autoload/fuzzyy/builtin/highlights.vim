@@ -6,14 +6,14 @@ import autoload '../utils/selector.vim'
 var hl_meta: dict<any>
 var preview_wid: number
 
-def Preview(wid: number, opts: dict<any>)
+def Preview(wid: number, result: string, opts: dict<any>)
     if wid == -1
         return
     endif
-    if !has_key(hl_meta, opts.cursor_item)
+    if !has_key(hl_meta, result)
         return
     endif
-    var line = hl_meta[opts.cursor_item][0]
+    var line = hl_meta[result][0]
     win_execute(wid, 'normal! ' .. line .. 'G')
     win_execute(wid, 'normal! zz')
 enddef

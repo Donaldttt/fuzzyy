@@ -12,8 +12,8 @@ def GetColors(): list<string>
    )))
 enddef
 
-def Preview(wid: number, result: dict<any>)
-    var color = result.cursor_item
+def Preview(wid: number, result: string, opts: dict<any>)
+    var color = result
     &bg = old_bg
     noa execute 'colorscheme ' .. color
 enddef

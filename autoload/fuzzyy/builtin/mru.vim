@@ -18,11 +18,10 @@ var dir_exclude = exists('g:fuzzyy_mru_exclude_dir')
     && type(g:fuzzyy_mru_exclude_dir) == v:t_list ?
     g:fuzzyy_mru_exclude_dir : g:fuzzyy_exclude_dir
 
-def Preview(wid: number, opts: dict<any>)
+def Preview(wid: number, result: string, opts: dict<any>)
     if wid == -1
         return
     endif
-    var result = opts.cursor_item
     var path = cwd_only ? cwd .. '/' .. result : result
     path = path == '' ? path : fnamemodify(path, ':p')
     previewer.PreviewFile(wid, path)
