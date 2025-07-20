@@ -157,9 +157,6 @@ def InputAsyncCb(result: list<any>)
         }, [])
         idx += 1
     endfor
-    if enable_devicons
-        devicons.AddDevicons(strs)
-    endif
     UpdateMenu(strs, hl_list)
     if enable_counter
         popup_setoptions(menu_wid, {title: total_results})
@@ -173,9 +170,6 @@ def InputAsync(wid: number, opts: dict<any>)
     else
         timer_stop(async_tid)
         var strs = raw_list[: 100]
-        if enable_devicons
-            devicons.AddDevicons(strs)
-        endif
         UpdateMenu(strs, [])
         if enable_counter
             popup_setoptions(menu_wid, {title: len(raw_list)})
