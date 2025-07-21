@@ -296,7 +296,7 @@ def PromptFilter(wid: number, key: string): number
         else
             win_execute(wins.menu, "silent! cursor('$', 1)")
         endif
-        popup_wins[wid].prompt.input_cb(wid, {
+        popup_wins[wid].prompt.input_cb(wid, line_str, {
                 str: line_str,
                 win_opts: popup_wins[wid]})
     endif

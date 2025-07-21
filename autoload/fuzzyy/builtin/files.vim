@@ -58,9 +58,8 @@ def AsyncCb(result: list<any>)
     popup_setoptions(menu_wid, {title: selector.total_results})
 enddef
 
-def Input(wid: number, opts: dict<any>)
-    var pattern = opts.str
-    cur_pattern = pattern
+def Input(wid: number, result: string, opts: dict<any>)
+    cur_pattern = result
 
     # when in loading state, files_update_menu will handle the input
     if in_loading
@@ -69,7 +68,7 @@ def Input(wid: number, opts: dict<any>)
 
     var file_list = cur_result
 
-    if pattern != ''
+    if cur_pattern != ''
         selector.FuzzySearchAsync(cur_result, cur_pattern, 200, function('AsyncCb'))
     else
         selector.UpdateMenu(ProcessResult(cur_result, 100), [])

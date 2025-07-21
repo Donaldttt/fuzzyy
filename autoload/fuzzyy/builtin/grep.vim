@@ -277,10 +277,9 @@ def ResultHandle(lists: list<any>): list<any>
 enddef
 
 # async version
-def Input(wid: number, opts: dict<any>)
-    var pattern = opts.str
-    cur_pattern = pattern
-    JobStart(pattern)
+def Input(wid: number, result: string, opts: dict<any>)
+    cur_pattern = result
+    JobStart(result)
 enddef
 
 def UpdatePreviewHl()
