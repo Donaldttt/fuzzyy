@@ -385,7 +385,7 @@ def UpdateMenu(...li: list<any>)
     last_result_len = cur_result_len
 enddef
 
-def CloseCb(...li: list<any>)
+def Close(wid: number, opts: dict<any>)
     timer_stop(update_tid)
     if type(jid) == v:t_job && job_status(jid) == 'run'
         job_stop(jid)
@@ -423,7 +423,7 @@ export def Start(opts: dict<any> = {})
         select_cb: function('Select'),
         input_cb: function('Input'),
         preview_cb: function('Preview'),
-        close_cb: function('CloseCb'),
+        close_cb: function('Close'),
         devicons: enable_devicons,
         key_callbacks: selector.split_edit_callbacks
      }))

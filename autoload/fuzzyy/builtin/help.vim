@@ -30,20 +30,18 @@ def Preview(wid: number, result: string, opts: dict<any>)
     win_execute(wid, 'norm! zz')
 enddef
 
-def CloseCb(wid: number, args: dict<any>)
-    if has_key(args, 'selected_item')
-        var tag = args.selected_item
-        var tag_data = tag_table[tag]
-        try
-            # try to open the file and jump to tag first, allows for edge cases
-            # where duplicate tags exist and Fuzzyy finds the tag that Vim does
-            # not consider "best" match, then previews one and opens the other
-            exe ':help ' .. tag_data[0]
-            exe ':tag ' .. tag_data[1]
-        catch
-            exe ':help ' .. tag
-        endtry
-    endif
+def Select(wid: number, result: list<any>)
+    var tag = result[0]
+    var tag_data = tag_table[tag]
+    try
+        # try to open the file and jump to tag first, allows for edge cases
+        # where duplicate tags exist and Fuzzyy finds the tag that Vim does
+        # not consider "best" match, then previews one and opens the other
+        exe ':help ' .. tag_data[0]
+        exe ':tag ' .. tag_data[1]
+    catch
+        exe ':help ' .. tag
+    endtry
 enddef
 
 export def Start(opts: dict<any> = {})
@@ -61,7 +59,7 @@ export def Start(opts: dict<any> = {})
     var wids = selector.Start(keys(tag_table), extend(opts, {
         async: true,
         preview_cb: function('Preview'),
-        close_cb: function('CloseCb'),
+        select_cb: function('Select'),
     }))
     menu_wid = wids.menu
 enddef

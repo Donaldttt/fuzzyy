@@ -18,10 +18,8 @@ def Preview(wid: number, result: string, opts: dict<any>)
     win_execute(wid, 'normal! zz')
 enddef
 
-def Close(wid: number, result: dict<any>)
-    if has_key(result, 'selected_item')
-        setreg('*', result.selected_item)
-    endif
+def Select(wid: number, result: list<any>)
+    setreg('*', result[0])
 enddef
 
 def TogglePreviewBg()
@@ -58,7 +56,7 @@ export def Start(opts: dict<any> = {})
 
     var wids = selector.Start(keys(hl_meta), extend(opts, {
         preview_cb: function('Preview'),
-        close_cb: function('Close'),
+        select_cb: function('Select'),
         key_callbacks: key_callbacks,
     }))
 

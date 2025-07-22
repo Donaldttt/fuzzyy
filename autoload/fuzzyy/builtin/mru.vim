@@ -28,15 +28,13 @@ def Preview(wid: number, result: string, opts: dict<any>)
     win_execute(wid, 'norm! gg')
 enddef
 
-def Close(wid: number, result: dict<any>)
-    if has_key(result, 'selected_item')
-        var path = result['selected_item']
-        selector.MoveToUsableWindow()
-        if cwd_only
-            exe 'edit ' cwd .. '/' .. fnameescape(path)
-        else
-            exe 'edit ' .. fnameescape(path)
-        endif
+def Select(wid: number, result: list<any>)
+    var path = result[0]
+    selector.MoveToUsableWindow()
+    if cwd_only
+        exe 'edit ' cwd .. '/' .. fnameescape(path)
+    else
+        exe 'edit ' .. fnameescape(path)
     endif
 enddef
 
@@ -116,7 +114,7 @@ export def Start(opts: dict<any> = {})
     var wids = selector.Start(mru_list, extend(opts, {
         async: true,
         devicons: true,
-        close_cb: function('Close'),
+        select_cb: function('Select'),
         preview_cb: function('Preview'),
         key_callbacks: extend(key_callbacks, selector.split_edit_callbacks),
     }))

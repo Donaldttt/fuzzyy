@@ -4,6 +4,7 @@ import autoload '../utils/selector.vim'
 
 var old_color: string
 var old_bg: string
+var changed: bool
 
 def GetColors(): list<string>
    return uniq(sort(map(
@@ -18,17 +19,20 @@ def Preview(wid: number, result: string, opts: dict<any>)
     noa execute 'colorscheme ' .. color
 enddef
 
+def Select(wid: number, result: list<any>)
+    var color = result[0]
+    var bg: string
+    if color =~# 'light$'
+        noa &bg = 'light'
+    endif
+    execute 'colorscheme ' .. color
+    changed = true
+enddef
+
 def Close(wid: number, result: dict<any>)
-    if !has_key(result, 'selected_item')
+    if !changed
         noa &bg = old_bg
         execute 'colorscheme ' .. old_color
-    else
-        var color = result.selected_item
-        var bg: string
-        if color =~# 'light$'
-            noa &bg = 'light'
-        endif
-        execute 'colorscheme ' .. color
     endif
 enddef
 
@@ -39,6 +43,7 @@ export def Start(opts: dict<any> = {})
 
     var wids = selector.Start(colors, extend(opts, {
         preview_cb: function('Preview'),
+        select_cb: function('Select'),
         close_cb: function('Close'),
         preview: 0
     }))

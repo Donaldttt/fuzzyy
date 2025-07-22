@@ -59,14 +59,12 @@ def Preview(wid: number, result: string, opts: dict<any>)
     win_execute(wid, 'norm! zz')
 enddef
 
-def Close(wid: number, result: dict<any>)
-    if has_key(result, 'selected_item')
-        var buf = result.selected_item
-        var bufnr = buf_dict[buf][1]
-        if bufnr != bufnr('$')
-            selector.MoveToUsableWindow(bufnr)
-            execute 'buffer' bufnr
-        endif
+def Select(wid: number, result: list<any>)
+    var buf = result[0]
+    var bufnr = buf_dict[buf][1]
+    if bufnr != bufnr('$')
+        selector.MoveToUsableWindow(bufnr)
+        execute 'buffer' bufnr
     endif
 enddef
 
@@ -140,7 +138,7 @@ export def Start(opts: dict<any> = {})
     var wids = selector.Start(GetBufList(), extend(opts, {
         devicons: true,
         preview_cb: function('Preview'),
-        close_cb: function('Close'),
+        select_cb: function('Select'),
         key_callbacks: extend(selector.split_edit_callbacks, key_callbacks),
     }))
 enddef
