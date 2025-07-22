@@ -147,9 +147,7 @@ def GeneralPopupCallback(wid: number, select: any)
     active = false
 
     # only press enter select will be a list
-    var has_selection = false
     if type(select) == v:t_list
-        has_selection = true
         for Func in popup_wins[wid].close_funcs
             if type(Func) == v:t_func
                 Func(wid, select)
@@ -159,12 +157,7 @@ def GeneralPopupCallback(wid: number, select: any)
 
     if has_key(popup_wins[wid], 'close_cb')
       && type(popup_wins[wid].close_cb) == v:t_func
-        var opt = {}
-        if has_selection
-            opt.selected_item = select[0]
-        endif
-        opt.cursor_item = popup_wins[wid].cursor_item
-        popup_wins[wid].close_cb(wid, opt)
+        popup_wins[wid].close_cb(wid, popup_wins[wid])
     endif
 
     popup_wins = {}
@@ -182,20 +175,14 @@ def MenuCursorContentChangeCb(): number
     if enable_devicons
         linetext = devicons.RemoveDevicon(linetext)
     endif
-    if popup_wins[wins.menu].cursor_item == linetext
-        return 0
-    endif
 
     if has_key(popup_wins[wins.menu], 'preview_cb')
         if type(popup_wins[wins.menu].preview_cb) == v:t_func
-            popup_wins[wins.menu].preview_cb(wins.preview, linetext, {
-                cursor_item: linetext,
-                win_opts: has_key(popup_wins, wins.preview) ? popup_wins[wins.preview] : {},
-                last_cursor_item: popup_wins[wins.menu].cursor_item
-                })
+            popup_wins[wins.menu].preview_cb(wins.preview, linetext,
+                has_key(popup_wins, wins.preview) ? popup_wins[wins.preview] : {}
+            )
         endif
     endif
-    popup_wins[wins.menu].cursor_item = linetext
     return 1
 enddef
 
@@ -296,9 +283,7 @@ def PromptFilter(wid: number, key: string): number
         else
             win_execute(wins.menu, "silent! cursor('$', 1)")
         endif
-        popup_wins[wid].prompt.input_cb(wid, line_str, {
-                str: line_str,
-                win_opts: popup_wins[wid]})
+        popup_wins[wid].prompt.input_cb(wid, line_str, popup_wins[wid])
     endif
 
     popup_wins[wid].cursor_args.max_pos = len(line)
