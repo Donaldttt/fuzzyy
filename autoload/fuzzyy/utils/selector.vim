@@ -294,8 +294,16 @@ export def ReplaceCloseCb(Close_cb: func)
     popup.SetPopupWinProp(menu_wid, 'close_cb', Close_cb)
 enddef
 
+export def ReplaceSelectCb(Select_cb: func)
+    popup.SetPopupWinProp(menu_wid, 'select_cb', Select_cb)
+enddef
+
 export def Close()
     popup_close(menu_wid)
+enddef
+
+export def CloseWithSelection()
+    popup_close(menu_wid, [MenuGetCursorItem()])
 enddef
 
 export def UpdateList(li: list<string>)
@@ -336,9 +344,9 @@ def Cleanup()
 enddef
 
 # For split callbacks
-def CloseTab(wid: number, result: dict<any>)
-    if !empty(get(result, 'cursor_item', ''))
-        var [buf, line, col] = split(result.cursor_item .. ':0:0', ':')[0 : 2]
+def SelectTab(wid: number, result: list<any>)
+    if !empty(result) && !empty(result[0])
+        var [buf, line, col] = split(result[0] .. ':0:0', ':')[0 : 2]
         var bufnr = bufnr(buf)
         if bufnr > 0 && !filereadable(buf)
             # for special buffers that cannot be edited
@@ -361,9 +369,9 @@ def CloseTab(wid: number, result: dict<any>)
     endif
 enddef
 
-def CloseVSplit(wid: number, result: dict<any>)
-    if !empty(get(result, 'cursor_item', ''))
-        var [buf, line, col] = split(result.cursor_item .. ':0:0', ':')[0 : 2]
+def SelectVSplit(wid: number, result: list<any>)
+    if !empty(result) && !empty(result[0])
+        var [buf, line, col] = split(result[0] .. ':0:0', ':')[0 : 2]
         var bufnr = bufnr(buf)
         if bufnr > 0 && !filereadable(buf)
             # for special buffers that cannot be edited
@@ -387,9 +395,9 @@ def CloseVSplit(wid: number, result: dict<any>)
     endif
 enddef
 
-def CloseSplit(wid: number, result: dict<any>)
-    if !empty(get(result, 'cursor_item', ''))
-        var [buf, line, col] = split(result.cursor_item .. ':0:0', ':')[0 : 2]
+def SelectSplit(wid: number, result: list<any>)
+    if !empty(result) && !empty(result[0])
+        var [buf, line, col] = split(result[0] .. ':0:0', ':')[0 : 2]
         var bufnr = bufnr(buf)
         if bufnr > 0 && !filereadable(buf)
             # for special buffers that cannot be edited
@@ -413,7 +421,7 @@ def CloseSplit(wid: number, result: dict<any>)
     endif
 enddef
 
-def CloseQuickFix(wid: number, result: dict<any>)
+def SelectQuickFix(wid: number, _: list<any>)
     var bufnr = winbufnr(wid)
     var lines: list<any>
     lines = reverse(getbufline(bufnr, 1, "$"))
@@ -439,23 +447,23 @@ def CloseQuickFix(wid: number, result: dict<any>)
 enddef
 
 def SetVSplitClose()
-    ReplaceCloseCb(function('CloseVSplit'))
-    Close()
+    ReplaceSelectCb(function('SelectVSplit'))
+    CloseWithSelection()
 enddef
 
 def SetSplitClose()
-    ReplaceCloseCb(function('CloseSplit'))
-    Close()
+    ReplaceSelectCb(function('SelectSplit'))
+    CloseWithSelection()
 enddef
 
 def SetTabClose()
-    ReplaceCloseCb(function('CloseTab'))
-    Close()
+    ReplaceSelectCb(function('SelectTab'))
+    CloseWithSelection()
 enddef
 
 def SetQuickFixClose()
-    ReplaceCloseCb(function('CloseQuickFix'))
-    Close()
+    ReplaceSelectCb(function('SelectQuickFix'))
+    CloseWithSelection()
 enddef
 
 export var split_edit_callbacks = {

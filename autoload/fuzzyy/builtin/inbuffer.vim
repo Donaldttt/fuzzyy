@@ -34,34 +34,34 @@ def Preview(wid: number, result: string, opts: dict<any>)
     win_execute(wid, 'norm! zz')
 enddef
 
-def CloseTab(wid: number, result: dict<any>)
-    if !empty(get(result, 'cursor_item', ''))
-        var line = str2nr(split(result.cursor_item, '│')[0])
+def SelectTab(wid: number, result: list<any>)
+    if !empty(result) && !empty(result[0])
+        var line = str2nr(split(result[0], '│')[0])
         exe 'tabnew ' .. fnameescape(file_name)
         exe 'norm! ' .. line .. 'G'
         exe 'norm! zz'
     endif
 enddef
 
-def CloseVSplit(wid: number, result: dict<any>)
-    if !empty(get(result, 'cursor_item', ''))
-        var line = str2nr(split(result.cursor_item, '│')[0])
+def SelectVSplit(wid: number, result: list<any>)
+    if !empty(result) && !empty(result[0])
+        var line = str2nr(split(result[0], '│')[0])
         exe 'vsplit ' .. fnameescape(file_name)
         exe 'norm! ' .. line .. 'G'
         exe 'norm! zz'
     endif
 enddef
 
-def CloseSplit(wid: number, result: dict<any>)
-    if !empty(get(result, 'cursor_item', ''))
-        var line = str2nr(split(result.cursor_item, '│')[0])
+def SelectSplit(wid: number, result: list<any>)
+    if !empty(result) && !empty(result[0])
+        var line = str2nr(split(result[0], '│')[0])
         exe 'split ' .. fnameescape(file_name)
         exe 'norm! ' .. line .. 'G'
         exe 'norm! zz'
     endif
 enddef
 
-def CloseQuickFix(wid: number, result: dict<any>)
+def SelectQuickFix(wid: number, result: list<any>)
     var bufnr = winbufnr(wid)
     var lines: list<any>
     lines = reverse(getbufline(bufnr, 1, "$"))
@@ -80,23 +80,23 @@ def CloseQuickFix(wid: number, result: dict<any>)
 enddef
 
 def SetVSplitClose()
-    selector.ReplaceCloseCb(function('CloseVSplit'))
-    selector.Close()
+    selector.ReplaceSelectCb(function('SelectVSplit'))
+    selector.CloseWithSelection()
 enddef
 
 def SetSplitClose()
-    selector.ReplaceCloseCb(function('CloseSplit'))
-    selector.Close()
+    selector.ReplaceSelectCb(function('SelectSplit'))
+    selector.CloseWithSelection()
 enddef
 
 def SetTabClose()
-    selector.ReplaceCloseCb(function('CloseTab'))
-    selector.Close()
+    selector.ReplaceSelectCb(function('SelectTab'))
+    selector.CloseWithSelection()
 enddef
 
 def SetQuickFixClose()
-    selector.ReplaceCloseCb(function('CloseQuickFix'))
-    selector.Close()
+    selector.ReplaceSelectCb(function('SelectQuickFix'))
+    selector.CloseWithSelection()
 enddef
 
 var split_edit_callbacks = {
