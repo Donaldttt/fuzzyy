@@ -148,11 +148,10 @@ def GeneralPopupCallback(wid: number, select: any)
 
     # only press enter select will be a list
     if type(select) == v:t_list
-        for Func in popup_wins[wid].close_funcs
-            if type(Func) == v:t_func
-                Func(wid, select)
-            endif
-        endfor
+        if has_key(popup_wins[wid], 'select_cb')
+                && type(popup_wins[wid].select_cb) == v:t_func
+            popup_wins[wid].select_cb(wid, select)
+        endif
     endif
 
     if has_key(popup_wins[wid], 'close_cb')
@@ -435,7 +434,6 @@ def CreatePopup(args: dict<any>): number
         remove(opts, 'border')
     endif
 
-    # we will put user callback in close_funcs, and call it in GeneralPopupCallback
     for key in ['filter', 'border', 'borderhighlight', 'highlight', 'borderchars',
     'scrollbar', 'padding', 'wrap', 'zindex', 'title']
         if has_key(args, key)
@@ -460,7 +458,6 @@ def CreatePopup(args: dict<any>): number
        setwinvar(wid, '&cursorlineopt', 'line')
     endif
     popup_wins[wid] = {
-         close_funcs: [],
          highlights: {},
          noscrollbar_width: noscrollbar_width,
          validrow: 0,
@@ -477,14 +474,11 @@ def CreatePopup(args: dict<any>): number
          prompt_delay_timer: -1,
          }
 
-    for key in ['dropdown', 'reverse_menu', 'preview_cb', 'close_cb']
+    for key in ['dropdown', 'reverse_menu', 'preview_cb', 'close_cb', 'select_cb']
         if has_key(args, key)
             popup_wins[wid][key] = args[key]
         endif
     endfor
-    if has_key(args, 'callback')
-        add(popup_wins[wid].close_funcs, args.callback)
-    endif
     return wid
 enddef
 
@@ -757,7 +751,7 @@ export def PopupSelection(opts: dict<any>): dict<any>
     reverse_menu = has_key(opts, 'reverse_menu') ? opts.reverse_menu : reverse_menu
 
     var menu_opts = {
-        callback: has_key(opts, 'select_cb') ? opts.select_cb : null,
+        select_cb: has_key(opts, 'select_cb') ? opts.select_cb : null,
         close_cb: has_key(opts, 'close_cb') ? opts.close_cb : null,
         preview_cb: has_key(opts, 'preview_cb') ? opts.preview_cb : null,
         scrollbar: has_key(opts, 'scrollbar') ? opts.scrollbar : 0,
