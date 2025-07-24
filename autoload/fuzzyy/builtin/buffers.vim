@@ -25,7 +25,7 @@ if has_key(keymaps, "delete_buffer") && !empty(keymaps.delete_buffer) && empty(k
     keymaps.delete_file = keymaps.delete_buffer
 endif
 
-def Preview(wid: number, result: string, opts: dict<any>)
+def Preview(wid: number, result: string)
     if wid == -1
         return
     endif

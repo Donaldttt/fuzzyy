@@ -13,7 +13,7 @@ def GetColors(): list<string>
    )))
 enddef
 
-def Preview(wid: number, result: string, opts: dict<any>)
+def Preview(wid: number, result: string)
     var color = result
     &bg = old_bg
     noa execute 'colorscheme ' .. color
@@ -29,7 +29,7 @@ def Select(wid: number, result: list<any>)
     changed = true
 enddef
 
-def Close(wid: number, result: dict<any>)
+def Close(wid: number)
     if !changed
         noa &bg = old_bg
         execute 'colorscheme ' .. old_color

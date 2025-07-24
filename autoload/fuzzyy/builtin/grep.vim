@@ -277,7 +277,7 @@ def ResultHandle(lists: list<any>): list<any>
 enddef
 
 # async version
-def Input(wid: number, result: string, opts: dict<any>)
+def Input(wid: number, result: string)
     cur_pattern = result
     JobStart(result)
 enddef
@@ -292,7 +292,7 @@ def UpdatePreviewHl()
     matchaddpos('fuzzyyPreviewMatch', hl_list, 9999, -1,  {window: preview_wid})
 enddef
 
-def Preview(wid: number, result: string, opts: dict<any>)
+def Preview(wid: number, result: string)
     if wid == -1
         return
     endif
@@ -385,7 +385,7 @@ def UpdateMenu(...li: list<any>)
     last_result_len = cur_result_len
 enddef
 
-def Close(wid: number, opts: dict<any>)
+def Close(wid: number)
     timer_stop(update_tid)
     if type(jid) == v:t_job && job_status(jid) == 'run'
         job_stop(jid)

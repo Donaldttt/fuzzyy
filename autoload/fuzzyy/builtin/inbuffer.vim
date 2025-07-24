@@ -15,7 +15,7 @@ def Select(wid: number, result: list<any>)
     norm! zz
 enddef
 
-def Preview(wid: number, result: string, opts: dict<any>)
+def Preview(wid: number, result: string)
     if wid == -1
         return
     endif

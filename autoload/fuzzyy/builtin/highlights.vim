@@ -6,7 +6,7 @@ import autoload '../utils/selector.vim'
 var hl_meta: dict<any>
 var preview_wid: number
 
-def Preview(wid: number, result: string, opts: dict<any>)
+def Preview(wid: number, result: string)
     if wid == -1
         return
     endif

@@ -156,7 +156,7 @@ def GeneralPopupCallback(wid: number, select: any)
 
     if has_key(popup_wins[wid], 'close_cb')
       && type(popup_wins[wid].close_cb) == v:t_func
-        popup_wins[wid].close_cb(wid, popup_wins[wid])
+        popup_wins[wid].close_cb(wid)
     endif
 
     popup_wins = {}
@@ -177,9 +177,7 @@ def MenuCursorContentChangeCb(): number
 
     if has_key(popup_wins[wins.menu], 'preview_cb')
         if type(popup_wins[wins.menu].preview_cb) == v:t_func
-            popup_wins[wins.menu].preview_cb(wins.preview, linetext,
-                has_key(popup_wins, wins.preview) ? popup_wins[wins.preview] : {}
-            )
+            popup_wins[wins.menu].preview_cb(wins.preview, linetext)
         endif
     endif
     return 1
@@ -282,7 +280,7 @@ def PromptFilter(wid: number, key: string): number
         else
             win_execute(wins.menu, "silent! cursor('$', 1)")
         endif
-        popup_wins[wid].prompt.input_cb(wid, line_str, popup_wins[wid])
+        popup_wins[wid].prompt.input_cb(wid, line_str)
     endif
 
     popup_wins[wid].cursor_args.max_pos = len(line)

@@ -10,7 +10,7 @@ def EscQuotes(str: string): string
     return substitute(str, "'", "''", 'g')
 enddef
 
-def Preview(wid: number, result: string, opts: dict<any>)
+def Preview(wid: number, result: string)
     if wid == -1
         return
     endif

@@ -58,7 +58,7 @@ def AsyncCb(result: list<any>)
     popup_setoptions(menu_wid, {title: selector.total_results})
 enddef
 
-def Input(wid: number, result: string, opts: dict<any>)
+def Input(wid: number, result: string)
     cur_pattern = result
 
     # when in loading state, files_update_menu will handle the input
@@ -76,7 +76,7 @@ def Input(wid: number, result: string, opts: dict<any>)
     endif
 enddef
 
-def Preview(wid: number, result: string, opts: dict<any>)
+def Preview(wid: number, result: string)
     if wid == -1
         return
     endif
@@ -150,7 +150,7 @@ def UpdateMenu(...li: list<any>)
     endif
 enddef
 
-def Close(wid: number, opts: dict<any>)
+def Close(wid: number)
     if type(jid) == v:t_job && job_status(jid) == 'run'
         job_stop(jid)
     endif
