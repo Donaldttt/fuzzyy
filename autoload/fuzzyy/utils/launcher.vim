@@ -24,7 +24,10 @@ export def Resume()
     for e in g:__fuzzyy_launcher_cache
         if !empty(e.prompt)
             function('fuzzyy#' .. e.selector .. '#Start')(e.opts)
-            popup.SetPrompt(e.prompt)
+            if popup.GetPrompt() != e.prompt
+                popup.SetPrompt(slice(e.prompt, 0, -1))
+                feedkeys(e.prompt[strcharlen(e.prompt) - 1])
+            endif
             # trim cache, only save latest with prompt
             g:__fuzzyy_launcher_cache = [e]
             return

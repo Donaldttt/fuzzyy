@@ -204,16 +204,10 @@ enddef
 #   - content: string to be set as prompt
 export def SetPrompt(content: string)
     popup_wins[wins.prompt].prompt.line = []
+    popup_wins[wins.prompt].cursor_args.cur_pos = 0
     for i in range(strchars(content))
         PromptFilter(wins.prompt, strcharpart(content, i, 1, 1))
     endfor
-    if has_key(popup_wins[wins.prompt].prompt, 'input_cb')
-        && type(popup_wins[wins.prompt].prompt.input_cb) == v:t_func
-        popup_wins[wins.prompt].prompt.input_cb(wins.prompt, {
-            str: content,
-            win_opts: popup_wins[wins.prompt]
-        })
-    endif
 enddef
 
 export def GetPrompt(): string
