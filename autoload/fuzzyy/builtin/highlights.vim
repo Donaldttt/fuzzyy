@@ -6,22 +6,20 @@ import autoload '../utils/selector.vim'
 var hl_meta: dict<any>
 var preview_wid: number
 
-def Preview(wid: number, opts: dict<any>)
-    if !has_key(hl_meta, opts.cursor_item)
+def Preview(wid: number, result: string)
+    if wid == -1
         return
     endif
-    if !has_key(opts.win_opts.partids, 'preview')
+    if !has_key(hl_meta, result)
         return
     endif
-    var line = hl_meta[opts.cursor_item][0]
-    win_execute(preview_wid, 'normal! ' .. line .. 'G')
-    win_execute(preview_wid, 'normal! zz')
+    var line = hl_meta[result][0]
+    win_execute(wid, 'normal! ' .. line .. 'G')
+    win_execute(wid, 'normal! zz')
 enddef
 
-def Close(wid: number, result: dict<any>)
-    if has_key(result, 'selected_item')
-        setreg('*', result.selected_item)
-    endif
+def Select(wid: number, result: list<any>)
+    setreg('*', result[0])
 enddef
 
 def TogglePreviewBg()
@@ -58,7 +56,7 @@ export def Start(opts: dict<any> = {})
 
     var wids = selector.Start(keys(hl_meta), extend(opts, {
         preview_cb: function('Preview'),
-        close_cb: function('Close'),
+        select_cb: function('Select'),
         key_callbacks: key_callbacks,
     }))
 

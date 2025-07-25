@@ -151,6 +151,7 @@ var update_tid = 0
 var last_pattern = ''
 var last_result_len = -1
 var last_result = []
+var last_path: string
 var cur_dict = {}
 var jid: job
 var pid: number
@@ -276,10 +277,9 @@ def ResultHandle(lists: list<any>): list<any>
 enddef
 
 # async version
-def Input(wid: number, opts: dict<any>)
-    var pattern = opts.str
-    cur_pattern = pattern
-    JobStart(pattern)
+def Input(wid: number, result: string)
+    cur_pattern = result
+    JobStart(result)
 enddef
 
 def UpdatePreviewHl()
@@ -292,21 +292,11 @@ def UpdatePreviewHl()
     matchaddpos('fuzzyyPreviewMatch', hl_list, 9999, -1,  {window: preview_wid})
 enddef
 
-def Preview(wid: number, opts: dict<any>)
-    var result = opts.cursor_item
-    var last_item = opts.last_cursor_item
-    var [relative_path, linenr, colnr] = ParseResult(result)
-    var last_path: string
-    var last_linenr: number
-    if type(last_item) == v:t_string  && type(last_item) == v:t_string && last_item != ''
-        try
-        [last_path, last_linenr, _] = ParseResult(last_item)
-        catch
-            return
-        endtry
-    else
-        [last_path, last_linenr] = ['', -1]
+def Preview(wid: number, result: string)
+    if wid == -1
+        return
     endif
+    var [relative_path, linenr, colnr] = ParseResult(result)
     cur_menu_item = result
 
     if relative_path == null
@@ -318,10 +308,9 @@ def Preview(wid: number, opts: dict<any>)
     if path != last_path
         previewer.PreviewFile(preview_wid, path)
     endif
-    if path != last_path || linenr != last_linenr
-        win_execute(preview_wid, 'norm! ' .. linenr .. 'G')
-        win_execute(preview_wid, 'norm! zz')
-    endif
+    last_path = path
+    win_execute(preview_wid, 'norm! ' .. linenr .. 'G')
+    win_execute(preview_wid, 'norm! zz')
     UpdatePreviewHl()
 enddef
 
@@ -396,7 +385,7 @@ def UpdateMenu(...li: list<any>)
     last_result_len = cur_result_len
 enddef
 
-def CloseCb(...li: list<any>)
+def Close(wid: number)
     timer_stop(update_tid)
     if type(jid) == v:t_job && job_status(jid) == 'run'
         job_stop(jid)
@@ -427,13 +416,14 @@ export def Start(opts: dict<any> = {})
     last_pattern = ''
     last_result_len = -1
     last_result = []
+    last_path = ''
     cur_dict = {}
 
     var wids = selector.Start([], extend(opts, {
         select_cb: function('Select'),
         input_cb: function('Input'),
         preview_cb: function('Preview'),
-        close_cb: function('CloseCb'),
+        close_cb: function('Close'),
         devicons: enable_devicons,
         key_callbacks: selector.split_edit_callbacks
      }))

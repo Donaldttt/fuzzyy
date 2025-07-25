@@ -147,24 +147,16 @@ def GeneralPopupCallback(wid: number, select: any)
     active = false
 
     # only press enter select will be a list
-    var has_selection = false
     if type(select) == v:t_list
-        has_selection = true
-        for Func in popup_wins[wid].close_funcs
-            if type(Func) == v:t_func
-                Func(wid, select)
-            endif
-        endfor
+        if has_key(popup_wins[wid], 'select_cb')
+                && type(popup_wins[wid].select_cb) == v:t_func
+            popup_wins[wid].select_cb(wid, select)
+        endif
     endif
 
     if has_key(popup_wins[wid], 'close_cb')
       && type(popup_wins[wid].close_cb) == v:t_func
-        var opt = {}
-        if has_selection
-            opt.selected_item = select[0]
-        endif
-        opt.cursor_item = popup_wins[wid].cursor_item
-        popup_wins[wid].close_cb(wid, opt)
+        popup_wins[wid].close_cb(wid)
     endif
 
     popup_wins = {}
@@ -182,20 +174,12 @@ def MenuCursorContentChangeCb(): number
     if enable_devicons
         linetext = devicons.RemoveDevicon(linetext)
     endif
-    if popup_wins[wins.menu].cursor_item == linetext
-        return 0
-    endif
 
     if has_key(popup_wins[wins.menu], 'preview_cb')
         if type(popup_wins[wins.menu].preview_cb) == v:t_func
-            popup_wins[wins.menu].preview_cb(wins.menu, {
-                cursor_item: linetext,
-                win_opts: popup_wins[wins.menu],
-                last_cursor_item: popup_wins[wins.menu].cursor_item
-                })
+            popup_wins[wins.menu].preview_cb(wins.preview, linetext)
         endif
     endif
-    popup_wins[wins.menu].cursor_item = linetext
     return 1
 enddef
 
@@ -296,9 +280,7 @@ def PromptFilter(wid: number, key: string): number
         else
             win_execute(wins.menu, "silent! cursor('$', 1)")
         endif
-        popup_wins[wid].prompt.input_cb(wid, {
-                str: line_str,
-                win_opts: popup_wins[wid]})
+        popup_wins[wid].prompt.input_cb(wid, line_str)
     endif
 
     popup_wins[wid].cursor_args.max_pos = len(line)
@@ -450,7 +432,6 @@ def CreatePopup(args: dict<any>): number
         remove(opts, 'border')
     endif
 
-    # we will put user callback in close_funcs, and call it in GeneralPopupCallback
     for key in ['filter', 'border', 'borderhighlight', 'highlight', 'borderchars',
     'scrollbar', 'padding', 'wrap', 'zindex', 'title']
         if has_key(args, key)
@@ -475,7 +456,6 @@ def CreatePopup(args: dict<any>): number
        setwinvar(wid, '&cursorlineopt', 'line')
     endif
     popup_wins[wid] = {
-         close_funcs: [],
          highlights: {},
          noscrollbar_width: noscrollbar_width,
          validrow: 0,
@@ -492,14 +472,11 @@ def CreatePopup(args: dict<any>): number
          prompt_delay_timer: -1,
          }
 
-    for key in ['dropdown', 'reverse_menu', 'preview_cb', 'close_cb']
+    for key in ['dropdown', 'reverse_menu', 'preview_cb', 'close_cb', 'select_cb']
         if has_key(args, key)
             popup_wins[wid][key] = args[key]
         endif
     endfor
-    if has_key(args, 'callback')
-        add(popup_wins[wid].close_funcs, args.callback)
-    endif
     return wid
 enddef
 
@@ -772,7 +749,7 @@ export def PopupSelection(opts: dict<any>): dict<any>
     reverse_menu = has_key(opts, 'reverse_menu') ? opts.reverse_menu : reverse_menu
 
     var menu_opts = {
-        callback: has_key(opts, 'select_cb') ? opts.select_cb : null,
+        select_cb: has_key(opts, 'select_cb') ? opts.select_cb : null,
         close_cb: has_key(opts, 'close_cb') ? opts.close_cb : null,
         preview_cb: has_key(opts, 'preview_cb') ? opts.preview_cb : null,
         scrollbar: has_key(opts, 'scrollbar') ? opts.scrollbar : 0,

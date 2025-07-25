@@ -10,42 +10,38 @@ def EscQuotes(str: string): string
     return substitute(str, "'", "''", 'g')
 enddef
 
-def Preview(wid: number, opts: dict<any>)
-    var result = opts.cursor_item
-    if !has_key(opts.win_opts.partids, 'preview')
+def Preview(wid: number, result: string)
+    if wid == -1
         return
     endif
-    var preview_wid = opts.win_opts.partids['preview']
     if result == ''
-        popup_settext(preview_wid, '')
+        popup_settext(wid, '')
         return
     endif
-    var preview_bufnr = winbufnr(preview_wid)
-    setbufvar(preview_bufnr, '&syntax', 'help')
+    var bufnr = winbufnr(wid)
+    setbufvar(bufnr, '&syntax', 'help')
     var tag_file = tag_files[tag_table[result][2]]
     # Note: forward slash path separator tested on Windows, works fine
     var doc_file = fnamemodify(tag_file, ':h') .. '/' .. tag_table[result][0]
-    popup_settext(preview_wid, readfile(doc_file))
-    popup_setoptions(preview_wid, {title: fnamemodify(doc_file, ':t')})
+    popup_settext(wid, readfile(doc_file))
+    popup_setoptions(wid, {title: fnamemodify(doc_file, ':t')})
     var tag_name = substitute(tag_table[result][1], '\v^(\/\*)(.*)(\*)$', '\2', '')
-    win_execute(preview_wid, "exec 'norm! ' .. search('\\m\\*" .. EscQuotes(tag_name) .. "\\*\\C', 'w')")
-    win_execute(preview_wid, 'norm! zz')
+    win_execute(wid, "exec 'norm! ' .. search('\\m\\*" .. EscQuotes(tag_name) .. "\\*\\C', 'w')")
+    win_execute(wid, 'norm! zz')
 enddef
 
-def CloseCb(wid: number, args: dict<any>)
-    if has_key(args, 'selected_item')
-        var tag = args.selected_item
-        var tag_data = tag_table[tag]
-        try
-            # try to open the file and jump to tag first, allows for edge cases
-            # where duplicate tags exist and Fuzzyy finds the tag that Vim does
-            # not consider "best" match, then previews one and opens the other
-            exe ':help ' .. tag_data[0]
-            exe ':tag ' .. tag_data[1]
-        catch
-            exe ':help ' .. tag
-        endtry
-    endif
+def Select(wid: number, result: list<any>)
+    var tag = result[0]
+    var tag_data = tag_table[tag]
+    try
+        # try to open the file and jump to tag first, allows for edge cases
+        # where duplicate tags exist and Fuzzyy finds the tag that Vim does
+        # not consider "best" match, then previews one and opens the other
+        exe ':help ' .. tag_data[0]
+        exe ':tag ' .. tag_data[1]
+    catch
+        exe ':help ' .. tag
+    endtry
 enddef
 
 export def Start(opts: dict<any> = {})
@@ -63,7 +59,7 @@ export def Start(opts: dict<any> = {})
     var wids = selector.Start(keys(tag_table), extend(opts, {
         async: true,
         preview_cb: function('Preview'),
-        close_cb: function('CloseCb'),
+        select_cb: function('Select'),
     }))
     menu_wid = wids.menu
 enddef

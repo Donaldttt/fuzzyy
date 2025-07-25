@@ -18,27 +18,23 @@ var dir_exclude = exists('g:fuzzyy_mru_exclude_dir')
     && type(g:fuzzyy_mru_exclude_dir) == v:t_list ?
     g:fuzzyy_mru_exclude_dir : g:fuzzyy_exclude_dir
 
-def Preview(wid: number, opts: dict<any>)
-    var result = opts.cursor_item
-    if !has_key(opts.win_opts.partids, 'preview')
+def Preview(wid: number, result: string)
+    if wid == -1
         return
     endif
-    var preview_wid = opts.win_opts.partids['preview']
     var path = cwd_only ? cwd .. '/' .. result : result
     path = path == '' ? path : fnamemodify(path, ':p')
-    previewer.PreviewFile(preview_wid, path)
-    win_execute(preview_wid, 'norm! gg')
+    previewer.PreviewFile(wid, path)
+    win_execute(wid, 'norm! gg')
 enddef
 
-def Close(wid: number, result: dict<any>)
-    if has_key(result, 'selected_item')
-        var path = result['selected_item']
-        selector.MoveToUsableWindow()
-        if cwd_only
-            exe 'edit ' cwd .. '/' .. fnameescape(path)
-        else
-            exe 'edit ' .. fnameescape(path)
-        endif
+def Select(wid: number, result: list<any>)
+    var path = result[0]
+    selector.MoveToUsableWindow()
+    if cwd_only
+        exe 'edit ' cwd .. '/' .. fnameescape(path)
+    else
+        exe 'edit ' .. fnameescape(path)
     endif
 enddef
 
@@ -118,7 +114,7 @@ export def Start(opts: dict<any> = {})
     var wids = selector.Start(mru_list, extend(opts, {
         async: true,
         devicons: true,
-        close_cb: function('Close'),
+        select_cb: function('Select'),
         preview_cb: function('Preview'),
         key_callbacks: extend(key_callbacks, selector.split_edit_callbacks),
     }))

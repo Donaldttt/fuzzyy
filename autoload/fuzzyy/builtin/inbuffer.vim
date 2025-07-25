@@ -15,55 +15,53 @@ def Select(wid: number, result: list<any>)
     norm! zz
 enddef
 
-def Preview(wid: number, opts: dict<any>)
-    var result = opts.cursor_item
-    if !has_key(opts.win_opts.partids, 'preview')
+def Preview(wid: number, result: string)
+    if wid == -1
         return
     endif
-    var preview_wid = opts.win_opts.partids['preview']
     if result == ''
-        popup_settext(preview_wid, '')
+        popup_settext(wid, '')
         return
     endif
-    var preview_bufnr = winbufnr(preview_wid)
+    var preview_bufnr = winbufnr(wid)
     var lnum = split(trim(result[0 : 10]), ' ')[0]
-    if popup_getpos(preview_wid).lastline == 1
-        popup_setoptions(preview_wid, {title: fnamemodify(file_name, ':t')})
-        popup_settext(preview_wid, raw_lines)
+    if popup_getpos(wid).lastline == 1
+        popup_setoptions(wid, {title: fnamemodify(file_name, ':t')})
+        popup_settext(wid, raw_lines)
         setbufvar(preview_bufnr, '&syntax', file_type)
     endif
-    win_execute(preview_wid, 'norm! ' .. lnum .. 'G')
-    win_execute(preview_wid, 'norm! zz')
+    win_execute(wid, 'norm! ' .. lnum .. 'G')
+    win_execute(wid, 'norm! zz')
 enddef
 
-def CloseTab(wid: number, result: dict<any>)
-    if !empty(get(result, 'cursor_item', ''))
-        var line = str2nr(split(result.cursor_item, '│')[0])
+def SelectTab(wid: number, result: list<any>)
+    if !empty(result) && !empty(result[0])
+        var line = str2nr(split(result[0], '│')[0])
         exe 'tabnew ' .. fnameescape(file_name)
         exe 'norm! ' .. line .. 'G'
         exe 'norm! zz'
     endif
 enddef
 
-def CloseVSplit(wid: number, result: dict<any>)
-    if !empty(get(result, 'cursor_item', ''))
-        var line = str2nr(split(result.cursor_item, '│')[0])
+def SelectVSplit(wid: number, result: list<any>)
+    if !empty(result) && !empty(result[0])
+        var line = str2nr(split(result[0], '│')[0])
         exe 'vsplit ' .. fnameescape(file_name)
         exe 'norm! ' .. line .. 'G'
         exe 'norm! zz'
     endif
 enddef
 
-def CloseSplit(wid: number, result: dict<any>)
-    if !empty(get(result, 'cursor_item', ''))
-        var line = str2nr(split(result.cursor_item, '│')[0])
+def SelectSplit(wid: number, result: list<any>)
+    if !empty(result) && !empty(result[0])
+        var line = str2nr(split(result[0], '│')[0])
         exe 'split ' .. fnameescape(file_name)
         exe 'norm! ' .. line .. 'G'
         exe 'norm! zz'
     endif
 enddef
 
-def CloseQuickFix(wid: number, result: dict<any>)
+def SelectQuickFix(wid: number, result: list<any>)
     var bufnr = winbufnr(wid)
     var lines: list<any>
     lines = reverse(getbufline(bufnr, 1, "$"))
@@ -82,23 +80,23 @@ def CloseQuickFix(wid: number, result: dict<any>)
 enddef
 
 def SetVSplitClose()
-    selector.ReplaceCloseCb(function('CloseVSplit'))
-    selector.Close()
+    selector.ReplaceSelectCb(function('SelectVSplit'))
+    selector.CloseWithSelection()
 enddef
 
 def SetSplitClose()
-    selector.ReplaceCloseCb(function('CloseSplit'))
-    selector.Close()
+    selector.ReplaceSelectCb(function('SelectSplit'))
+    selector.CloseWithSelection()
 enddef
 
 def SetTabClose()
-    selector.ReplaceCloseCb(function('CloseTab'))
-    selector.Close()
+    selector.ReplaceSelectCb(function('SelectTab'))
+    selector.CloseWithSelection()
 enddef
 
 def SetQuickFixClose()
-    selector.ReplaceCloseCb(function('CloseQuickFix'))
-    selector.Close()
+    selector.ReplaceSelectCb(function('SelectQuickFix'))
+    selector.CloseWithSelection()
 enddef
 
 var split_edit_callbacks = {

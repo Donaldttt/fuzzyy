@@ -58,9 +58,8 @@ def AsyncCb(result: list<any>)
     popup_setoptions(menu_wid, {title: selector.total_results})
 enddef
 
-def Input(wid: number, opts: dict<any>)
-    var pattern = opts.str
-    cur_pattern = pattern
+def Input(wid: number, result: string)
+    cur_pattern = result
 
     # when in loading state, files_update_menu will handle the input
     if in_loading
@@ -69,7 +68,7 @@ def Input(wid: number, opts: dict<any>)
 
     var file_list = cur_result
 
-    if pattern != ''
+    if cur_pattern != ''
         selector.FuzzySearchAsync(cur_result, cur_pattern, 200, function('AsyncCb'))
     else
         selector.UpdateMenu(ProcessResult(cur_result, 100), [])
@@ -77,19 +76,17 @@ def Input(wid: number, opts: dict<any>)
     endif
 enddef
 
-def Preview(wid: number, opts: dict<any>)
-    var result = opts.cursor_item
-    if !has_key(opts.win_opts.partids, 'preview')
+def Preview(wid: number, result: string)
+    if wid == -1
         return
     endif
-    var preview_wid = opts.win_opts.partids['preview']
     if result == ''
-        previewer.PreviewText(preview_wid, '')
+        previewer.PreviewText(wid, '')
         return
     endif
     var path = cwd .. '/' .. result
-    previewer.PreviewFile(preview_wid, path, { max: 1000 })
-    win_execute(preview_wid, 'norm! gg')
+    previewer.PreviewFile(wid, path, { max: 1000 })
+    win_execute(wid, 'norm! gg')
 enddef
 
 def JobStart(path: string, cmd: string)
@@ -153,7 +150,7 @@ def UpdateMenu(...li: list<any>)
     endif
 enddef
 
-def Close(wid: number, opts: dict<any>)
+def Close(wid: number)
     if type(jid) == v:t_job && job_status(jid) == 'run'
         job_stop(jid)
     endif

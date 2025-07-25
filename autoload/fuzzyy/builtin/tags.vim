@@ -57,9 +57,9 @@ def Select(wid: number, result: list<any>)
     endif
 enddef
 
-def CloseTab(wid: number, result: dict<any>)
-    if !empty(get(result, 'cursor_item', ''))
-        var [tagname, tagfile, tagaddress] = ParseResult(result.cursor_item)
+def SelectTab(wid: number, result: list<any>)
+    if !empty(result) && !empty(result[0])
+        var [tagname, tagfile, tagaddress] = ParseResult(result[0])
         var path = ExpandPath(tagfile)
         if filereadable(path)
             exe 'tabnew ' .. fnameescape(path)
@@ -68,9 +68,9 @@ def CloseTab(wid: number, result: dict<any>)
     endif
 enddef
 
-def CloseVSplit(wid: number, result: dict<any>)
-    if !empty(get(result, 'cursor_item', ''))
-        var [tagname, tagfile, tagaddress] = ParseResult(result.cursor_item)
+def SelectVSplit(wid: number, result: list<any>)
+    if !empty(result) && !empty(result[0])
+        var [tagname, tagfile, tagaddress] = ParseResult(result[0])
         var path = ExpandPath(tagfile)
         if filereadable(path)
             exe 'vsplit ' .. fnameescape(path)
@@ -79,9 +79,9 @@ def CloseVSplit(wid: number, result: dict<any>)
     endif
 enddef
 
-def CloseSplit(wid: number, result: dict<any>)
-    if !empty(get(result, 'cursor_item', ''))
-        var [tagname, tagfile, tagaddress] = ParseResult(result.cursor_item)
+def SelectSplit(wid: number, result: list<any>)
+    if !empty(result) && !empty(result[0])
+        var [tagname, tagfile, tagaddress] = ParseResult(result[0])
         var path = ExpandPath(tagfile)
         if filereadable(path)
             exe 'split ' .. fnameescape(path)
@@ -91,18 +91,18 @@ def CloseSplit(wid: number, result: dict<any>)
 enddef
 
 def SetVSplitClose()
-    selector.ReplaceCloseCb(function('CloseVSplit'))
-    selector.Close()
+    selector.ReplaceSelectCb(function('SelectVSplit'))
+    selector.CloseWithSelection()
 enddef
 
 def SetSplitClose()
-    selector.ReplaceCloseCb(function('CloseSplit'))
-    selector.Close()
+    selector.ReplaceSelectCb(function('SelectSplit'))
+    selector.CloseWithSelection()
 enddef
 
 def SetTabClose()
-    selector.ReplaceCloseCb(function('CloseTab'))
-    selector.Close()
+    selector.ReplaceSelectCb(function('SelectTab'))
+    selector.CloseWithSelection()
 enddef
 
 var split_edit_callbacks = {
@@ -111,30 +111,28 @@ var split_edit_callbacks = {
     "\<c-t>": function('SetTabClose'),
 }
 
-def Preview(wid: number, opts: dict<any>)
-    var result = opts.cursor_item
-    if !has_key(opts.win_opts.partids, 'preview')
+def Preview(wid: number, result: string)
+    if wid == -1
         return
     endif
-    var preview_wid = opts.win_opts.partids['preview']
     if result == ''
-        previewer.PreviewText(preview_wid, '')
+        previewer.PreviewText(wid, '')
         return
     endif
     var [tagname, tagfile, tagaddress] = ParseResult(result)
     var path = ExpandPath(tagfile)
-    previewer.PreviewFile(preview_wid, path)
+    previewer.PreviewFile(wid, path)
     for excmd in tagaddress->split(";")
         if trim(excmd) =~ '^\d\+$'
-            win_execute(preview_wid, "silent! cursor(" .. excmd .. ", 1)")
+            win_execute(wid, "silent! cursor(" .. excmd .. ", 1)")
         else
             var pattern = excmd->substitute('^\/', '', '')->substitute('\M\/;\?"\?$', '', '')
-            win_execute(preview_wid, "silent! search('\\M" .. EscQuotes(pattern) .. "', 'cw')")
-            clearmatches(preview_wid)
-            win_execute(preview_wid, "silent! matchadd('fuzzyyPreviewMatch', '\\M" .. EscQuotes(pattern) .. "')")
+            win_execute(wid, "silent! search('\\M" .. EscQuotes(pattern) .. "', 'cw')")
+            clearmatches(wid)
+            win_execute(wid, "silent! matchadd('fuzzyyPreviewMatch', '\\M" .. EscQuotes(pattern) .. "')")
         endif
     endfor
-    win_execute(preview_wid, 'norm! zz')
+    win_execute(wid, 'norm! zz')
 enddef
 
 export def Start(opts: dict<any> = {})
