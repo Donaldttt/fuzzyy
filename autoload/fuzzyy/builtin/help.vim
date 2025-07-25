@@ -1,6 +1,6 @@
 vim9script
 
-import autoload './utils/selector.vim'
+import autoload '../utils/selector.vim'
 
 var tag_table: dict<any>
 var tag_files: list<string>

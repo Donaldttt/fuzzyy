@@ -1,9 +1,9 @@
 vim9script
 
-import autoload './utils/selector.vim'
-import autoload './utils/previewer.vim'
-import autoload './utils/popup.vim'
-import autoload './utils/devicons.vim'
+import autoload '../utils/selector.vim'
+import autoload '../utils/previewer.vim'
+import autoload '../utils/popup.vim'
+import autoload '../utils/devicons.vim'
 
 var enable_devicons = devicons.Enabled()
 

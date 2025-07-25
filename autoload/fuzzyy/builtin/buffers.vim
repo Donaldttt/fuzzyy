@@ -1,7 +1,7 @@
 vim9script
 
-import autoload './utils/selector.vim'
-import autoload './utils/devicons.vim'
+import autoload '../utils/selector.vim'
+import autoload '../utils/devicons.vim'
 
 var buf_dict: dict<any>
 var key_callbacks: dict<any>
