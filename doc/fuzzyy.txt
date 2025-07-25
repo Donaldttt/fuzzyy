@@ -18,24 +18,25 @@ CONTENTS                                                       *fuzzyy-contents*
     1.7.1. g:fuzzyy_enable_mappings............|fuzzyy-g:fuzzyy_enable_mappings|
     1.7.2. g:fuzzyy_devicons..........................|fuzzyy-g:fuzzyy_devicons|
     1.7.3. g:fuzzyy_dropdown..........................|fuzzyy-g:fuzzyy_dropdown|
-    1.7.4. g:fuzzyy_counter............................|fuzzyy-g:fuzzyy_counter|
-    1.7.5. g:fuzzyy_borderchars....................|fuzzyy-g:fuzzyy_borderchars|
-    1.7.6. g:fuzzyy_reuse_windows................|fuzzyy-g:fuzzyy_reuse_windows|
-    1.7.7. g:fuzzyy_respect_gitignore........|fuzzyy-g:fuzzyy_respect_gitignore|
-    1.7.8. g:fuzzyy_include_hidden..............|fuzzyy-g:fuzzyy_include_hidden|
-    1.7.9. g:fuzzyy_follow_symlinks............|fuzzyy-g:fuzzyy_follow_symlinks|
-    1.7.10. g:fuzzyy_root_patterns...............|fuzzyy-g:fuzzyy_root_patterns|
-    1.7.11. g:fuzzyy_exclude_file.................|fuzzyy-g:fuzzyy_exclude_file|
-    1.7.12. g:fuzzyy_exclude_dir...................|fuzzyy-g:fuzzyy_exclude_dir|
-    1.7.13. g:fuzzyy_ripgrep_options...........|fuzzyy-g:fuzzyy_ripgrep_options|
-    1.7.14. g:fuzzyy_devicons_color_table.|fuzzyy-g:fuzzyy_devicons_color_table|
-    1.7.15. g:fuzzyy_devicons_glyph_func...|fuzzyy-g:fuzzyy_devicons_glyph_func|
-    1.7.16. g:fuzzyy_devicons_color_func...|fuzzyy-g:fuzzyy_devicons_color_func|
-    1.7.17. g:fuzzyy_keymaps...........................|fuzzyy-g:fuzzyy_keymaps|
-    1.7.18. g:fuzzyy_buffers_exclude...........|fuzzyy-g:fuzzyy_buffers_exclude|
-    1.7.19. g:fuzzyy_buffers_keymap.............|fuzzyy-g:fuzzyy_buffers_keymap|
-    1.7.20. g:fuzzyy_window_layout...............|fuzzyy-g:fuzzyy_window_layout|
-    1.7.21. g:fuzzyy_async_step.....................|fuzzyy-g:fuzzyy_async_step|
+    1.7.4. g:fuzzyy_preview............................|fuzzyy-g:fuzzyy_preview|
+    1.7.5. g:fuzzyy_counter............................|fuzzyy-g:fuzzyy_counter|
+    1.7.6. g:fuzzyy_borderchars....................|fuzzyy-g:fuzzyy_borderchars|
+    1.7.7. g:fuzzyy_reuse_windows................|fuzzyy-g:fuzzyy_reuse_windows|
+    1.7.8. g:fuzzyy_respect_gitignore........|fuzzyy-g:fuzzyy_respect_gitignore|
+    1.7.9. g:fuzzyy_include_hidden..............|fuzzyy-g:fuzzyy_include_hidden|
+    1.7.10. g:fuzzyy_follow_symlinks...........|fuzzyy-g:fuzzyy_follow_symlinks|
+    1.7.11. g:fuzzyy_root_patterns...............|fuzzyy-g:fuzzyy_root_patterns|
+    1.7.12. g:fuzzyy_exclude_file.................|fuzzyy-g:fuzzyy_exclude_file|
+    1.7.13. g:fuzzyy_exclude_dir...................|fuzzyy-g:fuzzyy_exclude_dir|
+    1.7.14. g:fuzzyy_ripgrep_options...........|fuzzyy-g:fuzzyy_ripgrep_options|
+    1.7.15. g:fuzzyy_devicons_color_table.|fuzzyy-g:fuzzyy_devicons_color_table|
+    1.7.16. g:fuzzyy_devicons_glyph_func...|fuzzyy-g:fuzzyy_devicons_glyph_func|
+    1.7.17. g:fuzzyy_devicons_color_func...|fuzzyy-g:fuzzyy_devicons_color_func|
+    1.7.18. g:fuzzyy_keymaps...........................|fuzzyy-g:fuzzyy_keymaps|
+    1.7.19. g:fuzzyy_buffers_exclude...........|fuzzyy-g:fuzzyy_buffers_exclude|
+    1.7.20. g:fuzzyy_buffers_keymap.............|fuzzyy-g:fuzzyy_buffers_keymap|
+    1.7.21. g:fuzzyy_window_layout...............|fuzzyy-g:fuzzyy_window_layout|
+    1.7.22. g:fuzzyy_async_step.....................|fuzzyy-g:fuzzyy_async_step|
   1.8. User autocommands..............................|fuzzyy-user_autocommands|
   1.9. Syntax highlighting..........................|fuzzyy-syntax_highlighting|
 
@@ -222,6 +223,13 @@ G:FUZZYY_DROPDOWN                                     *fuzzyy-g:fuzzyy_dropdown*
 Enable dropdown theme (prompt at top rather than bottom). Default 0
 >
   let g:fuzzyy_dropdown = 0
+<
+
+G:FUZZYY_PREVIEW                                       *fuzzyy-g:fuzzyy_preview*
+
+Enable preview window in supported selectors (e.g. FuzzyFiles). Default 1
+>
+  let g:fuzzyy_preview = 1
 <
 
 G:FUZZYY_COUNTER                                       *fuzzyy-g:fuzzyy_counter*
@@ -449,8 +457,8 @@ Window layout configuration. The general defaults for window layout options are:
 >
   'preview': 1,         " 1 means enable preview window, 0 means disable
   'preview_ratio': 0.5, " 0.5 means preview window will take 50% of the layout
-  'width': 0.8,         " 0.8 means total width of the layout will take 80% of the screen
-  'height': 0.8,        " 0.8 means total height of the layout will take 80% of the screen
+  'width': 0.8,         " 0.8 (80%) when preview is enabled, 0.5 (50%) otherwise
+  'height': 0.8,        " 0.8 (80%) when preview is enabled, 0.5 (50%) otherwise
   'xoffset': auto       " x offset of the windows, 0.1 means 10% from left of the screen
   'yoffset': auto       " x offset of the windows, 0.1 means 10% from top of the screen
 <

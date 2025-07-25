@@ -83,7 +83,7 @@ var windows: dict<any> = {
     colors: {
         prompt_title: 'Color Schemes',
         width: 0.25,
-        xoffset: 0.7,
+        xoffset: 0.6,
     },
     commands: {
         prompt_title: 'Commands',

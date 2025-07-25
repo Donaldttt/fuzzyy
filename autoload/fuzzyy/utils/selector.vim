@@ -23,6 +23,7 @@ var wins: dict<any>
 
 var enable_dropdown = exists('g:fuzzyy_dropdown') ? g:fuzzyy_dropdown : false
 var enable_counter = exists('g:fuzzyy_counter') ? g:fuzzyy_counter : true
+var enable_preview = exists('g:fuzzyy_preview') ? g:fuzzyy_preview : true
 
 # Experimental: export total number of results/matches for the current search
 # Can be used to update the menu title on input to show the number of matches
@@ -531,6 +532,7 @@ export def Start(li_raw: list<string>, opts: dict<any> = {}): dict<any>
         has_key(opts, 'async') && opts.async ? function('InputAsync') : function('Input')
     )
     opts.dropdown = has_key(opts, 'dropdown') ? opts.dropdown : enable_dropdown
+    opts.preview = has_key(opts, 'preview') ? opts.preview : enable_preview
 
     wins = popup.PopupSelection(opts)
     menu_wid = wins.menu

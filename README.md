@@ -174,6 +174,12 @@ Enable dropdown theme (prompt at top rather than bottom). Default 0
 let g:fuzzyy_dropdown = 0
 ```
 
+### g:fuzzyy_preview
+Enable preview window in supported selectors (e.g. FuzzyFiles). Default 1
+```vim
+let g:fuzzyy_preview = 1
+```
+
 ### g:fuzzyy_counter
 Show count of matches. Default 1, set to 0 if you don't want a counter to be
 shown for most selectors.
@@ -367,8 +373,8 @@ Window layout configuration. The general defaults for window layout options are:
 ```
 'preview': 1,         " 1 means enable preview window, 0 means disable
 'preview_ratio': 0.5, " 0.5 means preview window will take 50% of the layout
-'width': 0.8,         " 0.8 means total width of the layout will take 80% of the screen
-'height': 0.8,        " 0.8 means total height of the layout will take 80% of the screen
+'width': 0.8,         " 0.8 (80%) when preview is enabled, 0.5 (50%) otherwise
+'height': 0.8,        " 0.8 (80%) when preview is enabled, 0.5 (50%) otherwise
 'xoffset': auto       " x offset of the windows, 0.1 means 10% from left of the screen
 'yoffset': auto       " x offset of the windows, 0.1 means 10% from top of the screen
 ```
