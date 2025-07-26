@@ -1,7 +1,7 @@
 vim9script
 
 import autoload './popup.vim'
-import './devicons.vim'
+import autoload './devicons.vim'
 
 var raw_list: list<string>
 var cwd: string
