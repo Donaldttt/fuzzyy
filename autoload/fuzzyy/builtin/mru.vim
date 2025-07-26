@@ -22,6 +22,10 @@ def Preview(wid: number, result: string)
     if wid == -1
         return
     endif
+    if result == ''
+        previewer.PreviewText(wid, '')
+        return
+    endif
     var path = cwd_only ? cwd .. '/' .. result : result
     path = path == '' ? path : fnamemodify(path, ':p')
     previewer.PreviewFile(wid, path)
