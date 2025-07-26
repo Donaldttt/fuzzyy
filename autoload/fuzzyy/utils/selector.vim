@@ -8,7 +8,7 @@ var cwd: string
 var menu_wid: number
 var prompt_str: string
 var menu_hl_list: list<any>
-var enable_devicons: bool
+var enable_devicons = devicons.Enabled()
 var reuse_windows = exists('g:fuzzyy_reuse_windows')
     && type(g:fuzzyy_reuse_windows) == v:t_list ?
     g:fuzzyy_reuse_windows : ['netrw']
@@ -521,7 +521,7 @@ export def Start(li_raw: list<string>, opts: dict<any> = {}): dict<any>
     cwd = len(get(opts, 'cwd', '')) > 0 ? opts.cwd : getcwd()
     prompt_str = ''
 
-    enable_devicons = has_key(opts, 'devicons') ? opts.devicons : 0
+    enable_devicons = enable_devicons && has_key(opts, 'devicons') ? opts.devicons : 0
     if has_key(opts, 'counter')
         enable_counter = opts.counter
     endif
