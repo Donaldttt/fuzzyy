@@ -336,6 +336,7 @@ def UpdateMenu(...li: list<any>)
         selector.UpdateMenu([], [])
         last_pattern = cur_pattern
         last_result_len = cur_result_len
+        popup.SetCounter(null)
         popup_setoptions(menu_wid, {title: ''})
         return
     endif
@@ -344,8 +345,10 @@ def UpdateMenu(...li: list<any>)
         var time = float2nr(str2float(reltime()->reltimestr()[4 : ]) * 1000)
         var speed = 100
         var loadidx = (time % speed) / len(loading)
+        popup.SetCounter(loading[loadidx])
         popup_setoptions(menu_wid, {title: string(len(cur_result)) .. loading[loadidx]})
     else
+        popup.SetCounter(len(cur_result))
         popup_setoptions(menu_wid, {title: string(len(cur_result))})
     endif
 
@@ -425,6 +428,7 @@ export def Start(opts: dict<any> = {})
         preview_cb: function('Preview'),
         close_cb: function('Close'),
         devicons: enable_devicons,
+        counter: false,
         key_callbacks: selector.split_edit_callbacks
      }))
     menu_wid = wids.menu

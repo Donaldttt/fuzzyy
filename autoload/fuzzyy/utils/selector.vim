@@ -4,6 +4,7 @@ import autoload './popup.vim'
 import './devicons.vim'
 
 var raw_list: list<string>
+var len_list: number
 var cwd: string
 var menu_wid: number
 var prompt_str: string
@@ -160,7 +161,7 @@ def InputAsyncCb(result: list<any>)
     endfor
     UpdateMenu(strs, hl_list)
     if enable_counter
-        popup_setoptions(menu_wid, {title: total_results})
+        popup.SetCounter(total_results, len_list)
     endif
 enddef
 
@@ -172,7 +173,7 @@ def InputAsync(wid: number, result: string)
         var strs = raw_list[: 100]
         UpdateMenu(strs, [])
         if enable_counter
-            popup_setoptions(menu_wid, {title: len(raw_list)})
+            popup.SetCounter(len_list, len_list)
         endif
     endif
 enddef
@@ -332,7 +333,7 @@ def Input(wid: number, result: string)
         devicons.AddColor(menu_wid)
     endif
     if enable_counter
-        popup_setoptions(menu_wid, {title: total_results})
+        popup.SetCounter(total_results, len_list)
     endif
 enddef
 
@@ -537,6 +538,7 @@ export def Start(li_raw: list<string>, opts: dict<any> = {}): dict<any>
     wins = popup.PopupSelection(opts)
     menu_wid = wins.menu
     raw_list = li_raw
+    len_list = len(raw_list)
     var li = copy(li_raw)
     if opts.input_cb == function('InputAsync')
         li = li[: 100]
@@ -550,7 +552,7 @@ export def Start(li_raw: list<string>, opts: dict<any> = {}): dict<any>
     endif
 
     if enable_counter
-        popup_setoptions(menu_wid, {title: len(raw_list)})
+        popup.SetCounter(len_list, len_list)
     endif
 
     autocmd User PopupClosed ++once Cleanup()

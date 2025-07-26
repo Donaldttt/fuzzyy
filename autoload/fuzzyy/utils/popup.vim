@@ -644,6 +644,30 @@ def PopupPrompt(args: dict<any>): number
     return wid
 enddef
 
+export def SetCounter(count: any, total: any = null)
+    var bufnr = popup_wins[wins.prompt].bufnr
+    var type = 'FuzzyyCounter'
+    var prop = prop_type_get(type)
+    if empty(prop)
+        prop_type_add(type, {'highlight': type})
+    endif
+    var text: string
+    if empty(count)
+        text = ''
+    elseif empty(total)
+        text = type(count) == v:t_string ? count : string(count)
+    else
+        text = string(count) .. ' / ' .. string(total)
+    endif
+    prop_remove({all: true, type: type, bufnr: bufnr}, 1)
+    prop_add(1, 0, {
+        bufnr: bufnr,
+        type: type,
+        text: text .. ' ',
+        text_align: 'right'
+    })
+enddef
+
 def PopupMenu(args: dict<any>): number
     var opts = {
      width: 0.4,
