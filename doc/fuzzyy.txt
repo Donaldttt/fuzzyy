@@ -460,7 +460,7 @@ Window layout configuration. The general defaults for window layout options are:
   'width': 0.8,         " 0.8 (80%) when preview is enabled, 0.5 (50%) otherwise
   'height': 0.8,        " 0.8 (80%) when preview is enabled, 0.5 (50%) otherwise
   'xoffset': auto       " x offset of the windows, 0.1 means 10% from left of the screen
-  'yoffset': auto       " x offset of the windows, 0.1 means 10% from top of the screen
+  'yoffset': auto       " y offset of the windows, 0.1 means 10% from top of the screen
 <
 
 This configuration is also customised per selector, with the following defaults:
