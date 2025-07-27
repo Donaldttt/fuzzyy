@@ -521,7 +521,7 @@ export def Start(li_raw: list<string>, opts: dict<any> = {}): dict<any>
     cwd = len(get(opts, 'cwd', '')) > 0 ? opts.cwd : getcwd()
     prompt_str = ''
 
-    enable_devicons = has_key(opts, 'devicons') ? opts.devicons : 0
+    enable_devicons = devicons.Enabled() && has_key(opts, 'devicons') && opts.devicons
     if has_key(opts, 'counter')
         enable_counter = opts.counter
     endif
