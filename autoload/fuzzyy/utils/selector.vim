@@ -8,7 +8,6 @@ var cwd: string
 var menu_wid: number
 var prompt_str: string
 var menu_hl_list: list<any>
-var enable_devicons: bool
 var reuse_windows = exists('g:fuzzyy_reuse_windows')
     && type(g:fuzzyy_reuse_windows) == v:t_list ?
     g:fuzzyy_reuse_windows : ['netrw']
@@ -21,9 +20,14 @@ var root_patterns = exists('g:fuzzyy_root_patterns')
 
 var wins: dict<any>
 
+var enable_devicons = devicons.Enabled()
 var enable_dropdown = exists('g:fuzzyy_dropdown') ? g:fuzzyy_dropdown : false
 var enable_counter = exists('g:fuzzyy_counter') ? g:fuzzyy_counter : true
 var enable_preview = exists('g:fuzzyy_preview') ? g:fuzzyy_preview : true
+
+# track whether options are endbled for the current selector
+var has_devicons: bool
+var has_counter: bool
 
 # Experimental: export total number of results/matches for the current search
 # Can be used to update the menu title on input to show the number of matches
@@ -35,7 +39,7 @@ export var total_results: number
 # - hl_list: list of highlight positions
 export def UpdateMenu(str_list: list<string>, hl_list: list<list<any>>)
     var new_list = copy(str_list)
-    if enable_devicons
+    if has_devicons
         devicons.AddDevicons(new_list)
         popup.MenuSetText(new_list)
         popup.MenuSetHl('select', hl_list)
@@ -55,7 +59,7 @@ export def MenuGetCursorItem(): string
     var bufnr = winbufnr(wins.menu)
     var cursorlinepos = line('.', wins.menu)
     var bufline = getbufline(bufnr, cursorlinepos, cursorlinepos)[0]
-    if enable_devicons
+    if has_devicons
         bufline = devicons.RemoveDevicon(bufline)
     endif
     return bufline
@@ -146,7 +150,7 @@ var AsyncCb: func
 def InputAsyncCb(result: list<any>)
     var strs = []
     var hl_list = []
-    var hl_offset = enable_devicons ? devicons.GetDeviconOffset() : 0
+    var hl_offset = has_devicons ? devicons.GetDeviconOffset() : 0
     var idx = 1
     for item in result
         add(strs, item[0])
@@ -159,7 +163,7 @@ def InputAsyncCb(result: list<any>)
         idx += 1
     endfor
     UpdateMenu(strs, hl_list)
-    if enable_counter
+    if has_counter
         popup_setoptions(menu_wid, {title: total_results})
     endif
 enddef
@@ -171,7 +175,7 @@ def InputAsync(wid: number, result: string)
         timer_stop(async_tid)
         var strs = raw_list[: 100]
         UpdateMenu(strs, [])
-        if enable_counter
+        if has_counter
             popup_setoptions(menu_wid, {title: len(raw_list)})
         endif
     endif
@@ -317,7 +321,7 @@ def Input(wid: number, result: string)
     var ret: list<string>
     [ret, menu_hl_list] = FuzzySearch(raw_list, prompt_str)
 
-    if enable_devicons
+    if has_devicons
         devicons.AddDevicons(ret)
         var hl_offset = devicons.GetDeviconOffset()
          menu_hl_list = reduce(menu_hl_list, (a, v) => {
@@ -328,10 +332,10 @@ def Input(wid: number, result: string)
 
     popup.MenuSetText(ret)
     popup.MenuSetHl('select', menu_hl_list)
-    if enable_devicons
+    if has_devicons
         devicons.AddColor(menu_wid)
     endif
-    if enable_counter
+    if has_counter
         popup_setoptions(menu_wid, {title: total_results})
     endif
 enddef
@@ -430,7 +434,7 @@ def SelectQuickFix(wid: number, _: list<any>)
     map(lines, (_, val) => {
         var [path, line, col] = split(val .. ':1:1', ':')[0 : 2]
         var text = split(val, ':' .. line .. ':' .. col .. ':')[-1]
-        if enable_devicons
+        if has_devicons
             if path == text
                 text = devicons.RemoveDevicon(text)
             endif
@@ -521,10 +525,8 @@ export def Start(li_raw: list<string>, opts: dict<any> = {}): dict<any>
     cwd = len(get(opts, 'cwd', '')) > 0 ? opts.cwd : getcwd()
     prompt_str = ''
 
-    enable_devicons = devicons.Enabled() && has_key(opts, 'devicons') && opts.devicons
-    if has_key(opts, 'counter')
-        enable_counter = opts.counter
-    endif
+    has_devicons = enable_devicons && has_key(opts, 'devicons') && opts.devicons
+    has_counter = has_key(opts, 'counter') ? opts.counter : enable_counter
 
     opts.preview_cb = has_key(opts, 'preview_cb') ? opts.preview_cb : null
     opts.select_cb = has_key(opts, 'select_cb') ? opts.select_cb : null
@@ -541,15 +543,15 @@ export def Start(li_raw: list<string>, opts: dict<any> = {}): dict<any>
     if opts.input_cb == function('InputAsync')
         li = li[: 100]
     endif
-    if enable_devicons
+    if has_devicons
          devicons.AddDevicons(li)
     endif
     popup.MenuSetText(li)
-    if enable_devicons
+    if has_devicons
         devicons.AddColor(menu_wid)
     endif
 
-    if enable_counter
+    if has_counter
         popup_setoptions(menu_wid, {title: len(raw_list)})
     endif
 
