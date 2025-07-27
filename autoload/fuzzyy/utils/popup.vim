@@ -631,10 +631,7 @@ def PopupPrompt(args: dict<any>): number
     popup_settext(wid, prompt_opt.displayed_line)
 
     if has_key(args, 'title') && !empty(args.title)
-        # var title = substitute(prompt_char, '\m.', borderchars[0], 'g') .. args.title
-        var padding = ( popup_getoptions(wid).maxwidth / 2 ) - ( len(args.title) / 2 )
-        var title = repeat([borderchars[0]], padding)->join('') .. args.title
-        popup_setoptions(wid, {title: title})
+        SetTitle(wid, args.title)
     endif
 
     # set cursor
@@ -642,6 +639,14 @@ def PopupPrompt(args: dict<any>): number
     [[1, prompt_char_len + 1 + cursor_args.cur_pos]], 10, -1,  {window: wid})
     popup_wins[wid].cursor_args.mid = mid
     return wid
+enddef
+
+export def SetTitle(wid: number, str: string)
+    # var title = substitute(prompt_char, '\m.', borderchars[0], 'g') .. args.title
+    var title = ' ' .. str .. ' '
+    var padding = ( popup_getoptions(wid).maxwidth / 2 ) - ( len(title) / 2 )
+    title = repeat([borderchars[0]], padding)->join('') .. title
+    popup_setoptions(wid, {title: title})
 enddef
 
 export def SetCounter(count: any, total: any = null)
