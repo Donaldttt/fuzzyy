@@ -1,5 +1,7 @@
 vim9script
 
+import autoload './popup.vim'
+
 def IsBinary(path: string): bool
     # NUL byte check for binary files, used to avoid showing preview
     # Assumes a file encoding that does not allow NUL bytes, so will
@@ -58,7 +60,7 @@ enddef
 
 export def PreviewFile(wid: number, path: string, opts: dict<any> = {})
     win_execute(wid, 'syntax clear')
-    popup_setoptions(wid, {title: fnamemodify(path, ':t')})
+    popup.SetTitle(wid, fnamemodify(path, ':t'))
     if !filereadable(path)
         popup_settext(wid, 'File not found: ' .. path)
         return

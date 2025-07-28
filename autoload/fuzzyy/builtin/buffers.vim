@@ -1,6 +1,7 @@
 vim9script
 
 import autoload '../utils/selector.vim'
+import autoload '../utils/popup.vim'
 import autoload '../utils/devicons.vim'
 
 var buf_dict: dict<any>
@@ -45,7 +46,7 @@ def Preview(wid: number, result: string)
         endif
         return
     endif
-    popup_setoptions(wid, {title: fnamemodify(file, ':t')})
+    popup.SetTitle(wid, fnamemodify(file, ':t'))
     var bufnr = buf_dict[result][1]
     var ft = getbufvar(bufnr, '&filetype')
     var fileraw = readfile(file)

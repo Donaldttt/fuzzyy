@@ -1,6 +1,7 @@
 vim9script
 
 import autoload '../utils/selector.vim'
+import autoload '../utils/popup.vim'
 
 var tag_table: dict<any>
 var tag_files: list<string>
@@ -24,7 +25,7 @@ def Preview(wid: number, result: string)
     # Note: forward slash path separator tested on Windows, works fine
     var doc_file = fnamemodify(tag_file, ':h') .. '/' .. tag_table[result][0]
     popup_settext(wid, readfile(doc_file))
-    popup_setoptions(wid, {title: fnamemodify(doc_file, ':t')})
+    popup.SetTitle(wid, fnamemodify(doc_file, ':t'))
     var tag_name = substitute(tag_table[result][1], '\v^(\/\*)(.*)(\*)$', '\2', '')
     win_execute(wid, "exec 'norm! ' .. search('\\m\\*" .. EscQuotes(tag_name) .. "\\*\\C', 'w')")
     win_execute(wid, 'norm! zz')

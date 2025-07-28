@@ -4,6 +4,7 @@ import autoload './popup.vim'
 import autoload './devicons.vim'
 
 var raw_list: list<string>
+var len_list: number
 var cwd: string
 var menu_wid: number
 var prompt_str: string
@@ -29,9 +30,9 @@ var enable_preview = exists('g:fuzzyy_preview') ? g:fuzzyy_preview : true
 var has_devicons: bool
 var has_counter: bool
 
-# Experimental: export total number of results/matches for the current search
-# Can be used to update the menu title on input to show the number of matches
-export var total_results: number
+# Experimental: export count of results/matches for the current search
+# Can be used to to call popup.SetCounter
+export var len_results: number
 
 # This function is used to render the menu window.
 # params:
@@ -104,7 +105,7 @@ enddef
 #       - [[line1, col1], [line1, col2], [line2, col1], ...]
 export def FuzzySearch(li: list<string>, pattern: string, ...args: list<any>): list<any>
     if pattern == ''
-        total_results = len(raw_list)
+        len_results = len(raw_list)
         return [copy(li), []]
     endif
     var opts = {}
@@ -116,7 +117,7 @@ export def FuzzySearch(li: list<string>, pattern: string, ...args: list<any>): l
     var poss = results[1]
     var scores = results[2]
 
-    total_results = len(strs)
+    len_results = len(strs)
 
     var str_list = []
     var hl_list = []
@@ -164,7 +165,7 @@ def InputAsyncCb(result: list<any>)
     endfor
     UpdateMenu(strs, hl_list)
     if has_counter
-        popup_setoptions(menu_wid, {title: total_results})
+        popup.SetCounter(len_results, len_list)
     endif
 enddef
 
@@ -176,7 +177,7 @@ def InputAsync(wid: number, result: string)
         var strs = raw_list[: 100]
         UpdateMenu(strs, [])
         if has_counter
-            popup_setoptions(menu_wid, {title: len(raw_list)})
+            popup.SetCounter(len_list, len_list)
         endif
     endif
 enddef
@@ -224,7 +225,7 @@ def Worker(tid: number)
     var poss = results[1]
     var scores = results[2]
 
-    total_results += len(strs)
+    len_results += len(strs)
 
     for idx in range(len(strs))
         # merge continus number
@@ -288,7 +289,7 @@ export def FuzzySearchAsync(li: list<string>, pattern: string, limit: number, Cb
     async_limit = limit
     async_pattern = pattern
     async_results = []
-    total_results = 0
+    len_results = 0
     AsyncCb = Cb
     async_tid = timer_start(50, function('Worker'), {repeat: -1})
     Worker(async_tid)
@@ -336,7 +337,7 @@ def Input(wid: number, result: string)
         devicons.AddColor(menu_wid)
     endif
     if has_counter
-        popup_setoptions(menu_wid, {title: total_results})
+        popup.SetCounter(len_results, len_list)
     endif
 enddef
 
@@ -539,6 +540,7 @@ export def Start(li_raw: list<string>, opts: dict<any> = {}): dict<any>
     wins = popup.PopupSelection(opts)
     menu_wid = wins.menu
     raw_list = li_raw
+    len_list = len(raw_list)
     var li = copy(li_raw)
     if opts.input_cb == function('InputAsync')
         li = li[: 100]
@@ -552,7 +554,7 @@ export def Start(li_raw: list<string>, opts: dict<any> = {}): dict<any>
     endif
 
     if has_counter
-        popup_setoptions(menu_wid, {title: len(raw_list)})
+        popup.SetCounter(len_list, len_list)
     endif
 
     autocmd User PopupClosed ++once Cleanup()

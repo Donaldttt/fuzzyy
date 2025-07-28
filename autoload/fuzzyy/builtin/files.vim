@@ -1,6 +1,7 @@
 vim9script
 
 import autoload '../utils/selector.vim'
+import autoload '../utils/popup.vim'
 import autoload '../utils/previewer.vim'
 import autoload '../utils/devicons.vim'
 import autoload '../utils/cmdbuilder.vim'
@@ -11,6 +12,7 @@ var last_pattern: string
 var in_loading: number
 var cwd: string
 var cur_result: list<string>
+var len_total: number
 var jid: job
 var menu_wid: number
 var update_tid: number
@@ -55,7 +57,7 @@ def AsyncCb(result: list<any>)
         idx += 1
     endfor
     selector.UpdateMenu(ProcessResult(strs), hl_list)
-    popup_setoptions(menu_wid, {title: selector.total_results})
+    popup.SetCounter(selector.len_results, len_total)
 enddef
 
 def Input(wid: number, result: string)
@@ -72,7 +74,7 @@ def Input(wid: number, result: string)
         selector.FuzzySearchAsync(cur_result, cur_pattern, 200, function('AsyncCb'))
     else
         selector.UpdateMenu(ProcessResult(cur_result, 100), [])
-        popup_setoptions(menu_wid, {title: len(cur_result)})
+        popup.SetCounter(len(cur_result), len_total)
     endif
 enddef
 
@@ -121,7 +123,8 @@ def JobExitCb(id: job, status: number)
     if last_result_len <= 0
         selector.UpdateMenu(ProcessResult(cur_result, 100), [])
     endif
-    popup_setoptions(menu_wid, {title: len(cur_result)})
+    len_total = len(cur_result)
+    popup.SetCounter(len_total, len_total)
 enddef
 
 def Profiling()
@@ -135,7 +138,10 @@ enddef
 
 def UpdateMenu(...li: list<any>)
     var cur_result_len = len(cur_result)
-    popup_setoptions(menu_wid, {title: string(len(cur_result))})
+    if cur_result_len > len_total
+        len_total = cur_result_len
+    endif
+    popup.SetCounter(cur_result_len, len_total)
     if cur_result_len == last_result_len
         return
     endif
@@ -170,6 +176,7 @@ export def Start(opts: dict<any> = {})
         input_cb: function('Input'),
         close_cb: function('Close'),
         devicons: enable_devicons,
+        counter: false,
         key_callbacks: selector.split_edit_callbacks,
     }))
     menu_wid = wids.menu
