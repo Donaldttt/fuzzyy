@@ -7,7 +7,11 @@ export def Start(selector: string, opts: dict<any>)
         g:__fuzzyy_launcher_cache = []
     endif
     insert(g:__fuzzyy_launcher_cache, { selector: selector, opts: opts, prompt: '' })
-    function('fuzzyy#builtin#' .. selector .. '#Start')(opts)
+    try
+        function('fuzzyy#builtin#' .. selector .. '#Start')(opts)
+    catch /\v:(E700|E117):/
+        function('fuzzyy#_extensions#' .. selector .. '#Start')(opts)
+    endtry
 
     if exists('g:__fuzzyy_warnings_found') && g:__fuzzyy_warnings_found
         echohl WarningMsg
@@ -23,7 +27,11 @@ export def Resume()
     endif
     for e in g:__fuzzyy_launcher_cache
         if !empty(e.prompt)
-            function('fuzzyy#builtin#' .. e.selector .. '#Start')(e.opts)
+            try
+                function('fuzzyy#builtin#' .. e.selector .. '#Start')(e.opts)
+            catch /\v:(E700|E117):/
+                function('fuzzyy#_extensions#' .. e.selector .. '#Start')(e.opts)
+            endtry
             if popup.GetPrompt() != e.prompt
                 popup.SetPrompt(slice(e.prompt, 0, -1))
                 feedkeys(e.prompt[strcharlen(e.prompt) - 1])
