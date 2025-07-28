@@ -17,7 +17,7 @@ export def Start(selector: string, opts: dict<any>)
 enddef
 
 export def Resume()
-    if !exists('g:__fuzzyy_launcher_cache')
+    if !exists('g:__fuzzyy_launcher_cache') || empty(g:__fuzzyy_launcher_cache)
         Warn( 'fuzzyy: no previous launch to resume')
         return
     endif
@@ -39,7 +39,7 @@ export def Resume()
 enddef
 
 export def Save(wins: dict<any>)
-    if !exists('g:__fuzzyy_launcher_cache') || type(wins) != v:t_dict
+    if !exists('g:__fuzzyy_launcher_cache') || empty(g:__fuzzyy_launcher_cache)
         return
     endif
     try
