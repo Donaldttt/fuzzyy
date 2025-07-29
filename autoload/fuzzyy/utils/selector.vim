@@ -18,6 +18,9 @@ var async_step = exists('g:fuzzyy_async_step')
 var root_patterns = exists('g:fuzzyy_root_patterns')
     && type(g:fuzzyy_root_patterns) == v:t_list ?
     g:fuzzyy_root_patterns : ['.git', '.hg', '.svn']
+var prompt_prefix = exists('g:fuzzyy_prompt_prefix')
+    && type(g:fuzzyy_prompt_prefix) == v:t_string ?
+    g:fuzzyy_prompt_prefix : '> '
 
 var wins: dict<any>
 
@@ -536,6 +539,7 @@ export def Start(li_raw: list<string>, opts: dict<any> = {}): dict<any>
     )
     opts.dropdown = has_key(opts, 'dropdown') ? opts.dropdown : enable_dropdown
     opts.preview = has_key(opts, 'preview') ? opts.preview : enable_preview
+    opts.prompt_prefix = has_key(opts, 'prompt_prefix') ? opts.prompt_prefix : prompt_prefix
 
     wins = popup.PopupSelection(opts)
     menu_wid = wins.menu

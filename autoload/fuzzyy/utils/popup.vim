@@ -252,8 +252,8 @@ def PromptFilter(wid: number, key: string): number
         if pos.winid != wid
             return 0
         endif
-        var promptchar_len = popup_wins[wid].cursor_args.promptchar_len
-        cur_pos = pos.wincol - promptchar_len - 2
+        var prefix_len = popup_wins[wid].cursor_args.prefix_len
+        cur_pos = pos.wincol - prefix_len - 2
         if cur_pos > max_pos
             cur_pos = max_pos
         endif
@@ -268,7 +268,7 @@ def PromptFilter(wid: number, key: string): number
 
     var line_str = join(line, '')
     if has_key(popup_wins[wid].prompt, 'input_cb') && popup_wins[wid].prompt.line != line
-        var prompt = popup_wins[wid].prompt.promptchar
+        var prompt = popup_wins[wid].prompt.prefix
         var displayed_line = prompt .. line_str .. " "
         popup_settext(wid, displayed_line)
         popup_wins[wid].prompt.displayed_line = displayed_line
@@ -284,12 +284,12 @@ def PromptFilter(wid: number, key: string): number
     endif
 
     popup_wins[wid].cursor_args.max_pos = len(line)
-    var promptchar_len = popup_wins[wid].cursor_args.promptchar_len
+    var prefix_len = popup_wins[wid].cursor_args.prefix_len
 
     # cursor hl
     var hl = popup_wins[wid].cursor_args.highlight
     matchdelete(popup_wins[wid].cursor_args.mid, wid)
-    var hi_end_pos = promptchar_len + 1
+    var hi_end_pos = prefix_len + 1
     if cur_pos > 0
         hi_end_pos += len(join(line[: cur_pos - 1], ''))
     endif
@@ -606,18 +606,18 @@ def PopupPrompt(args: dict<any>): number
      }
     opts = extend(opts, args)
     var [wid, bufnr] = NewPopup(opts)
-    var prompt_char = has_key(args, 'prompt') ? args.prompt : '> '
-    var prompt_char_len = strcharlen(prompt_char)
+    var prompt_prefix = has_key(args, 'prompt_prefix') ? args.prompt_prefix : '> '
+    var prompt_prefix_len = strcharlen(prompt_prefix)
     var prompt_opt = {
      line: [],
-     promptchar: prompt_char,
-     displayed_line: prompt_char .. " ",
+     prefix: prompt_prefix,
+     displayed_line: prompt_prefix .. " ",
      }
 
     var cursor_args = {
      min_pos: 0,
      max_pos: 0,
-     promptchar_len: prompt_char_len,
+     prefix_len: prompt_prefix_len,
      cur_pos: 0,
      highlight: 'fuzzyyCursor',
      mid: -1,
@@ -636,13 +636,13 @@ def PopupPrompt(args: dict<any>): number
 
     # set cursor
     var mid = matchaddpos(cursor_args.highlight,
-    [[1, prompt_char_len + 1 + cursor_args.cur_pos]], 10, -1,  {window: wid})
+    [[1, prompt_prefix_len + 1 + cursor_args.cur_pos]], 10, -1,  {window: wid})
     popup_wins[wid].cursor_args.mid = mid
     return wid
 enddef
 
 export def SetTitle(wid: number, str: string)
-    # var title = substitute(prompt_char, '\m.', borderchars[0], 'g') .. args.title
+    # var title = substitute(prompt_prefix, '\m.', borderchars[0], 'g') .. args.title
     var title = ' ' .. str .. ' '
     var padding = ( popup_getoptions(wid).maxwidth / 2 ) - ( len(title) / 2 )
     title = repeat([borderchars[0]], padding)->join('') .. title
@@ -802,6 +802,9 @@ export def PopupSelection(opts: dict<any>): dict<any>
     }
     if has_key(opts, 'prompt_title')
         prompt_opts['title'] = opts.prompt_title
+    endif
+    if has_key(opts, 'prompt_prefix')
+        prompt_opts['prompt_prefix'] = opts.prompt_prefix
     endif
     wins.prompt = PopupPrompt(prompt_opts)
 

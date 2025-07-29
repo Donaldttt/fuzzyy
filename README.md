@@ -188,6 +188,13 @@ let g:fuzzyy_counter = 1
 ```
 This option is ignored by some selectors/commands, e.g. FuzzyFiles, FuzzyGrep
 
+### g:fuzzyy_prompt_prefix
+Set the prefix for the input in the prompt window. Default '> ', must be a
+string, but an empty string is valid.
+```vim
+let g:fuzzyy_prompt_prefix = '> '
+```
+
 ### g:fuzzyy_borderchars
 Set the borderchars of popup windows. Must be a list of 8 characters.
 ```vim
