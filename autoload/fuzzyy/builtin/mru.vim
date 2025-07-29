@@ -8,6 +8,7 @@ var mru_origin_list: list<string>
 var cwd: string
 var cwd_only: bool
 var cwdlen: number
+var fs = has('win32') || has('win64') ? '\' : '/'
 var menu_wid: number
 
 # Options
@@ -102,7 +103,7 @@ export def Start(opts: dict<any> = {})
     var mru_list: list<string> = copy(mru_origin_list)
     if cwd_only
         mru_list = filter(mru_list, (_, val) => {
-            return stridx(fnamemodify(val, ':p'), cwd) >= 0
+            return stridx(fnamemodify(val, ':p'), cwd .. fs) >= 0
         })
         mru_list = reduce(mru_list, (acc, val) => {
             acc->add(strpart(fnamemodify(val, ':p'), cwdlen + 1))
