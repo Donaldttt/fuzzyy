@@ -8,7 +8,7 @@ var tag_list: list<string>
 var tag_files = []
 var tag_dirs = []
 var cwd: string
-var fs = has('win32') || has('win64') ? '\' : '/'
+var fs = helpers.PathSep()
 var menu_wid: number
 
 def ParseResult(result: string): list<any>

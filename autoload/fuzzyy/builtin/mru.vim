@@ -9,7 +9,7 @@ var mru_origin_list: list<string>
 var cwd: string
 var cwd_only: bool
 var cwdlen: number
-var fs = has('win32') || has('win64') ? '\' : '/'
+var fs = helpers.PathSep()
 var menu_wid: number
 
 # Options

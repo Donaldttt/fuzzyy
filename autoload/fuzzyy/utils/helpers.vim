@@ -14,13 +14,13 @@ export def IsWin(): bool
     return iswin
 enddef
 
-export def FS(): string
+export def PathSep(): string
     return fs
 enddef
 
 export def Split(str: string): list<string>
     var sep: string
-    if IsWin() && stridx(str, "\r\n") >= 0
+    if iswin && stridx(str, "\r\n") >= 0
         sep = '\r\n'
     else
         sep = '\n'
