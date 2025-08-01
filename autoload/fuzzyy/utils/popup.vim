@@ -650,6 +650,10 @@ export def SetTitle(wid: number, str: string)
 enddef
 
 export def SetCounter(count: any, total: any = null)
+    # this can happen with async callbacks
+    if wins.prompt == -1
+        return
+    endif
     var bufnr = popup_wins[wins.prompt].bufnr
     var type = 'FuzzyyCounter'
     var prop = prop_type_get(type)
