@@ -3,6 +3,7 @@ vim9script
 import autoload '../utils/selector.vim'
 import autoload '../utils/popup.vim'
 import autoload '../utils/devicons.vim'
+import autoload '../utils/helpers.vim'
 
 var buf_dict: dict<any>
 var key_callbacks: dict<any>
@@ -64,7 +65,7 @@ def Select(wid: number, result: list<any>)
     var buf = result[0]
     var bufnr = buf_dict[buf][1]
     if bufnr != bufnr('$')
-        selector.MoveToUsableWindow(bufnr)
+        helpers.MoveToUsableWindow(bufnr)
         execute 'buffer' bufnr
     endif
 enddef

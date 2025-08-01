@@ -4,6 +4,7 @@ import autoload '../utils/selector.vim'
 import autoload '../utils/previewer.vim'
 import autoload '../utils/popup.vim'
 import autoload '../utils/devicons.vim'
+import autoload '../utils/helpers.vim'
 
 var enable_devicons = devicons.Enabled()
 
@@ -244,7 +245,7 @@ enddef
 
 def JobOutCb(channel: channel, msg: string)
     if job_info(ch_getjob(channel)).process == pid
-        var lists = selector.Split(msg)
+        var lists = helpers.Split(msg)
         cur_result += lists
     endif
 enddef
@@ -320,7 +321,7 @@ def Select(wid: number, result: list<any>)
         return
     endif
     var path = cwd .. '/' .. relative_path
-    selector.MoveToUsableWindow()
+    helpers.MoveToUsableWindow()
     exe 'edit ' .. fnameescape(path)
     if col > 0
         cursor(line, col)

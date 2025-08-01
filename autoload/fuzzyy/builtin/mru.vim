@@ -3,6 +3,7 @@ vim9script
 import autoload '../utils/selector.vim'
 import autoload '../utils/previewer.vim'
 import autoload '../utils/devicons.vim'
+import autoload '../utils/helpers.vim'
 
 var mru_origin_list: list<string>
 var cwd: string
@@ -35,7 +36,7 @@ enddef
 
 def Select(wid: number, result: list<any>)
     var path = result[0]
-    selector.MoveToUsableWindow()
+    helpers.MoveToUsableWindow()
     if cwd_only
         exe 'edit ' cwd .. '/' .. fnameescape(path)
     else

@@ -2,6 +2,7 @@ vim9script
 
 import autoload './popup.vim'
 import autoload './devicons.vim'
+import autoload './helpers.vim'
 
 var raw_list: list<string>
 var len_list: number
@@ -9,15 +10,9 @@ var cwd: string
 var menu_wid: number
 var prompt_str: string
 var menu_hl_list: list<any>
-var reuse_windows = exists('g:fuzzyy_reuse_windows')
-    && type(g:fuzzyy_reuse_windows) == v:t_list ?
-    g:fuzzyy_reuse_windows : ['netrw']
 var async_step = exists('g:fuzzyy_async_step')
     && type(g:fuzzyy_async_step) == v:t_number ?
     g:fuzzyy_async_step : 10000
-var root_patterns = exists('g:fuzzyy_root_patterns')
-    && type(g:fuzzyy_root_patterns) == v:t_list ?
-    g:fuzzyy_root_patterns : ['.git', '.hg', '.svn']
 var prompt_prefix = exists('g:fuzzyy_prompt_prefix')
     && type(g:fuzzyy_prompt_prefix) == v:t_string ?
     g:fuzzyy_prompt_prefix : '> '
@@ -67,31 +62,6 @@ export def MenuGetCursorItem(): string
         bufline = devicons.RemoveDevicon(bufline)
     endif
     return bufline
-enddef
-
-export def Split(str: string): list<string>
-    var sep: string
-    if has('win32') && stridx(str, "\r\n") >= 0
-        sep = '\r\n'
-    else
-        sep = '\n'
-    endif
-    return split(str, sep)
-enddef
-
-export def GetRootDir(): string
-  var dir = getcwd()
-  var cur: string
-  while 1
-    for pattern in root_patterns
-      if !empty(globpath(dir, pattern, 1))
-        return dir
-      endif
-    endfor
-    [cur, dir] = [dir, fnamemodify(dir, ':h')]
-    if cur == dir | break | endif
-  endwhile
-  return getcwd()
 enddef
 
 # Search pattern @pattern in a list of strings @li
@@ -481,20 +451,6 @@ export var split_edit_callbacks = {
     "\<c-t>": function('SetTabClose'),
     "\<c-q>": function('SetQuickFixClose'),
 }
-
-export def MoveToUsableWindow(buf: any = null)
-    var c = 0
-    var wincount = winnr('$')
-    var buftype = !empty(buf) && !getbufvar(buf, '&buftype') ?
-        getbufvar(buf, '&buftype') : null
-    var filetype = !empty(buf) && !getbufvar(buf, '&filetype') ?
-        getbufvar(buf, '&filetype') : null
-    while ( !empty(&buftype) && index(reuse_windows + [buftype], &buftype) == -1 &&
-            index(reuse_windows + [filetype], &filetype) == -1 && c < wincount )
-        wincmd w
-        c = c + 1
-    endwhile
-enddef
 
 # This function spawn a popup picker for user to select an item from a list.
 # params:

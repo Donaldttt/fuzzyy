@@ -4,6 +4,7 @@ import autoload '../utils/selector.vim'
 import autoload '../utils/popup.vim'
 import autoload '../utils/previewer.vim'
 import autoload '../utils/devicons.vim'
+import autoload '../utils/helpers.vim'
 import autoload '../utils/cmdbuilder.vim'
 
 var last_result_len: number
@@ -37,7 +38,7 @@ enddef
 def Select(wid: number, result: list<any>)
     var relative_path = result[0]
     var path = cwd .. '/' .. relative_path
-    selector.MoveToUsableWindow()
+    helpers.MoveToUsableWindow()
     exe 'edit ' .. fnameescape(path)
 enddef
 
@@ -109,7 +110,7 @@ def JobStart(path: string, cmd: string)
 enddef
 
 def JobOutCb(channel: channel, msg: string)
-    var lists = selector.Split(msg)
+    var lists = helpers.Split(msg)
     cur_result += lists
 enddef
 

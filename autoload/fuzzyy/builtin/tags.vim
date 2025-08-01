@@ -2,6 +2,7 @@ vim9script
 
 import autoload '../utils/selector.vim'
 import autoload '../utils/previewer.vim'
+import autoload '../utils/helpers.vim'
 
 var tag_list: list<string>
 var tag_files = []
@@ -51,7 +52,7 @@ def Select(wid: number, result: list<any>)
     var [tagname, tagfile, tagaddress] = ParseResult(result[0])
     var path = ExpandPath(tagfile)
     if filereadable(path)
-        selector.MoveToUsableWindow()
+        helpers.MoveToUsableWindow()
         exe 'edit ' .. fnameescape(path)
         JumpToAddress(tagaddress)
     endif
