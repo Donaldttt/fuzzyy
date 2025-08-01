@@ -8,6 +8,7 @@ import autoload '../utils/popup.vim'
 var raw_lines: list<string>
 var file_type: string
 var file_name: string
+var menu_wid: number
 
 def Select(wid: number, result: list<any>)
     var linenr = str2nr(split(result[0], ':')[0])
@@ -34,35 +35,44 @@ def Preview(wid: number, result: string)
     win_execute(wid, 'norm! zz')
 enddef
 
-def SelectTab(wid: number, result: list<any>)
-    if !empty(result) && !empty(result[0])
-        var line = str2nr(split(result[0], '│')[0])
-        exe 'tabnew ' .. fnameescape(file_name)
-        exe 'norm! ' .. line .. 'G'
-        exe 'norm! zz'
+def OpenFileTab()
+    var result = selector.GetCursorItem()
+    if empty(result)
+        return
     endif
+    popup_close(menu_wid)
+    var line = str2nr(split(result, '│')[0])
+    exe 'tabnew ' .. fnameescape(file_name)
+    exe 'norm! ' .. line .. 'G'
+    exe 'norm! zz'
 enddef
 
-def SelectVSplit(wid: number, result: list<any>)
-    if !empty(result) && !empty(result[0])
-        var line = str2nr(split(result[0], '│')[0])
-        exe 'vsplit ' .. fnameescape(file_name)
-        exe 'norm! ' .. line .. 'G'
-        exe 'norm! zz'
+def OpenFileVSplit()
+    var result = selector.GetCursorItem()
+    if empty(result)
+        return
     endif
+    popup_close(menu_wid)
+    var line = str2nr(split(result, '│')[0])
+    exe 'vsplit ' .. fnameescape(file_name)
+    exe 'norm! ' .. line .. 'G'
+    exe 'norm! zz'
 enddef
 
-def SelectSplit(wid: number, result: list<any>)
-    if !empty(result) && !empty(result[0])
-        var line = str2nr(split(result[0], '│')[0])
-        exe 'split ' .. fnameescape(file_name)
-        exe 'norm! ' .. line .. 'G'
-        exe 'norm! zz'
+def OpenFileSplit()
+    var result = selector.GetCursorItem()
+    if empty(result)
+        return
     endif
+    popup_close(menu_wid)
+    var line = str2nr(split(result, '│')[0])
+    exe 'split ' .. fnameescape(file_name)
+    exe 'norm! ' .. line .. 'G'
+    exe 'norm! zz'
 enddef
 
-def SelectQuickFix(wid: number, result: list<any>)
-    var bufnr = winbufnr(wid)
+def SendAllQuickFix()
+    var bufnr = winbufnr(menu_wid)
     var lines: list<any>
     lines = reverse(getbufline(bufnr, 1, "$"))
     filter(lines, (_, val) => !empty(val))
@@ -76,34 +86,15 @@ def SelectQuickFix(wid: number, result: list<any>)
         return dict
     })
     setqflist(lines)
+    popup_close(menu_wid)
     exe 'copen'
 enddef
 
-def SetVSplitClose()
-    selector.ReplaceSelectCb(function('SelectVSplit'))
-    selector.CloseWithSelection()
-enddef
-
-def SetSplitClose()
-    selector.ReplaceSelectCb(function('SelectSplit'))
-    selector.CloseWithSelection()
-enddef
-
-def SetTabClose()
-    selector.ReplaceSelectCb(function('SelectTab'))
-    selector.CloseWithSelection()
-enddef
-
-def SetQuickFixClose()
-    selector.ReplaceSelectCb(function('SelectQuickFix'))
-    selector.CloseWithSelection()
-enddef
-
-var split_edit_callbacks = {
-    "\<c-v>": function('SetVSplitClose'),
-    "\<c-s>": function('SetSplitClose'),
-    "\<c-t>": function('SetTabClose'),
-    "\<c-q>": function('SetQuickFixClose'),
+var open_file_callbacks = {
+    "\<c-v>": function('OpenFileVSplit'),
+    "\<c-s>": function('OpenFileSplit'),
+    "\<c-t>": function('OpenFileTab'),
+    "\<c-q>": function('SendAllQuickFix'),
 }
 
 export def Start(opts: dict<any> = {})
@@ -117,8 +108,9 @@ export def Start(opts: dict<any> = {})
     var wids = selector.Start(lines, extend(opts, {
         select_cb: function('Select'),
         preview_cb: function('Preview'),
-        key_callbacks: split_edit_callbacks,
+        key_callbacks: open_file_callbacks,
     }))
+    menu_wid = wids.menu
 
     if len(get(opts, 'search', '')) > 0
         popup.SetPrompt(opts.search)

@@ -32,10 +32,7 @@ var has_counter: bool
 # Can be used to to call popup.SetCounter
 export var len_results: number
 
-# This function is used to render the menu window.
-# params:
-# - str_list: list of string to be displayed in the menu window
-# - hl_list: list of highlight positions
+# render the menu window with list of items and fuzzy matched positions
 export def UpdateMenu(str_list: list<string>, hl_list: list<list<any>>)
     var new_list = copy(str_list)
     if has_devicons
@@ -49,12 +46,8 @@ export def UpdateMenu(str_list: list<string>, hl_list: list<list<any>>)
     endif
 enddef
 
-# This function is used to get the line under the cursor in the menu window.
-# params:
-# - stripped: get the line after striping the devicon or any other prefix
-# return:
-# - the line under the cursor
-export def MenuGetCursorItem(): string
+# get the line under the cursor in the menu window
+export def GetCursorItem(): string
     var bufnr = winbufnr(wins.menu)
     var cursorlinepos = line('.', wins.menu)
     var bufline = getbufline(bufnr, cursorlinepos, cursorlinepos)[0]
@@ -269,22 +262,6 @@ export def FuzzySearchAsync(li: list<string>, pattern: string, limit: number, Cb
     return async_tid
 enddef
 
-export def ReplaceCloseCb(Close_cb: func)
-    popup.SetPopupWinProp(menu_wid, 'close_cb', Close_cb)
-enddef
-
-export def ReplaceSelectCb(Select_cb: func)
-    popup.SetPopupWinProp(menu_wid, 'select_cb', Select_cb)
-enddef
-
-export def Close()
-    popup_close(menu_wid)
-enddef
-
-export def CloseWithSelection()
-    popup_close(menu_wid, [MenuGetCursorItem()])
-enddef
-
 export def UpdateList(li: list<string>)
     raw_list = li
 enddef
@@ -318,90 +295,94 @@ export def RefreshMenu()
     Input(menu_wid, {str: prompt_str})
 enddef
 
-def Cleanup()
-    timer_stop(async_tid)
-enddef
-
-# For split callbacks
-def SelectTab(wid: number, result: list<any>)
-    if !empty(result) && !empty(result[0])
-        var [buf, line, col] = split(result[0] .. ':0:0', ':')[0 : 2]
-        var bufnr = bufnr(buf)
-        if bufnr > 0 && !filereadable(buf)
-            # for special buffers that cannot be edited
-            execute 'tabnew'
-            execute 'buffer ' .. bufnr
-        elseif cwd ==# getcwd()
-            execute 'tabnew ' .. fnameescape(buf)
+def OpenFileTab()
+    var result = GetCursorItem()
+    if empty(result)
+        return
+    endif
+    popup_close(menu_wid)
+    var [buf, line, col] = split(result .. ':0:0', ':')[0 : 2]
+    var bufnr = bufnr(buf)
+    if bufnr > 0 && !filereadable(buf)
+        # for special buffers that cannot be edited
+        execute 'tabnew'
+        execute 'buffer ' .. bufnr
+    elseif cwd ==# getcwd()
+        execute 'tabnew ' .. fnameescape(buf)
+    else
+        var path = cwd .. '/' .. buf
+        execute 'tabnew ' .. fnameescape(path)
+    endif
+    if str2nr(line) > 0
+        if str2nr(col) > 0
+            cursor(str2nr(line), str2nr(col))
         else
-            var path = cwd .. '/' .. buf
-            execute 'tabnew ' .. fnameescape(path)
+            exe 'norm! ' .. line .. 'G'
         endif
-        if str2nr(line) > 0
-            if str2nr(col) > 0
-                cursor(str2nr(line), str2nr(col))
-            else
-                exe 'norm! ' .. line .. 'G'
-            endif
-            exe 'norm! zz'
-        endif
+        exe 'norm! zz'
     endif
 enddef
 
-def SelectVSplit(wid: number, result: list<any>)
-    if !empty(result) && !empty(result[0])
-        var [buf, line, col] = split(result[0] .. ':0:0', ':')[0 : 2]
-        var bufnr = bufnr(buf)
-        if bufnr > 0 && !filereadable(buf)
-            # for special buffers that cannot be edited
-            # avoid :sbuffer to bypass 'switchbuf=useopen'
-            execute 'vnew'
-            execute 'buffer ' .. bufnr
-        elseif cwd ==# getcwd()
-            execute 'vsp ' .. fnameescape(buf)
+def OpenFileVSplit()
+    var result = GetCursorItem()
+    if empty(result)
+        return
+    endif
+    popup_close(menu_wid)
+    var [buf, line, col] = split(result .. ':0:0', ':')[0 : 2]
+    var bufnr = bufnr(buf)
+    if bufnr > 0 && !filereadable(buf)
+        # for special buffers that cannot be edited
+        # avoid :sbuffer to bypass 'switchbuf=useopen'
+        execute 'vnew'
+        execute 'buffer ' .. bufnr
+    elseif cwd ==# getcwd()
+        execute 'vsp ' .. fnameescape(buf)
+    else
+        var path = cwd .. '/' .. buf
+        execute 'vsp ' .. fnameescape(path)
+    endif
+    if str2nr(line) > 0
+        if str2nr(col) > 0
+            cursor(str2nr(line), str2nr(col))
         else
-            var path = cwd .. '/' .. buf
-            execute 'vsp ' .. fnameescape(path)
+            exe 'norm! ' .. line .. 'G'
         endif
-        if str2nr(line) > 0
-            if str2nr(col) > 0
-                cursor(str2nr(line), str2nr(col))
-            else
-                exe 'norm! ' .. line .. 'G'
-            endif
-            exe 'norm! zz'
-        endif
+        exe 'norm! zz'
     endif
 enddef
 
-def SelectSplit(wid: number, result: list<any>)
-    if !empty(result) && !empty(result[0])
-        var [buf, line, col] = split(result[0] .. ':0:0', ':')[0 : 2]
-        var bufnr = bufnr(buf)
-        if bufnr > 0 && !filereadable(buf)
-            # for special buffers that cannot be edited
-            # avoid :sbuffer to bypass 'switchbuf=useopen'
-            execute 'new'
-            execute 'buffer ' .. bufnr
-        elseif cwd ==# getcwd()
-            execute 'sp ' .. fnameescape(buf)
+def OpenFileSplit()
+    var result = GetCursorItem()
+    if empty(result)
+        return
+    endif
+    popup_close(menu_wid)
+    var [buf, line, col] = split(result .. ':0:0', ':')[0 : 2]
+    var bufnr = bufnr(buf)
+    if bufnr > 0 && !filereadable(buf)
+        # for special buffers that cannot be edited
+        # avoid :sbuffer to bypass 'switchbuf=useopen'
+        execute 'new'
+        execute 'buffer ' .. bufnr
+    elseif cwd ==# getcwd()
+        execute 'sp ' .. fnameescape(buf)
+    else
+        var path = cwd .. '/' .. buf
+        execute 'sp ' .. fnameescape(path)
+    endif
+    if str2nr(line) > 0
+        if str2nr(col) > 0
+            cursor(str2nr(line), str2nr(col))
         else
-            var path = cwd .. '/' .. buf
-            execute 'sp ' .. fnameescape(path)
+            exe 'norm! ' .. line .. 'G'
         endif
-        if str2nr(line) > 0
-            if str2nr(col) > 0
-                cursor(str2nr(line), str2nr(col))
-            else
-                exe 'norm! ' .. line .. 'G'
-            endif
-            exe 'norm! zz'
-        endif
+        exe 'norm! zz'
     endif
 enddef
 
-def SelectQuickFix(wid: number, _: list<any>)
-    var bufnr = winbufnr(wid)
+def SendAllQuickFix()
+    var bufnr = winbufnr(menu_wid)
     var lines: list<any>
     lines = reverse(getbufline(bufnr, 1, "$"))
     filter(lines, (_, val) => !empty(val))
@@ -422,34 +403,15 @@ def SelectQuickFix(wid: number, _: list<any>)
         return dict
     })
     setqflist(lines)
+    popup_close(menu_wid)
     exe 'copen'
 enddef
 
-def SetVSplitClose()
-    ReplaceSelectCb(function('SelectVSplit'))
-    CloseWithSelection()
-enddef
-
-def SetSplitClose()
-    ReplaceSelectCb(function('SelectSplit'))
-    CloseWithSelection()
-enddef
-
-def SetTabClose()
-    ReplaceSelectCb(function('SelectTab'))
-    CloseWithSelection()
-enddef
-
-def SetQuickFixClose()
-    ReplaceSelectCb(function('SelectQuickFix'))
-    CloseWithSelection()
-enddef
-
-export var split_edit_callbacks = {
-    "\<c-v>": function('SetVSplitClose'),
-    "\<c-s>": function('SetSplitClose'),
-    "\<c-t>": function('SetTabClose'),
-    "\<c-q>": function('SetQuickFixClose'),
+export var open_file_callbacks = {
+    "\<c-v>": function('OpenFileVSplit'),
+    "\<c-s>": function('OpenFileSplit'),
+    "\<c-t>": function('OpenFileTab'),
+    "\<c-q>": function('SendAllQuickFix'),
 }
 
 # This function spawn a popup picker for user to select an item from a list.
@@ -517,6 +479,6 @@ export def Start(li_raw: list<string>, opts: dict<any> = {}): dict<any>
         popup.SetCounter(len_list, len_list)
     endif
 
-    autocmd User PopupClosed ++once Cleanup()
+    autocmd User PopupClosed ++once () => { timer_stop(async_tid) }
     return wins
 enddef

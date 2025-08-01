@@ -95,7 +95,7 @@ def GetBufList(): list<string>
 enddef
 
 def DeleteSelectedFile()
-    var buf = selector.MenuGetCursorItem()
+    var buf = selector.GetCursorItem()
     var choice = confirm('Delete file ' .. buf .. '. Are you sure?', "&Yes\n&No")
     if choice != 1
         return
@@ -105,7 +105,7 @@ def DeleteSelectedFile()
 enddef
 
 def DeleteSelectedBuffer(wipe: bool)
-    var buf = selector.MenuGetCursorItem()
+    var buf = selector.GetCursorItem()
     if buf == ''
         return
     endif
@@ -141,6 +141,6 @@ export def Start(opts: dict<any> = {})
         devicons: true,
         preview_cb: function('Preview'),
         select_cb: function('Select'),
-        key_callbacks: extend(selector.split_edit_callbacks, key_callbacks),
+        key_callbacks: extend(selector.open_file_callbacks, key_callbacks),
     }))
 enddef

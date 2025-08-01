@@ -427,7 +427,7 @@ export def Start(opts: dict<any> = {})
         close_cb: function('Close'),
         devicons: enable_devicons,
         counter: false,
-        key_callbacks: selector.split_edit_callbacks
+        key_callbacks: selector.open_file_callbacks
      }))
     menu_wid = wids.menu
     if menu_wid == -1
