@@ -33,13 +33,13 @@ var keymaps: dict<any> = {
     'delete_prefix': [],
     'exit': ["\<Esc>", "\<C-c>", "\<C-[>"],
 }
-keymaps = exists('g:fuzzyy_keymaps') && type(g:fuzzyy_keymaps) == v:t_dict ?
-    extend(keymaps, g:fuzzyy_keymaps) : keymaps
+keymaps = exists('g:fuzzbox_keymaps') && type(g:fuzzbox_keymaps) == v:t_dict ?
+    extend(keymaps, g:fuzzbox_keymaps) : keymaps
 
-var borderchars = exists('g:fuzzyy_borderchars') &&
-    type(g:fuzzyy_borderchars) == v:t_list &&
-    len(g:fuzzyy_borderchars) == 8 ?
-    g:fuzzyy_borderchars :
+var borderchars = exists('g:fuzzbox_borderchars') &&
+    type(g:fuzzbox_borderchars) == v:t_list &&
+    len(g:fuzzbox_borderchars) == 8 ?
+    g:fuzzbox_borderchars :
     ['─', '│', '─', '│', '╭', '╮', '╯', '╰']
 
 export def SetPopupWinProp(wid: number, key: string, val: any)
@@ -61,9 +61,9 @@ def Warn(msg: string)
 enddef
 
 def ResolveCursor()
-    hlset([{name: 'fuzzyyCursor', cleared: true}])
+    hlset([{name: 'fuzzboxCursor', cleared: true}])
     var fallback = {
-        name: 'fuzzyyCursor',
+        name: 'fuzzboxCursor',
         term: { 'reverse': true },
         cterm: { 'reverse': true },
         gui: { 'reverse': true },
@@ -77,7 +77,7 @@ def ResolveCursor()
     var guifg = attrs->get('guifg', 'NONE')
     var guibg = attrs->get('guibg', 'NONE')
     if has('gui')
-        hlset([{name: 'fuzzyyCursor', guifg: guifg, guibg: guibg}])
+        hlset([{name: 'fuzzboxCursor', guifg: guifg, guibg: guibg}])
         return
     endif
     var ctermfg = attrs->get('ctermfg',
@@ -88,7 +88,7 @@ def ResolveCursor()
     )
     try
         hlset([{
-            name: 'fuzzyyCursor',
+            name: 'fuzzboxCursor',
             guifg: guifg,
             guibg: guibg,
             ctermfg: ctermfg,
@@ -98,7 +98,7 @@ def ResolveCursor()
         # foreground and/or background not known and used as ctermfg or ctermbg
         hlset([fallback])
     catch
-        Warn('Fuzzyy: failed to resolve cursor highlight: ' .. v:exception)
+        Warn('Fuzzbox: failed to resolve cursor highlight: ' .. v:exception)
         hlset([fallback])
     endtry
 enddef
@@ -163,7 +163,7 @@ def GeneralPopupCallback(wid: number, select: any)
 
     popup_wins = {}
 
-    silent doautocmd <nomodeline> User FuzzyyClosed
+    silent doautocmd <nomodeline> User FuzzboxClosed
 enddef
 
 # Handle situation when Text under cursor in menu window is changed
@@ -442,8 +442,8 @@ def CreatePopup(args: dict<any>): number
        callback: function('GeneralPopupCallback'),
        border: [1],
        borderchars: borderchars,
-       borderhighlight: ['fuzzyyBorder'],
-       highlight: 'fuzzyyNormal', }
+       borderhighlight: ['fuzzboxBorder'],
+       highlight: 'fuzzboxNormal', }
 
     if &encoding != 'utf-8'
         remove(opts, 'borderchars')
@@ -610,13 +610,13 @@ export def MenuSetHl(name: string, hl_list_raw: list<any>)
     # in MS-Windows, matchaddpos() has maximum limit of 8 position groups
     var idx = 0
     while idx < len(hl_list)
-        matchaddpos('fuzzyyMatching', hl_list[idx : idx + 7 ], 99, -1,  {window: wins.menu})
+        matchaddpos('fuzzboxMatching', hl_list[idx : idx + 7 ], 99, -1,  {window: wins.menu})
         idx += 8
     endwhile
 enddef
 
 def PopupPrompt(args: dict<any>): number
-    if hlget('fuzzyyCursor')->get(0, {})->get('linksto', '') ==? 'Cursor'
+    if hlget('fuzzboxCursor')->get(0, {})->get('linksto', '') ==? 'Cursor'
         ResolveCursor()
     endif
 
@@ -640,7 +640,7 @@ def PopupPrompt(args: dict<any>): number
      max_pos: 0,
      prefix_len: prompt_prefix_len,
      cur_pos: 0,
-     highlight: 'fuzzyyCursor',
+     highlight: 'fuzzboxCursor',
      mid: -1,
      }
 
@@ -676,7 +676,7 @@ export def SetCounter(count: any, total: any = null)
         return
     endif
     var bufnr = popup_wins[wins.prompt].bufnr
-    var type = 'FuzzyyCounter'
+    var type = 'FuzzboxCounter'
     var prop = prop_type_get(type)
     if empty(prop)
         prop_type_add(type, {'highlight': type})
@@ -879,7 +879,7 @@ export def PopupSelection(opts: dict<any>): dict<any>
 
     HideCursor()
 
-    silent doautocmd <nomodeline> User FuzzyyOpened
+    silent doautocmd <nomodeline> User FuzzboxOpened
 
     return wins
 enddef

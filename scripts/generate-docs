@@ -30,22 +30,22 @@ else
 fi
 
 echo Generating documentation
-cmd="$MD2VIM -cols 78 -tabs 2 -desc 'A vim9 fuzzy finder with a modern UI' README.md doc/fuzzyy.txt"
+cmd="$MD2VIM -cols 78 -tabs 2 -desc 'A vim9 fuzzy finder with a modern UI' README.md doc/fuzzbox.txt"
 echo Executing $cmd
 eval $cmd
 
-if ! tail -n1 doc/fuzzyy.txt | fgrep "vim:" &>/dev/null; then
+if ! tail -n1 doc/fuzzbox.txt | fgrep "vim:" &>/dev/null; then
   # Note: leading space required!
   modeline=" vim:tw=78:ts=2:ft=help:"
   echo Adding missing modeline
-  cmd="echo \"$modeline\" >> doc/fuzzyy.txt"
+  cmd="echo \"$modeline\" >> doc/fuzzbox.txt"
   echo Executing $cmd
   eval $cmd
 fi
 
-if ! head -n1 doc/fuzzyy.txt | fgrep "*fuzzyy.txt*" &>/dev/null; then
+if ! head -n1 doc/fuzzbox.txt | fgrep "*fuzzbox.txt*" &>/dev/null; then
   echo Adding missing help tag
-  cmd="$GSED -i '1s/fuzzyy.txt/*fuzzyy.txt*/' doc/fuzzyy.txt"
+  cmd="$GSED -i '1s/fuzzbox.txt/*fuzzbox.txt*/' doc/fuzzbox.txt"
   echo Executing $cmd
   eval $cmd
 fi

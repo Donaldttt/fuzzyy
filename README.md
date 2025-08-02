@@ -1,10 +1,10 @@
-# Fuzzyy
+# Fuzzbox
 
 A fuzzy finder for files, strings, help documents and many other things.
 
 It utilizes Vim's native matchfuzzypos function and popup window feature.
 
-Fuzzyy strives to provide an out-of-box experience by using pre-installed
+Fuzzbox strives to provide an out-of-box experience by using pre-installed
 programs to handle complex tasks.
 
 ## Screenshot
@@ -40,7 +40,7 @@ programs to handle complex tasks.
 - [vim-nerdfont](https://github.com/lambdalisue/vim-nerdfont) - alternative
   plugin to show devicons, used if installed and vim-devicons not installed
 - [vim-glyph-palette](https://github.com/lambdalisue/vim-glyph-palette) - used
-  to colorize devicons if installed, instead of Fuzzyy's own color mappings
+  to colorize devicons if installed, instead of Fuzzbox's own color mappings
 - [vim-nerdtree-syntax-highlight](https://github.com/tiagofumo/vim-nerdtree-syntax-highlight) - 
   used to colorize devicons if installed, and [vim-nerdtree](https://github.com/preservim/nerdtree)
   installed
@@ -51,12 +51,12 @@ Any plugin manager will work, or you can use Vim's built-in package support:
 
 For vim-plug
 ```vim
-Plug 'Donaldttt/fuzzyy'
+Plug 'Donaldttt/fuzzbox'
 ```
 
 As Vim package
 ```
-git clone https://github.com/Donaldttt/fuzzyy ~/.vim/pack/Donaldttt/start/fuzzyy
+git clone https://github.com/Donaldttt/fuzzbox ~/.vim/pack/Donaldttt/start/fuzzbox
 ```
 
 ## Commands
@@ -110,9 +110,9 @@ nnoremap <silent> <leader>fp :FuzzyPrevious<CR>
 nnoremap <silent> <leader>fr :FuzzyMruCwd<CR>
 ```
 
-You can set `g:fuzzyy_enable_mappings = 0` to disable these default mappings.
+You can set `g:fuzzbox_enable_mappings = 0` to disable these default mappings.
 
-Fuzzyy will not overwrite mappings from your vimrc when adding default mappings.
+Fuzzbox will not overwrite mappings from your vimrc when adding default mappings.
 
 ## Navigation
 
@@ -120,9 +120,9 @@ Fuzzyy will not overwrite mappings from your vimrc when adding default mappings.
 - \<CTRL-N> or \<Down> moves down by one line in the menu window
 - \<CTRL-U> moves up by half a page in the preview window
 - \<CTRL-D> moves down by half a page in the preview window
-- \<CTRL-C> or \<ESC> exits Fuzzyy, closing all the windows
+- \<CTRL-C> or \<ESC> exits Fuzzbox, closing all the windows
 
-You can use `g:fuzzyy_keymaps` to change these defaults.
+You can use `g:fuzzbox_keymaps` to change these defaults.
 
 Navigation with the mouse is also supported. A single mouse click in the menu
 window moves the cursor line, double click selects a line. The mouse wheel can
@@ -150,140 +150,140 @@ what you want, sending thousands of results to the quickfix list is slow).
 
 ## Options
 
-### g:fuzzyy_enable_mappings
+### g:fuzzbox_enable_mappings
 Set to 0 to disable default mappings. Default to 1
 ```vim
-let g:fuzzyy_enable_mappings = 1
+let g:fuzzbox_enable_mappings = 1
 ```
 
-### g:fuzzyy_devicons
+### g:fuzzbox_devicons
 Show devicons when listing files (e.g. FuzzyFiles, FuzzyGrep). Default 1
 ```vim
-let g:fuzzyy_devicons = 1
+let g:fuzzbox_devicons = 1
 ```
 This option requires
 [vim-devicons](https://github.com/ryanoasis/vim-devicons),
 [vim-nerdfont](https://github.com/lambdalisue/vim-nerdfont), or use of
-`g:fuzzyy_devicons_glyph_func`
+`g:fuzzbox_devicons_glyph_func`
 
-### g:fuzzyy_dropdown
+### g:fuzzbox_dropdown
 Enable dropdown theme (prompt at top rather than bottom). Default 0
 ```vim
-let g:fuzzyy_dropdown = 0
+let g:fuzzbox_dropdown = 0
 ```
 
-### g:fuzzyy_preview
+### g:fuzzbox_preview
 Enable preview window in supported selectors (e.g. FuzzyFiles). Default 1
 ```vim
-let g:fuzzyy_preview = 1
+let g:fuzzbox_preview = 1
 ```
 
-### g:fuzzyy_counter
+### g:fuzzbox_counter
 Show count of matches. Default 1, set to 0 if you don't want a counter to be
 shown for most selectors.
 ```vim
-let g:fuzzyy_counter = 1
+let g:fuzzbox_counter = 1
 ```
 This option is ignored by some selectors/commands, e.g. FuzzyFiles, FuzzyGrep
 
-### g:fuzzyy_prompt_prefix
+### g:fuzzbox_prompt_prefix
 Set the prefix for the input in the prompt window. Default '> ', must be a
 string, but an empty string is valid.
 ```vim
-let g:fuzzyy_prompt_prefix = '> '
+let g:fuzzbox_prompt_prefix = '> '
 ```
 
-### g:fuzzyy_borderchars
+### g:fuzzbox_borderchars
 Set the borderchars of popup windows. Must be a list of 8 characters.
 ```vim
-let g:fuzzyy_borderchars = ['─', '│', '─', '│', '╭', '╮', '╯', '╰']
+let g:fuzzbox_borderchars = ['─', '│', '─', '│', '╭', '╮', '╯', '╰']
 ```
 
-### g:fuzzyy_reuse_windows
-Fuzzyy avoids opening files in windows containing special buffers, like buffers
+### g:fuzzbox_reuse_windows
+Fuzzbox avoids opening files in windows containing special buffers, like buffers
 created by file explorer plugins or help and quickfix buffers. Use this to add
 exceptions, the match is on either buftype or filetype. Default `['netrw']`
 (Netrw is Vim's built-in file explorer plugin)
 ```vim
-let g:fuzzyy_reuse_windows = ['netrw']
+let g:fuzzbox_reuse_windows = ['netrw']
 ```
 Example usage
 ```vim
-let g:fuzzyy_reuse_windows = ['netrw', 'bufexplorer', 'mru', 'terminal']
+let g:fuzzbox_reuse_windows = ['netrw', 'bufexplorer', 'mru', 'terminal']
 ```
 
-### g:fuzzyy_respect_gitignore
+### g:fuzzbox_respect_gitignore
 Make FuzzyFiles & FuzzyGrep respect `.gitignore`. Default 1. Only work when
 1. inside a git repository and git is installed
 2. or either rg or fd is installed for FuzzyFiles
 3. or either rg or ag is installed for FuzzyGrep
 ```vim
-let g:fuzzyy_respect_gitignore = 1
+let g:fuzzbox_respect_gitignore = 1
 ```
 This option can also be set specifically for FuzzyFiles and/or FuzzyGrep using
-`g:fuzzyy_files_respect_gitignore` and `g:fuzzyy_grep_respect_gitignore`
+`g:fuzzbox_files_respect_gitignore` and `g:fuzzbox_grep_respect_gitignore`
 
-### g:fuzzyy_include_hidden
+### g:fuzzbox_include_hidden
 Make FuzzyFiles & FuzzyGrep include hidden files. Default 1. Only applied when
 1. rg, fd or PowerShell Get-ChildItem used with FuzzyFiles
 2. rg or ag used with FuzzyGrep
 ```vim
-let g:fuzzyy_include_hidden = 1
+let g:fuzzbox_include_hidden = 1
 ```
 This option can also be set specifically for FuzzyFiles and/or FuzzyGrep using
-`g:fuzzyy_files_include_hidden` and `g:fuzzyy_grep_include_hidden`
+`g:fuzzbox_files_include_hidden` and `g:fuzzbox_grep_include_hidden`
 
-### g:fuzzyy_follow_symlinks
+### g:fuzzbox_follow_symlinks
 Make FuzzyFiles & FuzzyGrep follow symbolic links. Not applied when using
 git-ls-files, git-grep or FINDSTR. Default 0
 ```vim
-let g:fuzzyy_follow_symlinks = 0
+let g:fuzzbox_follow_symlinks = 0
 ```
 This option can also be set specifically for FuzzyFiles and/or FuzzyGrep using
-`g:fuzzyy_files_follow_symlinks` and `g:fuzzyy_grep_follow_symlinks`
+`g:fuzzbox_files_follow_symlinks` and `g:fuzzbox_grep_follow_symlinks`
 
-### g:fuzzyy_root_patterns
+### g:fuzzbox_root_patterns
 Patterns to find a project root in supported commands, e.g. FuzzyFilesRoot.
 These commands find a "root" directory to use as the working directory by
 walking up the directory tree looking for any match of these glob patterns.
 Default is intentionally conservative, using common VCS root markers only.
 ```vim
-let g:fuzzyy_root_patterns = ['.git', '.hg', '.svn']
+let g:fuzzbox_root_patterns = ['.git', '.hg', '.svn']
 ```
 Example usage
 ```vim
-let g:fuzzyy_root_patterns = ['.git', 'package.json', 'pyproject.toml']
+let g:fuzzbox_root_patterns = ['.git', 'package.json', 'pyproject.toml']
 ```
 
-### g:fuzzyy_exclude_file
+### g:fuzzbox_exclude_file
 Make FuzzyFiles, FuzzyGrep, and FuzzyMru always exclude files matching these
 glob patterns. Applies whether `.gitignore` is respected or not. Default
 `['*.swp', 'tags']`
 ```vim
-let g:fuzzyy_exclude_file = ['*.swp', 'tags']
+let g:fuzzbox_exclude_file = ['*.swp', 'tags']
 ```
 This option can also be set specifically for FuzzyFiles, FuzzyGrep, and FuzzyMru
-using `g:fuzzyy_files_exclude_file` and `g:fuzzyy_grep_exclude_file` etc.
+using `g:fuzzbox_files_exclude_file` and `g:fuzzbox_grep_exclude_file` etc.
 
-### g:fuzzyy_exclude_dir
+### g:fuzzbox_exclude_dir
 Make FuzzyFiles, FuzzyGrep, and FuzzyMru always exclude these directories.
 Applies whether `.gitignore` is respected or not. Default
 `['.git', '.hg', '.svn']`
 ```vim
-let g:fuzzyy_exclude_dir = ['.git', '.hg', '.svn']
+let g:fuzzbox_exclude_dir = ['.git', '.hg', '.svn']
 ```
 This option can also be set specifically for FuzzyFiles, FuzzyGrep, and FuzzyMru
-using `g:fuzzyy_files_exclude_dir` and `g:fuzzyy_grep_exclude_dir` etc.
+using `g:fuzzbox_files_exclude_dir` and `g:fuzzbox_grep_exclude_dir` etc.
 
-### g:fuzzyy_ripgrep_options
+### g:fuzzbox_ripgrep_options
 Add custom ripgrep options for FuzzyFiles & FuzzyGrep. Appended to the generated
 options. Default `[]`
 ```vim
-let g:fuzzyy_ripgrep_options = []
+let g:fuzzbox_ripgrep_options = []
 ```
 Example usage
 ```vim
-let g:fuzzyy_ripgrep_options = [
+let g:fuzzbox_ripgrep_options = [
   \ "--no-config",
   \ "--max-filesize=1M",
   \ "--no-ignore-parent",
@@ -291,53 +291,53 @@ let g:fuzzyy_ripgrep_options = [
   \ ]
 ```
 This option can also be set specifically for FuzzyFiles and/or FuzzyGrep using
-`g:fuzzyy_files_ripgrep_options` and `g:fuzzyy_grep_ripgrep_options`
+`g:fuzzbox_files_ripgrep_options` and `g:fuzzbox_grep_ripgrep_options`
 
-### g:fuzzyy_devicons_color_table
+### g:fuzzbox_devicons_color_table
 Add custom mappings for colorizing devicon glyphs. A dictionary of filename
 patterns and colors. Colors must be either color names in Vim's `v:colornames`
 dict or hex colors in `#rrggbb` format. Default {}
 ```vim
-let g:fuzzyy_devicons_color_table = {}
+let g:fuzzbox_devicons_color_table = {}
 ```
 Example usage
 ```vim
-let g:fuzzyy_devicons_color_table = { '*.vala': 'mediumpurple', '*.jl': '#9558B2' }
+let g:fuzzbox_devicons_color_table = { '*.vala': 'mediumpurple', '*.jl': '#9558B2' }
 ```
 
-### g:fuzzyy_devicons_glyph_func
+### g:fuzzbox_devicons_glyph_func
 Specify a custom function for obtaining devicon glyphs from file names or paths.
-By default Fuzzyy integrates with vim-devicons to obtain glyphs and measure byte
+By default Fuzzbox integrates with vim-devicons to obtain glyphs and measure byte
 widths. You can use this option to obtain devicon glyphs from another nerdfont
 compatible plugin, or your own custom function. Default ''
 ```vim
-let g:fuzzyy_devicons_glyph_func = ''
+let g:fuzzbox_devicons_glyph_func = ''
 ```
 Example usage
 ```vim
-let g:fuzzyy_devicons_glyph_func = 'nerdfont#find'
+let g:fuzzbox_devicons_glyph_func = 'nerdfont#find'
 ```
 The function should take a single string argument and return a single glyph.
 
-### g:fuzzyy_devicons_color_func
-Specify a custom function for colorizing devicon glyphs. By default Fuzzyy does
+### g:fuzzbox_devicons_color_func
+Specify a custom function for colorizing devicon glyphs. By default Fuzzbox does
 this with an internal function using a small set of common file name patterns
 and colors, but you may want more extensive support for file name patterns not
-recognised by Fuzzyy and to apply the same colors to Fuzzyy as other plugins.
+recognised by Fuzzbox and to apply the same colors to Fuzzbox as other plugins.
 Default ''
 ```vim
-let g: fuzzyy_devicons_color_func = ''
+let g: fuzzbox_devicons_color_func = ''
 ```
 Example usage
 ```vim
-let g: fuzzyy_devicons_color_func = 'glyph_palette#apply'
+let g: fuzzbox_devicons_color_func = 'glyph_palette#apply'
 ```
 The function should take no arguments and use matchadd() to add highlighting.
 
-### g:fuzzyy_keymaps
+### g:fuzzbox_keymaps
 Change navigation keymaps. The following are the defaults
 ```vim
-let g:fuzzyy_keymaps = {
+let g:fuzzbox_keymaps = {
   \ 'menu_up': ["\<C-p>", "\<Up>"],
   \ 'menu_down': ["\<C-n>", "\<Down>"],
   \ 'menu_select': ["\<CR>"],
@@ -356,26 +356,26 @@ let g:fuzzyy_keymaps = {
   \ }
 ```
 
-### g:fuzzyy_buffers_exclude
+### g:fuzzbox_buffers_exclude
 FuzzyBuffers will exclude the buffers in this list. Buffers not included in
 Vim's buffer list are excluded by default, so this is only necessary for buffers
 included in Vim's buffer list, but you want hidden by FuzzyBuffers. Default `[]`
 ```vim
-let g:fuzzyy_buffers_exclude = []
+let g:fuzzbox_buffers_exclude = []
 ```
 
-### g:fuzzyy_buffers_keymap
+### g:fuzzbox_buffers_keymap
 FuzzyBuffer keymap for commands specific to FuzzyBuffers. The following are the
 defaults
 ```vim
-let g:fuzzyy_buffers_keymap = {
+let g:fuzzbox_buffers_keymap = {
   \ 'delete_file': "",
   \ 'wipe_buffer': "",
   \ 'close_buffer': "\<c-l>",
   \ }
 ```
 
-### g:fuzzyy_window_layout
+### g:fuzzbox_window_layout
 Window layout configuration. The general defaults for window layout options are:
 ```
 'preview': 1,         " 1 means enable preview window, 0 means disable
@@ -411,14 +411,14 @@ This configuration is also customised per selector, with the following defaults:
 \ }
 ```
 
-Values set in `g:fuzzyy_window_layout` are merged with the defaults above.
+Values set in `g:fuzzbox_window_layout` are merged with the defaults above.
 For example, you can disable preview window for FuzzyFiles and friends with:
 ```vim
-let g:fuzzyy_window_layout = { 'files': { 'preview': 0 } }
+let g:fuzzbox_window_layout = { 'files': { 'preview': 0 } }
 ```
 or you change the width of the preview window for FuzzyColors with:
 ```vim
-let g:fuzzyy_window_layout = { 'colors': { 'width': 0.4 } }
+let g:fuzzbox_window_layout = { 'colors': { 'width': 0.4 } }
 ```
 preview is ignored by commands that do not support it, e.g. FuzzyCmdHistory\
 x and y offsets are by default calculated to center the windows on the screen\
@@ -426,31 +426,31 @@ width, height, and x and y offsets > 0 and < 1 are resolved as percentages\
 width, height, and x and y offsets >= 1 are fixed numbers of lines and cols\
 invalid values for preview_ratio, width, height, and x and y offsets are ignored
 
-### g:fuzzyy_async_step
-Fuzzyy mimics async processing to fuzzy match in batches, which avoids problems
+### g:fuzzbox_async_step
+Fuzzbox mimics async processing to fuzzy match in batches, which avoids problems
 running Vim's built in fuzzy matching on massive lists at once. The size of
 these batches is the async step value, which defaults to 10,000. This default
 should work well for most developer workstations, but you might want to reduce
 if you notice a lack of responsiveness on low spec machines
 ```vim
-let g:fuzzyy_async_step = 10000
+let g:fuzzbox_async_step = 10000
 ```
 
 ## User autocommands
 
-Fuzzyy adds two `User` autocommands which you can use to run custom commands
-when Fuzzyy is opened and closed. This can be helpful to aid compatibility with
+Fuzzbox adds two `User` autocommands which you can use to run custom commands
+when Fuzzbox is opened and closed. This can be helpful to aid compatibility with
 other plugins, e.g. [vim-lsp](https://github.com/prabirshrestha/vim-lsp)
 
 By default vim-lsp will automatically start configured language servers when the
 filetype of a buffer changes. To avoid starting language servers unnecessarily
-when you preview a file in Fuzzyy you can disable vim-lsp while Fuzzyy is open:
+when you preview a file in Fuzzbox you can disable vim-lsp while Fuzzbox is open:
 
 ```vim
-augroup LspFuzzyy
+augroup LspFuzzbox
   autocmd!
-  autocmd User FuzzyyOpened call lsp#disable()
-  autocmd User FuzzyyClosed call lsp#enable()
+  autocmd User FuzzboxOpened call lsp#disable()
+  autocmd User FuzzboxClosed call lsp#enable()
 augroup END
 ```
 
@@ -461,16 +461,16 @@ shown below, you can change them in your vimrc. See :help :highlight if you are
 unfamiliar with Vim highlighting
 
 ```vim
-highlight default link fuzzyyCursor Cursor
-highlight default link fuzzyyNormal Normal
-highlight default link fuzzyyBorder Normal
-highlight default link fuzzyyCounter NonText
-highlight default link fuzzyyMatching Special
-highlight default link fuzzyyPreviewMatch Search
-highlight default link fuzzyyPreviewLine Visual
+highlight default link fuzzboxCursor Cursor
+highlight default link fuzzboxNormal Normal
+highlight default link fuzzboxBorder Normal
+highlight default link fuzzboxCounter NonText
+highlight default link fuzzboxMatching Special
+highlight default link fuzzboxPreviewMatch Search
+highlight default link fuzzboxPreviewLine Visual
 ```
 
-Note: when the popup is open, Fuzzyy will technically hide the terminal cursor
+Note: when the popup is open, Fuzzbox will technically hide the terminal cursor
 and clear the Cursor highlight group. This is to work around limitations in how
-|popupwin| operates. To allow fuzzyyCursor to be linked to Cursor (the default),
-the resolved properties of Cursor are copied to fuzzyyCursor where possible.
+|popupwin| operates. To allow fuzzboxCursor to be linked to Cursor (the default),
+the resolved properties of Cursor are copied to fuzzboxCursor where possible.

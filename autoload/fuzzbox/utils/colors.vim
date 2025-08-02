@@ -11,7 +11,7 @@ endif
 # These are just the default devicon colors, a small subset of all available
 # devicons chosen based on the Stack Overflow Developer Survey and TIOBE Index
 # over time, and a very biased view on which are most relevant for Vim users
-# You can modify this for your preferences using g:fuzzyy_devicons_color_table
+# You can modify this for your preferences using g:fuzzbox_devicons_color_table
 # Please open a PR if you think something is missing or could be improved (all
 # defaults should have an icon in vim-devicons, and a published nerdfont glyph)
 var devicons_color_table = {
@@ -52,16 +52,16 @@ var devicons_color_table = {
 var additional_color_table = {
     '*.kt': 'mediumpurple'
 }
-if exists('g:fuzzyy_devicons_glyph_func')
-    var glyph_func = g:fuzzyy_devicons_glyph_func
+if exists('g:fuzzbox_devicons_glyph_func')
+    var glyph_func = g:fuzzbox_devicons_glyph_func
     var default_glyph = function(glyph_func)('__default__')
     filter(additional_color_table, (key, val) => {
         return function(glyph_func)(key) != default_glyph
     })
     extend(devicons_color_table, additional_color_table)
 endif
-if exists('g:fuzzyy_devicons_color_table') && type(g:fuzzyy_devicons_color_table) == v:t_dict
-    extend(devicons_color_table, g:fuzzyy_devicons_color_table)
+if exists('g:fuzzbox_devicons_color_table') && type(g:fuzzbox_devicons_color_table) == v:t_dict
+    extend(devicons_color_table, g:fuzzbox_devicons_color_table)
 endif
 
 # Necessary for some versions of Vim 9.0
@@ -78,7 +78,7 @@ enddef
 #
 # Removed support for fewer than 256 colors, and updated for vim9script
 # Also updated to use American rather than British English (I personally
-# write in British English, but Fuzzyy generally uses American English)
+# write in British English, but Fuzzbox generally uses American English)
 
 # Returns an approximate gray index for the given gray level
 def GrayNumber(x: number): number
@@ -203,6 +203,6 @@ enddef
 #         echo name .. ': ' .. TermColor(name)
 #     endif
 #     if name =~ '^\w\+$'
-#         exe 'hi fuzzyyDeviconNew_' .. name .. ' ctermfg=' .. TermColor(name) .. ' guifg=' .. name
+#         exe 'hi fuzzboxDeviconNew_' .. name .. ' ctermfg=' .. TermColor(name) .. ' guifg=' .. name
 #     endif
 # endfor

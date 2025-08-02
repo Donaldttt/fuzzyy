@@ -3,7 +3,7 @@
 FROM ubuntu:jammy
 
 # Don't change this, used by docker-run to tidy old images
-LABEL name="fuzzyy"
+LABEL name="fuzzbox"
 
 # Packages required to use git and install vim from source
 RUN apt-get update -yqq && apt-get install -yqq --no-install-recommends \
@@ -29,10 +29,10 @@ RUN echo colorscheme habamax >> /root/.vimrc
 ENV GIT_EDITOR=vim
 ENV GIT_PAGER=less
 
-# Fuzzyy needs UTF-8, but Ubuntu doesn't set LANG, so Vim defaults to Latin1
+# Fuzzbox needs UTF-8, but Ubuntu doesn't set LANG, so Vim defaults to Latin1
 ENV LANG C.UTF-8
 
 # Start in fuzzy dir, mounted by docker-run script
-WORKDIR /root/.vim/pack/plugins/start/fuzzyy
+WORKDIR /root/.vim/pack/plugins/start/fuzzbox
 
 CMD ["bash", "-l"]

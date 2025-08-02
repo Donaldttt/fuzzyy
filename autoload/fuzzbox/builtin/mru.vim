@@ -13,12 +13,12 @@ var fs = helpers.PathSep()
 var menu_wid: number
 
 # Options
-var file_exclude = exists('g:fuzzyy_mru_exclude_file')
-    && type(g:fuzzyy_mru_exclude_file) == v:t_list ?
-    g:fuzzyy_mru_exclude_file : g:fuzzyy_exclude_file
-var dir_exclude = exists('g:fuzzyy_mru_exclude_dir')
-    && type(g:fuzzyy_mru_exclude_dir) == v:t_list ?
-    g:fuzzyy_mru_exclude_dir : g:fuzzyy_exclude_dir
+var file_exclude = exists('g:fuzzbox_mru_exclude_file')
+    && type(g:fuzzbox_mru_exclude_file) == v:t_list ?
+    g:fuzzbox_mru_exclude_file : g:fuzzbox_exclude_file
+var dir_exclude = exists('g:fuzzbox_mru_exclude_dir')
+    && type(g:fuzzbox_mru_exclude_dir) == v:t_list ?
+    g:fuzzbox_mru_exclude_dir : g:fuzzbox_exclude_dir
 
 def Preview(wid: number, result: string)
     if wid == -1
