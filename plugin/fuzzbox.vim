@@ -4,8 +4,16 @@ endif
 
 vim9script noclear
 
+if exists("g:loaded_fuzzyy")
+    echohl WarningMsg
+    echo 'fuzzbox: Failed to load, Fuzzyy plugin found, please delete Fuzzyy'
+    echohl None
+    finish
+endif
+g:loaded_fuzzyy = 1
+
 if exists("g:loaded_fuzzbox")
-  finish
+    finish
 endif
 g:loaded_fuzzbox = 1
 
