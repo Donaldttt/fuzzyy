@@ -1,21 +1,21 @@
 vim9script
 
 # Options
-var respect_gitignore = exists('g:fuzzyy_files_respect_gitignore') ?
-    g:fuzzyy_files_respect_gitignore : g:fuzzyy_respect_gitignore
-var file_exclude = exists('g:fuzzyy_files_exclude_file')
-    && type(g:fuzzyy_files_exclude_file) == v:t_list ?
-    g:fuzzyy_files_exclude_file : g:fuzzyy_exclude_file
-var dir_exclude = exists('g:fuzzyy_files_exclude_dir')
-    && type(g:fuzzyy_files_exclude_dir) == v:t_list ?
-    g:fuzzyy_files_exclude_dir : g:fuzzyy_exclude_dir
-var include_hidden = exists('g:fuzzyy_files_include_hidden') ?
-    g:fuzzyy_files_include_hidden : g:fuzzyy_include_hidden
-var follow_symlinks = exists('g:fuzzyy_files_follow_symlinks') ?
-    g:fuzzyy_files_follow_symlinks : g:fuzzyy_follow_symlinks
-var ripgrep_options = exists('g:fuzzyy_files_ripgrep_options')
-    && type(g:fuzzyy_files_ripgrep_options) == v:t_list ?
-    g:fuzzyy_files_ripgrep_options : g:fuzzyy_ripgrep_options
+var respect_gitignore = exists('g:fuzzbox_files_respect_gitignore') ?
+    g:fuzzbox_files_respect_gitignore : g:fuzzbox_respect_gitignore
+var file_exclude = exists('g:fuzzbox_files_exclude_file')
+    && type(g:fuzzbox_files_exclude_file) == v:t_list ?
+    g:fuzzbox_files_exclude_file : g:fuzzbox_exclude_file
+var dir_exclude = exists('g:fuzzbox_files_exclude_dir')
+    && type(g:fuzzbox_files_exclude_dir) == v:t_list ?
+    g:fuzzbox_files_exclude_dir : g:fuzzbox_exclude_dir
+var include_hidden = exists('g:fuzzbox_files_include_hidden') ?
+    g:fuzzbox_files_include_hidden : g:fuzzbox_include_hidden
+var follow_symlinks = exists('g:fuzzbox_files_follow_symlinks') ?
+    g:fuzzbox_files_follow_symlinks : g:fuzzbox_follow_symlinks
+var ripgrep_options = exists('g:fuzzbox_files_ripgrep_options')
+    && type(g:fuzzbox_files_ripgrep_options) == v:t_list ?
+    g:fuzzbox_files_ripgrep_options : g:fuzzbox_ripgrep_options
 
 def Build_rg(): string
     var result = 'rg --files'

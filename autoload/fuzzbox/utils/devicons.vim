@@ -6,11 +6,11 @@ var devicon_char_width = 0
 var devicon_byte_width = 0
 
 # Options
-var glyph_func = exists('g:fuzzyy_devicons_glyph_func') ? g:fuzzyy_devicons_glyph_func : ''
+var glyph_func = exists('g:fuzzbox_devicons_glyph_func') ? g:fuzzbox_devicons_glyph_func : ''
 
-var color_func = exists('g:fuzzyy_devicons_color_func') ? g:fuzzyy_devicons_color_func : ''
+var color_func = exists('g:fuzzbox_devicons_color_func') ? g:fuzzbox_devicons_color_func : ''
 
-var enabled = exists('g:fuzzyy_devicons') && !empty(glyph_func) ? g:fuzzyy_devicons : !empty(glyph_func)
+var enabled = exists('g:fuzzbox_devicons') && !empty(glyph_func) ? g:fuzzbox_devicons : !empty(glyph_func)
 
 if &encoding != 'utf-8'
     enabled = false
@@ -30,18 +30,18 @@ if enabled
     devicon_byte_width = strlen(test_devicon)
 endif
 
-# Allows the colors to be changed before loading devicons, see compat/fuzzyy.vim
+# Allows the colors to be changed before loading devicons, see compat/fuzzbox.vim
 var devicons_color_table = colors.DeviconsColorTable()
 
 def SetHl()
     for val in uniq(values(devicons_color_table))
-        exe 'hi fuzzyyDevicon_' .. substitute(val, '#', '', '') .. ' ctermfg=' .. colors.TermColor(val) .. ' guifg=' .. val
+        exe 'hi fuzzboxDevicon_' .. substitute(val, '#', '', '') .. ' ctermfg=' .. colors.TermColor(val) .. ' guifg=' .. val
     endfor
 enddef
 
 if enabled
     SetHl()
-    augroup FuzzyyDevicons
+    augroup FuzzboxDevicons
         autocmd!
         autocmd ColorScheme * SetHl()
     augroup END
@@ -62,7 +62,7 @@ export def AddColor(wid: number)
         var charhex = printf('%x', charnr)
         var color = devicons_color_table[ft]
         try
-        matchadd('fuzzyyDevicon_' .. substitute(color, '#', '', ''), '\v%U' .. charhex, 99, -1, { window: wid })
+        matchadd('fuzzboxDevicon_' .. substitute(color, '#', '', ''), '\v%U' .. charhex, 99, -1, { window: wid })
         add(added, icon)
         catch | endtry
     endfor

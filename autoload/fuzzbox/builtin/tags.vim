@@ -124,7 +124,7 @@ def Preview(wid: number, result: string)
             var pattern = excmd->substitute('^\/', '', '')->substitute('\M\/;\?"\?$', '', '')
             win_execute(wid, "silent! search('\\M" .. EscQuotes(pattern) .. "', 'cw')")
             clearmatches(wid)
-            win_execute(wid, "silent! matchadd('fuzzyyPreviewMatch', '\\M" .. EscQuotes(pattern) .. "')")
+            win_execute(wid, "silent! matchadd('fuzzboxPreviewMatch', '\\M" .. EscQuotes(pattern) .. "')")
         endif
     endfor
     win_execute(wid, 'norm! zz')
