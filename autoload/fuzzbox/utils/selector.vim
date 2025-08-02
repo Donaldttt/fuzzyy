@@ -10,19 +10,19 @@ var cwd: string
 var menu_wid: number
 var prompt_str: string
 var menu_hl_list: list<any>
-var async_step = exists('g:fuzzyy_async_step')
-    && type(g:fuzzyy_async_step) == v:t_number ?
-    g:fuzzyy_async_step : 10000
-var prompt_prefix = exists('g:fuzzyy_prompt_prefix')
-    && type(g:fuzzyy_prompt_prefix) == v:t_string ?
-    g:fuzzyy_prompt_prefix : '> '
+var async_step = exists('g:fuzzbox_async_step')
+    && type(g:fuzzbox_async_step) == v:t_number ?
+    g:fuzzbox_async_step : 10000
+var prompt_prefix = exists('g:fuzzbox_prompt_prefix')
+    && type(g:fuzzbox_prompt_prefix) == v:t_string ?
+    g:fuzzbox_prompt_prefix : '> '
 
 var wins: dict<any>
 
 var enable_devicons = devicons.Enabled()
-var enable_dropdown = exists('g:fuzzyy_dropdown') ? g:fuzzyy_dropdown : false
-var enable_counter = exists('g:fuzzyy_counter') ? g:fuzzyy_counter : true
-var enable_preview = exists('g:fuzzyy_preview') ? g:fuzzyy_preview : true
+var enable_dropdown = exists('g:fuzzbox_dropdown') ? g:fuzzbox_dropdown : false
+var enable_counter = exists('g:fuzzbox_counter') ? g:fuzzbox_counter : true
+var enable_preview = exists('g:fuzzbox_preview') ? g:fuzzbox_preview : true
 
 # track whether options are endbled for the current selector
 var has_devicons: bool

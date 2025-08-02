@@ -1,11 +1,11 @@
 vim9script
 
-var root_patterns = exists('g:fuzzyy_root_patterns')
-    && type(g:fuzzyy_root_patterns) == v:t_list ?
-    g:fuzzyy_root_patterns : ['.git', '.hg', '.svn']
-var reuse_windows = exists('g:fuzzyy_reuse_windows')
-    && type(g:fuzzyy_reuse_windows) == v:t_list ?
-    g:fuzzyy_reuse_windows : ['netrw']
+var root_patterns = exists('g:fuzzbox_root_patterns')
+    && type(g:fuzzbox_root_patterns) == v:t_list ?
+    g:fuzzbox_root_patterns : ['.git', '.hg', '.svn']
+var reuse_windows = exists('g:fuzzbox_reuse_windows')
+    && type(g:fuzzbox_reuse_windows) == v:t_list ?
+    g:fuzzbox_reuse_windows : ['netrw']
 
 var iswin = has('win32') || has('win64')
 var fs = iswin ? '\' : '/'
