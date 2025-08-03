@@ -9,36 +9,9 @@ if exists("g:loaded_fuzzyy")
 endif
 g:loaded_fuzzyy = 1
 
-# Deprecated or removed options
 var warnings = []
 if &encoding != 'utf-8'
     warnings += ['fuzzyy: Vim encoding is ' .. &encoding .. ', utf-8 is required for popup borders etc.']
-endif
-if exists('g:enable_fuzzyy_keymaps')
-    warnings += ['fuzzyy: g:enable_fuzzyy_keymaps is deprecated, use g:fuzzyy_enable_mappings instead']
-    g:fuzzyy_enable_mappings = g:enable_fuzzyy_keymaps
-endif
-if exists('g:fuzzyy_menu_matched_hl')
-    warnings += ['fuzzyy: g:fuzzyy_menu_matched_hl is deprecated, use fuzzyyMatching highlight group instead']
-    execute 'highlight default link fuzzyyMatching ' .. g:fuzzyy_menu_matched_hl
-endif
-if exists('g:files_only_git_files')
-    warnings += ['fuzzyy: g:files_only_git_files is no longer supported, use :FuzzyGitFiles command instead']
-endif
-if exists('g:files_respect_gitignore')
-    warnings += ['fuzzyy: g:files_respect_gitignore is deprecated, gitignore is now respected by default']
-    g:fuzzyy_files_respect_gitignore = g:files_respect_gitignore
-endif
-if exists('g:fuzzyy_files_ignore_file')
-    warnings += ['fuzzyy: g:fuzzyy_files_ignore_file is deprecated, use g:fuzzyy_files_exclude_file instead']
-    g:fuzzyy_files_exclude_file = g:fuzzyy_files_ignore_file
-endif
-if exists('g:fuzzyy_files_ignore_dir')
-    warnings += ['fuzzyy: g:fuzzyy_files_ignore_dir is deprecated, use g:fuzzyy_files_exclude_dir instead']
-    g:fuzzyy_files_exclude_dir = g:fuzzyy_files_ignore_dir
-endif
-if exists('g:fuzzyy_mru_project_only')
-    warnings += ['fuzzyy: g:fuzzyy_mru_project_only is no longer supported, use :FuzzyMruCwd command instead']
 endif
 
 # Options
