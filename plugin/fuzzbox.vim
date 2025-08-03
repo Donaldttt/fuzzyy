@@ -22,6 +22,16 @@ if &encoding != 'utf-8'
     warnings += ['fuzzbox: Vim encoding is ' .. &encoding .. ', utf-8 is required for popup borders etc.']
 endif
 
+var fuzzyy_options = getcompletion('g:fuzzyy_', 'var')
+if !empty(fuzzyy_options)
+    for option in fuzzyy_options
+        var fuzzbox_option = option->substitute('g:fuzzyy_', 'g:fuzzbox_', '')
+        execute fuzzbox_option .. ' = ' .. option
+        warnings += ['fuzzbox: deprecated option ' .. option .. ' found, and used to set ' .. fuzzbox_option]
+    endfor
+    warnings += ['fuzzbox: Fuzzyy has been renamed to Fuzzbox, please update your Vim configuration']
+endif
+
 # Options
 g:fuzzbox_enable_mappings = exists('g:fuzzbox_enable_mappings') ? g:fuzzbox_enable_mappings : 1
 g:fuzzbox_respect_gitignore = exists('g:fuzzbox_respect_gitignore') ? g:fuzzbox_respect_gitignore : 1
