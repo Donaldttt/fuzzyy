@@ -14,8 +14,8 @@ Your existing plugin manager should continue to work fine, as git operations
 like `git clone` and `git fetch` will be redirected to the new location.
 
 However, you should update your plugin configuration to obtain Fuzzbox from
-the new location to avoid confusion. The simplest way to do this is to just
-remove the old Fuzzyy plugin installation and replace it with Fuzzbox.
+the new location. The simplest way to do this is to remove the old Fuzzyy
+plugin installation and replace it with Fuzzbox. See |fuzzbox-install|
 
 If you prefer to do things manually, you can just rename the directory and
 update the git configuration to change the origin url, e.g.

@@ -29,7 +29,14 @@ if !empty(fuzzyy_options)
         execute fuzzbox_option .. ' = ' .. option
         warnings += ['fuzzbox: deprecated option ' .. option .. ' found, and used to set ' .. fuzzbox_option]
     endfor
-    warnings += ['fuzzbox: Fuzzyy has been renamed to Fuzzbox, please update your Vim configuration']
+    if empty(getcompletion('fuzzyy.renamed', 'help'))
+        try
+            var doc_dir = substitute(expand('<script>:h'), 'plugin$', 'doc', '')
+            execute "helptags " .. doc_dir
+        catch
+        endtry
+    endif
+    warnings += ['fuzzbox: Fuzzyy has been renamed to Fuzzbox, please update your Vim configuration, see :help fuzzyy.renamed']
 endif
 
 # Options
