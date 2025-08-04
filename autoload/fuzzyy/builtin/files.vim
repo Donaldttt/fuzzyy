@@ -191,7 +191,7 @@ export def Start(opts: dict<any> = {})
         cmd = cmdbuilder.Build()
     endif
     JobStart(cwd, cmd)
-    timer_start(50, function('UpdateMenu'))
+    timer_start(100, function('UpdateMenu'))
     update_tid = timer_start(400, function('UpdateMenu'), {repeat: -1})
     # Profiling()
 enddef
