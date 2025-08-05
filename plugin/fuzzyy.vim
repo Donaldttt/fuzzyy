@@ -17,6 +17,7 @@ endif
 # Options
 g:fuzzyy_enable_mappings = exists('g:fuzzyy_enable_mappings') ? g:fuzzyy_enable_mappings : 1
 g:fuzzyy_respect_gitignore = exists('g:fuzzyy_respect_gitignore') ? g:fuzzyy_respect_gitignore : 1
+g:fuzzyy_respect_wildignore = exists('g:fuzzyy_respect_wildignore') ? g:fuzzyy_respect_wildignore : 0
 g:fuzzyy_follow_symlinks = exists('g:fuzzyy_follow_symlinks') ? g:fuzzyy_follow_symlinks : 0
 g:fuzzyy_include_hidden = exists('g:fuzzyy_include_hidden') ? g:fuzzyy_include_hidden : 1
 g:fuzzyy_exclude_file = exists('g:fuzzyy_exclude_file')
@@ -25,6 +26,10 @@ g:fuzzyy_exclude_dir = exists('g:fuzzyy_exclude_dir')
     && type(g:fuzzyy_exclude_dir) == v:t_list ? g:fuzzyy_exclude_dir : ['.git', '.hg', '.svn']
 g:fuzzyy_ripgrep_options = exists('g:fuzzyy_ripgrep_options')
     && type(g:fuzzyy_ripgrep_options) == v:t_list ? g:fuzzyy_ripgrep_options : []
+
+if g:fuzzyy_respect_wildignore
+    extend(g:fuzzyy_exclude_file, split(&wildignore, ','))
+endif
 
 # window layout customization for particular selectors
 # you can override it by setting g:fuzzyy_window_layout
