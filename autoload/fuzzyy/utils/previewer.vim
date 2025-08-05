@@ -66,8 +66,45 @@ export def PreviewFile(wid: number, path: string, opts: dict<any> = {})
         return
     endif
     if IsBinary(path)
-        popup_settext(wid, 'Cannot preview binary file')
+        const pos = popup_getpos(wid)
+        const line = repeat('╱', pos.width - 2)
+        const message = 'Binary cannot be previewed'
+        const len_message = len(message)
+        const size_max = pos.width - 2 - len_message - 4
+        const begin_line = repeat('╱', (size_max / 2))
+        var end_line: string
+        var lines = []
+
+        if (size_max % 2) == 0
+            end_line = begin_line
+        else
+            end_line = begin_line .. '╱'
+        endif
+
+        # Create the middle line with the message
+        const line_message = begin_line ..  '  ' .. message .. '  ' .. end_line
+        const line_space = begin_line ..  '  ' .. repeat(' ', len_message) .. '  ' .. end_line
+
+        const height = pos.height - 6
+        const middle = height / 2
+
+        # Draw the top of the popup
+        for i in range(0, middle)
+            add(lines, line)
+        endfor
+        # Draw the message
+        add(lines, line_space)
+        add(lines, line_message)
+        add(lines, line_space)
+        # Draw the bottom of the popup
+        for i in range(0, middle)
+            add(lines, line)
+        endfor
+        setwinvar(wid, '&nu', 0)
+        popup_settext(wid, lines)
         return
+    else
+        setwinvar(wid, '&nu', 1)
     endif
     var content: list<any>
     if has_key(opts, 'max') && type(opts.max) == v:t_number
