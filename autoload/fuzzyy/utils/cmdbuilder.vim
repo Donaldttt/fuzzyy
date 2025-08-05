@@ -62,6 +62,16 @@ def Build_fd(): string
     return result .. ' ' .. dir_list_parsed .. file_list_parsed
 enddef
 
+def Build_git(): string
+    var result = 'git ls-files --cached --other --exclude-standard'
+    var dir_list_parsed = reduce(dir_exclude,
+        (acc, dir) => acc .. "-x " .. dir .. " ", "")
+
+    var file_list_parsed = reduce(file_exclude,
+        (acc, file) => acc .. "-x " .. file .. " ", "")
+    return result .. ' ' .. dir_list_parsed .. file_list_parsed .. ' .'
+enddef
+
 def Build_find(): string
     var opts = ''
     if follow_symlinks
@@ -136,7 +146,7 @@ export def Build(): string
         cmdstr = Build_fd()
         cmdstr = substitute(cmdstr, '^fd ', 'fdfind ', '')
     elseif respect_gitignore && executable('git') && InsideGitRepo()
-        cmdstr = 'git ls-files --cached --other --exclude-standard .'
+        cmdstr = Build_git()
     elseif has('win32')
         cmdstr = Build_gci()
     else
