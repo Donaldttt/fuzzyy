@@ -690,6 +690,10 @@ def PopupMenu(args: dict<any>): number
     opts = extend(opts, args)
     var [wid, bufnr] = NewPopup(opts)
 
+    if has_key(args, 'title') && !empty(args.title)
+        SetTitle(wid, args.title)
+    endif
+
     return wid
 enddef
 
@@ -793,6 +797,9 @@ export def PopupSelection(opts: dict<any>): dict<any>
         height: menu_height,
         zindex: 1200,
     }
+    if has_key(opts, 'menu_title')
+        menu_opts['title'] = opts.menu_title
+    endif
     wins.menu = PopupMenu(menu_opts)
 
     var prompt_opts = {
