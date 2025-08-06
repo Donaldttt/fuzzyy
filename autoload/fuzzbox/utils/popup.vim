@@ -8,13 +8,18 @@ import autoload './launcher.vim'
 
 var popup_wins: dict<any>
 var wins = { menu: -1, prompt: -1, preview: -1, info: -1 }
+var popup_opts: dict<any>
 var t_ve: string
 var hlcursor: dict<any>
 var has_devicons: bool
 export var active = false
 
 # user can register callback for any key
+# deprecated, do not use, use actions instead
 var key_callbacks: dict<any>
+
+# user can register a custom action for any key
+var actions: dict<any>
 
 var keymaps: dict<any> = {
     'menu_up': ["\<C-p>", "\<Up>"],
@@ -390,6 +395,13 @@ def MenuFilter(wid: number, key: string): number
         endif
     elseif index(keymaps['exit'], key) >= 0
         popup_close(wid)
+    elseif has_key(actions, key)
+        var linetext = getbufline(bufnr, cursorlinepos, cursorlinepos)[0]
+        if has_devicons
+            actions[key](wid, [devicons.RemoveDevicon(linetext)], popup_opts)
+        else
+            actions[key](wid, [linetext], popup_opts)
+        endif
     elseif has_key(key_callbacks, key)
         key_callbacks[key]()
     else
@@ -749,11 +761,14 @@ enddef
 #        preview: wins.preview,
 #    }
 export def PopupSelection(opts: dict<any>): dict<any>
+    popup_opts = opts
     if active
         return { menu: -1, prompt: -1, preview: -1 }
     endif
     active = true
+    # key_callbacks are deprecated, do not use, use actions instead
     key_callbacks = has_key(opts, 'key_callbacks') ? opts.key_callbacks : {}
+    actions = has_key(opts, 'actions') ? opts.actions : {}
     has_devicons = has_key(opts, 'devicons') ? opts.devicons && devicons.Enabled() : 0
     var has_preview = has_key(opts, 'preview') ? opts.preview : 1
 

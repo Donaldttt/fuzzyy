@@ -3,6 +3,7 @@ vim9script
 import autoload './popup.vim'
 import autoload './devicons.vim'
 import autoload './helpers.vim'
+import autoload './actions.vim'
 
 var raw_list: list<string>
 var len_list: number
@@ -295,123 +296,14 @@ export def RefreshMenu()
     Input(menu_wid, prompt_str)
 enddef
 
-def OpenFileTab()
-    var result = GetCursorItem()
-    if empty(result)
-        return
-    endif
-    popup_close(menu_wid)
-    var [buf, line, col] = split(result .. ':0:0', ':')[0 : 2]
-    var bufnr = bufnr(buf)
-    if bufnr > 0 && !filereadable(buf)
-        # for special buffers that cannot be edited
-        execute 'tabnew'
-        execute 'buffer ' .. bufnr
-    elseif cwd ==# getcwd()
-        execute 'tabnew ' .. fnameescape(buf)
-    else
-        var path = cwd .. '/' .. buf
-        execute 'tabnew ' .. fnameescape(path)
-    endif
-    if str2nr(line) > 0
-        if str2nr(col) > 0
-            cursor(str2nr(line), str2nr(col))
-        else
-            exe 'norm! ' .. line .. 'G'
-        endif
-        exe 'norm! zz'
-    endif
-enddef
+# key_callbacks are deprecated, do not use
+export var open_file_callbacks = {}
 
-def OpenFileVSplit()
-    var result = GetCursorItem()
-    if empty(result)
-        return
-    endif
-    popup_close(menu_wid)
-    var [buf, line, col] = split(result .. ':0:0', ':')[0 : 2]
-    var bufnr = bufnr(buf)
-    if bufnr > 0 && !filereadable(buf)
-        # for special buffers that cannot be edited
-        # avoid :sbuffer to bypass 'switchbuf=useopen'
-        execute 'vnew'
-        execute 'buffer ' .. bufnr
-    elseif cwd ==# getcwd()
-        execute 'vsp ' .. fnameescape(buf)
-    else
-        var path = cwd .. '/' .. buf
-        execute 'vsp ' .. fnameescape(path)
-    endif
-    if str2nr(line) > 0
-        if str2nr(col) > 0
-            cursor(str2nr(line), str2nr(col))
-        else
-            exe 'norm! ' .. line .. 'G'
-        endif
-        exe 'norm! zz'
-    endif
-enddef
-
-def OpenFileSplit()
-    var result = GetCursorItem()
-    if empty(result)
-        return
-    endif
-    popup_close(menu_wid)
-    var [buf, line, col] = split(result .. ':0:0', ':')[0 : 2]
-    var bufnr = bufnr(buf)
-    if bufnr > 0 && !filereadable(buf)
-        # for special buffers that cannot be edited
-        # avoid :sbuffer to bypass 'switchbuf=useopen'
-        execute 'new'
-        execute 'buffer ' .. bufnr
-    elseif cwd ==# getcwd()
-        execute 'sp ' .. fnameescape(buf)
-    else
-        var path = cwd .. '/' .. buf
-        execute 'sp ' .. fnameescape(path)
-    endif
-    if str2nr(line) > 0
-        if str2nr(col) > 0
-            cursor(str2nr(line), str2nr(col))
-        else
-            exe 'norm! ' .. line .. 'G'
-        endif
-        exe 'norm! zz'
-    endif
-enddef
-
-def SendAllQuickFix()
-    var bufnr = winbufnr(menu_wid)
-    var lines: list<any>
-    lines = reverse(getbufline(bufnr, 1, "$"))
-    filter(lines, (_, val) => !empty(val))
-    map(lines, (_, val) => {
-        var [path, line, col] = split(val .. ':1:1', ':')[0 : 2]
-        var text = split(val, ':' .. line .. ':' .. col .. ':')[-1]
-        if has_devicons
-            if path == text
-                text = devicons.RemoveDevicon(text)
-            endif
-            path = devicons.RemoveDevicon(path)
-        endif
-        var dict = {
-            filename: path,
-            lnum: str2nr(line),
-            col: str2nr(col),
-            text: text }
-        return dict
-    })
-    setqflist(lines)
-    popup_close(menu_wid)
-    exe 'copen'
-enddef
-
-export var open_file_callbacks = {
-    "\<c-v>": function('OpenFileVSplit'),
-    "\<c-s>": function('OpenFileSplit'),
-    "\<c-t>": function('OpenFileTab'),
-    "\<c-q>": function('SendAllQuickFix'),
+var default_actions = {
+    "\<c-v>": actions.OpenFileVSplit,
+    "\<c-s>": actions.OpenFileSplit,
+    "\<c-t>": actions.OpenFileTab,
+    "\<c-q>": actions.SendAllQuickFix,
 }
 
 # This function spawn a popup picker for user to select an item from a list.
@@ -458,6 +350,8 @@ export def Start(li_raw: list<string>, opts: dict<any> = {}): dict<any>
     opts.dropdown = has_key(opts, 'dropdown') ? opts.dropdown : enable_dropdown
     opts.preview = has_key(opts, 'preview') ? opts.preview : enable_preview
     opts.prompt_prefix = has_key(opts, 'prompt_prefix') ? opts.prompt_prefix : prompt_prefix
+
+    opts.actions = has_key(opts, 'actions') ? extend(default_actions, opts.actions) : default_actions
 
     wins = popup.PopupSelection(opts)
     menu_wid = wins.menu

@@ -6,7 +6,7 @@ import autoload '../utils/devicons.vim'
 import autoload '../utils/helpers.vim'
 
 var buf_dict: dict<any>
-var key_callbacks: dict<any>
+var actions: dict<any>
 var _window_width: float
 
 # Options
@@ -94,16 +94,6 @@ def GetBufList(): list<string>
     return bufs
 enddef
 
-def DeleteSelectedFile()
-    var buf = selector.GetCursorItem()
-    var choice = confirm('Delete file ' .. buf .. '. Are you sure?', "&Yes\n&No")
-    if choice != 1
-        return
-    endif
-    delete(buf)
-    WipeSelectedBuffer()
-enddef
-
 def DeleteSelectedBuffer(wipe: bool)
     var buf = selector.GetCursorItem()
     if buf == ''
@@ -120,17 +110,27 @@ def DeleteSelectedBuffer(wipe: bool)
     selector.RefreshMenu()
 enddef
 
-def WipeSelectedBuffer()
+def WipeSelectedBuffer(wid: number, result: list<any>, opts: dict<any>)
     DeleteSelectedBuffer(true)
 enddef
 
-def CloseSelectedBuffer()
+def CloseSelectedBuffer(wid: number, result: list<any>, opts: dict<any>)
     DeleteSelectedBuffer(false)
 enddef
 
-key_callbacks[keymaps.delete_file] = function("DeleteSelectedFile")
-key_callbacks[keymaps.wipe_buffer] = function("WipeSelectedBuffer")
-key_callbacks[keymaps.close_buffer] = function("CloseSelectedBuffer")
+def DeleteSelectedFile(wid: number, result: list<any>, opts: dict<any>)
+    var buf = selector.GetCursorItem()
+    var choice = confirm('Delete file ' .. buf .. '. Are you sure?', "&Yes\n&No")
+    if choice != 1
+        return
+    endif
+    delete(buf)
+    DeleteSelectedBuffer(true)
+enddef
+
+actions[keymaps.delete_file] = function("DeleteSelectedFile")
+actions[keymaps.wipe_buffer] = function("WipeSelectedBuffer")
+actions[keymaps.close_buffer] = function("CloseSelectedBuffer")
 
 export def Start(opts: dict<any> = {})
     # FIXME: allows the file path to be shortened to fit in the results window
@@ -141,6 +141,6 @@ export def Start(opts: dict<any> = {})
         devicons: true,
         preview_cb: function('Preview'),
         select_cb: function('Select'),
-        key_callbacks: extend(selector.open_file_callbacks, key_callbacks),
+        actions: actions
     }))
 enddef
