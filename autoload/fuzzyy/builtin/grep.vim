@@ -68,16 +68,26 @@ def Build_ag(): string
     return result .. ' ' .. dir_list_parsed .. file_list_parsed .. ' %s "%s" "%s"'
 enddef
 
+var bsd_grep: any
 def Build_grep(): string
+    if empty(bsd_grep)
+        bsd_grep = ( has('mac') || has('bsd') ) && system('grep --version | head -1') =~# 'BSD'
+    endif
     var result = 'grep -n -r -I --max-count=' .. max_count .. ' -F'
     if follow_symlinks
         result = substitute(result, ' -r ', ' -R ', '')
-        if system('grep --version | head -1') =~# 'BSD'
+        if bsd_grep
+            # Assumes extended BSD grep (MacOS/FreeBSD)
             result ..= ' -S'
         endif
     endif
+    var ParseDir = (dir): string => {
+        # GNU grep expects glob without trailing '*' and leading '*/'
+        # Thanks to @girishji and scope.vim for this little hack :-)
+        return bsd_grep ? dir : dir->substitute('^\**/\{0,1}\(.\{-}\)/\{0,1}\**$', '\1', '')
+    }
     var dir_list_parsed = reduce(dir_exclude,
-        (acc, dir) => acc .. "--exclude-dir " .. dir .. " ", "")
+        (acc, dir) => acc .. "--exclude-dir " .. ParseDir(dir) .. " ", "")
     var file_list_parsed = reduce(file_exclude,
         (acc, file) => acc .. "--exclude " .. file .. " ", "")
     return result .. ' ' .. dir_list_parsed .. file_list_parsed .. ' %s "%s" "%s"'

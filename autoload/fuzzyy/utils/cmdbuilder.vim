@@ -79,7 +79,9 @@ def Build_find(): string
     endif
     var result = "find " .. opts .. " . -type f"
 
-    var ParseDir = (dir): string => "*/" .. dir .. "/*"
+    var ParseDir = (dir): string => {
+        return stridx(dir, '*') == -1 ? "*/" .. dir .. "/*" : dir
+    }
     var dir_list_parsed = reduce(dir_exclude,
         (acc, dir) => acc .. "-not -path " .. ParseDir(dir) .. " ", " ")
 

@@ -28,7 +28,10 @@ g:fuzzyy_ripgrep_options = exists('g:fuzzyy_ripgrep_options')
     && type(g:fuzzyy_ripgrep_options) == v:t_list ? g:fuzzyy_ripgrep_options : []
 
 if g:fuzzyy_respect_wildignore
-    extend(g:fuzzyy_exclude_file, split(&wildignore, ','))
+    var wildignore_dir = copy(split(&wildignore, ','))->filter('v:val =~ "[\\/]"')
+    var wildignore_file = copy(split(&wildignore, ','))->filter('v:val !~ "[\\/]"')
+    extend(g:fuzzyy_exclude_file, wildignore_file)
+    extend(g:fuzzyy_exclude_dir, wildignore_dir)
 endif
 
 # window layout customization for particular selectors
