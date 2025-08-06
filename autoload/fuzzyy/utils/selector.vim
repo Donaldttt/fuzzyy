@@ -292,7 +292,7 @@ def Input(wid: number, result: string)
 enddef
 
 export def RefreshMenu()
-    Input(menu_wid, {str: prompt_str})
+    Input(menu_wid, prompt_str)
 enddef
 
 def OpenFileTab()
