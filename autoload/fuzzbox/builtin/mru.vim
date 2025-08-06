@@ -122,7 +122,7 @@ export def Start(opts: dict<any> = {})
         devicons: true,
         select_cb: function('Select'),
         preview_cb: function('Preview'),
-        key_callbacks: extend(key_callbacks, selector.open_file_callbacks),
+        key_callbacks: key_callbacks
     }))
     menu_wid = wids.menu
 enddef

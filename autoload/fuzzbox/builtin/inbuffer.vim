@@ -35,44 +35,41 @@ def Preview(wid: number, result: string)
     win_execute(wid, 'norm! zz')
 enddef
 
-def OpenFileTab()
-    var result = selector.GetCursorItem()
+def OpenFileTab(wid: number, result: list<any>, opts: dict<any>)
     if empty(result)
         return
     endif
-    popup_close(menu_wid)
-    var line = str2nr(split(result, '│')[0])
+    popup_close(wid)
+    var line = str2nr(split(result[0], '│')[0])
     exe 'tabnew ' .. fnameescape(file_name)
     exe 'norm! ' .. line .. 'G'
     exe 'norm! zz'
 enddef
 
-def OpenFileVSplit()
-    var result = selector.GetCursorItem()
+def OpenFileVSplit(wid: number, result: list<any>, opts: dict<any>)
     if empty(result)
         return
     endif
-    popup_close(menu_wid)
-    var line = str2nr(split(result, '│')[0])
+    popup_close(wid)
+    var line = str2nr(split(result[0], '│')[0])
     exe 'vsplit ' .. fnameescape(file_name)
     exe 'norm! ' .. line .. 'G'
     exe 'norm! zz'
 enddef
 
-def OpenFileSplit()
-    var result = selector.GetCursorItem()
+def OpenFileSplit(wid: number, result: list<any>, opts: dict<any>)
     if empty(result)
         return
     endif
-    popup_close(menu_wid)
-    var line = str2nr(split(result, '│')[0])
+    popup_close(wid)
+    var line = str2nr(split(result[0], '│')[0])
     exe 'split ' .. fnameescape(file_name)
     exe 'norm! ' .. line .. 'G'
     exe 'norm! zz'
 enddef
 
-def SendAllQuickFix()
-    var bufnr = winbufnr(menu_wid)
+def SendAllQuickFix(wid: number, result: list<any>, opts: dict<any>)
+    var bufnr = winbufnr(wid)
     var lines: list<any>
     lines = reverse(getbufline(bufnr, 1, "$"))
     filter(lines, (_, val) => !empty(val))
@@ -86,16 +83,9 @@ def SendAllQuickFix()
         return dict
     })
     setqflist(lines)
-    popup_close(menu_wid)
+    popup_close(wid)
     exe 'copen'
 enddef
-
-var open_file_callbacks = {
-    "\<c-v>": function('OpenFileVSplit'),
-    "\<c-s>": function('OpenFileSplit'),
-    "\<c-t>": function('OpenFileTab'),
-    "\<c-q>": function('SendAllQuickFix'),
-}
 
 export def Start(opts: dict<any> = {})
     raw_lines = getline(1, '$')
@@ -108,7 +98,12 @@ export def Start(opts: dict<any> = {})
     var wids = selector.Start(lines, extend(opts, {
         select_cb: function('Select'),
         preview_cb: function('Preview'),
-        key_callbacks: open_file_callbacks,
+        actions: {
+            "\<c-v>": function('OpenFileVSplit'),
+            "\<c-s>": function('OpenFileSplit'),
+            "\<c-t>": function('OpenFileTab'),
+            "\<c-q>": function('SendAllQuickFix'),
+        }
     }))
     menu_wid = wids.menu
 
