@@ -14,10 +14,6 @@ var hlcursor: dict<any>
 var has_devicons: bool
 export var active = false
 
-# user can register callback for any key
-# deprecated, do not use, use actions instead
-var key_callbacks: dict<any>
-
 # user can register a custom action for any key
 var actions: dict<any>
 
@@ -402,8 +398,6 @@ def MenuFilter(wid: number, key: string): number
         popup_close(wid)
     elseif has_key(actions, key)
         InvokeAction(actions[key])
-    elseif has_key(key_callbacks, key)
-        key_callbacks[key]()
     else
         return 0
     endif
@@ -766,8 +760,6 @@ export def PopupSelection(opts: dict<any>): dict<any>
         return { menu: -1, prompt: -1, preview: -1 }
     endif
     active = true
-    # key_callbacks are deprecated, do not use, use actions instead
-    key_callbacks = has_key(opts, 'key_callbacks') ? opts.key_callbacks : {}
     actions = has_key(opts, 'actions') ? opts.actions : {}
     has_devicons = has_key(opts, 'devicons') ? opts.devicons && devicons.Enabled() : 0
     var has_preview = has_key(opts, 'preview') ? opts.preview : 1
