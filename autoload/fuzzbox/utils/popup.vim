@@ -132,6 +132,21 @@ def ShowCursor()
     endif
 enddef
 
+def InvokeAction(Action: func)
+    var wid = wins.menu
+    var bufnr = popup_wins[wid].bufnr
+    var cursorlinepos = line('.', wid)
+    var linetext = getbufline(bufnr, cursorlinepos, cursorlinepos)[0]
+    if has_devicons
+        linetext = devicons.RemoveDevicon(linetext)
+    endif
+    try
+        Action(wid, [linetext], popup_opts)
+    catch /\v:(E118):/
+        Action(wid, [linetext])
+    endtry
+enddef
+
 # Called usually when popup window is closed
 # It will only execute when menu window is closed
 # params:
@@ -152,14 +167,6 @@ def GeneralPopupCallback(wid: number, select: any)
     # restore things to normal
     ShowCursor()
     active = false
-
-    # only press enter select will be a list
-    if type(select) == v:t_list
-        if has_key(popup_wins[wid], 'select_cb')
-                && type(popup_wins[wid].select_cb) == v:t_func
-            popup_wins[wid].select_cb(wid, select)
-        endif
-    endif
 
     if has_key(popup_wins[wid], 'close_cb')
       && type(popup_wins[wid].close_cb) == v:t_func
@@ -381,27 +388,15 @@ def MenuFilter(wid: number, key: string): number
         endif
         win_execute(wid, "norm! 3\<c-e>")
     elseif index(keymaps['menu_select'], key) >= 0
-        # if not passing second argument, popup_close will call user callback
-        # with func(window-id, 0)
-        # if passing second argument (popup_close(2, result)), popup_close will
-        # call user callback with func(window-id, [result])
-        var linetext = getbufline(bufnr, cursorlinepos, cursorlinepos)[0]
-        if linetext == ''
-            popup_close(wid)
-        elseif has_devicons
-            popup_close(wid, [devicons.RemoveDevicon(linetext)])
-        else
-            popup_close(wid, [linetext])
+        if has_key(popup_wins[wid], 'select_cb')
+                && type(popup_wins[wid].select_cb) == v:t_func
+            InvokeAction(popup_wins[wid].select_cb)
         endif
+        popup_close(wid)
     elseif index(keymaps['exit'], key) >= 0
         popup_close(wid)
     elseif has_key(actions, key)
-        var linetext = getbufline(bufnr, cursorlinepos, cursorlinepos)[0]
-        if has_devicons
-            actions[key](wid, [devicons.RemoveDevicon(linetext)], popup_opts)
-        else
-            actions[key](wid, [linetext], popup_opts)
-        endif
+        InvokeAction(actions[key])
     elseif has_key(key_callbacks, key)
         key_callbacks[key]()
     else

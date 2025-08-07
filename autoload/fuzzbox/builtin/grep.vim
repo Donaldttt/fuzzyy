@@ -5,6 +5,7 @@ import autoload '../utils/previewer.vim'
 import autoload '../utils/popup.vim'
 import autoload '../utils/devicons.vim'
 import autoload '../utils/helpers.vim'
+import autoload '../utils/actions.vim'
 
 var enable_devicons = devicons.Enabled()
 
@@ -319,22 +320,6 @@ def Preview(wid: number, result: string)
     UpdatePreviewHl()
 enddef
 
-def Select(wid: number, result: list<any>)
-    var [relative_path, line, col] = ParseResult(result[0])
-    if relative_path == null
-        return
-    endif
-    var path = cwd .. '/' .. relative_path
-    helpers.MoveToUsableWindow()
-    exe 'edit ' .. fnameescape(path)
-    if col > 0
-        cursor(line, col)
-    else
-        exe 'norm! ' .. line .. 'G'
-    endif
-    exe 'norm! zz'
-enddef
-
 def UpdateMenu(...li: list<any>)
     var cur_result_len = len(cur_result)
     if cur_pattern == ''
@@ -421,7 +406,7 @@ export def Start(opts: dict<any> = {})
     cur_dict = {}
 
     var wids = selector.Start([], extend(opts, {
-        select_cb: function('Select'),
+        select_cb: actions.OpenFile,
         input_cb: function('Input'),
         preview_cb: function('Preview'),
         close_cb: function('Close'),

@@ -4,9 +4,10 @@ import autoload '../utils/selector.vim'
 import autoload '../utils/popup.vim'
 import autoload '../utils/devicons.vim'
 import autoload '../utils/helpers.vim'
+import autoload '../utils/actions.vim'
 
 var buf_dict: dict<any>
-var actions: dict<any>
+var _actions: dict<any>
 var _window_width: float
 
 # Options
@@ -59,15 +60,6 @@ def Preview(wid: number, result: string)
     endtry
     win_execute(wid, 'norm! ' .. lnum .. 'G')
     win_execute(wid, 'norm! zz')
-enddef
-
-def Select(wid: number, result: list<any>)
-    var buf = result[0]
-    var bufnr = buf_dict[buf][1]
-    if bufnr != bufnr('$')
-        helpers.MoveToUsableWindow(bufnr)
-        execute 'buffer' bufnr
-    endif
 enddef
 
 def GetBufList(): list<string>
@@ -128,9 +120,9 @@ def DeleteSelectedFile(wid: number, result: list<any>, opts: dict<any>)
     DeleteSelectedBuffer(true)
 enddef
 
-actions[keymaps.delete_file] = function("DeleteSelectedFile")
-actions[keymaps.wipe_buffer] = function("WipeSelectedBuffer")
-actions[keymaps.close_buffer] = function("CloseSelectedBuffer")
+_actions[keymaps.delete_file] = function("DeleteSelectedFile")
+_actions[keymaps.wipe_buffer] = function("WipeSelectedBuffer")
+_actions[keymaps.close_buffer] = function("CloseSelectedBuffer")
 
 export def Start(opts: dict<any> = {})
     # FIXME: allows the file path to be shortened to fit in the results window
@@ -139,8 +131,8 @@ export def Start(opts: dict<any> = {})
 
     var wids = selector.Start(GetBufList(), extend(opts, {
         devicons: true,
+        select_cb: actions.OpenFile,
         preview_cb: function('Preview'),
-        select_cb: function('Select'),
-        actions: actions
+        actions: _actions
     }))
 enddef
