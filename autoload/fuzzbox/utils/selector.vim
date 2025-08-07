@@ -297,9 +297,6 @@ export def RefreshMenu()
     Input(menu_wid, prompt_str)
 enddef
 
-# key_callbacks are deprecated, do not use
-export var open_file_callbacks = {}
-
 default_actions = {
     "\<c-v>": actions.OpenFileVSplit,
     "\<c-s>": actions.OpenFileSplit,
