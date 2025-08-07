@@ -11,6 +11,7 @@ var cwd: string
 var menu_wid: number
 var prompt_str: string
 var menu_hl_list: list<any>
+var default_actions: dict<any>
 var async_step = exists('g:fuzzbox_async_step')
     && type(g:fuzzbox_async_step) == v:t_number ?
     g:fuzzbox_async_step : 10000
@@ -299,7 +300,7 @@ enddef
 # key_callbacks are deprecated, do not use
 export var open_file_callbacks = {}
 
-var default_actions = {
+default_actions = {
     "\<c-v>": actions.OpenFileVSplit,
     "\<c-s>": actions.OpenFileSplit,
     "\<c-t>": actions.OpenFileTab,

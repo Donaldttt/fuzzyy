@@ -143,7 +143,12 @@ def InvokeAction(Action: func)
     try
         Action(wid, [linetext], popup_opts)
     catch /\v:(E118):/
-        Action(wid, [linetext])
+        try
+            Action(wid, [linetext])
+        catch /\v:(E118):/
+            # Experimental: don't rely on this within custom selectors
+            try | Action(wid) | catch /\v:(E118):/ | Action() | endtry
+        endtry
     endtry
 enddef
 

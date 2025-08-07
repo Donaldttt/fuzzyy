@@ -55,10 +55,6 @@ def ToggleScope()
     selector.UpdateMenu(mru_list, [])
 enddef
 
-var key_callbacks = {
-    "\<c-k>": function('ToggleScope'),
-}
-
 export def Start(opts: dict<any> = {})
     cwd = len(get(opts, 'cwd', '')) > 0 ? opts.cwd : getcwd()
     cwd_only = len(get(opts, 'cwd', '')) > 0
@@ -113,7 +109,9 @@ export def Start(opts: dict<any> = {})
         devicons: true,
         select_cb: actions.OpenFile,
         preview_cb: function('Preview'),
-        key_callbacks: key_callbacks
+        actions: {
+            "\<c-k>": function('ToggleScope'),
+        }
     }))
     menu_wid = wids.menu
 enddef
