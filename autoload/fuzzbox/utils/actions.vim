@@ -1,8 +1,37 @@
 vim9script
 
 import autoload './devicons.vim'
+import autoload './helpers.vim'
 
 var enable_devicons = devicons.Enabled()
+
+export def OpenFile(wid: number, result: list<any>, opts: dict<any>)
+    if empty(result)
+        return
+    endif
+    popup_close(wid)
+    var cwd = len(get(opts, 'cwd', '')) > 0 ? opts.cwd : getcwd()
+    var [buf, line, col] = split(result[0] .. ':0:0', ':')[0 : 2]
+    var bufnr = bufnr(buf)
+    helpers.MoveToUsableWindow()
+    if bufnr > 0 && !filereadable(buf)
+        # for special buffers that cannot be edited
+        execute 'buffer ' .. bufnr
+    elseif cwd ==# getcwd()
+        execute 'edit ' .. fnameescape(buf)
+    else
+        var path = cwd .. '/' .. buf
+        execute 'edit ' .. fnameescape(path)
+    endif
+    if str2nr(line) > 0
+        if str2nr(col) > 0
+            cursor(str2nr(line), str2nr(col))
+        else
+            exe 'norm! ' .. line .. 'G'
+        endif
+        exe 'norm! zz'
+    endif
+enddef
 
 export def OpenFileTab(wid: number, result: list<any>, opts: dict<any>)
     if empty(result)

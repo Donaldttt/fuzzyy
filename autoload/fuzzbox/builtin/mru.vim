@@ -4,6 +4,7 @@ import autoload '../utils/selector.vim'
 import autoload '../utils/previewer.vim'
 import autoload '../utils/devicons.vim'
 import autoload '../utils/helpers.vim'
+import autoload '../utils/actions.vim'
 
 var mru_origin_list: list<string>
 var cwd: string
@@ -32,16 +33,6 @@ def Preview(wid: number, result: string)
     path = path == '' ? path : fnamemodify(path, ':p')
     previewer.PreviewFile(wid, path)
     win_execute(wid, 'norm! gg')
-enddef
-
-def Select(wid: number, result: list<any>)
-    var path = result[0]
-    helpers.MoveToUsableWindow()
-    if cwd_only
-        exe 'edit ' cwd .. '/' .. fnameescape(path)
-    else
-        exe 'edit ' .. fnameescape(path)
-    endif
 enddef
 
 def ToggleScope()
@@ -120,7 +111,7 @@ export def Start(opts: dict<any> = {})
     var wids = selector.Start(mru_list, extend(opts, {
         async: true,
         devicons: true,
-        select_cb: function('Select'),
+        select_cb: actions.OpenFile,
         preview_cb: function('Preview'),
         key_callbacks: key_callbacks
     }))
