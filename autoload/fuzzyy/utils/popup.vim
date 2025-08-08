@@ -24,9 +24,12 @@ var keymaps: dict<any> = {
     'preview_scroll_down': ["\<C-d>"],
     'cursor_begining': ["\<C-b>", "\<Home>"],
     'cursor_end': ["\<C-e>", "\<End>"],
+    'cursor_word_left': ["\<C-Left>", "\<S-Left>"],
+    'cursor_word_right': ["\<C-Right>", "\<S-Right>"],
     'backspace': ["\<C-h>", "\<BS>"],
     'delete': ["\<Del>"],
     'delete_all': [],
+    'delete_word': ["\<C-w>"],
     'delete_prefix': [],
     'exit': ["\<Esc>", "\<C-c>", "\<C-[>"],
 }
@@ -240,9 +243,32 @@ def PromptFilter(wid: number, key: string): number
         cur_pos = 0
     elseif index(keymaps['cursor_end'], key) >= 0
         cur_pos = max_pos
+    elseif index(keymaps['cursor_word_left'], key) >= 0
+        while cur_pos > 0 && line[cur_pos - 1] == ' '
+            cur_pos = cur_pos - 1
+        endwhile
+        while cur_pos > 0 && line[cur_pos - 1] != ' '
+            cur_pos = cur_pos - 1
+        endwhile
+    elseif index(keymaps['cursor_word_right'], key) >= 0
+        while cur_pos < max_pos && line[cur_pos] != ' '
+            cur_pos = cur_pos + 1
+        endwhile
+        while cur_pos < max_pos && line[cur_pos] == ' '
+            cur_pos = cur_pos + 1
+        endwhile
     elseif index(keymaps['delete_all'], key) >= 0
         line = []
         cur_pos = 0
+    elseif index(keymaps['delete_word'], key) >= 0
+        while cur_pos > 0 && line[cur_pos - 1] == ' '
+            remove(line, cur_pos - 1)
+            cur_pos = cur_pos - 1
+        endwhile
+        while cur_pos > 0 && line[cur_pos - 1] != ' '
+            remove(line, cur_pos - 1)
+            cur_pos = cur_pos - 1
+        endwhile
     elseif index(keymaps['delete_prefix'], key) >= 0
         line = line[cur_pos :]
         cur_pos = 0
