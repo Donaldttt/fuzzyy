@@ -120,8 +120,6 @@ Fuzzyy will not overwrite mappings from your vimrc when adding default mappings.
 - \<CTRL-N> or \<Down> moves down by one line in the menu window
 - \<CTRL-U> moves up by half a page in the preview window
 - \<CTRL-D> moves down by half a page in the preview window
-- \<CTRL-I> moves up by one line in the preview window
-- \<CTRL-F> moves down by one line in the preview window
 - \<CTRL-C> or \<ESC> exits Fuzzyy, closing all the windows
 
 You can use `g:fuzzyy_keymaps` to change these defaults.
