@@ -17,19 +17,18 @@ export var active = false
 var key_callbacks: dict<any>
 
 var keymaps: dict<any> = {
-    'menu_up': ["\<c-p>", "\<Up>"],
-    'menu_down': ["\<c-n>", "\<Down>"],
+    'menu_up': ["\<C-p>", "\<Up>"],
+    'menu_down': ["\<C-n>", "\<Down>"],
     'menu_select': ["\<CR>"],
-    'preview_up': ["\<c-i>"],
-    'preview_down': ["\<c-f>"],
-    'preview_up_half_page': ["\<c-u>"],
-    'preview_down_half_page': ["\<c-d>"],
-    'cursor_begining': ["\<c-a>"],
-    'cursor_end': ["\<c-e>"],
-    'backspace': ["\<bs>"],
-    'delete_all': ["\<c-k>"],
+    'preview_scroll_up': ["\<C-u>"],
+    'preview_scroll_down': ["\<C-d>"],
+    'cursor_begining': ["\<C-b>", "\<Home>"],
+    'cursor_end': ["\<C-e>", "\<End>"],
+    'backspace': ["\<C-h>", "\<BS>"],
+    'delete': ["\<Del>"],
+    'delete_all': [],
     'delete_prefix': [],
-    'exit': ["\<Esc>", "\<c-c>", "\<c-[>"],
+    'exit': ["\<Esc>", "\<C-c>", "\<C-[>"],
 }
 keymaps = exists('g:fuzzyy_keymaps') && type(g:fuzzyy_keymaps) == v:t_dict ?
     extend(keymaps, g:fuzzyy_keymaps) : keymaps
@@ -222,11 +221,11 @@ def PromptFilter(wid: number, key: string): number
             line = before + line[cur_pos :]
         endif
         cur_pos = max([ 0, cur_pos - 1 ])
-    elseif key == "\<Left>" || key == "\<c-b>"
+    elseif key == "\<Left>"
         cur_pos = max([ 0, cur_pos - 1 ])
-    elseif key == "\<Right>" || key == "\<c-f>"
+    elseif key == "\<Right>"
         cur_pos = min([ max_pos, cur_pos + 1 ])
-    elseif key ==? "\<Del>"
+    elseif index(keymaps['delete'], key) >= 0
         if cur_pos == max_pos
             return 1
         endif
@@ -378,13 +377,9 @@ def MenuFilter(wid: number, key: string): number
 enddef
 
 def PreviewFilter(wid: number, key: string): number
-    if index(keymaps['preview_up'], key) >= 0
-        win_execute(wid, 'norm! k')
-    elseif index(keymaps['preview_down'], key) >= 0
-        win_execute(wid, 'norm! j')
-    elseif index(keymaps['preview_up_half_page'], key) >= 0
+    if index(keymaps['preview_scroll_up'], key) >= 0
         win_execute(wid, "norm! \<c-u>")
-    elseif index(keymaps['preview_down_half_page'], key) >= 0
+    elseif index(keymaps['preview_scroll_down'], key) >= 0
         win_execute(wid, "norm! \<c-d>")
     elseif key ==? "\<ScrollWheelUp>"
         var pos = getmousepos()
