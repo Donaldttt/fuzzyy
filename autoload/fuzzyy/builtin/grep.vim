@@ -162,7 +162,6 @@ var update_tid = 0
 var last_pattern = ''
 var last_result_len = -1
 var last_result = []
-var last_path: string
 var cur_dict = {}
 var jid: job
 var pid: number
@@ -316,10 +315,7 @@ def Preview(wid: number, result: string)
     endif
 
     var path = cwd .. '/' .. relative_path
-    if path != last_path
-        previewer.PreviewFile(preview_wid, path)
-    endif
-    last_path = path
+    previewer.PreviewFile(preview_wid, path)
     win_execute(preview_wid, 'norm! ' .. linenr .. 'G')
     win_execute(preview_wid, 'norm! zz')
     UpdatePreviewHl()
@@ -427,7 +423,6 @@ export def Start(opts: dict<any> = {})
     last_pattern = ''
     last_result_len = -1
     last_result = []
-    last_path = ''
     cur_dict = {}
 
     var wids = selector.Start([], extend(opts, {
