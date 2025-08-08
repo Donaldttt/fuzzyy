@@ -10,16 +10,16 @@ var key_callbacks: dict<any>
 var _window_width: float
 
 # Options
-var exclude_buffers = exists('g:fuzzyy_buffers_exclude') ?
-    g:fuzzyy_buffers_exclude : []
+var exclude_buffers = exists('g:fuzzbox_buffers_exclude') ?
+    g:fuzzbox_buffers_exclude : []
 
 var keymaps = {
     'delete_file': "",
     'wipe_buffer': "",
     'close_buffer': "\<c-l>",
 }
-if exists('g:fuzzyy_buffers_keymap')
-    keymaps->extend(g:fuzzyy_buffers_keymap, 'force')
+if exists('g:fuzzbox_buffers_keymap')
+    keymaps->extend(g:fuzzbox_buffers_keymap, 'force')
 endif
 
 # deprecated delete_buffer keymap, renamed to delete_file, that's what is does

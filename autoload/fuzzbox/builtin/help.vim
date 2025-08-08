@@ -36,7 +36,7 @@ def Select(wid: number, result: list<any>)
     var tag_data = tag_table[tag]
     try
         # try to open the file and jump to tag first, allows for edge cases
-        # where duplicate tags exist and Fuzzyy finds the tag that Vim does
+        # where duplicate tags exist and Fuzzbox finds the tag that Vim does
         # not consider "best" match, then previews one and opens the other
         exe ':help ' .. tag_data[0]
         exe ':tag ' .. tag_data[1]
