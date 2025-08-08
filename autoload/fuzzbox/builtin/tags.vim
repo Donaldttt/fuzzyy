@@ -58,54 +58,6 @@ def Select(wid: number, result: list<any>)
     endif
 enddef
 
-def OpenFileTab()
-    var result = selector.GetCursorItem()
-    if empty(result)
-        return
-    endif
-    popup_close(menu_wid)
-    var [tagname, tagfile, tagaddress] = ParseResult(result)
-    var path = ExpandPath(tagfile)
-    if filereadable(path)
-        exe 'tabnew ' .. fnameescape(path)
-        JumpToAddress(tagaddress)
-    endif
-enddef
-
-def OpenFileVSplit()
-    var result = selector.GetCursorItem()
-    if empty(result)
-        return
-    endif
-    popup_close(menu_wid)
-    var [tagname, tagfile, tagaddress] = ParseResult(result)
-    var path = ExpandPath(tagfile)
-    if filereadable(path)
-        exe 'vsplit ' .. fnameescape(path)
-        JumpToAddress(tagaddress)
-    endif
-enddef
-
-def OpenFileSplit()
-    var result = selector.GetCursorItem()
-    if empty(result)
-        return
-    endif
-    popup_close(menu_wid)
-    var [tagname, tagfile, tagaddress] = ParseResult(result)
-    var path = ExpandPath(tagfile)
-    if filereadable(path)
-        exe 'split ' .. fnameescape(path)
-        JumpToAddress(tagaddress)
-    endif
-enddef
-
-var open_file_callbacks = {
-    "\<c-v>": function('OpenFileVSplit'),
-    "\<c-s>": function('OpenFileSplit'),
-    "\<c-t>": function('OpenFileTab'),
-}
-
 def Preview(wid: number, result: string)
     if wid == -1
         return
@@ -128,6 +80,45 @@ def Preview(wid: number, result: string)
         endif
     endfor
     win_execute(wid, 'norm! zz')
+enddef
+
+def OpenFileTab(wid: number, result: list<any>, opts: dict<any>)
+    if empty(result)
+        return
+    endif
+    popup_close(wid)
+    var [tagname, tagfile, tagaddress] = ParseResult(result[0])
+    var path = ExpandPath(tagfile)
+    if filereadable(path)
+        exe 'tabnew ' .. fnameescape(path)
+        JumpToAddress(tagaddress)
+    endif
+enddef
+
+def OpenFileVSplit(wid: number, result: list<any>, opts: dict<any>)
+    if empty(result)
+        return
+    endif
+    popup_close(wid)
+    var [tagname, tagfile, tagaddress] = ParseResult(result[0])
+    var path = ExpandPath(tagfile)
+    if filereadable(path)
+        exe 'vsplit ' .. fnameescape(path)
+        JumpToAddress(tagaddress)
+    endif
+enddef
+
+def OpenFileSplit(wid: number, result: list<any>, opts: dict<any>)
+    if empty(result)
+        return
+    endif
+    popup_close(wid)
+    var [tagname, tagfile, tagaddress] = ParseResult(result[0])
+    var path = ExpandPath(tagfile)
+    if filereadable(path)
+        exe 'split ' .. fnameescape(path)
+        JumpToAddress(tagaddress)
+    endif
 enddef
 
 export def Start(opts: dict<any> = {})
@@ -190,7 +181,11 @@ export def Start(opts: dict<any> = {})
         counter: true,
         select_cb: function('Select'),
         preview_cb: function('Preview'),
-        key_callbacks: open_file_callbacks,
+        actions: {
+            "\<c-v>": function('OpenFileVSplit'),
+            "\<c-s>": function('OpenFileSplit'),
+            "\<c-t>": function('OpenFileTab'),
+        }
     }))
     menu_wid = wids.menu
 enddef

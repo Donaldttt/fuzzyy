@@ -4,6 +4,7 @@ import autoload '../utils/selector.vim'
 import autoload '../utils/previewer.vim'
 import autoload '../utils/devicons.vim'
 import autoload '../utils/helpers.vim'
+import autoload '../utils/actions.vim'
 
 var mru_origin_list: list<string>
 var cwd: string
@@ -34,16 +35,6 @@ def Preview(wid: number, result: string)
     win_execute(wid, 'norm! gg')
 enddef
 
-def Select(wid: number, result: list<any>)
-    var path = result[0]
-    helpers.MoveToUsableWindow()
-    if cwd_only
-        exe 'edit ' cwd .. '/' .. fnameescape(path)
-    else
-        exe 'edit ' .. fnameescape(path)
-    endif
-enddef
-
 def ToggleScope()
     cwd_only = cwd_only ? 0 : 1
     var mru_list: list<string> = copy(mru_origin_list)
@@ -63,10 +54,6 @@ def ToggleScope()
     endif
     selector.UpdateMenu(mru_list, [])
 enddef
-
-var key_callbacks = {
-    "\<c-k>": function('ToggleScope'),
-}
 
 export def Start(opts: dict<any> = {})
     cwd = len(get(opts, 'cwd', '')) > 0 ? opts.cwd : getcwd()
@@ -120,9 +107,11 @@ export def Start(opts: dict<any> = {})
     var wids = selector.Start(mru_list, extend(opts, {
         async: true,
         devicons: true,
-        select_cb: function('Select'),
+        select_cb: actions.OpenFile,
         preview_cb: function('Preview'),
-        key_callbacks: extend(key_callbacks, selector.open_file_callbacks),
+        actions: {
+            "\<c-k>": function('ToggleScope'),
+        }
     }))
     menu_wid = wids.menu
 enddef

@@ -4,9 +4,10 @@ import autoload '../utils/selector.vim'
 import autoload '../utils/popup.vim'
 import autoload '../utils/devicons.vim'
 import autoload '../utils/helpers.vim'
+import autoload '../utils/actions.vim'
 
 var buf_dict: dict<any>
-var key_callbacks: dict<any>
+var _actions: dict<any>
 var _window_width: float
 
 # Options
@@ -61,15 +62,6 @@ def Preview(wid: number, result: string)
     win_execute(wid, 'norm! zz')
 enddef
 
-def Select(wid: number, result: list<any>)
-    var buf = result[0]
-    var bufnr = buf_dict[buf][1]
-    if bufnr != bufnr('$')
-        helpers.MoveToUsableWindow(bufnr)
-        execute 'buffer' bufnr
-    endif
-enddef
-
 def GetBufList(): list<string>
     var buf_data = getbufinfo({buflisted: 1, bufloaded: 0})
     buf_dict = {}
@@ -94,16 +86,6 @@ def GetBufList(): list<string>
     return bufs
 enddef
 
-def DeleteSelectedFile()
-    var buf = selector.GetCursorItem()
-    var choice = confirm('Delete file ' .. buf .. '. Are you sure?', "&Yes\n&No")
-    if choice != 1
-        return
-    endif
-    delete(buf)
-    WipeSelectedBuffer()
-enddef
-
 def DeleteSelectedBuffer(wipe: bool)
     var buf = selector.GetCursorItem()
     if buf == ''
@@ -120,17 +102,27 @@ def DeleteSelectedBuffer(wipe: bool)
     selector.RefreshMenu()
 enddef
 
-def WipeSelectedBuffer()
+def WipeSelectedBuffer(wid: number, result: list<any>, opts: dict<any>)
     DeleteSelectedBuffer(true)
 enddef
 
-def CloseSelectedBuffer()
+def CloseSelectedBuffer(wid: number, result: list<any>, opts: dict<any>)
     DeleteSelectedBuffer(false)
 enddef
 
-key_callbacks[keymaps.delete_file] = function("DeleteSelectedFile")
-key_callbacks[keymaps.wipe_buffer] = function("WipeSelectedBuffer")
-key_callbacks[keymaps.close_buffer] = function("CloseSelectedBuffer")
+def DeleteSelectedFile(wid: number, result: list<any>, opts: dict<any>)
+    var buf = selector.GetCursorItem()
+    var choice = confirm('Delete file ' .. buf .. '. Are you sure?', "&Yes\n&No")
+    if choice != 1
+        return
+    endif
+    delete(buf)
+    DeleteSelectedBuffer(true)
+enddef
+
+_actions[keymaps.delete_file] = function("DeleteSelectedFile")
+_actions[keymaps.wipe_buffer] = function("WipeSelectedBuffer")
+_actions[keymaps.close_buffer] = function("CloseSelectedBuffer")
 
 export def Start(opts: dict<any> = {})
     # FIXME: allows the file path to be shortened to fit in the results window
@@ -139,8 +131,8 @@ export def Start(opts: dict<any> = {})
 
     var wids = selector.Start(GetBufList(), extend(opts, {
         devicons: true,
+        select_cb: actions.OpenFile,
         preview_cb: function('Preview'),
-        select_cb: function('Select'),
-        key_callbacks: extend(selector.open_file_callbacks, key_callbacks),
+        actions: _actions
     }))
 enddef
