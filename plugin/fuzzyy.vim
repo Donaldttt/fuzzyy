@@ -92,6 +92,7 @@ highlight default link fuzzyyBorder Normal
 highlight default link fuzzyyCounter NonText
 highlight default link fuzzyyMatching Special
 highlight default link fuzzyyPreviewMatch CurSearch
+highlight default link fuzzyyPreviewLine Visual
 
 import autoload '../autoload/fuzzyy/utils/launcher.vim'
 import autoload '../autoload/fuzzyy/utils/helpers.vim'

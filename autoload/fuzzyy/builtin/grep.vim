@@ -110,7 +110,6 @@ var findstr_cmd = 'FINDSTR /S /N /O /P /L %s "%s" "%s/*"'
 # change between invocations and git-grep only to be used when in git repo.
 var cmd: string
 var sep_pattern: string
-var highlight: bool
 # Set to ignore case option for grep programs that do not support smart case
 # When set, smart case will be emulated by adding ignore case option when
 # search pattern does not include any characters Vim considers upper case
@@ -125,27 +124,22 @@ def Build()
         cmd = Build_rg()
         ignore_case = ''
         sep_pattern = '\:\d\+:\d\+:'
-        highlight = true
     elseif executable('ag')
         cmd = Build_ag()
         ignore_case = ''
         sep_pattern = '\:\d\+:\d\+:'
-        highlight = true
     elseif respect_gitignore && executable('git') && InsideGitRepo()
         cmd = Build_git()
         ignore_case = '-i'
         sep_pattern = '\:\d\+:\d\+:'
-        highlight = true
     elseif executable('grep')
         cmd = Build_grep()
         ignore_case = '-i'
         sep_pattern = '\:\d\+:'
-        highlight = false
     elseif executable('findstr') # for Windows
         cmd = findstr_cmd
         ignore_case = '/I'
         sep_pattern = '\:\d\+:'
-        highlight = false
     else
         echoerr 'Please install ag, rg, grep or findstr to run :FuzzyGrep'
     endif
@@ -293,13 +287,17 @@ def Input(wid: number, result: string)
 enddef
 
 def UpdatePreviewHl()
-    if !has_key(cur_dict, cur_menu_item) || !highlight || preview_wid < 0
+    if !has_key(cur_dict, cur_menu_item) || preview_wid < 0
         return
     endif
     var [path, linenr, colnr] = ParseResult(cur_menu_item)
     clearmatches(preview_wid)
-    var hl_list = [cur_dict[cur_menu_item]]
-    matchaddpos('fuzzyyPreviewMatch', hl_list, 9999, -1,  {window: preview_wid})
+    if colnr > 0
+        var hl_list = [cur_dict[cur_menu_item]]
+        matchaddpos('fuzzyyPreviewMatch', hl_list, 9999, -1,  {window: preview_wid})
+    else
+        matchaddpos('fuzzyyPreviewLine', [linenr], 9999, -1,  {window: preview_wid})
+    endif
 enddef
 
 def Preview(wid: number, result: string)
@@ -374,9 +372,6 @@ def UpdateMenu(...li: list<any>)
     endif
 
     var hl_list = cols
-    if !highlight
-        hl_list = []
-    endif
 
     if enable_devicons
         var hl_offset = devicons.GetDeviconOffset()
