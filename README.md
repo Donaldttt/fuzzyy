@@ -464,7 +464,8 @@ highlight default link fuzzyyNormal Normal
 highlight default link fuzzyyBorder Normal
 highlight default link fuzzyyCounter NonText
 highlight default link fuzzyyMatching Special
-highlight default link fuzzyyPreviewMatch CurSearch
+highlight default link fuzzyyPreviewMatch Search
+highlight default link fuzzyyPreviewLine Visual
 ```
 
 Note: when the popup is open, Fuzzyy will technically hide the terminal cursor
