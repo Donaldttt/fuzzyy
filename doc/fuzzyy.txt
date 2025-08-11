@@ -421,19 +421,21 @@ G:FUZZYY_KEYMAPS                                       *fuzzyy-g:fuzzyy_keymaps*
 Change navigation keymaps. The following are the defaults
 >
   let g:fuzzyy_keymaps = {
-    \ 'menu_up': ["\<c-p>", "\<Up>"],
-    \ 'menu_down': ["\<c-n>", "\<Down>"],
+    \ 'menu_up': ["\<C-p>", "\<Up>"],
+    \ 'menu_down': ["\<C-n>", "\<Down>"],
     \ 'menu_select': ["\<CR>"],
-    \ 'preview_up': ["\<c-i>"],
-    \ 'preview_down': ["\<c-f>"],
-    \ 'preview_up_half_page': ["\<c-u>"],
-    \ 'preview_down_half_page': ["\<c-d>"],
-    \ 'cursor_begining': ["\<c-a>"],          " move cursor to the begining of the line in the prompt
-    \ 'cursor_end': ["\<c-e>"],               " move cursor to the end of the line in the prompt
-    \ 'backspace': ["\<bs>"],
-    \ 'delete_all': ["\<c-k>"],               " delete whole line of the prompt
-    \ 'delete_prefix': [],                    " delete to the start of the line
-    \ 'exit': ["\<Esc>", "\<c-c>", "\<c-[>"], " exit fuzzyy
+    \ 'preview_scroll_up': ["\<C-u>"],
+    \ 'preview_scroll_down': ["\<C-d>"],
+    \ 'cursor_end': ["\<C-e>", "\<End>"],
+    \ 'cursor_begining': ["\<C-b>", "\<Home>"],
+    \ 'cursor_word_left': ["\<C-Left>", "\<S-Left>"],
+    \ 'cursor_word_right': ["\<C-Right>", "\<S-Right>"],
+    \ 'backspace': ["\<C-h>", "\<BS>"],
+    \ 'delete': ["\<Del>"],
+    \ 'delete_all': [],
+    \ 'delete_word': ["\<C-w>"],
+    \ 'delete_prefix': [],
+    \ 'exit': ["\<Esc>", "\<c-c>", "\<c-[>"],
     \ }
 <
 
