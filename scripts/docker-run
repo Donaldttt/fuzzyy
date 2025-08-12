@@ -27,13 +27,13 @@ set -x
 
 cd $repo_root
 
-docker build -t fuzzyy .
+docker build -t fuzzbox .
 
 # Note: cannot use xargs --no-run-if-empty on MacOS, GNU extension
-for image in $(docker images -q --filter "dangling=true" --filter "label=name=fuzzyy"); do
+for image in $(docker images -q --filter "dangling=true" --filter "label=name=fuzzbox"); do
   docker rmi $image
 done
 
 docker run -it --rm --cap-add=NET_ADMIN --device /dev/net/tun $inputrc $gitinclude $gitignore \
   -v ${HOME}/.gitconfig:/root/.gitconfig:ro \
-  -v "${PWD}":/root/.vim/pack/plugins/start/fuzzyy $@ fuzzyy
+  -v "${PWD}":/root/.vim/pack/plugins/start/fuzzbox $@ fuzzbox

@@ -5,38 +5,65 @@ endif
 vim9script noclear
 
 if exists("g:loaded_fuzzyy")
-  finish
+    echohl WarningMsg
+    echo 'Fuzzbox failed to load, old Fuzzyy plugin loaded, please delete Fuzzyy. See :help fuzzyy.renamed'
+    echohl None
+    var doc_dir = substitute(expand('<script>:h'), 'plugin$', 'doc', '')
+    execute "helptags " .. doc_dir
+    finish
 endif
 g:loaded_fuzzyy = 1
 
+if exists("g:loaded_fuzzbox")
+    finish
+endif
+g:loaded_fuzzbox = 1
+
 var warnings = []
 if &encoding != 'utf-8'
-    warnings += ['fuzzyy: Vim encoding is ' .. &encoding .. ', utf-8 is required for popup borders etc.']
+    warnings += ['fuzzbox: Vim encoding is ' .. &encoding .. ', utf-8 is required for popup borders etc.']
+endif
+
+var fuzzyy_options = getcompletion('g:fuzzyy_', 'var')
+if !empty(fuzzyy_options)
+    for option in fuzzyy_options
+        var fuzzbox_option = option->substitute('g:fuzzyy_', 'g:fuzzbox_', '')
+        execute fuzzbox_option .. ' = ' .. option
+        warnings += ['fuzzbox: deprecated option ' .. option .. ' found, and used to set ' .. fuzzbox_option]
+    endfor
+    if empty(getcompletion('fuzzyy.renamed', 'help'))
+        try
+            var doc_dir = substitute(expand('<script>:h'), 'plugin$', 'doc', '')
+            execute "helptags " .. doc_dir
+        catch
+        endtry
+    endif
+    warnings += ['fuzzbox: Fuzzyy has been renamed to Fuzzbox, please update your Vim configuration, see :help fuzzyy.renamed']
 endif
 
 # Options
-g:fuzzyy_enable_mappings = exists('g:fuzzyy_enable_mappings') ? g:fuzzyy_enable_mappings : 1
-g:fuzzyy_respect_gitignore = exists('g:fuzzyy_respect_gitignore') ? g:fuzzyy_respect_gitignore : 1
-g:fuzzyy_respect_wildignore = exists('g:fuzzyy_respect_wildignore') ? g:fuzzyy_respect_wildignore : 0
-g:fuzzyy_follow_symlinks = exists('g:fuzzyy_follow_symlinks') ? g:fuzzyy_follow_symlinks : 0
-g:fuzzyy_include_hidden = exists('g:fuzzyy_include_hidden') ? g:fuzzyy_include_hidden : 1
-g:fuzzyy_exclude_file = exists('g:fuzzyy_exclude_file')
-    && type(g:fuzzyy_exclude_file) == v:t_list ? g:fuzzyy_exclude_file : ['*.swp', 'tags']
-g:fuzzyy_exclude_dir = exists('g:fuzzyy_exclude_dir')
-    && type(g:fuzzyy_exclude_dir) == v:t_list ? g:fuzzyy_exclude_dir : ['.git', '.hg', '.svn']
-g:fuzzyy_ripgrep_options = exists('g:fuzzyy_ripgrep_options')
-    && type(g:fuzzyy_ripgrep_options) == v:t_list ? g:fuzzyy_ripgrep_options : []
+g:fuzzbox_enable_mappings = exists('g:fuzzbox_enable_mappings') ? g:fuzzbox_enable_mappings : 1
+g:fuzzbox_respect_gitignore = exists('g:fuzzbox_respect_gitignore') ? g:fuzzbox_respect_gitignore : 1
+g:fuzzbox_respect_wildignore = exists('g:fuzzbox_respect_wildignore') ? g:fuzzbox_respect_wildignore : 0
+g:fuzzbox_follow_symlinks = exists('g:fuzzbox_follow_symlinks') ? g:fuzzbox_follow_symlinks : 0
+g:fuzzbox_include_hidden = exists('g:fuzzbox_include_hidden') ? g:fuzzbox_include_hidden : 1
+g:fuzzbox_exclude_file = exists('g:fuzzbox_exclude_file')
+    && type(g:fuzzbox_exclude_file) == v:t_list ? g:fuzzbox_exclude_file : ['*.swp', 'tags']
+g:fuzzbox_exclude_dir = exists('g:fuzzbox_exclude_dir')
+    && type(g:fuzzbox_exclude_dir) == v:t_list ? g:fuzzbox_exclude_dir : ['.git', '.hg', '.svn']
+g:fuzzbox_ripgrep_options = exists('g:fuzzbox_ripgrep_options')
+    && type(g:fuzzbox_ripgrep_options) == v:t_list ? g:fuzzbox_ripgrep_options : []
 
-if g:fuzzyy_respect_wildignore
+if g:fuzzbox_respect_wildignore
     var wildignore_dir = copy(split(&wildignore, ','))->filter('v:val =~ "[\\/]"')
     var wildignore_file = copy(split(&wildignore, ','))->filter('v:val !~ "[\\/]"')
-    extend(g:fuzzyy_exclude_file, wildignore_file)
-    extend(g:fuzzyy_exclude_dir, wildignore_dir)
+    extend(g:fuzzbox_exclude_file, wildignore_file)
+    extend(g:fuzzbox_exclude_dir, wildignore_dir)
 endif
 
 # window layout customization for particular selectors
-# you can override it by setting g:fuzzyy_window_layout
-# e.g. let g:fuzzyy_window_layout = { 'files': { 'preview': 0 } }
+# you can override it by setting g:fuzzbox_window_layout
+# e.g. let g:fuzzbox_window_layout = { 'files': { 'preview': 0 } }
 var windows: dict<any> = {
     files: {
         prompt_title: 'Find Files'
@@ -78,24 +105,24 @@ var windows: dict<any> = {
         prompt_title: 'Lines in Buffer',
     },
 }
-if exists('g:fuzzyy_window_layout') && type(g:fuzzyy_window_layout) == v:t_dict
+if exists('g:fuzzbox_window_layout') && type(g:fuzzbox_window_layout) == v:t_dict
     for [key, value] in items(windows)
-        if has_key(g:fuzzyy_window_layout, key)
-            windows[key] = extend(value, g:fuzzyy_window_layout[key])
+        if has_key(g:fuzzbox_window_layout, key)
+            windows[key] = extend(value, g:fuzzbox_window_layout[key])
         endif
     endfor
 endif
 
-highlight default link fuzzyyCursor Cursor
-highlight default link fuzzyyNormal Normal
-highlight default link fuzzyyBorder Normal
-highlight default link fuzzyyCounter NonText
-highlight default link fuzzyyMatching Special
-highlight default link fuzzyyPreviewMatch Search
-highlight default link fuzzyyPreviewLine Visual
+highlight default link fuzzboxCursor Cursor
+highlight default link fuzzboxNormal Normal
+highlight default link fuzzboxBorder Normal
+highlight default link fuzzboxCounter NonText
+highlight default link fuzzboxMatching Special
+highlight default link fuzzboxPreviewMatch Search
+highlight default link fuzzboxPreviewLine Visual
 
-import autoload '../autoload/fuzzyy/utils/launcher.vim'
-import autoload '../autoload/fuzzyy/utils/helpers.vim'
+import autoload '../autoload/fuzzbox/utils/launcher.vim'
+import autoload '../autoload/fuzzbox/utils/helpers.vim'
 
 command! -nargs=? FuzzyGrep launcher.Start('grep', extendnew(windows.grep, { search: <q-args> }))
 command! -nargs=? FuzzyGrepRoot launcher.Start('grep', extendnew(windows.grep, { cwd: helpers.GetRootDir(), 'search': <q-args> }))
@@ -126,17 +153,17 @@ def Warn(msg: string)
         }, { repeat: 0 })
     endif
 enddef
-command! -nargs=0 FuzzyHelps Warn('fuzzyy: FuzzyHelps command is deprecated, use FuzzyHelp instead') | FuzzyHelp
-command! -nargs=0 FuzzyMRUFiles Warn('fuzzyy: FuzzyMRUFiles command is deprecated, use FuzzyMru instead') | FuzzyMru
+command! -nargs=0 FuzzyHelps Warn('fuzzbox: FuzzyHelps command is deprecated, use FuzzyHelp instead') | FuzzyHelp
+command! -nargs=0 FuzzyMRUFiles Warn('fuzzbox: FuzzyMRUFiles command is deprecated, use FuzzyMru instead') | FuzzyMru
 
 # Hack to only show a single line warning when startng the selector
 # Avoids showing warnings on Vim startup and does not break selector
 if len(warnings) > 0
-    g:__fuzzyy_warnings_found = 1
+    g:__fuzzbox_warnings_found = 1
     command! -nargs=0 FuzzyShowWarnings for warning in warnings | echo warning | endfor
 endif
 
-if g:fuzzyy_enable_mappings
+if g:fuzzbox_enable_mappings
     var mappings = {
         '<leader>fb': ':FuzzyBuffers<CR>',
         '<leader>fc': ':FuzzyCommands<CR>',
@@ -156,7 +183,7 @@ if g:fuzzyy_enable_mappings
 endif
 
 # Load compatibility hacks on VimEnter, after other plugins are loaded
-augroup fuzzyyCompat
+augroup fuzzboxCompat
   au!
-  autocmd VimEnter * runtime! compat/fuzzyy.vim
+  autocmd VimEnter * runtime! compat/fuzzbox.vim
 augroup END

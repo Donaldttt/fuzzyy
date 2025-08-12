@@ -1,0 +1,37 @@
+==============================================================================
+                                                              *fuzzyy.renamed*
+
+Fuzzyy has been renamed to Fuzzbox :-)
+
+Your existing Fuzzyy configuration is supported, but deprecated, so you should
+update it when you get a moment. This is simple, just replace `g:fuzzyy_foo`
+with `g:fuzzbox_foo` etc. in your vimrc
+
+The Fuzzyy GitHub repository at https://github.com/Donaldttt/fuzzyy has been
+renamed and transferred to https://github.com/vim-fuzzbox/fuzzbox.vim
+
+Your existing plugin manager should continue to work fine, as git operations
+like `git clone` and `git fetch` will be redirected to the new location.
+
+However, you should update your plugin configuration to obtain Fuzzbox from
+the new location. The simplest way to do this is to remove the old Fuzzyy
+plugin installation and replace it with Fuzzbox. See |fuzzbox-install|
+
+If you prefer to do things manually, you can just rename the directory and
+update the git configuration to change the origin url, e.g.
+>
+  cd <path-to-plugins-dir>
+  mv fuzzyy fuzzbox
+  cd fuzzbox
+  git remote set-url origin https://github.com/vim-fuzzbox/fuzzbox.vim.git
+<
+If you have ended up with both Fuzzyy and Fuzzbox installed, you should delete
+the old Fuzzyy installation, as only one or the other will be loaded, dependent
+on where they have been installed (whichever is found first in |runtimepath|).
+
+If you had gotten funky with Fuzzyy and created some custom commands or
+written custom selectors, you'll need to update any imports or references
+to autoload functions with their Fuzzbox equivalent. Just replace `fuzzyy`
+with `fuzzbox` in import or autoload paths and things should work again.
+
+ vim:tw=78:ts=2:ft=help:

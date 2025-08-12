@@ -46,7 +46,7 @@ def FTDetectModelines(content: list<string>): string
         endif
     catch
         echohl ErrorMsg
-        echom 'fuzzyy:' v:exception .. ' ' .. v:throwpoint
+        echom 'fuzzbox:' v:exception .. ' ' .. v:throwpoint
         echohl None
     endtry
     return ''
