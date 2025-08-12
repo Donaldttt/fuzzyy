@@ -129,6 +129,9 @@ def ShowCursor()
 enddef
 
 def InvokeAction(Action: func)
+    if Action == null # allow for null_function
+        return
+    endif
     var wid = wins.menu
     var bufnr = popup_wins[wid].bufnr
     var cursorlinepos = line('.', wid)
@@ -396,7 +399,7 @@ def MenuFilter(wid: number, key: string): number
         popup_close(wid)
     elseif index(keymaps['exit'], key) >= 0
         popup_close(wid)
-    elseif has_key(actions, key)
+    elseif has_key(actions, key) && type(actions[key]) == v:t_func
         InvokeAction(actions[key])
     else
         return 0
