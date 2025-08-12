@@ -6,8 +6,10 @@ vim9script noclear
 
 if exists("g:loaded_fuzzyy")
     echohl WarningMsg
-    echo 'fuzzbox: Failed to load, Fuzzyy plugin found, please delete Fuzzyy'
+    echo 'Fuzzbox failed to load, old Fuzzyy plugin loaded, please delete Fuzzyy. See :help fuzzyy.renamed'
     echohl None
+    var doc_dir = substitute(expand('<script>:h'), 'plugin$', 'doc', '')
+    execute "helptags " .. doc_dir
     finish
 endif
 g:loaded_fuzzyy = 1

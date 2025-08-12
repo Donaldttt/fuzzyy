@@ -25,6 +25,10 @@ update the git configuration to change the origin url, e.g.
   cd fuzzbox
   git remote set-url origin https://github.com/vim-fuzzbox/fuzzbox.vim.git
 <
+If you have ended up with both Fuzzyy and Fuzzbox installed, you should delete
+the old Fuzzyy installation, as only one or the other will be loaded, dependent
+on where they have been installed (whichever is found first in |runtimepath|).
+
 If you had gotten funky with Fuzzyy and created some custom commands or
 written custom selectors, you'll need to update any imports or references
 to autoload functions with their Fuzzbox equivalent. Just replace `fuzzyy`
