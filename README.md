@@ -1,5 +1,7 @@
 # Fuzzbox
 
+**Fuzzyy has been renamed to Fuzzbox, new name, same great taste!**
+
 A fuzzy finder for files, strings, help documents and many other things.
 
 It utilizes Vim's native matchfuzzypos function and popup window feature.
