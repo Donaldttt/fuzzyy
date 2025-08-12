@@ -476,3 +476,14 @@ Note: when the popup is open, Fuzzbox will technically hide the terminal cursor
 and clear the Cursor highlight group. This is to work around limitations in how
 |popupwin| operates. To allow fuzzboxCursor to be linked to Cursor (the default),
 the resolved properties of Cursor are copied to fuzzboxCursor where possible.
+
+## Credits
+
+Fuzzbox was originally created as Fuzzyy by Nachuan Tang (@Donaldttt) and is
+currently developed and maintained by Mark Woods (@mmrwoods). Many other people
+have contributed both code to fix bugs and add new features, and by submitting
+issues to report bugs or suggest new features. Thanks for all the contributions!
+
+The Fuzzbox logo is adapted from an image on [fuzzboxes.org](https://fuzzboxes.org/)
+and is used with kind permission of Nick Sternberg.
+
