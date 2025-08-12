@@ -129,6 +129,9 @@ def ShowCursor()
 enddef
 
 def InvokeAction(Action: func)
+    if Action == null
+        return
+    endif
     var wid = wins.menu
     var bufnr = popup_wins[wid].bufnr
     var cursorlinepos = line('.', wid)
