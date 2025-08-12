@@ -53,12 +53,12 @@ Any plugin manager will work, or you can use Vim's built-in package support:
 
 For vim-plug
 ```vim
-Plug 'vim-fuzzbox/fuzzbox'
+Plug 'vim-fuzzbox/fuzzbox.vim'
 ```
 
 As Vim package
 ```
-git clone https://github.com/vim-fuzzbox/fuzzbox ~/.vim/pack/plugins/start/fuzzbox
+git clone https://github.com/vim-fuzzbox/fuzzbox.vim ~/.vim/pack/plugins/start/fuzzbox
 ```
 
 ## Commands
