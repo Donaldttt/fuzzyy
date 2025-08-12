@@ -32,9 +32,6 @@ def TogglePreviewBg()
 enddef
 
 hi fuzzboxHighlights_whitebg ctermbg=white ctermfg=black guibg=white guifg=black
-var key_callbacks = {
-    "\<c-k>": function('TogglePreviewBg'),
-}
 
 export def Start(opts: dict<any> = {})
     var highlights_raw = substitute(execute('hi'), "\n", " ", "g") .. ' fuzzbox_dummyy xxx'
@@ -57,7 +54,9 @@ export def Start(opts: dict<any> = {})
     var wids = selector.Start(keys(hl_meta), extend(opts, {
         preview_cb: function('Preview'),
         select_cb: function('Select'),
-        key_callbacks: key_callbacks,
+        actions: {
+            "\<c-k>": function('TogglePreviewBg'),
+        }
     }))
 
     preview_wid = wids.preview

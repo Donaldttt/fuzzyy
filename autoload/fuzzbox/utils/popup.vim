@@ -8,13 +8,14 @@ import autoload './launcher.vim'
 
 var popup_wins: dict<any>
 var wins = { menu: -1, prompt: -1, preview: -1, info: -1 }
+var popup_opts: dict<any>
 var t_ve: string
 var hlcursor: dict<any>
 var has_devicons: bool
 export var active = false
 
-# user can register callback for any key
-var key_callbacks: dict<any>
+# user can register a custom action for any key
+var actions: dict<any>
 
 var keymaps: dict<any> = {
     'menu_up': ["\<C-p>", "\<Up>"],
@@ -127,6 +128,26 @@ def ShowCursor()
     endif
 enddef
 
+def InvokeAction(Action: func)
+    var wid = wins.menu
+    var bufnr = popup_wins[wid].bufnr
+    var cursorlinepos = line('.', wid)
+    var linetext = getbufline(bufnr, cursorlinepos, cursorlinepos)[0]
+    if has_devicons
+        linetext = devicons.RemoveDevicon(linetext)
+    endif
+    try
+        Action(wid, [linetext], popup_opts)
+    catch /\v:(E118):/
+        try
+            Action(wid, [linetext])
+        catch /\v:(E118):/
+            # Experimental: don't rely on this within custom selectors
+            try | Action(wid) | catch /\v:(E118):/ | Action() | endtry
+        endtry
+    endtry
+enddef
+
 # Called usually when popup window is closed
 # It will only execute when menu window is closed
 # params:
@@ -147,14 +168,6 @@ def GeneralPopupCallback(wid: number, select: any)
     # restore things to normal
     ShowCursor()
     active = false
-
-    # only press enter select will be a list
-    if type(select) == v:t_list
-        if has_key(popup_wins[wid], 'select_cb')
-                && type(popup_wins[wid].select_cb) == v:t_func
-            popup_wins[wid].select_cb(wid, select)
-        endif
-    endif
 
     if has_key(popup_wins[wid], 'close_cb')
       && type(popup_wins[wid].close_cb) == v:t_func
@@ -376,22 +389,15 @@ def MenuFilter(wid: number, key: string): number
         endif
         win_execute(wid, "norm! 3\<c-e>")
     elseif index(keymaps['menu_select'], key) >= 0
-        # if not passing second argument, popup_close will call user callback
-        # with func(window-id, 0)
-        # if passing second argument (popup_close(2, result)), popup_close will
-        # call user callback with func(window-id, [result])
-        var linetext = getbufline(bufnr, cursorlinepos, cursorlinepos)[0]
-        if linetext == ''
-            popup_close(wid)
-        elseif has_devicons
-            popup_close(wid, [devicons.RemoveDevicon(linetext)])
-        else
-            popup_close(wid, [linetext])
+        if has_key(popup_wins[wid], 'select_cb')
+                && type(popup_wins[wid].select_cb) == v:t_func
+            InvokeAction(popup_wins[wid].select_cb)
         endif
+        popup_close(wid)
     elseif index(keymaps['exit'], key) >= 0
         popup_close(wid)
-    elseif has_key(key_callbacks, key)
-        key_callbacks[key]()
+    elseif has_key(actions, key)
+        InvokeAction(actions[key])
     else
         return 0
     endif
@@ -749,11 +755,12 @@ enddef
 #        preview: wins.preview,
 #    }
 export def PopupSelection(opts: dict<any>): dict<any>
+    popup_opts = opts
     if active
         return { menu: -1, prompt: -1, preview: -1 }
     endif
     active = true
-    key_callbacks = has_key(opts, 'key_callbacks') ? opts.key_callbacks : {}
+    actions = has_key(opts, 'actions') ? opts.actions : {}
     has_devicons = has_key(opts, 'devicons') ? opts.devicons && devicons.Enabled() : 0
     var has_preview = has_key(opts, 'preview') ? opts.preview : 1
 

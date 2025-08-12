@@ -5,6 +5,7 @@ import autoload '../utils/popup.vim'
 import autoload '../utils/previewer.vim'
 import autoload '../utils/devicons.vim'
 import autoload '../utils/helpers.vim'
+import autoload '../utils/actions.vim'
 import autoload '../utils/cmdbuilder.vim'
 
 var last_result_len: number
@@ -33,13 +34,6 @@ def ProcessResult(list_raw: list<string>, ...args: list<any>): list<string>
     # but Vim thinks it has a UNIX environment, so needs UNIX file separator
     map(li, (_, val) => fnamemodify(val, ':.'))
     return li
-enddef
-
-def Select(wid: number, result: list<any>)
-    var relative_path = result[0]
-    var path = cwd .. '/' .. relative_path
-    helpers.MoveToUsableWindow()
-    exe 'edit ' .. fnameescape(path)
 enddef
 
 def AsyncCb(result: list<any>)
@@ -172,13 +166,12 @@ export def Start(opts: dict<any> = {})
     cwd = len(get(opts, 'cwd', '')) > 0 ? opts.cwd : getcwd()
     in_loading = 1
     var wids = selector.Start([], extend(opts, {
-        select_cb: function('Select'),
+        select_cb: actions.OpenFile,
         preview_cb: function('Preview'),
         input_cb: function('Input'),
         close_cb: function('Close'),
         devicons: enable_devicons,
-        counter: false,
-        key_callbacks: selector.open_file_callbacks,
+        counter: false
     }))
     menu_wid = wids.menu
     if menu_wid == -1
