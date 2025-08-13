@@ -7,7 +7,11 @@ export def Start(selector: string, opts: dict<any>)
         g:__fuzzbox_launcher_cache = []
     endif
     insert(g:__fuzzbox_launcher_cache, { selector: selector, opts: opts, prompt: '' })
-    function('fuzzbox#builtin#' .. selector .. '#Start')(opts)
+    try
+        function('fuzzbox#builtin#' .. selector .. '#Start')(opts)
+    catch /\v:(E700|E117):/
+        function('fuzzbox#_extensions#' .. selector .. '#Start')(opts)
+    endtry
 
     if exists('g:__fuzzbox_warnings_found') && g:__fuzzbox_warnings_found
         echohl WarningMsg
@@ -23,7 +27,11 @@ export def Resume()
     endif
     for e in g:__fuzzbox_launcher_cache
         if !empty(e.prompt)
-            function('fuzzbox#builtin#' .. e.selector .. '#Start')(e.opts)
+            try
+                function('fuzzbox#builtin#' .. e.selector .. '#Start')(e.opts)
+            catch /\v:(E700|E117):/
+                function('fuzzbox#_extensions#' .. e.selector .. '#Start')(e.opts)
+            endtry
             if popup.GetPrompt() != e.prompt
                 popup.SetPrompt(slice(e.prompt, 0, -1))
                 timer_start(100, (_) => {
