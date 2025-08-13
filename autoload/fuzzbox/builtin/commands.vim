@@ -2,19 +2,18 @@ vim9script
 
 import autoload '../utils/selector.vim'
 
-def Select(wid: number, result: list<any>)
-    var command = result[0]
-    if command =~# '^[A-Z]'
+def Select(wid: number, result: string)
+    if result =~# '^[A-Z]'
         # User-defined command, check for nargs, send <CR> if no nargs
-        var info = split(execute(':filter /\<' .. command .. '\>/ command ' .. command), '\n')[-1]
-        var nargs = split(matchstr(info, '\<' .. command .. '\>\s\+\S'), '\s\+')[-1]
-        feedkeys(':' .. command .. ' ', 'n')
+        var info = split(execute(':filter /\<' .. result .. '\>/ command ' .. result), '\n')[-1]
+        var nargs = split(matchstr(info, '\<' .. result .. '\>\s\+\S'), '\s\+')[-1]
+        feedkeys(':' .. result .. ' ', 'n')
         if nargs == "0"
             feedkeys("\<CR>", 'n')
         endif
     else
         # Built-in command, no check for nargs, just feed to cmdline
-        feedkeys(':' .. command .. ' ', 'n')
+        feedkeys(':' .. result .. ' ', 'n')
     endif
 enddef
 

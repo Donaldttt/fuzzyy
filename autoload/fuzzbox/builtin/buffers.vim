@@ -102,15 +102,15 @@ def DeleteSelectedBuffer(wipe: bool)
     selector.RefreshMenu()
 enddef
 
-def WipeSelectedBuffer(wid: number, result: list<any>, opts: dict<any>)
+def WipeSelectedBuffer(wid: number, result: string, opts: dict<any>)
     DeleteSelectedBuffer(true)
 enddef
 
-def CloseSelectedBuffer(wid: number, result: list<any>, opts: dict<any>)
+def CloseSelectedBuffer(wid: number, result: string, opts: dict<any>)
     DeleteSelectedBuffer(false)
 enddef
 
-def DeleteSelectedFile(wid: number, result: list<any>, opts: dict<any>)
+def DeleteSelectedFile(wid: number, result: string, opts: dict<any>)
     var buf = selector.GetCursorItem()
     var choice = confirm('Delete file ' .. buf .. '. Are you sure?', "&Yes\n&No")
     if choice != 1

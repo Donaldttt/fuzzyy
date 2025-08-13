@@ -19,8 +19,8 @@ def Preview(wid: number, result: string)
     noa execute 'colorscheme ' .. color
 enddef
 
-def Select(wid: number, result: list<any>)
-    var color = result[0]
+def Select(wid: number, result: string)
+    var color = result
     var bg: string
     if color =~# 'light$'
         noa &bg = 'light'

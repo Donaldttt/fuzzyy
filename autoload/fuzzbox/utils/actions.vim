@@ -5,13 +5,13 @@ import autoload './helpers.vim'
 
 var enable_devicons = devicons.Enabled()
 
-export def OpenFile(wid: number, result: list<any>, opts: dict<any>)
+export def OpenFile(wid: number, result: string, opts: dict<any>)
     if empty(result)
         return
     endif
     popup_close(wid)
     var cwd = len(get(opts, 'cwd', '')) > 0 ? opts.cwd : getcwd()
-    var [buf, line, col] = split(result[0] .. ':0:0', ':')[0 : 2]
+    var [buf, line, col] = split(result .. ':0:0', ':')[0 : 2]
     var bufnr = bufnr(buf)
     helpers.MoveToUsableWindow()
     if bufnr > 0 && !filereadable(buf)
@@ -33,13 +33,13 @@ export def OpenFile(wid: number, result: list<any>, opts: dict<any>)
     endif
 enddef
 
-export def OpenFileTab(wid: number, result: list<any>, opts: dict<any>)
+export def OpenFileTab(wid: number, result: string, opts: dict<any>)
     if empty(result)
         return
     endif
     popup_close(wid)
     var cwd = len(get(opts, 'cwd', '')) > 0 ? opts.cwd : getcwd()
-    var [buf, line, col] = split(result[0] .. ':0:0', ':')[0 : 2]
+    var [buf, line, col] = split(result .. ':0:0', ':')[0 : 2]
     var bufnr = bufnr(buf)
     if bufnr > 0 && !filereadable(buf)
         # for special buffers that cannot be edited
@@ -61,13 +61,13 @@ export def OpenFileTab(wid: number, result: list<any>, opts: dict<any>)
     endif
 enddef
 
-export def OpenFileVSplit(wid: number, result: list<any>, opts: dict<any>)
+export def OpenFileVSplit(wid: number, result: string, opts: dict<any>)
     if empty(result)
         return
     endif
     popup_close(wid)
     var cwd = len(get(opts, 'cwd', '')) > 0 ? opts.cwd : getcwd()
-    var [buf, line, col] = split(result[0] .. ':0:0', ':')[0 : 2]
+    var [buf, line, col] = split(result .. ':0:0', ':')[0 : 2]
     var bufnr = bufnr(buf)
     if bufnr > 0 && !filereadable(buf)
         # for special buffers that cannot be edited
@@ -90,13 +90,13 @@ export def OpenFileVSplit(wid: number, result: list<any>, opts: dict<any>)
     endif
 enddef
 
-export def OpenFileSplit(wid: number, result: list<any>, opts: dict<any>)
+export def OpenFileSplit(wid: number, result: string, opts: dict<any>)
     if empty(result)
         return
     endif
     popup_close(wid)
     var cwd = len(get(opts, 'cwd', '')) > 0 ? opts.cwd : getcwd()
-    var [buf, line, col] = split(result[0] .. ':0:0', ':')[0 : 2]
+    var [buf, line, col] = split(result .. ':0:0', ':')[0 : 2]
     var bufnr = bufnr(buf)
     if bufnr > 0 && !filereadable(buf)
         # for special buffers that cannot be edited
@@ -119,7 +119,7 @@ export def OpenFileSplit(wid: number, result: list<any>, opts: dict<any>)
     endif
 enddef
 
-export def SendAllQuickFix(wid: number, result: list<any>, opts: dict<any>)
+export def SendAllQuickFix(wid: number, result: string, opts: dict<any>)
     var has_devicons = enable_devicons && has_key(opts, 'devicons') && opts.devicons
     var bufnr = winbufnr(wid)
     var lines: list<any>

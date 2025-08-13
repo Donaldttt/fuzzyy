@@ -3,9 +3,8 @@ vim9script
 import autoload '../utils/selector.vim'
 import autoload '../utils/popup.vim'
 
-def Select(wid: number, result: list<any>)
-    var command = result[0]
-    feedkeys(':' .. command .. "\<CR>", 'n')
+def Select(wid: number, result: string)
+    feedkeys(':' .. result .. "\<CR>", 'n')
 enddef
 
 export def Start(opts: dict<any> = {})

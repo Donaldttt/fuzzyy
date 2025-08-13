@@ -140,13 +140,23 @@ def InvokeAction(Action: func)
         linetext = devicons.RemoveDevicon(linetext)
     endif
     try
-        Action(wid, [linetext], popup_opts)
-    catch /\v:(E118):/
         try
-            Action(wid, [linetext])
+            Action(wid, linetext, popup_opts)
         catch /\v:(E118):/
-            # Experimental: don't rely on this within custom selectors
-            try | Action(wid) | catch /\v:(E118):/ | Action() | endtry
+            try
+                Action(wid, linetext)
+            catch /\v:(E118):/
+                # Experimental: don't rely on this within custom selectors
+                try | Action(wid) | catch /\v:(E118):/ | Action() | endtry
+            endtry
+        endtry
+    catch /\v:(E1013):/
+        # backwards compat with old function signature, expected result as list
+        # Handles "Argument 2: type mismatch, expected list<any> but got string"
+        try
+            Action(wid, [linetext], popup_opts)
+        catch /\v:(E118):/
+            Action(wid, [linetext])
         endtry
     endtry
 enddef

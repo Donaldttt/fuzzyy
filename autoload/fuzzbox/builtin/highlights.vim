@@ -18,8 +18,8 @@ def Preview(wid: number, result: string)
     win_execute(wid, 'normal! zz')
 enddef
 
-def Select(wid: number, result: list<any>)
-    setreg('*', result[0])
+def Select(wid: number, result: string)
+    setreg('*', result)
 enddef
 
 def TogglePreviewBg()

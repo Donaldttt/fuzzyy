@@ -31,8 +31,8 @@ def Preview(wid: number, result: string)
     win_execute(wid, 'norm! zz')
 enddef
 
-def Select(wid: number, result: list<any>)
-    var tag = result[0]
+def Select(wid: number, result: string)
+    var tag = result
     var tag_data = tag_table[tag]
     try
         # try to open the file and jump to tag first, allows for edge cases

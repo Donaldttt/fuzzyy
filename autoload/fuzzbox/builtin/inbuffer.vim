@@ -10,8 +10,8 @@ var file_type: string
 var file_name: string
 var menu_wid: number
 
-def Select(wid: number, result: list<any>)
-    var linenr = str2nr(split(result[0], ':')[0])
+def Select(wid: number, result: string)
+    var linenr = str2nr(split(result, ':')[0])
     exe 'norm! ' .. linenr .. 'G'
     norm! zz
 enddef
@@ -35,40 +35,40 @@ def Preview(wid: number, result: string)
     win_execute(wid, 'norm! zz')
 enddef
 
-def OpenFileTab(wid: number, result: list<any>, opts: dict<any>)
+def OpenFileTab(wid: number, result: string, opts: dict<any>)
     if empty(result)
         return
     endif
     popup_close(wid)
-    var line = str2nr(split(result[0], '│')[0])
+    var line = str2nr(split(result, '│')[0])
     exe 'tabnew ' .. fnameescape(file_name)
     exe 'norm! ' .. line .. 'G'
     exe 'norm! zz'
 enddef
 
-def OpenFileVSplit(wid: number, result: list<any>, opts: dict<any>)
+def OpenFileVSplit(wid: number, result: string, opts: dict<any>)
     if empty(result)
         return
     endif
     popup_close(wid)
-    var line = str2nr(split(result[0], '│')[0])
+    var line = str2nr(split(result, '│')[0])
     exe 'vsplit ' .. fnameescape(file_name)
     exe 'norm! ' .. line .. 'G'
     exe 'norm! zz'
 enddef
 
-def OpenFileSplit(wid: number, result: list<any>, opts: dict<any>)
+def OpenFileSplit(wid: number, result: string, opts: dict<any>)
     if empty(result)
         return
     endif
     popup_close(wid)
-    var line = str2nr(split(result[0], '│')[0])
+    var line = str2nr(split(result, '│')[0])
     exe 'split ' .. fnameescape(file_name)
     exe 'norm! ' .. line .. 'G'
     exe 'norm! zz'
 enddef
 
-def SendAllQuickFix(wid: number, result: list<any>, opts: dict<any>)
+def SendAllQuickFix(wid: number, result: string, opts: dict<any>)
     var bufnr = winbufnr(wid)
     var lines: list<any>
     lines = reverse(getbufline(bufnr, 1, "$"))
