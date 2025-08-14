@@ -59,7 +59,7 @@ SCREENSHOT                                                  *fuzzbox-screenshot*
 
 
 
-[](https://i.imgur.com/3gkz8Hp.png)
+[](https://i.imgur.com/rDDSkgu.png)
 
 ------------------------------------------------------------------------------
 REQUIREMENTS                                              *fuzzbox-requirements*

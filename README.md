@@ -11,9 +11,9 @@ programs to handle complex tasks.
 
 ## Screenshot
 
-![screenshot](https://i.imgur.com/3gkz8Hp.png)
+![screenshot](https://i.imgur.com/rDDSkgu.png)
 
-[](https://i.imgur.com/3gkz8Hp.png)
+[](https://i.imgur.com/rDDSkgu.png)
 
 ## Requirements
 
