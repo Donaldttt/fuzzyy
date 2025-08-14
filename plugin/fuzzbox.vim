@@ -4,6 +4,11 @@ endif
 
 vim9script noclear
 
+if exists("g:loaded_fuzzbox")
+    finish
+endif
+g:loaded_fuzzbox = 1
+
 if exists("g:loaded_fuzzyy")
     echohl WarningMsg
     echo 'Fuzzbox failed to load, old Fuzzyy plugin loaded, please delete Fuzzyy. See :help fuzzyy.renamed'
@@ -13,11 +18,6 @@ if exists("g:loaded_fuzzyy")
     finish
 endif
 g:loaded_fuzzyy = 1
-
-if exists("g:loaded_fuzzbox")
-    finish
-endif
-g:loaded_fuzzbox = 1
 
 var warnings = []
 if &encoding != 'utf-8'
