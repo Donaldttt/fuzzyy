@@ -381,14 +381,11 @@ def MenuFilter(wid: number, key: string): number
             return 0
         endif
         win_execute(wid, 'norm! ' .. pos.line .. 'G')
-        var linetext = getbufline(bufnr, pos.line, pos.line)[0]
-        if linetext == ''
-            popup_close(wid)
-        elseif has_devicons
-            popup_close(wid, [devicons.RemoveDevicon(linetext)])
-        else
-            popup_close(wid, [linetext])
+        if has_key(popup_wins[wid], 'select_cb')
+                && type(popup_wins[wid].select_cb) == v:t_func
+            InvokeAction(popup_wins[wid].select_cb)
         endif
+        popup_close(wid)
     elseif key ==? "\<ScrollWheelUp>"
         var pos = getmousepos()
         if pos.winid != wid
