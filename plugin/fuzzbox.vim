@@ -143,10 +143,6 @@ command! -nargs=0 FuzzyTags launcher.Start('tags', windows.tags)
 command! -nargs=0 FuzzyTagsRoot launcher.Start('tags', extendnew(windows.tags, { cwd: helpers.GetRootDir() }))
 command! -nargs=0 FuzzyPrevious launcher.Resume()
 
-# Deprecated/renamed commands
-command! -nargs=0 FuzzyHelps helpers.Warn('fuzzbox: FuzzyHelps command is deprecated, use FuzzyHelp instead') | FuzzyHelp
-command! -nargs=0 FuzzyMRUFiles helpers.Warn('fuzzbox: FuzzyMRUFiles command is deprecated, use FuzzyMru instead') | FuzzyMru
-
 # Hack to only show a single line warning when startng the selector
 # Avoids showing warnings on Vim startup and does not break selector
 if len(warnings) > 0

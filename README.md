@@ -83,8 +83,6 @@ git clone https://github.com/vim-fuzzbox/fuzzbox.vim ~/.vim/pack/plugins/start/f
 | FuzzyTagsRoot         | search tags in the project/vcs root directory
 | FuzzyGitFiles         | search files in output from `git ls-files`
 | FuzzyPrevious         | reloads the previous selector and search string
-| FuzzyHelps            | deprecated alias for FuzzyHelp, will be removed
-| FuzzyMRUFiles         | deprecated alias for FuzzyMru, will be removed
 
 - For FuzzyGrep and FuzzyInBuffer, you can define a keymap like this to search
   the word under cursor.
