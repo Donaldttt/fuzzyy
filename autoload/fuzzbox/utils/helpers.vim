@@ -18,6 +18,16 @@ export def PathSep(): string
     return fs
 enddef
 
+export def Warn(msg: string)
+    if has('patch-9.0.0321')
+        echow msg
+    else
+        timer_start(100, (_) => {
+            echohl WarningMsg | echo msg | echohl None
+        }, { repeat: 0 })
+    endif
+enddef
+
 export def Split(str: string): list<string>
     var sep: string
     if iswin && stridx(str, "\r\n") >= 0

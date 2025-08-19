@@ -1,6 +1,7 @@
 vim9script
 
 import autoload './popup.vim'
+import autoload './helpers.vim'
 
 export def Start(selector: string, opts: dict<any>)
     if !exists('g:__fuzzbox_launcher_cache')
@@ -22,7 +23,7 @@ enddef
 
 export def Resume()
     if !exists('g:__fuzzbox_launcher_cache') || empty(g:__fuzzbox_launcher_cache)
-        Warn( 'fuzzbox: no previous launch to resume')
+        helpers.Warn( 'fuzzbox: no previous launch to resume')
         return
     endif
     for e in g:__fuzzbox_launcher_cache
@@ -45,7 +46,7 @@ export def Resume()
     endfor
     # clear cache, no items in cache have saved prompt, so cannot be resumed
     g:__fuzzbox_launcher_cache = []
-    Warn('fuzzbox: no previous search to resume')
+    helpers.Warn('fuzzbox: no previous search to resume')
 enddef
 
 export def Save(wins: dict<any>)
@@ -61,16 +62,6 @@ export def Save(wins: dict<any>)
             remove(g:__fuzzbox_launcher_cache, 0)
         endif
     catch
-        Warn('fuzzbox: ' .. v:exception .. ' at ' .. v:throwpoint)
+        helpers.Warn('fuzzbox: ' .. v:exception .. ' at ' .. v:throwpoint)
     endtry
-enddef
-
-def Warn(msg: string)
-    if has('patch-9.0.0321')
-        echow msg
-    else
-        timer_start(100, (_) => {
-            echohl WarningMsg | echo msg | echohl None
-        }, { repeat: 0 })
-    endif
 enddef

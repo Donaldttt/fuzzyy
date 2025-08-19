@@ -5,6 +5,7 @@ scriptencoding utf-8
 import autoload './colors.vim'
 import autoload './devicons.vim'
 import autoload './launcher.vim'
+import autoload './helpers.vim'
 
 var popup_wins: dict<any>
 var wins = { menu: -1, prompt: -1, preview: -1, info: -1 }
@@ -51,16 +52,6 @@ export def SetPopupWinProp(wid: number, key: string, val: any)
     endif
 enddef
 
-def Warn(msg: string)
-    if has('patch-9.0.0321')
-        echow msg
-    else
-        timer_start(100, (_) => {
-            echohl WarningMsg | echo msg | echohl None
-        }, { repeat: 0 })
-    endif
-enddef
-
 def ResolveCursor()
     hlset([{name: 'fuzzboxCursor', cleared: true}])
     var fallback = {
@@ -99,7 +90,7 @@ def ResolveCursor()
         # foreground and/or background not known and used as ctermfg or ctermbg
         hlset([fallback])
     catch
-        Warn('Fuzzbox: failed to resolve cursor highlight: ' .. v:exception)
+        helpers.Warn('Fuzzbox: failed to resolve cursor highlight: ' .. v:exception)
         hlset([fallback])
     endtry
 enddef
