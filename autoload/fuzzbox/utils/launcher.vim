@@ -23,7 +23,7 @@ enddef
 
 export def Resume()
     if !exists('g:__fuzzbox_launcher_cache') || empty(g:__fuzzbox_launcher_cache)
-        helpers.Warn( 'fuzzbox: no previous launch to resume')
+        helpers.Warn( 'fuzzbox: no previous search to resume')
         return
     endif
     for e in g:__fuzzbox_launcher_cache
