@@ -104,6 +104,9 @@ var windows: dict<any> = {
     inbuffer: {
         prompt_title: 'Lines in Buffer',
     },
+    quickfix: {
+        prompt_title: 'Quickfix',
+    },
 }
 if exists('g:fuzzbox_window_layout') && type(g:fuzzbox_window_layout) == v:t_dict
     for [key, value] in items(windows)
@@ -139,6 +142,7 @@ command! -nargs=0 FuzzyCmdHistory launcher.Start('cmdhistory', windows.cmdhistor
 command! -nargs=0 FuzzyMru launcher.Start('mru', windows.mru)
 command! -nargs=0 FuzzyMruCwd launcher.Start('mru', extendnew(windows.mru, { cwd: getcwd() }))
 command! -nargs=0 FuzzyMruRoot launcher.Start('mru', extendnew(windows.mru, { cwd: helpers.GetRootDir() }))
+command! -nargs=0 FuzzyQuickfix launcher.Start('quickfix', windows.quickfix)
 command! -nargs=0 FuzzyTags launcher.Start('tags', windows.tags)
 command! -nargs=0 FuzzyTagsRoot launcher.Start('tags', extendnew(windows.tags, { cwd: helpers.GetRootDir() }))
 command! -nargs=0 FuzzyPrevious launcher.Resume()
@@ -160,6 +164,7 @@ if g:fuzzbox_enable_mappings
         '<leader>fi': ':FuzzyInBuffer<CR>',
         '<leader>fm': ':FuzzyMru<CR>',
         '<leader>fp': ':FuzzyPrevious<CR>',
+        '<leader>fq': ':FuzzyQuickfix<CR>',
         '<leader>fr': ':FuzzyMruCwd<CR>'
     }
     for [lhs, rhs] in items(mappings)

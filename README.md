@@ -79,6 +79,7 @@ git clone https://github.com/vim-fuzzbox/fuzzbox.vim ~/.vim/pack/plugins/start/f
 | FuzzyColors           | search installed color schemes
 | FuzzyCmdHistory       | search command history
 | FuzzyHighlights       | search highlight groups
+| FuzzyQuickfix         | search items in the current quickfix list
 | FuzzyTags             | search tags in tagfiles(), see `:h tags`
 | FuzzyTagsRoot         | search tags in the project/vcs root directory
 | FuzzyGitFiles         | search files in output from `git ls-files`
@@ -107,6 +108,7 @@ nnoremap <silent> <leader>fh :FuzzyHelp<CR>
 nnoremap <silent> <leader>fi :FuzzyInBuffer<CR>
 nnoremap <silent> <leader>fm :FuzzyMru<CR>
 nnoremap <silent> <leader>fp :FuzzyPrevious<CR>
+nnoremap <silent> <leader>fq :FuzzyQuickfix<CR>
 nnoremap <silent> <leader>fr :FuzzyMruCwd<CR>
 ```
 
@@ -136,7 +138,7 @@ be used to scroll in both the preview and menu windows.
 - FuzzyMru
   - \<CTRL-K> toggle between all MRU files and CWD only
 
-- FuzzyBuffers, FuzzyFiles, FuzzyGrep, FuzzyInBuffer, FuzzyMru, FuzzyTags
+- FuzzyBuffers, FuzzyFiles, FuzzyGrep, FuzzyInBuffer, FuzzyMru, FuzzyQuickfix, FuzzyTags
   - \<CTRL-S> open selected file in horizontal split
   - \<CTRL-V> open selected file in vertical split
   - \<CTRL-T> open selected file in new tab page

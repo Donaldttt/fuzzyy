@@ -3,7 +3,7 @@ vim9script
 import autoload './popup.vim'
 import autoload './helpers.vim'
 
-export def Start(selector: string, opts: dict<any>)
+export def Start(selector: string, opts: dict<any> = {})
     if !exists('g:__fuzzbox_launcher_cache')
         g:__fuzzbox_launcher_cache = []
     endif
