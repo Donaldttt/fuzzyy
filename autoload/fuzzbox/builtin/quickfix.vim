@@ -17,12 +17,13 @@ def ParseResult(result: string): list<any>
     var idx = str2nr(split(result, '│')[0]) - 1
     var item = getqflist()[idx]
     var fname: string
-    if item->has_key('filename')
-        fname = item.filename
-    elseif item->has_key('bufnr')
-        fname = bufname(item.bufnr)
+    var bufnr = item->get('bufnr', 0)
+    if bufnr == 0
+        fname = "[No Name]"
+    else
+        fname = bufname(bufnr)
     endif
-    var lnum = item->get('lnum', 1)
+    var lnum = item->get('lnum', 0)
     return [fname, lnum]
 enddef
 
@@ -79,15 +80,16 @@ export def Start(opts: dict<any> = {})
         return
     endif
 
-    # copied from scope.vim, thanks @girishji
+    # mostly copied from scope.vim, thanks @girishji
     var size = getqflist({size: 0}).size
     var fmt = ' %' ..  len(string(size)) .. 'd │ '
     var lines = getqflist()->mapnew((idx, v) => {
         var fname: string
-        if v->has_key('filename')
-            fname = v.filename
-        elseif v->has_key('bufnr')
-            fname = bufname(v.bufnr)
+        var bufnr = v->get('bufnr', 0)
+        if bufnr == 0
+            fname = "[No Name]"
+        else
+            fname = bufname(bufnr)
         endif
         var text = v->get('text', '')
         var lnum = v->get('lnum', 0)
