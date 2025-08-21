@@ -74,6 +74,20 @@ def OpenFileSplit(wid: number, result: string)
     exe 'norm! zz'
 enddef
 
+def SendAllQuickFix(wid: number, result: string)
+    var bufnr = winbufnr(wid)
+    var lines: list<any>
+    lines = reverse(getbufline(bufnr, 1, "$"))
+    filter(lines, (_, val) => !empty(val))
+    setqflist(map(lines, (_, val) => {
+        var idx = str2nr(split(val, '│')[0]) - 1
+        return getqflist()[idx]
+    }))
+
+    popup_close(wid)
+    exe 'copen'
+enddef
+
 export def Start(opts: dict<any> = {})
     if getqflist({nr: '$'}).nr == 0
         echohl ErrorMsg | echo "Quickfix list is empty" | echohl None
@@ -113,6 +127,7 @@ export def Start(opts: dict<any> = {})
             "\<c-v>": function('OpenFileVSplit'),
             "\<c-s>": function('OpenFileSplit'),
             "\<c-t>": function('OpenFileTab'),
+            "\<c-q>": function('SendAllQuickFix'),
         }
     }))
 enddef

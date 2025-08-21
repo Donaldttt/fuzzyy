@@ -143,7 +143,7 @@ be used to scroll in both the preview and menu windows.
   - \<CTRL-V> open selected file in vertical split
   - \<CTRL-T> open selected file in new tab page
 
-- FuzzyBuffers, FuzzyFiles, FuzzyGrep, FuzzyInBuffer, FuzzyMru
+- FuzzyBuffers, FuzzyFiles, FuzzyGrep, FuzzyInBuffer, FuzzyMru, FuzzyQuickfix
   - \<CTRL-Q> send results to quickfix list
 
 Send results to quickfix list only includes results currently in the menu buffer,
