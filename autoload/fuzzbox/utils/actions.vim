@@ -1,6 +1,7 @@
 vim9script
 
 import autoload './devicons.vim'
+import autoload './popup.vim'
 import autoload './helpers.vim'
 
 var enable_devicons = devicons.Enabled()
@@ -119,13 +120,13 @@ export def OpenFileSplit(wid: number, result: string, opts: dict<any>)
     endif
 enddef
 
-export def SendAllQuickFix(wid: number, result: string, opts: dict<any>)
+export def SendToQuickfix(wid: number, result: string, opts: dict<any>)
     var has_devicons = enable_devicons && has_key(opts, 'devicons') && opts.devicons
     var bufnr = winbufnr(wid)
     var lines: list<any>
     lines = reverse(getbufline(bufnr, 1, "$"))
     filter(lines, (_, val) => !empty(val))
-    map(lines, (_, val) => {
+    setqflist(map(lines, (_, val) => {
         var [path, line, col] = split(val .. ':1:1', ':')[0 : 2]
         var text = split(val, ':' .. line .. ':' .. col .. ':')[-1]
         if has_devicons
@@ -140,8 +141,17 @@ export def SendAllQuickFix(wid: number, result: string, opts: dict<any>)
             col: str2nr(col),
             text: text }
         return dict
-    })
-    setqflist(lines)
+    }))
+
+    if has_key(opts, 'prompt_title') && !empty(opts.prompt_title)
+        var title = opts.prompt_title
+        var input = popup.GetPrompt()
+        if !empty(input)
+            title = title .. ' (' .. input .. ')'
+        endif
+        setqflist([], 'a', {title: title})
+    endif
+
     popup_close(wid)
     exe 'copen'
 enddef

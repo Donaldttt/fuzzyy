@@ -301,7 +301,7 @@ default_actions = {
     "\<c-v>": actions.OpenFileVSplit,
     "\<c-s>": actions.OpenFileSplit,
     "\<c-t>": actions.OpenFileTab,
-    "\<c-q>": actions.SendAllQuickFix,
+    "\<c-q>": actions.SendToQuickfix,
 }
 
 # This function spawn a popup picker for user to select an item from a list.

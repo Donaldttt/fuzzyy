@@ -74,7 +74,7 @@ def OpenFileSplit(wid: number, result: string)
     exe 'norm! zz'
 enddef
 
-def SendAllQuickFix(wid: number, result: string)
+def SendToQuickfix(wid: number, result: string, opts: dict<any>)
     var bufnr = winbufnr(wid)
     var lines: list<any>
     lines = reverse(getbufline(bufnr, 1, "$"))
@@ -83,6 +83,15 @@ def SendAllQuickFix(wid: number, result: string)
         var idx = str2nr(split(val, '│')[0]) - 1
         return getqflist()[idx]
     }))
+
+    if has_key(opts, 'prompt_title') && !empty(opts.prompt_title)
+        var title = opts.prompt_title
+        var input = popup.GetPrompt()
+        if !empty(input)
+            title = title .. ' (' .. input .. ')'
+        endif
+        setqflist([], 'a', {title: title})
+    endif
 
     popup_close(wid)
     exe 'copen'
@@ -127,7 +136,7 @@ export def Start(opts: dict<any> = {})
             "\<c-v>": function('OpenFileVSplit'),
             "\<c-s>": function('OpenFileSplit'),
             "\<c-t>": function('OpenFileTab'),
-            "\<c-q>": function('SendAllQuickFix'),
+            "\<c-q>": function('SendToQuickfix'),
         }
     }))
 enddef
